@@ -32,6 +32,7 @@ jQuery(function($) {
     + "to the index page."
   });
   tour.addStep({
+    path: "index.html",
     element: "#contributing",
     placement: "right",
     title: "Best of all, it's free!",
