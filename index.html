@@ -78,7 +78,7 @@ tour.addStep({
           <p>Sometimes you want to end the tour prematurely:</p>
           <pre class="prettyprint">tour.end();</pre>
           <p>Or skip to the next step:</p>
-          <pre class="prettyprint">tour.nextStep();</pre>
+          <pre class="prettyprint">tour.next();</pre>
           <p>Or skip to a specific step:</p>
           <pre class="prettyprint">tour.step(i); // i is the position of the step in the tour, starting from 0 for the first step</pre>
 
@@ -127,7 +127,7 @@ tour.addStep({
   title: "", // string|function
   content: "", // string|function
   next: 0, // number
-  close: false, // boolean
+  end: false, // boolean
   animation: true, // boolean
   onShow: function (tour) {}, // function
   onHide: function (tour) {} // function
@@ -148,10 +148,11 @@ tour.addStep({
             <dd>Step content</dd>
             <dt>next</dt>
             <dd>Index of the step to show after this one, starting from 0 for the
-            first step of the tour. -1 to not show the link to next step. By default, the next step (in the order you added
+            first step of the tour. -1 to not show the link to next step.
+            By default, the next step (in the order you added
             them) will be shown.</dd>
-            <dt>close</dt>
-            <dd>Show the close button. By default, it is only shown on the
+            <dt>end</dt>
+            <dd>Show the end button. By default, it is only shown on the
             last step.</dd>
             <dt>animation</dt>
             <dd>Apply a css fade transition to the tooltip.</dd>

@@ -33,7 +33,7 @@
       # Go to next step after click on element with class .next
       $(document).on "click", ".popover .next", (e) =>
         e.preventDefault()
-        @nextStep()
+        @next()
 
       # End tour after click on element with class .end
       $(document).on "click", ".popover .end", (e) =>
@@ -53,13 +53,25 @@
     addStep: (step) ->
       @_steps.push step
 
+    # Get a step by its indice
+    getStep: (i) ->
+      $.extend({
+        path: "",
+        placement: "right",
+        title: "",
+        content: "",
+        next: i + 1,
+        end: i == @_steps.length - 1,
+        animation: true
+      }, @_steps[i])
+
     # Start tour from current step
     start: (force = false) ->
       if force || @yes()
         @showStep(@_current)
 
     # Hide current step and show next step
-    nextStep: ->
+    next: ->
       @hideStep(@_current)
       @showNextStep()
 
@@ -74,19 +86,17 @@
 
     # Hide the specified step
     hideStep: (i) ->
-      step = @_steps[i]
-      return unless step?
-
+      step = @getStep(i)
       step.onHide(@) if step.onHide?
 
       $(step.element).popover("hide")
 
     # Show the specified step
     showStep: (i) ->
-      step = @_steps[i]
+      step = @getStep(i)
 
       # If step doesn't exist, end tour
-      unless step?
+      unless step.element?
         @end
         return
 
@@ -94,11 +104,9 @@
 
       # Redirect to step path if not already there
       # Compare to path, then filename
-      if step.path? && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
+      if step.path != "" && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
         document.location.href = step.path
         return
-
-      @setNextStep(i)
 
       # If step element is hidden, skip step
       if $(step.element).is(":hidden")
@@ -115,38 +123,6 @@
       # Show popover
       @showPopover(step, i)
 
-    # Show step popover
-    showPopover: (step, i) ->
-      content = "#{step.content}<br /><p>"
-      if i == @_steps.length - 1
-        content += "<a href='#' class='end'>Close</a>"
-      else
-        content += "<a href='##{@_next}' class='next'>Next &raquo;</a>
-          <a href='#' class='pull-right end'>Never show again</a></p>"
-
-      $(step.element).popover({
-        placement: step.placement
-        trigger: "manual"
-        title: step.title
-        content: content
-      }).popover("show")
-
-      # Bootstrap doesn't prevent elements to cross over the edge of the window, so we do that here
-      tip = $(step.element).data("popover").tip()
-      tipOffset = tip.offset()
-
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight()
-      tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
-      offsetRight = $(document).outerWidth() - tipOffset.left - $(tip).outerWidth()
-      tipOffset.left = tipOffset.left + offsetRight if offsetRight < 0
-
-      tipOffset.top = 0 if tipOffset.top < 0
-      tipOffset.left = 0 if tipOffset.left < 0
-      tip.offset(tipOffset)
-
-    # Return current step
-    getCurrentStep: -> @_steps[@_current]
-
     # Setup current step variable
     setCurrentStep: (value) ->
       if value?
@@ -162,19 +138,43 @@
     # Hide current step and save next step
     endCurrentStep: ->
       @hideStep(@_current)
-      @setCurrentStep(@_next)
+      step = @getStep(@_current)
+      @setCurrentStep(step.next)
 
     # Show next step
     showNextStep: ->
-      step = @_steps[@_current]
-      next_step = if step.next then step.next else @_current + 1
-      @showStep(next_step)
+      step = @getStep(@_current)
+      @showStep(step.next)
 
-    # Set next step variable
-    setNextStep: (i) ->
-      i = @_current unless i?
-      step = @_steps[i]
-      @_next = if step.next then step.next else i + 1
+    # Show step popover
+    showPopover: (step, i) ->
+      content = "#{step.content}<br /><p>"
+      if step.end
+        content += "<a href='#' class='end'>End</a>"
+      else
+        content += "<a href='##{step.next}' class='next'>Next &raquo;</a>
+          <a href='#' class='pull-right end'>End tour</a></p>"
+
+      $(step.element).popover({
+        placement: step.placement
+        trigger: "manual"
+        title: step.title
+        content: content
+        animation: step.animation
+      }).popover("show")
+
+      # Bootstrap doesn't prevent elements to cross over the edge of the window, so we do that here
+      tip = $(step.element).data("popover").tip()
+      tipOffset = tip.offset()
+
+      offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight()
+      tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
+      offsetRight = $(document).outerWidth() - tipOffset.left - $(tip).outerWidth()
+      tipOffset.left = tipOffset.left + offsetRight if offsetRight < 0
+
+      tipOffset.top = 0 if tipOffset.top < 0
+      tipOffset.left = 0 if tipOffset.left < 0
+      tip.offset(tipOffset)
 
   window.Tour = Tour
 
