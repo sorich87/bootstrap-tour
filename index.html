@@ -69,6 +69,12 @@ tour.addStep({
 
           <h2 id="options">Options</h2>
           <h3>Useful Methods</h3>
+          <p>Bootstrap Tour saves the current step in a cookie and will not
+          display the tour again to users who have already completed it.</p>
+          <p>If, for some reasons, you want to force the tour to be
+          displayed, pass <code>true</code> to the <code>start()</code>
+          method.</p>
+          <pre class="prettyprint">tour.start(true);</pre>
           <p>Sometimes you want to end the tour prematurely:</p>
           <pre class="prettyprint">tour.end();</pre>
           <p>Or skip to the next step:</p>
@@ -80,19 +86,8 @@ tour.addStep({
           <p>Default options:</p>
 <pre class="prettyprint">
 var tour = new Tour({
-  force: false,
   afterGetState: function(key, value) {},
   afterSetState: function(key, value) {}
-});
-</pre>
-          <p>Bootstrap Tour saves the current step in a cookie and will not
-          display the tour again to users who have already completed it.</p>
-          <p>If, for some reasons, you want to force the tour to be
-          displayed, pass <code>true</code> to the <code>force</code>
-          option.</p>
-<pre class="prettyprint">
-var tour = new Tour({
-  force: true
 });
 </pre>
           <p>You may also want also want to do something right after

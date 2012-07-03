@@ -54,8 +54,9 @@
       @_steps.push step
 
     # Start tour from current step
-    start: ->
-      @showStep(@_current)
+    start: (force = false) ->
+      if force || @yes()
+        @showStep(@_current)
 
     # Hide current step and show next step
     nextStep: ->

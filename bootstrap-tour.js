@@ -64,8 +64,13 @@
         return this._steps.push(step);
       };
 
-      Tour.prototype.start = function() {
-        return this.showStep(this._current);
+      Tour.prototype.start = function(force) {
+        if (force == null) {
+          force = false;
+        }
+        if (force || this.yes()) {
+          return this.showStep(this._current);
+        }
       };
 
       Tour.prototype.nextStep = function() {
