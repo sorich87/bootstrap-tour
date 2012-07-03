@@ -92,7 +92,8 @@
       @saveStep(i)
 
       # Redirect to step path if not already there
-      if document.location.pathname != step.path
+      # Compare to path, then filename
+      if step.path? && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
         document.location.href = step.path
         return
 

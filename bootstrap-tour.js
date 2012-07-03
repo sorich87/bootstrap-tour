@@ -103,7 +103,7 @@
           return;
         }
         this.saveStep(i);
-        if (document.location.pathname !== step.path) {
+        if ((step.path != null) && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
           document.location.href = step.path;
           return;
         }

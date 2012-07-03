@@ -2,7 +2,6 @@
 jQuery(function($) {
   var tour = new Tour();
   tour.addStep({
-    path: "/",
     element: "#overview",
     placement: "bottom",
     title: "Welcome to Bootstrap Tour!",
@@ -12,14 +11,12 @@ jQuery(function($) {
     + "Bootstrap from Twitter.<\/a>"
   });
   tour.addStep({
-    path: "/",
     element: "#usage",
     placement: "right",
     title: "Setup in four easy steps",
     content: "Easy is better, right? Easy like Bootstrap."
   });
   tour.addStep({
-    path: "/",
     element: "#options",
     placement: "right",
     title: "And it is powerful!",
@@ -27,7 +24,7 @@ jQuery(function($) {
     + "complicated things. <br \/>Power to the people! :P"
   });
   tour.addStep({
-    path: "/test.html",
+    path: "test.html",
     element: "h1",
     placement: "bottom",
     title: "See, you are not restricted to only one page",
@@ -35,7 +32,6 @@ jQuery(function($) {
     + "to the index page."
   });
   tour.addStep({
-    path: "/",
     element: "#contributing",
     placement: "right",
     title: "Best of all, it's free!",
