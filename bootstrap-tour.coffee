@@ -23,7 +23,7 @@
   class Tour
     constructor: (options) ->
       @_options = $.extend({
-        afterSaveState: (key, value) ->
+        afterSetState: (key, value) ->
         afterGetState: (key, value) ->
       }, options)
 
@@ -40,9 +40,9 @@
         e.preventDefault()
         @end()
 
-    saveState: (key, value) ->
+    setState: (key, value) ->
       $.cookie("tour_" + key, value, { expires: 36500, path: '/' })
-      @_options.afterSaveState(key, value)
+      @_options.afterSetState(key, value)
 
     getState: (key) ->
       value = $.cookie("tour_" + key)
@@ -65,7 +65,7 @@
     # End tour
     end: ->
       @hideStep(@_current)
-      @saveState("end", "yes")
+      @setState("end", "yes")
 
     # Verify if tour is enabled
     yes: ->
@@ -89,7 +89,7 @@
         @end
         return
 
-      @saveStep(i)
+      @setCurrentStep(i)
 
       # Redirect to step path if not already there
       # Compare to path, then filename
@@ -147,22 +147,21 @@
     getCurrentStep: -> @_steps[@_current]
 
     # Setup current step variable
-    setCurrentStep: ->
-      @_current = @getState("current_step")
-      if (@_current == null || @_current == "null")
-        @_current = 0
+    setCurrentStep: (value) ->
+      if value?
+        @_current = value
+        @setState("current_step", value)
       else
-        @_current = parseInt(@_current)
-
-    # Save step
-    saveStep: (value) ->
-      @_current = value
-      @saveState("current_step", value)
+        @_current = @getState("current_step")
+        if (@_current == null || @_current == "null")
+          @_current = 0
+        else
+          @_current = parseInt(@_current)
 
     # Hide current step and save next step
     endCurrentStep: ->
       @hideStep(@_current)
-      @saveStep(@_next)
+      @setCurrentStep(@_next)
 
     # Show next step
     showNextStep: ->

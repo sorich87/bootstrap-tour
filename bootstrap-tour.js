@@ -30,7 +30,7 @@
       function Tour(options) {
         var _this = this;
         this._options = $.extend({
-          afterSaveState: function(key, value) {},
+          afterSetState: function(key, value) {},
           afterGetState: function(key, value) {}
         }, options);
         this._steps = [];
@@ -45,12 +45,12 @@
         });
       }
 
-      Tour.prototype.saveState = function(key, value) {
+      Tour.prototype.setState = function(key, value) {
         $.cookie("tour_" + key, value, {
           expires: 36500,
           path: '/'
         });
-        return this._options.afterSaveState(key, value);
+        return this._options.afterSetState(key, value);
       };
 
       Tour.prototype.getState = function(key) {
@@ -75,7 +75,7 @@
 
       Tour.prototype.end = function() {
         this.hideStep(this._current);
-        return this.saveState("end", "yes");
+        return this.setState("end", "yes");
       };
 
       Tour.prototype.yes = function() {
@@ -102,7 +102,7 @@
           this.end;
           return;
         }
-        this.saveStep(i);
+        this.setCurrentStep(i);
         if ((step.path != null) && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
           document.location.href = step.path;
           return;
@@ -159,23 +159,23 @@
         return this._steps[this._current];
       };
 
-      Tour.prototype.setCurrentStep = function() {
-        this._current = this.getState("current_step");
-        if (this._current === null || this._current === "null") {
-          return this._current = 0;
+      Tour.prototype.setCurrentStep = function(value) {
+        if (value != null) {
+          this._current = value;
+          return this.setState("current_step", value);
         } else {
-          return this._current = parseInt(this._current);
+          this._current = this.getState("current_step");
+          if (this._current === null || this._current === "null") {
+            return this._current = 0;
+          } else {
+            return this._current = parseInt(this._current);
+          }
         }
-      };
-
-      Tour.prototype.saveStep = function(value) {
-        this._current = value;
-        return this.saveState("current_step", value);
       };
 
       Tour.prototype.endCurrentStep = function() {
         this.hideStep(this._current);
-        return this.saveStep(this._next);
+        return this.setCurrentStep(this._next);
       };
 
       Tour.prototype.showNextStep = function() {

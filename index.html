@@ -82,7 +82,7 @@ tour.addStep({
 var tour = new Tour({
   force: false,
   afterGetState: function(key, value) {},
-  afterSaveState: function(key, value) {}
+  afterSetState: function(key, value) {}
 });
 </pre>
           <p>Bootstrap Tour saves the current step in a cookie and will not
@@ -97,7 +97,7 @@ var tour = new Tour({
 </pre>
           <p>You may also want also want to do something right after
           Bootstrap Tour read or write the cookies. Just pass functions to
-          <code>afterGetState</code> or <code>afterSaveState</code>.</p>
+          <code>afterGetState</code> or <code>afterSetState</code>.</p>
           <p>Your functions can have two parameters:</p>
           <dl>
             <dt>key</dt>
@@ -116,7 +116,7 @@ var tour = new Tour({
           time there is a change:</p>
 <pre class="prettyprint">
 var tour = new Tour({
-  afterSaveState: function (key, value) {
+  afterSetState: function (key, value) {
     jQuery.post("/some/path", value);
   }
 });
