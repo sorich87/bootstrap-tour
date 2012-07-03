@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bootstrap Tour, An Extension of Bootstrap from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="deps/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      h1 {
+        font-size: 54px;
+        margin-bottom: 9px;
+        font-weight: bold;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
+      h3 {
+        font-weight: 500;
+      }
+    </style>
+    <link href="deps/bootstrap-responsive.css" rel="stylesheet">
+    <link href="deps/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <header id="overview">
+        <h1>Bootstrap Tour</h1>
+        <p class="lead">Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
+      </header>
+
+      <div class="row">
+        <div class="span9">
+          <h2 id="usage">Usage</h2>
+          <h3>1. Link to the JavaScript dependencies.</h3>
+<pre class="prettyprint">
+&lt;script src="jquery.js"&gt;&lt;/script&gt;
+&lt;script src="jquery.cookie.js"&gt;&lt;/script&gt;
+&lt;script src="bootstrap.min.js"&gt;&lt;/script&gt;
+&lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
+</pre>
+          <h3>2. Initialize the tour</h3>
+          <pre class="prettyprint">var tour = new Tour();</pre>
+          <h3>3. Add steps</h3>
+<pre class="prettyprint">
+tour.addStep({
+  element: "" /* html element next to which the step popover should be shown */
+  title: "" /* title of the popover */
+  content: "" /* content of the popover */
+});
+</pre>
+          <p>You can add as many steps as you want, but not too much or your
+          users will fell asleep!</p>
+          <h3>4. Start the tour</h3>
+          <pre class="prettyprint">tour.start();</pre>
+
+          <h2 id="options">Options</h2>
+          <h3>Useful Methods</h3>
+          <p>Sometimes you want to end the tour prematurely:</p>
+          <pre class="prettyprint">tour.end();</pre>
+          <p>Or skip to the next step:</p>
+          <pre class="prettyprint">tour.nextStep();</pre>
+          <p>Or skip to a specific step:</p>
+          <pre class="prettyprint">tour.step(i); // i is the position of the step in the tour, starting from 0 for the first step</pre>
+
+          <h3>Initialization Options</h3>
+          <p>Default options:</p>
+<pre class="prettyprint">
+var tour = new Tour({
+  force: false,
+  afterGetState: function(key, value) {},
+  afterSaveState: function(key, value) {}
+});
+</pre>
+          <p>Bootstrap Tour saves the current step in a cookie and will not
+          display the tour again to users who have already completed it.</p>
+          <p>If, for some reasons, you want to force the tour to be
+          displayed, pass <code>true</code> to the <code>force</code>
+          option.</p>
+<pre class="prettyprint">
+var tour = new Tour({
+  force: true
+});
+</pre>
+          <p>You may also want also want to do something right after
+          Bootstrap Tour read or write the cookies. Just pass functions to
+          <code>afterGetState</code> or <code>afterSaveState</code>.</p>
+          <p>Your functions can have two parameters:</p>
+          <dl>
+            <dt>key</dt>
+            <dd>Contains the name of the cookie being saved. It can be
+            <code>current_step</code> (for the cookie where the latest step
+            the visitor viewed is saved) or <code>end</code> (for the cookie
+            which is saved when the user complete the tour). Note that
+            Bootstrap Tour prepends the key with <code>tour_</code> when
+            saving the cookie.</dd>
+            <dt>value</dt>
+            <dd>The value of the cookie been saved. Can be the index of the
+            current step if the key is <code>current_step</code>, or
+            <code>yes</code> if the key is <code>end</code>.</dd>
+          </dl>
+          <p>A simple example if to send a post request to your server each
+          time there is a change:</p>
+<pre class="prettyprint">
+var tour = new Tour({
+  afterSaveState: function (key, value) {
+    jQuery.post("/some/path", value);
+  }
+});
+</pre>
+
+          <h3>Step Options</h3>
+          <p>Default options:</p>
+<pre class="prettyprint">
+tour.addStep({
+  path: "", // string
+  element: "", // (required) jQuery selector
+  placement: "right", // string|function
+  title: "", // string|function
+  content: "", // string|function
+  next: 0, // number
+  close: false, // boolean
+  animation: true, // boolean
+  onShow: function (tour) {}, // function
+  onHide: function (tour) {} // function
+});
+</pre>
+          <dl>
+            <dt>path</dt>
+            <dd>Path to the page on which the step should be show. this
+            allows you to build tours that span several pages!</dd>
+            <dt>element</dt>
+            <dd>HTML element on which the step popover should be shown.</dd>
+            <dt>placement</dt>
+            <dd>How to position the popover - top | bottom | left |
+            right.</dd>
+            <dt>title</dt>
+            <dd>Step title</dd>
+            <dt>content</dt>
+            <dd>Step content</dd>
+            <dt>next</dt>
+            <dd>Index of the step to show after this one, starting from 0 for the
+            first step of the tour. -1 to not show the link to next step. By default, the next step (in the order you added
+            them) will be shown.</dd>
+            <dt>close</dt>
+            <dd>Show the close button. By default, it is only shown on the
+            last step.</dd>
+            <dt>animation</dt>
+            <dd>Apply a css fade transition to the tooltip.</dd>
+            <dt>onShow</dt>
+            <dd>Function to execute right before the step is shown.</dd>
+            <dt>onHide</dt>
+            <dd>Function to execute right before the step is hidden.</dd>
+          </dl>
+
+          <h2 id="contributing">Contributing</h2>
+          <p><a href="https://github.com/pushly/bootstrap-tour/issues">Bug
+            reports</a> and <a
+            href="https://github.com/pushly/bootstrap-tour/pulls">pull
+            requests</a> are much needed!
+
+          <h2 id="license">License</h2>
+          <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.
+          Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+          Well, the same licenses as Bootstrap. We are lazy! ;)</p>
+        </div>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="deps/jquery.js"></script>
+    <script src="deps/google-code-prettify/prettify.js"></script>
+    <script src="deps/bootstrap-tooltip.js"></script>
+    <script src="deps/bootstrap-popover.js"></script>
+    <script src="deps/jquery.cookie.js"></script>
+    <script src="bootstrap-tour.js"></script>
+    <script src="deps/example-tour.js"></script>
+  </body>
+</html>
