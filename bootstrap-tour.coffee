@@ -163,10 +163,13 @@
         animation: step.animation
       }).popover("show")
 
-      # Bootstrap doesn't prevent elements to cross over the edge of the window, so we do that here
       tip = $(step.element).data("popover").tip()
-      tipOffset = tip.offset()
+      @_reposition(tip)
+      @_scrollIntoView(tip)
 
+    # Prevent popups from crossing over the edge of the window
+    _reposition: (tip) ->
+      tipOffset = tip.offset()
       offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight()
       tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
       offsetRight = $(document).outerWidth() - tipOffset.left - $(tip).outerWidth()
@@ -175,6 +178,12 @@
       tipOffset.top = 0 if tipOffset.top < 0
       tipOffset.left = 0 if tipOffset.left < 0
       tip.offset(tipOffset)
+
+    # Scroll to the popup if it is not in the viewport
+    _scrollIntoView: (tip) ->
+      tipRect = tip.get(0).getBoundingClientRect()
+      unless tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width()
+        tip.get(0).scrollIntoView(true)
 
   window.Tour = Tour
 

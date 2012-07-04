@@ -163,7 +163,7 @@
       };
 
       Tour.prototype.showPopover = function(step, i) {
-        var content, offsetBottom, offsetRight, tip, tipOffset;
+        var content, tip;
         content = "" + step.content + "<br /><p>";
         if (step.end) {
           content += "<a href='#' class='end'>End</a>";
@@ -178,6 +178,12 @@
           animation: step.animation
         }).popover("show");
         tip = $(step.element).data("popover").tip();
+        this._reposition(tip);
+        return this._scrollIntoView(tip);
+      };
+
+      Tour.prototype._reposition = function(tip) {
+        var offsetBottom, offsetRight, tipOffset;
         tipOffset = tip.offset();
         offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight();
         if (offsetBottom < 0) {
@@ -194,6 +200,14 @@
           tipOffset.left = 0;
         }
         return tip.offset(tipOffset);
+      };
+
+      Tour.prototype._scrollIntoView = function(tip) {
+        var tipRect;
+        tipRect = tip.get(0).getBoundingClientRect();
+        if (!(tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width())) {
+          return tip.get(0).scrollIntoView(true);
+        }
       };
 
       return Tour;
