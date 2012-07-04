@@ -43,7 +43,7 @@
       </header>
 
       <div class="row">
-        <div class="span9">
+        <div class="span9 content">
           <h2 id="usage">Usage</h2>
           <h3>1. Link to the JavaScript dependencies.</h3>
 <pre class="prettyprint">
@@ -81,6 +81,10 @@ tour.addStep({
           <pre class="prettyprint">tour.next();</pre>
           <p>Or skip to a specific step:</p>
           <pre class="prettyprint">tour.step(i); // i is the position of the step in the tour, starting from 0 for the first step</pre>
+          <p>Or restart the tour after it ended:</p>
+          <pre class="prettyprint">tour.restart();</pre>
+          <p>Or verify if the tour ended:</p>
+          <pre class="prettyprint">tour.ended();</pre>
 
           <h3>Initialization Options</h3>
           <p>Default options:</p>

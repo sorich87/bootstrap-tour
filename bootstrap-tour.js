@@ -80,7 +80,7 @@
         if (force == null) {
           force = false;
         }
-        if (force || this.yes()) {
+        if (force || !this.ended()) {
           return this.showStep(this._current);
         }
       };
@@ -95,8 +95,13 @@
         return this.setState("end", "yes");
       };
 
-      Tour.prototype.yes = function() {
-        return !this.getState("end");
+      Tour.prototype.ended = function() {
+        return this.getState("end");
+      };
+
+      Tour.prototype.restart = function() {
+        this.setState("current_step", null);
+        return this.setState("end", null);
       };
 
       Tour.prototype.hideStep = function(i) {

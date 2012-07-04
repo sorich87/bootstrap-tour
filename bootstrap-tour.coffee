@@ -67,7 +67,7 @@
 
     # Start tour from current step
     start: (force = false) ->
-      if force || @yes()
+      if force || ! @ended()
         @showStep(@_current)
 
     # Hide current step and show next step
@@ -81,8 +81,13 @@
       @setState("end", "yes")
 
     # Verify if tour is enabled
-    yes: ->
-      !@getState("end")
+    ended: ->
+      @getState("end")
+
+    # Restart tour
+    restart: ->
+      @setState("current_step", null)
+      @setState("end", null)
 
     # Hide the specified step
     hideStep: (i) ->
