@@ -82,12 +82,14 @@
 
     # Verify if tour is enabled
     ended: ->
-      @getState("end")
+      !!@getState("end")
 
     # Restart tour
     restart: ->
       @setState("current_step", null)
       @setState("end", null)
+      @setCurrentStep(0)
+      @start()
 
     # Hide the specified step
     hideStep: (i) ->
@@ -126,7 +128,7 @@
       step.onShow(@) if step.onShow?
 
       # Show popover
-      @showPopover(step, i)
+      @_showPopover(step, i)
 
     # Setup current step variable
     setCurrentStep: (value) ->
@@ -152,7 +154,7 @@
       @showStep(step.next)
 
     # Show step popover
-    showPopover: (step, i) ->
+    _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
       if step.end
         content += "<a href='#' class='end'>End</a>"

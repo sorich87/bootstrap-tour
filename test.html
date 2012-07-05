@@ -1,45 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap Tour, An Extension of Bootstrap from Twitter</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <title>Bootstrap Tour Unit Tests</title>
+    <link rel="stylesheet" href="tests/qunit/qunit.css">
+    <script src="tests/qunit/qunit.js"></script>
+    <script src="tests/tests.js"></script>
 
-    <!-- Le styles -->
     <link href="deps/bootstrap.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-    </style>
-    <link href="deps/bootstrap-responsive.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-
-  <body>
-
-    <div class="container">
-
-      <h1>This is just a test.</h1>
-      <p>Nothing to see here. Move on!</p>
-
-    </div> <!-- /container -->
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="deps/jquery.js"></script>
     <script src="deps/bootstrap-tooltip.js"></script>
     <script src="deps/bootstrap-popover.js"></script>
     <script src="deps/jquery.cookie.js"></script>
     <script src="bootstrap-tour.js"></script>
-    <script src="deps/example-tour.js"></script>
-
+  </head>
+  <body>
+    <h1 id="qunit-header">Bootstrap Tour Unit Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture"></div>
   </body>
 </html>

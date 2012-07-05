@@ -96,12 +96,14 @@
       };
 
       Tour.prototype.ended = function() {
-        return this.getState("end");
+        return !!this.getState("end");
       };
 
       Tour.prototype.restart = function() {
         this.setState("current_step", null);
-        return this.setState("end", null);
+        this.setState("end", null);
+        this.setCurrentStep(0);
+        return this.start();
       };
 
       Tour.prototype.hideStep = function(i) {
@@ -137,7 +139,7 @@
         if (step.onShow != null) {
           step.onShow(this);
         }
-        return this.showPopover(step, i);
+        return this._showPopover(step, i);
       };
 
       Tour.prototype.setCurrentStep = function(value) {
@@ -167,7 +169,7 @@
         return this.showStep(step.next);
       };
 
-      Tour.prototype.showPopover = function(step, i) {
+      Tour.prototype._showPopover = function(step, i) {
         var content, tip;
         content = "" + step.content + "<br /><p>";
         if (step.end) {

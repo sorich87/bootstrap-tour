@@ -24,7 +24,7 @@ jQuery(function($) {
     + "complicated things. <br \/>Power to the people! :P"
   });
   tour.addStep({
-    path: "test.html",
+    path: "page.html",
     element: "h1",
     placement: "bottom",
     title: "See, you are not restricted to only one page",
@@ -42,13 +42,15 @@ jQuery(function($) {
   tour.start();
 
   if ( tour.ended() ) {
-    $(".content").prepend('<div class="alert">\
-                          <button class="close" data-dismiss="alert">×</button>\
-                          You ended the demo tour. <a href="" class="restart">Restart the demo tour.</a>\
-                          </div>');
+    $('<div class="alert">\
+      <button class="close" data-dismiss="alert">×</button>\
+      You ended the demo tour. <a href="" class="restart">Restart the demo tour.</a>\
+      </div>').prependTo(".content").alert();
   }
 
-  $(".restart").click(function () {
-    tour.restart()
+  $(".restart").click(function (e) {
+    e.preventDefault();
+    tour.restart();
+    $(this).parents(".alert").alert("close");
   });
 });
