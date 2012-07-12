@@ -9,9 +9,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,10 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
+        $(document).on("click", ".popover .prev", function(e) {
+          e.preventDefault();
+          return _this.prev();
+        });
         $(document).on("click", ".popover .next", function(e) {
           e.preventDefault();
           return _this.next();
@@ -47,7 +51,7 @@
 
       Tour.prototype.setState = function(key, value) {
         $.cookie("tour_" + key, value, {
-          expires: 36500,
+          expires: 25,
           path: '/'
         });
         return this._options.afterSetState(key, value);
@@ -71,6 +75,7 @@
           title: "",
           content: "",
           next: i + 1,
+          prev: i - 1,
           end: i === this._steps.length - 1,
           animation: true
         }, this._steps[i]);
@@ -88,6 +93,11 @@
       Tour.prototype.next = function() {
         this.hideStep(this._current);
         return this.showNextStep();
+      };
+
+      Tour.prototype.prev = function() {
+        this.hideStep(this._current);
+        return this.showPrevStep();
       };
 
       Tour.prototype.end = function() {
@@ -169,13 +179,21 @@
         return this.showStep(step.next);
       };
 
+      Tour.prototype.showPrevStep = function() {
+        var step;
+        step = this.getStep(this._current);
+        return this.showStep(step.prev);
+      };
+
       Tour.prototype._showPopover = function(step, i) {
         var content, tip;
         content = "" + step.content + "<br /><p>";
         if (step.end) {
-          content += "<a href='#' class='end'>End</a>";
-        } else {
+          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>          <a href='#' class='end'>End</a>";
+        } else if(step.prev < 0) {
           content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
+        } else {
+          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>          <a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
         }
         $(step.element).popover({
           placement: step.placement,
