@@ -7,9 +7,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,6 +34,11 @@
       $(document).on "click", ".popover .next", (e) =>
         e.preventDefault()
         @next()
+
+      # Go to previous step after click on element with class .prev
+      $(document).on "click", ".popover .prev", (e) =>
+        e.preventDefault()
+        @prev()
 
       # End tour after click on element with class .end
       $(document).on "click", ".popover .end", (e) =>
@@ -61,6 +66,7 @@
         title: "",
         content: "",
         next: i + 1,
+        prev:i - 1,
         end: i == @_steps.length - 1,
         animation: true
       }, @_steps[i])
@@ -74,6 +80,11 @@
     next: ->
       @hideStep(@_current)
       @showNextStep()
+
+    # Hide current step and show prev step
+    prev: ->
+      @hideStep(@_current)
+      @showPrevStep()
 
     # End tour
     end: ->
@@ -153,13 +164,26 @@
       step = @getStep(@_current)
       @showStep(step.next)
 
+    # Show next step
+    showPrevStep: ->
+      step = @getStep(@_current)
+      @showStep(step.prev)
+
+    # Show prev step
+    showPrevStep: ->
+      step = @getStep(@_current)
+      @showStep(step.prev)
+
     # Show step popover
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
-      if step.end
-        content += "<a href='#' class='end'>End</a>"
+      if step.prev < 0
+        content += "<a href='##{step.next}' class='next'>Next &raquo;</a> <a href='#' class='pull-right end'>End Tour</a>"
+      else if step.end
+        content += "<a href='##{step.prev}' class='prev'>&laquo; Prev</a><a href='#' class='pull-right end'>End Tour</a>"
       else
-        content += "<a href='##{step.next}' class='next'>Next &raquo;</a>
+        content += "<a href='##{step.prev}' class='prev'>&laquo; Prev</a>
+        <a href='##{step.next}' class='next'>Next &raquo;</a>
           <a href='#' class='pull-right end'>End tour</a></p>"
 
       $(step.element).popover({
