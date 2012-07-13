@@ -127,11 +127,6 @@
         @showNextStep()
         return
 
-      # Setup even handler for hiding step
-      endOnClick = step.endOnClick || step.element
-      $(endOnClick).one "click", () =>
-        @endCurrentStep()
-
       step.onShow(@) if step.onShow?
 
       # Show popover
@@ -148,12 +143,6 @@
           @_current = 0
         else
           @_current = parseInt(@_current)
-
-    # Hide current step and save next step
-    endCurrentStep: ->
-      @hideStep(@_current)
-      step = @getStep(@_current)
-      @setCurrentStep(step.next)
 
     # Show next step
     showNextStep: ->

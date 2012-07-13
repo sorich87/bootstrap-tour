@@ -127,8 +127,7 @@
       };
 
       Tour.prototype.showStep = function(i) {
-        var endOnClick, step,
-          _this = this;
+        var step;
         this.setCurrentStep(i);
         step = this.getStep(i);
         if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
@@ -139,10 +138,6 @@
           this.showNextStep();
           return;
         }
-        endOnClick = step.endOnClick || step.element;
-        $(endOnClick).one("click", function() {
-          return _this.endCurrentStep();
-        });
         if (step.onShow != null) {
           step.onShow(this);
         }
@@ -161,13 +156,6 @@
             return this._current = parseInt(this._current);
           }
         }
-      };
-
-      Tour.prototype.endCurrentStep = function() {
-        var step;
-        this.hideStep(this._current);
-        step = this.getStep(this._current);
-        return this.setCurrentStep(step.next);
       };
 
       Tour.prototype.showNextStep = function() {
