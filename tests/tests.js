@@ -21,7 +21,7 @@
       }
     });
     ok(tour._options.afterGetState, "options.afterGetState is set");
-    ok(tour._options.afterSetState, "options.afterSetState is not set");
+    ok(tour._options.afterSetState, "options.afterSetState is set");
     return clearTour(tour);
   });
 

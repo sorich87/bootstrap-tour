@@ -13,7 +13,7 @@ test "Tour should set the tour options", ->
       true
   })
   ok(tour._options.afterGetState, "options.afterGetState is set")
-  ok(tour._options.afterSetState, "options.afterSetState is not set")
+  ok(tour._options.afterSetState, "options.afterSetState is set")
   clearTour(tour)
 
 test "Tour should accept an array of steps and set the current step", ->
