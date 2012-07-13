@@ -100,13 +100,19 @@ tour.addStep({
 <pre class="prettyprint">
 var tour = new Tour({
   name: "tour",
-  afterGetState: function(key, value) {},
-  afterSetState: function(key, value) {}
+  afterGetState: function (key, value) {},
+  afterSetState: function (key, value) {},
+  onShow: function (tour) {},
+  onHide: function (tour) {}
 });
 </pre>
-          <p>The <code>name</code> option is used to build the name of the
+
+          <h4><code>name</code></h4>
+          <p>This option is used to build the name of the
           cookie where the tour state is stored. You can initialize several
           tours with different names in the same page and application.</p>
+
+          <h4><code>afterGetState</code> and <code>afterSetState</code></h4>
           <p>You may want to do something right after
           Bootstrap Tour read or write the cookies. Just pass functions to
           <code>afterGetState</code> or <code>afterSetState</code>.</p>
@@ -133,6 +139,12 @@ var tour = new Tour({
   }
 });
 </pre>
+
+          <h4><code>onShow</code></h4>
+          <p>Function to execute right before each step is shown.</p>
+
+          <h4><code>onHide</code></h4>
+          <p>Function to execute right before each step is hidden.</p>
 
           <h3>Step Options</h3>
           <p>Default options:</p>
@@ -182,9 +194,9 @@ tour.addStep({
             <dt>animation</dt>
             <dd>Apply a css fade transition to the tooltip.</dd>
             <dt>onShow</dt>
-            <dd>Function to execute right before the step is shown.</dd>
+            <dd>Function to execute right before the step is shown. It overrides the global onShow option.</dd>
             <dt>onHide</dt>
-            <dd>Function to execute right before the step is hidden.</dd>
+            <dd>Function to execute right before the step is hidden. It overrides the global onHide option.</dd>
           </dl>
 
           <h2 id="contributing">Contributing</h2>

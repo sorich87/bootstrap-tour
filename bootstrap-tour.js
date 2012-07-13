@@ -32,7 +32,9 @@
         this._options = $.extend({
           name: 'tour',
           afterSetState: function(key, value) {},
-          afterGetState: function(key, value) {}
+          afterGetState: function(key, value) {},
+          onShow: function(tour) {},
+          onHide: function(tour) {}
         }, options);
         this._steps = [];
         this.setCurrentStep();
@@ -78,7 +80,9 @@
           next: i + 1,
           prev: i - 1,
           end: i === this._steps.length - 1,
-          animation: true
+          animation: true,
+          onShow: this._options.onShow,
+          onHide: this._options.onHide
         }, this._steps[i]);
       };
 

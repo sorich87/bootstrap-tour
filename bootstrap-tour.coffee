@@ -26,6 +26,8 @@
         name: 'tour'
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
+        onShow: (tour) ->
+        onHide: (tour) ->
       }, options)
 
       @_steps = []
@@ -62,14 +64,16 @@
     # Get a step by its indice
     getStep: (i) ->
       $.extend({
-        path: "",
-        placement: "right",
-        title: "",
-        content: "",
-        next: i + 1,
-        prev:i - 1,
-        end: i == @_steps.length - 1,
+        path: ""
+        placement: "right"
+        title: ""
+        content: ""
+        next: i + 1
+        prev:i - 1
+        end: i == @_steps.length - 1
         animation: true
+        onShow: @_options.onShow
+        onHide: @_options.onHide
       }, @_steps[i])
 
     # Start tour from current step
