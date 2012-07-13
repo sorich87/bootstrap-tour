@@ -64,8 +64,8 @@
           <h3>3. Add steps</h3>
 <pre class="prettyprint">
 tour.addStep({
-  element: "" /* html element next to which the step popover should be shown */
-  title: "" /* title of the popover */
+  element: "", /* html element next to which the step popover should be shown */
+  title: "", /* title of the popover */
   content: "" /* content of the popover */
 });
 </pre>
@@ -87,7 +87,7 @@ tour.addStep({
           <p>Or skip to the next step:</p>
           <pre class="prettyprint">tour.next();</pre>
           <p>Or skip to a specific step:</p>
-          <pre class="prettyprint">tour.step(i); // i is the position of the step in the tour, starting from 0 for the first step</pre>
+          <pre class="prettyprint">tour.showStep(i); // i is the position of the step in the tour, starting from 0 for the first step</pre>
           <p>Or restart the tour after it ended:</p>
           <pre class="prettyprint">tour.restart();</pre>
           <p>Or verify if the tour ended:</p>
