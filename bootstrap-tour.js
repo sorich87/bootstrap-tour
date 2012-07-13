@@ -35,13 +35,13 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        $(document).on("click", ".popover .prev", function(e) {
-          e.preventDefault();
-          return _this.prev();
-        });
         $(document).on("click", ".popover .next", function(e) {
           e.preventDefault();
           return _this.next();
+        });
+        $(document).on("click", ".popover .prev", function(e) {
+          e.preventDefault();
+          return _this.prev();
         });
         $(document).on("click", ".popover .end", function(e) {
           e.preventDefault();
@@ -51,7 +51,7 @@
 
       Tour.prototype.setState = function(key, value) {
         $.cookie("tour_" + key, value, {
-          expires: 25,
+          expires: 36500,
           path: '/'
         });
         return this._options.afterSetState(key, value);
@@ -188,12 +188,12 @@
       Tour.prototype._showPopover = function(step, i) {
         var content, tip;
         content = "" + step.content + "<br /><p>";
-        if (step.end) {
-          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>          <a href='#' class='end'>End</a>";
-        } else if(step.prev < 0) {
-          content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
+        if (step.prev < 0) {
+          content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a> <a href='#' class='pull-right end'>End Tour</a>";
+        } else if (step.end) {
+          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a><a href='#' class='pull-right end'>End Tour</a>";
         } else {
-          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>          <a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
+          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a> |          <a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
         }
         $(step.element).popover({
           placement: step.placement,

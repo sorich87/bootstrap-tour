@@ -50,6 +50,7 @@ test "Tour.getStep should get a step", ->
     placement: "left"
     title: "Test"
     content: "Just a test"
+    prev: -1
     next: 2
     end: false
     animation: false
@@ -155,5 +156,14 @@ test "Tour.showNextStep should show the next step", ->
   tour.start()
   tour.showNextStep()
   strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows next step")
+  clearTour(tour)
+
+test "Tour.showPrevStep should show the previous step", ->
+  tour = new Tour()
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.showStep(1)
+  tour.showPrevStep()
+  strictEqual(tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour shows previous step")
   clearTour(tour)
 

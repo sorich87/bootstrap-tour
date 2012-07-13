@@ -164,11 +164,6 @@
       step = @getStep(@_current)
       @showStep(step.next)
 
-    # Show next step
-    showPrevStep: ->
-      step = @getStep(@_current)
-      @showStep(step.prev)
-
     # Show prev step
     showPrevStep: ->
       step = @getStep(@_current)
@@ -182,8 +177,8 @@
       else if step.end
         content += "<a href='##{step.prev}' class='prev'>&laquo; Prev</a><a href='#' class='pull-right end'>End Tour</a>"
       else
-        content += "<a href='##{step.prev}' class='prev'>&laquo; Prev</a>
-        <a href='##{step.next}' class='next'>Next &raquo;</a>
+        content += "<a href='##{step.prev}' class='prev'>&laquo; Prev</a> |
+          <a href='##{step.next}' class='next'>Next &raquo;</a>
           <a href='#' class='pull-right end'>End tour</a></p>"
 
       $(step.element).popover({
