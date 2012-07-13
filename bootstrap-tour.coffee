@@ -23,6 +23,7 @@
   class Tour
     constructor: (options) ->
       @_options = $.extend({
+        name: 'tour'
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
       }, options)
@@ -46,11 +47,11 @@
         @end()
 
     setState: (key, value) ->
-      $.cookie("tour_" + key, value, { expires: 36500, path: '/' })
+      $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
 
     getState: (key) ->
-      value = $.cookie("tour_" + key)
+      value = $.cookie("#{@_options.name}_#{key}")
       @_options.afterGetState(key, value)
       return value
 

@@ -99,11 +99,15 @@ tour.addStep({
           <p>Default options:</p>
 <pre class="prettyprint">
 var tour = new Tour({
+  name: "tour",
   afterGetState: function(key, value) {},
   afterSetState: function(key, value) {}
 });
 </pre>
-          <p>You may also want also want to do something right after
+          <p>The <code>name</code> option is used to build the name of the
+          cookie where the tour state is stored. You can initialize several
+          tours with different names in the same page and application.</p>
+          <p>You may want to do something right after
           Bootstrap Tour read or write the cookies. Just pass functions to
           <code>afterGetState</code> or <code>afterSetState</code>.</p>
           <p>Your functions can have two parameters:</p>

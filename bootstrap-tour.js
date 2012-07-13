@@ -30,6 +30,7 @@
       function Tour(options) {
         var _this = this;
         this._options = $.extend({
+          name: 'tour',
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {}
         }, options);
@@ -50,7 +51,7 @@
       }
 
       Tour.prototype.setState = function(key, value) {
-        $.cookie("tour_" + key, value, {
+        $.cookie("" + this._options.name + "_" + key, value, {
           expires: 36500,
           path: '/'
         });
@@ -59,7 +60,7 @@
 
       Tour.prototype.getState = function(key) {
         var value;
-        value = $.cookie("tour_" + key);
+        value = $.cookie("" + this._options.name + "_" + key);
         this._options.afterGetState(key, value);
         return value;
       };

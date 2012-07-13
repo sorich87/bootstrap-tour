@@ -7,13 +7,20 @@ clearTour = (tour) ->
 
 test "Tour should set the tour options", ->
   tour = new Tour({
+    name: "test"
     afterSetState: ->
       true
     afterGetState: ->
       true
   })
+  equal(tour._options.name, "test", "options.name is set")
   ok(tour._options.afterGetState, "options.afterGetState is set")
   ok(tour._options.afterSetState, "options.afterSetState is set")
+  clearTour(tour)
+
+test "Tour should have default name of 'tour'", ->
+  tour = new Tour()
+  equal(tour._options.name, "tour", "tour default name is 'tour'")
   clearTour(tour)
 
 test "Tour should accept an array of steps and set the current step", ->

@@ -13,6 +13,7 @@
   test("Tour should set the tour options", function() {
     var tour;
     tour = new Tour({
+      name: "test",
       afterSetState: function() {
         return true;
       },
@@ -20,8 +21,16 @@
         return true;
       }
     });
+    equal(tour._options.name, "test", "options.name is set");
     ok(tour._options.afterGetState, "options.afterGetState is set");
     ok(tour._options.afterSetState, "options.afterSetState is set");
+    return clearTour(tour);
+  });
+
+  test("Tour should have default name of 'tour'", function() {
+    var tour;
+    tour = new Tour();
+    equal(tour._options.name, "tour", "tour default name is 'tour'");
     return clearTour(tour);
   });
 
