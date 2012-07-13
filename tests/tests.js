@@ -6,7 +6,9 @@
     tour.setState("current_step", null);
     tour.setState("end", null);
     return $.each(tour._steps, function(i, s) {
-      return s.element.popover("hide").removeData("popover");
+      if ((s.element != null) && (s.element.popover != null)) {
+        return s.element.popover("hide").removeData("popover");
+      }
     });
   };
 
@@ -209,6 +211,46 @@
     tour.showStep(1);
     strictEqual(tour._current, 1, "tour sets step");
     strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows step");
+    return clearTour(tour);
+  });
+
+  test("Tour.showStep should skip step when no element is specified", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({});
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
+    return clearTour(tour);
+  });
+
+  test("Tour.showStep should skip step when element doesn't exist", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({
+      element: "#tour-test"
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
+    return clearTour(tour);
+  });
+
+  test("Tour.showStep should skip step when element is invisible", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture").hide()
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
     return clearTour(tour);
   });
 

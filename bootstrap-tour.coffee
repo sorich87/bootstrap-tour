@@ -112,14 +112,9 @@
 
     # Show the specified step
     showStep: (i) ->
-      step = @getStep(i)
-
-      # If step doesn't exist, end tour
-      unless step.element?
-        @end
-        return
-
       @setCurrentStep(i)
+
+      step = @getStep(i)
 
       # Redirect to step path if not already there
       # Compare to path, then filename
@@ -128,7 +123,7 @@
         return
 
       # If step element is hidden, skip step
-      if $(step.element).is(":hidden")
+      unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
         @showNextStep()
         return
 

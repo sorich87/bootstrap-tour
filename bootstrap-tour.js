@@ -129,17 +129,13 @@
       Tour.prototype.showStep = function(i) {
         var endOnClick, step,
           _this = this;
-        step = this.getStep(i);
-        if (step.element == null) {
-          this.end;
-          return;
-        }
         this.setCurrentStep(i);
+        step = this.getStep(i);
         if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
           document.location.href = step.path;
           return;
         }
-        if ($(step.element).is(":hidden")) {
+        if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
           this.showNextStep();
           return;
         }
