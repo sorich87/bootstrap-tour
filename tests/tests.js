@@ -6,13 +6,16 @@
     tour.setState("current_step", null);
     tour.setState("end", null);
     return $.each(tour._steps, function(i, s) {
-      return s.element.popover("hide").removeData("popover");
+      if ((s.element != null) && (s.element.popover != null)) {
+        return s.element.popover("hide").removeData("popover");
+      }
     });
   };
 
   test("Tour should set the tour options", function() {
     var tour;
     tour = new Tour({
+      name: "test",
       afterSetState: function() {
         return true;
       },
@@ -20,8 +23,16 @@
         return true;
       }
     });
+    equal(tour._options.name, "test", "options.name is set");
     ok(tour._options.afterGetState, "options.afterGetState is set");
-    ok(tour._options.afterSetState, "options.afterSetState is not set");
+    ok(tour._options.afterSetState, "options.afterSetState is set");
+    return clearTour(tour);
+  });
+
+  test("Tour should have default name of 'tour'", function() {
+    var tour;
+    tour = new Tour();
+    equal(tour._options.name, "tour", "tour default name is 'tour'");
     return clearTour(tour);
   });
 
@@ -61,6 +72,90 @@
     return clearTour(tour);
   });
 
+  test("Tour with onShow option should run the callback before showing the step", function() {
+    var tour, tour_test;
+    tour_test = 0;
+    tour = new Tour({
+      onShow: function() {
+        return tour_test += 2;
+      }
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour_test, 2, "tour runs onShow when first step shown");
+    tour.next();
+    strictEqual(tour_test, 4, "tour runs onShow when next step shown");
+    return clearTour(tour);
+  });
+
+  test("Tour with onHide option should run the callback before hiding the step", function() {
+    var tour, tour_test;
+    tour_test = 0;
+    tour = new Tour({
+      onHide: function() {
+        return tour_test += 2;
+      }
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    tour.next();
+    strictEqual(tour_test, 2, "tour runs onHide when first step hidden");
+    tour.hideStep(1);
+    strictEqual(tour_test, 4, "tour runs onHide when next step hidden");
+    return clearTour(tour);
+  });
+
+  test("Tour.addStep with onShow option should run the callback before showing the step", function() {
+    var tour, tour_test;
+    tour_test = 0;
+    tour = new Tour();
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture"),
+      onShow: function() {
+        return tour_test = 2;
+      }
+    });
+    tour.start();
+    strictEqual(tour_test, 0, "tour does not run onShow when step not shown");
+    tour.next();
+    strictEqual(tour_test, 2, "tour runs onShow when step shown");
+    return clearTour(tour);
+  });
+
+  test("Tour.addStep with onHide option should run the callback before hiding the step", function() {
+    var tour, tour_test;
+    tour_test = 0;
+    tour = new Tour();
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture"),
+      onHide: function() {
+        return tour_test = 2;
+      }
+    });
+    tour.start();
+    tour.next();
+    strictEqual(tour_test, 0, "tour does not run onHide when step not hidden");
+    tour.hideStep(1);
+    strictEqual(tour_test, 2, "tour runs onHide when step hidden");
+    return clearTour(tour);
+  });
+
   test("Tour.getStep should get a step", function() {
     var step, tour;
     tour = new Tour();
@@ -70,9 +165,12 @@
       placement: "left",
       title: "Test",
       content: "Just a test",
+      prev: -1,
       next: 2,
       end: false,
-      animation: false
+      animation: false,
+      onShow: function(tour) {},
+      onHide: function(tour) {}
     };
     tour.addStep(step);
     deepEqual(tour.getStep(0), step, "tour gets a step");
@@ -202,6 +300,46 @@
     return clearTour(tour);
   });
 
+  test("Tour.showStep should skip step when no element is specified", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({});
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
+    return clearTour(tour);
+  });
+
+  test("Tour.showStep should skip step when element doesn't exist", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({
+      element: "#tour-test"
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
+    return clearTour(tour);
+  });
+
+  test("Tour.showStep should skip step when element is invisible", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture").hide()
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.start();
+    strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
+    return clearTour(tour);
+  });
+
   test("Tour.setCurrentStep should set the current step", function() {
     var tour;
     tour = new Tour();
@@ -225,6 +363,21 @@
     tour.start();
     tour.showNextStep();
     strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows next step");
+    return clearTour(tour);
+  });
+
+  test("Tour.showPrevStep should show the previous step", function() {
+    var tour;
+    tour = new Tour();
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    tour.showStep(1);
+    tour.showPrevStep();
+    strictEqual(tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour shows previous step");
     return clearTour(tour);
   });
 

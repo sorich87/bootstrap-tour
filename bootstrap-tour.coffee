@@ -23,8 +23,11 @@
   class Tour
     constructor: (options) ->
       @_options = $.extend({
+        name: 'tour'
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
+        onShow: (tour) ->
+        onHide: (tour) ->
       }, options)
 
       @_steps = []
@@ -35,17 +38,22 @@
         e.preventDefault()
         @next()
 
+      # Go to previous step after click on element with class .prev
+      $(document).on "click", ".popover .prev", (e) =>
+        e.preventDefault()
+        @prev()
+
       # End tour after click on element with class .end
       $(document).on "click", ".popover .end", (e) =>
         e.preventDefault()
         @end()
 
     setState: (key, value) ->
-      $.cookie("tour_" + key, value, { expires: 36500, path: '/' })
+      $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
 
     getState: (key) ->
-      value = $.cookie("tour_" + key)
+      value = $.cookie("#{@_options.name}_#{key}")
       @_options.afterGetState(key, value)
       return value
 
@@ -56,13 +64,16 @@
     # Get a step by its indice
     getStep: (i) ->
       $.extend({
-        path: "",
-        placement: "right",
-        title: "",
-        content: "",
-        next: i + 1,
-        end: i == @_steps.length - 1,
+        path: ""
+        placement: "right"
+        title: ""
+        content: ""
+        next: i + 1
+        prev:i - 1
+        end: i == @_steps.length - 1
         animation: true
+        onShow: @_options.onShow
+        onHide: @_options.onHide
       }, @_steps[i])
 
     # Start tour from current step
@@ -74,6 +85,11 @@
     next: ->
       @hideStep(@_current)
       @showNextStep()
+
+    # Hide current step and show prev step
+    prev: ->
+      @hideStep(@_current)
+      @showPrevStep()
 
     # End tour
     end: ->
@@ -100,14 +116,9 @@
 
     # Show the specified step
     showStep: (i) ->
-      step = @getStep(i)
-
-      # If step doesn't exist, end tour
-      unless step.element?
-        @end
-        return
-
       @setCurrentStep(i)
+
+      step = @getStep(i)
 
       # Redirect to step path if not already there
       # Compare to path, then filename
@@ -116,14 +127,9 @@
         return
 
       # If step element is hidden, skip step
-      if $(step.element).is(":hidden")
+      unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
         @showNextStep()
         return
-
-      # Setup even handler for hiding step
-      endOnClick = step.endOnClick || step.element
-      $(endOnClick).one "click", () =>
-        @endCurrentStep()
 
       step.onShow(@) if step.onShow?
 
@@ -142,27 +148,26 @@
         else
           @_current = parseInt(@_current)
 
-    # Hide current step and save next step
-    endCurrentStep: ->
-      @hideStep(@_current)
-      step = @getStep(@_current)
-      @setCurrentStep(step.next)
-
     # Show next step
     showNextStep: ->
       step = @getStep(@_current)
       @showStep(step.next)
 
+    # Show prev step
+    showPrevStep: ->
+      step = @getStep(@_current)
+      @showStep(step.prev)
+
     # Show step popover
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
-      if step.next > 0 and step.end
-        content += "<a href='##{step.next}' class='next'>Next &raquo;</a>
-          <a href='#' class='pull-right end'>End tour</a></p>"
-      else if step.next > 0
+
+      if step.prev > 0
+        content += "<a href='##{step.prev}' class='prev'>&laquo; Prev</a>"
+      if step.next > 0
         content += "<a href='##{step.next}' class='next'>Next &raquo;</a>"
-      else if step.end
-        content += "<a href='#' class='end'>End</a>"
+      if step.end
+        content += "<a href='#' class='pull-right end'>End Tour</a>"
 
       $(step.element).popover({
         placement: step.placement

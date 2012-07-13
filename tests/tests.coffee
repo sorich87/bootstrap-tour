@@ -2,18 +2,26 @@ clearTour = (tour) ->
   tour.setState("current_step", null)
   tour.setState("end", null)
   $.each(tour._steps, (i, s) ->
-    s.element.popover("hide").removeData("popover")
+    if s.element? && s.element.popover?
+      s.element.popover("hide").removeData("popover")
   )
 
 test "Tour should set the tour options", ->
   tour = new Tour({
+    name: "test"
     afterSetState: ->
       true
     afterGetState: ->
       true
   })
+  equal(tour._options.name, "test", "options.name is set")
   ok(tour._options.afterGetState, "options.afterGetState is set")
-  ok(tour._options.afterSetState, "options.afterSetState is not set")
+  ok(tour._options.afterSetState, "options.afterSetState is set")
+  clearTour(tour)
+
+test "Tour should have default name of 'tour'", ->
+  tour = new Tour()
+  equal(tour._options.name, "tour", "tour default name is 'tour'")
   clearTour(tour)
 
 test "Tour should accept an array of steps and set the current step", ->
@@ -42,6 +50,66 @@ test "Tour.addStep should add a step", ->
   deepEqual(tour._steps, [step], "tour adds steps")
   clearTour(tour)
 
+test "Tour with onShow option should run the callback before showing the step", ->
+  tour_test = 0
+  tour = new Tour({
+    onShow: ->
+      tour_test += 2
+  })
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.start()
+  strictEqual(tour_test, 2, "tour runs onShow when first step shown")
+  tour.next()
+  strictEqual(tour_test, 4, "tour runs onShow when next step shown")
+  clearTour(tour)
+
+test "Tour with onHide option should run the callback before hiding the step", ->
+  tour_test = 0
+  tour = new Tour({
+    onHide: ->
+      tour_test += 2
+  })
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.start()
+  tour.next()
+  strictEqual(tour_test, 2, "tour runs onHide when first step hidden")
+  tour.hideStep(1)
+  strictEqual(tour_test, 4, "tour runs onHide when next step hidden")
+  clearTour(tour)
+
+test "Tour.addStep with onShow option should run the callback before showing the step", ->
+  tour_test = 0
+  tour = new Tour()
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({
+    element: $("<div></div>").appendTo("#qunit-fixture")
+    onShow: ->
+      tour_test = 2
+  })
+  tour.start()
+  strictEqual(tour_test, 0, "tour does not run onShow when step not shown")
+  tour.next()
+  strictEqual(tour_test, 2, "tour runs onShow when step shown")
+  clearTour(tour)
+
+test "Tour.addStep with onHide option should run the callback before hiding the step", ->
+  tour_test = 0
+  tour = new Tour()
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({
+    element: $("<div></div>").appendTo("#qunit-fixture")
+    onHide: ->
+      tour_test = 2
+  })
+  tour.start()
+  tour.next()
+  strictEqual(tour_test, 0, "tour does not run onHide when step not hidden")
+  tour.hideStep(1)
+  strictEqual(tour_test, 2, "tour runs onHide when step hidden")
+  clearTour(tour)
+
 test "Tour.getStep should get a step", ->
   tour = new Tour()
   step = {
@@ -50,9 +118,12 @@ test "Tour.getStep should get a step", ->
     placement: "left"
     title: "Test"
     content: "Just a test"
+    prev: -1
     next: 2
     end: false
     animation: false
+    onShow: (tour) ->
+    onHide: (tour) ->
   }
   tour.addStep(step)
   deepEqual(tour.getStep(0), step, "tour gets a step")
@@ -139,6 +210,30 @@ test "Tour.showStep should set a step and show it", ->
   strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows step")
   clearTour(tour)
 
+test "Tour.showStep should skip step when no element is specified", ->
+  tour = new Tour()
+  tour.addStep({})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.start()
+  strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element")
+  clearTour(tour)
+
+test "Tour.showStep should skip step when element doesn't exist", ->
+  tour = new Tour()
+  tour.addStep({element: "#tour-test"})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.start()
+  strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element")
+  clearTour(tour)
+
+test "Tour.showStep should skip step when element is invisible", ->
+  tour = new Tour()
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture").hide()})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.start()
+  strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element")
+  clearTour(tour)
+
 test "Tour.setCurrentStep should set the current step", ->
   tour = new Tour()
   tour.setCurrentStep(4)
@@ -155,5 +250,14 @@ test "Tour.showNextStep should show the next step", ->
   tour.start()
   tour.showNextStep()
   strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows next step")
+  clearTour(tour)
+
+test "Tour.showPrevStep should show the previous step", ->
+  tour = new Tour()
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.showStep(1)
+  tour.showPrevStep()
+  strictEqual(tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour shows previous step")
   clearTour(tour)
 
