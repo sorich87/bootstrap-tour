@@ -7,9 +7,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -156,11 +156,13 @@
     # Show step popover
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
-      if step.end
-        content += "<a href='#' class='end'>End</a>"
-      else
+      if step.next > 0 and step.end
         content += "<a href='##{step.next}' class='next'>Next &raquo;</a>
           <a href='#' class='pull-right end'>End tour</a></p>"
+      else if step.next > 0
+        content += "<a href='##{step.next}' class='next'>Next &raquo;</a>"
+      else if step.end
+        content += "<a href='#' class='end'>End</a>"
 
       $(step.element).popover({
         placement: step.placement
