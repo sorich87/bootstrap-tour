@@ -177,12 +177,14 @@
       Tour.prototype._showPopover = function(step, i) {
         var content, tip;
         content = "" + step.content + "<br /><p>";
-        if (step.prev < 0) {
-          content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a> <a href='#' class='pull-right end'>End Tour</a>";
-        } else if (step.end) {
-          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a><a href='#' class='pull-right end'>End Tour</a>";
-        } else {
-          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a> |          <a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
+        if (step.prev > 0) {
+          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>";
+        }
+        if (step.next > 0) {
+          content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a>";
+        }
+        if (step.end) {
+          content += "<a href='#' class='pull-right end'>End Tour</a>";
         }
         $(step.element).popover({
           placement: step.placement,
