@@ -17,6 +17,7 @@ jQuery(function($) {
     content: "Easy is better, right? Easy like Bootstrap."
   });
   tour.addStep({
+    path: "index.html",
     element: "#options",
     placement: "right",
     title: "And it is powerful!",
