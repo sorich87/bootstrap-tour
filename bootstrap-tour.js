@@ -77,9 +77,8 @@
           placement: "right",
           title: "",
           content: "",
-          next: i + 1,
+          next: i === this._steps.length - 1 ? -1 : i + 1,
           prev: i - 1,
-          end: i === this._steps.length - 1,
           animation: true,
           onShow: this._options.onShow,
           onHide: this._options.onHide
@@ -175,17 +174,17 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, tip;
+        var content, nav, tip;
         content = "" + step.content + "<br /><p>";
-        if (step.prev > 0) {
-          content += "<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>";
+        nav = [];
+        if (step.prev >= 0) {
+          nav.push("<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>");
         }
-        if (step.next > 0) {
-          content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a>";
+        if (step.next >= 0) {
+          nav.push("<a href='#" + step.next + "' class='next'>Next &raquo;</a>");
         }
-        if (step.end) {
-          content += "<a href='#' class='pull-right end'>End Tour</a>";
-        }
+        content += nav.join(" | ");
+        content += "<a href='#' class='pull-right end'>End Tour</a>";
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",

@@ -157,7 +157,6 @@ tour.addStep({
   content: "", // string|function
   next: 0, // number
   prev: 0, // number
-  end: false, // boolean
   animation: true, // boolean
   onShow: function (tour) {}, // function
   onHide: function (tour) {} // function
@@ -188,9 +187,6 @@ tour.addStep({
             By default, the previous step (in the order you added
             them) will be shown.
             <br /><em>This option should be used in conjunction with "next".</em></dd>
-            <dt>end</dt>
-            <dd>Show the end button. By default, it is only shown on the
-            last step.</dd>
             <dt>animation</dt>
             <dd>Apply a css fade transition to the tooltip.</dd>
             <dt>onShow</dt>
