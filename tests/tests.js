@@ -307,7 +307,7 @@
     tour.addStep({
       element: $("<div></div>").appendTo("#qunit-fixture")
     });
-    tour.start();
+    tour.showStep(1);
     strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
     return clearTour(tour);
   });
@@ -321,7 +321,7 @@
     tour.addStep({
       element: $("<div></div>").appendTo("#qunit-fixture")
     });
-    tour.start();
+    tour.showStep(1);
     strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
     return clearTour(tour);
   });
@@ -335,7 +335,7 @@
     tour.addStep({
       element: $("<div></div>").appendTo("#qunit-fixture")
     });
-    tour.start();
+    tour.showStep(1);
     strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element");
     return clearTour(tour);
   });

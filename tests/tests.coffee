@@ -214,7 +214,7 @@ test "Tour.showStep should skip step when no element is specified", ->
   tour = new Tour()
   tour.addStep({})
   tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
-  tour.start()
+  tour.showStep(1)
   strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element")
   clearTour(tour)
 
@@ -222,7 +222,7 @@ test "Tour.showStep should skip step when element doesn't exist", ->
   tour = new Tour()
   tour.addStep({element: "#tour-test"})
   tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
-  tour.start()
+  tour.showStep(1)
   strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element")
   clearTour(tour)
 
@@ -230,7 +230,7 @@ test "Tour.showStep should skip step when element is invisible", ->
   tour = new Tour()
   tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture").hide()})
   tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
-  tour.start()
+  tour.showStep(1)
   strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour skips step with no element")
   clearTour(tour)
 
