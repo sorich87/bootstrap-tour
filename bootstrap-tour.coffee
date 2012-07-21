@@ -73,7 +73,7 @@
         animation: true
         onShow: @_options.onShow
         onHide: @_options.onHide
-      }, @_steps[i])
+      }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
     start: (force = false) ->
@@ -115,9 +115,11 @@
 
     # Show the specified step
     showStep: (i) ->
-      @setCurrentStep(i)
-
       step = @getStep(i)
+
+      return unless step
+
+      @setCurrentStep(i)
 
       # Redirect to step path if not already there
       # Compare to path, then filename

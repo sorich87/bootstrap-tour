@@ -72,17 +72,19 @@
       };
 
       Tour.prototype.getStep = function(i) {
-        return $.extend({
-          path: "",
-          placement: "right",
-          title: "",
-          content: "",
-          next: i === this._steps.length - 1 ? -1 : i + 1,
-          prev: i - 1,
-          animation: true,
-          onShow: this._options.onShow,
-          onHide: this._options.onHide
-        }, this._steps[i]);
+        if (this._steps[i] != null) {
+          return $.extend({
+            path: "",
+            placement: "right",
+            title: "",
+            content: "",
+            next: i === this._steps.length - 1 ? -1 : i + 1,
+            prev: i - 1,
+            animation: true,
+            onShow: this._options.onShow,
+            onHide: this._options.onHide
+          }, this._steps[i]);
+        }
       };
 
       Tour.prototype.start = function(force) {
@@ -131,8 +133,11 @@
 
       Tour.prototype.showStep = function(i) {
         var step;
-        this.setCurrentStep(i);
         step = this.getStep(i);
+        if (!step) {
+          return;
+        }
+        this.setCurrentStep(i);
         if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
           document.location.href = step.path;
           return;

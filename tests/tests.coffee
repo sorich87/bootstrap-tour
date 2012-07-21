@@ -207,7 +207,16 @@ test "Tour.showStep should set a step and show it", ->
   tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
   tour.showStep(1)
   strictEqual(tour._current, 1, "tour sets step")
-  strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows step")
+  strictEqual($(".popover").length, 1, "tour shows one step")
+  strictEqual(tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour shows correct step")
+  clearTour(tour)
+
+test "Tour.showStep should not show anything when the step doesn't exist", ->
+  tour = new Tour()
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  tour.showStep(2)
+  strictEqual($(".popover").length, 0, "tour doesn't show any step")
   clearTour(tour)
 
 test "Tour.showStep should skip step when no element is specified", ->
