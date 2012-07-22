@@ -50,8 +50,8 @@
 
       # On window resize reshown popover
       $(window).on "debouncedresize", (e) =>
-        step = @getStep(@_current)
-        if (step)
+        if (!@ended())
+          step = @getStep(@_current)
           @_showPopover(step, @_current)
 
     setState: (key, value) ->

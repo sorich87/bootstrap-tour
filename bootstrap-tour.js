@@ -52,8 +52,8 @@
         });
         $(window).on("debouncedresize", function(e) {
           var step;
-          step = _this.getStep(_this._current);
-          if (step) {
+          if (!_this.ended()) {
+            step = _this.getStep(_this._current);
             return _this._showPopover(step, _this._current);
           }
         });
