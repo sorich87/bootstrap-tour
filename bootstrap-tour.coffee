@@ -24,6 +24,9 @@
     constructor: (options) ->
       @_options = $.extend({
         name: 'tour'
+        end: 'End tour'
+        next: 'Next &raquo;'
+        previous: '&laquo; Prev'
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         onShow: (tour) ->
@@ -127,12 +130,12 @@
         document.location.href = step.path
         return
 
+      step.onShow(@) if step.onShow?
+
       # If step element is hidden, skip step
       unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
         @showNextStep()
         return
-
-      step.onShow(@) if step.onShow?
 
       # Show popover
       @_showPopover(step, i)
@@ -165,12 +168,12 @@
 
       nav = []
       if step.prev >= 0
-        nav.push "<a href='##{step.prev}' class='prev'>&laquo; Prev</a>"
+        nav.push "<a href='##{step.prev}' class='prev'>#{@_options.previous}</a>"
       if step.next >= 0
-        nav.push "<a href='##{step.next}' class='next'>Next &raquo;</a>"
+        nav.push "<a href='##{step.next}' class='next'>#{@_options.next}</a>"
       content += nav.join(" | ")
 
-      content += "<a href='#' class='pull-right end'>End Tour</a>"
+      content += "<a href='#' class='pull-right end'>#{@_options.end}</a>"
 
       $(step.element).popover({
         placement: step.placement
