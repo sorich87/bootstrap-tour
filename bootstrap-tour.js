@@ -142,12 +142,12 @@
           document.location.href = step.path;
           return;
         }
+        if (step.onShow != null) {
+          step.onShow(this);
+        }
         if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
           this.showNextStep();
           return;
-        }
-        if (step.onShow != null) {
-          step.onShow(this);
         }
         return this._showPopover(step, i);
       };

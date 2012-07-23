@@ -127,12 +127,12 @@
         document.location.href = step.path
         return
 
+      step.onShow(@) if step.onShow?
+
       # If step element is hidden, skip step
       unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
         @showNextStep()
         return
-
-      step.onShow(@) if step.onShow?
 
       # Show popover
       @_showPopover(step, i)
