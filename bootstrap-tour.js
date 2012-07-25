@@ -31,6 +31,9 @@
         var _this = this;
         this._options = $.extend({
           name: 'tour',
+          end: 'End tour',
+          next: 'Next &raquo;',
+          previous: '&laquo; Prev',
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           onShow: function(tour) {},
@@ -142,12 +145,12 @@
           document.location.href = step.path;
           return;
         }
+        if (step.onShow != null) {
+          step.onShow(this);
+        }
         if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
           this.showNextStep();
           return;
-        }
-        if (step.onShow != null) {
-          step.onShow(this);
         }
         return this._showPopover(step, i);
       };
@@ -183,13 +186,13 @@
         content = "" + step.content + "<br /><p>";
         nav = [];
         if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>&laquo; Prev</a>");
+          nav.push("<a href='#" + step.prev + "' class='prev'>" + this._options.previous + "</a>");
         }
         if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>Next &raquo;</a>");
+          nav.push("<a href='#" + step.next + "' class='next'>" + this._options.next + "</a>");
         }
         content += nav.join(" | ");
-        content += "<a href='#' class='pull-right end'>End Tour</a>";
+        content += "<a href='#' class='pull-right end'>" + this._options.end + "</a>";
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",
