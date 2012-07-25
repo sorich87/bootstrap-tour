@@ -53,6 +53,13 @@
           e.preventDefault();
           return _this.end();
         });
+        $(window).on("debouncedresize", function(e) {
+          var step;
+          if (!_this.ended()) {
+            step = _this.getStep(_this._current);
+            return _this._showPopover(step, _this._current);
+          }
+        });
       }
 
       Tour.prototype.setState = function(key, value) {
