@@ -211,7 +211,7 @@
           placement: step.placement,
           trigger: "manual",
           title: step.title,
-          content: Kontest.backend.jed.translate(content).onDomain(Kontest.lang).fetch(),
+          content: content,
           animation: step.animation,
           template: '<div class="popover'+ position +'"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
         }).popover("show");
