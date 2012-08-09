@@ -34,6 +34,7 @@
           end: 'End tour',
           next: 'Next &raquo;',
           previous: '&laquo; Prev',
+          eventKey: true,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           onShow: function(tour) {},
@@ -41,6 +42,29 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
+        if (this._options.eventKey)
+        {
+          $(document).on("keyup", window, function(e)
+          {
+            var keypress = e.which;
+            if (!keypress)
+              return ;
+            switch (keypress)
+            {
+              case 39: //right
+                e.preventDefault();
+                if (_this._current < _this._steps.length -1)
+                  return _this.next();
+                return ;
+
+              case 37: //left
+                e.preventDefault();
+                if (_this._current > 0)
+                  return _this.prev();
+                return ;
+            }
+          });
+        }
         $(document).on("click", ".popover .next", function(e) {
           e.preventDefault();
           return _this.next();
