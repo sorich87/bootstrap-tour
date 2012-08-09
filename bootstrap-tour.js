@@ -188,7 +188,7 @@
         //.popover-fixed {
         // position: fixed;
         //}
-        position = (step.position && step.position == 'fixed') ? ' popover-fixed' : '';
+        position = (step.fixed) ? ' popover-fixed' : '';
         content = "" + step.content + "<p>";
         nav = [];
         if (step.options)
@@ -219,7 +219,7 @@
         }).popover("show");
         tip = $(step.element).data("popover").tip();
         this._reposition(tip);
-        if (!step.position)
+        if (!step.fixed)
           return this._scrollIntoView(tip);
         tip.css('top', $(step.element).get(0).offsetHeight + 'px');
         return ;
