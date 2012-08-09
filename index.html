@@ -23,6 +23,9 @@
       h3 {
         font-weight: 500;
       }
+      .popover-fixed {
+        position: fixed;
+      }
     </style>
     <link href="deps/bootstrap-responsive.css" rel="stylesheet">
     <link href="deps/google-code-prettify/prettify.css" rel="stylesheet">
@@ -35,7 +38,7 @@
 
   <body>
     <a href="https://github.com/pushly/bootstrap-tour">
-      <img style="position: absolute; top: 0; right: 0; border: 0;"
+      <img id="gitban-tour" style="position: fixed; top: 0; right: 0; border: 0;"
       src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
       alt="Fork me on GitHub">
     </a>
@@ -43,7 +46,7 @@
     <div class="container">
 
       <header id="overview">
-        <h1>Bootstrap Tour</h1>
+        <h1 id="reflex-mode">Bootstrap Tour</h1>
         <p class="lead">Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
         <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
       </header>

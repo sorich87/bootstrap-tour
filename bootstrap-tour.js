@@ -182,31 +182,34 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, tip, position, this_;
-        this_ = this;
+        var content, nav, tip, position, this_, _options;
+        _this = this;
+        _options = $.extend({}, this._options);
         //.popover-fixed {
         // position: fixed;
         //}
         position = (step.position && step.position == 'fixed') ? ' popover-fixed' : '';
         content = "" + step.content + "<p>";
         nav = [];
+        if (step.options)
+          $.extend(_options, step.options);
         if (step.reflex)
         {
+          $(step.element).css('cursor', 'pointer');
           $(step.element).on('click', function(e) {
-            this_.hideStep(this_._current);
-            if (step.next)
-              this_._current = step.next;
-            this_.showNextStep();
+            _this.hideStep(_this._current);
+            $(step.element).css('cursor', 'auto');
+            return _this.showNextStep();
           });
         }
         if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>" + step.options.previous + "</a>");
+          nav.push("<a href='#" + step.prev + "' class='prev'>" + _options.previous + "</a>");
         }
         if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>" + step.options.next + "</a>");
+          nav.push("<a href='#" + step.next + "' class='next'>" + _options.next + "</a>");
         }
         content += nav.join(" | ");
-        content += "<a href='#' class='pull-right end'>" + step.options.end + "</a>";
+        content += "<a href='#' class='pull-right end'>" + _options.end + "</a>";
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",
