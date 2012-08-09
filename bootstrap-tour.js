@@ -182,27 +182,45 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, tip;
-        content = "" + step.content + "<br /><p>";
+        var content, nav, tip, position, this_;
+        this_ = this;
+        //.popover-fixed {
+        // position: fixed;
+        //}
+        position = (step.position && step.position == 'fixed') ? ' popover-fixed' : '';
+        content = "" + step.content + "<p>";
         nav = [];
+        if (step.reflex)
+        {
+          $(step.element).on('click', function(e) {
+            this_.hideStep(this_._current);
+            if (step.next)
+              this_._current = step.next;
+            this_.showNextStep();
+          });
+        }
         if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>" + this._options.previous + "</a>");
+          nav.push("<a href='#" + step.prev + "' class='prev'>" + step.options.previous + "</a>");
         }
         if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>" + this._options.next + "</a>");
+          nav.push("<a href='#" + step.next + "' class='next'>" + step.options.next + "</a>");
         }
         content += nav.join(" | ");
-        content += "<a href='#' class='pull-right end'>" + this._options.end + "</a>";
+        content += "<a href='#' class='pull-right end'>" + step.options.end + "</a>";
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",
           title: step.title,
-          content: content,
-          animation: step.animation
+          content: Kontest.backend.jed.translate(content).onDomain(Kontest.lang).fetch(),
+          animation: step.animation,
+          template: '<div class="popover'+ position +'"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
         }).popover("show");
         tip = $(step.element).data("popover").tip();
         this._reposition(tip);
-        return this._scrollIntoView(tip);
+        if (!step.position)
+          return this._scrollIntoView(tip);
+        tip.css('top', $(step.element).get(0).offsetHeight + 'px');
+        return ;
       };
 
       Tour.prototype._reposition = function(tip) {
