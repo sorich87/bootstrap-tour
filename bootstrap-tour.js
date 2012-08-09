@@ -197,9 +197,8 @@
         {
           $(step.element).css('cursor', 'pointer');
           $(step.element).on('click', function(e) {
-            _this.hideStep(_this._current);
             $(step.element).css('cursor', 'auto');
-            return _this.showNextStep();
+            return _this.next();
           });
         }
         if (step.prev >= 0) {
