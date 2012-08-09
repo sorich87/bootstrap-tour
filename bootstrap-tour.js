@@ -182,7 +182,7 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, tip, position, this_, _options;
+        var content, nav, tip, position, _this, _options;
         _this = this;
         _options = $.extend({}, this._options);
         //.popover-fixed {
