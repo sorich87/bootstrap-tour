@@ -23,7 +23,7 @@ jQuery(function($) {
     placement: "bottom",
     title: "Fixed is possible",
     content: "Fixed",
-    position: "fixed"
+    fixed: true
   });
   tour.addStep({
     path: "index.html",
