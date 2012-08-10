@@ -44,7 +44,7 @@
         this.setCurrentStep();
         if (this._options.eventKey)
         {
-          $(document).on("keyup", window, function(e)
+          $(document).on("keyup.bootstrap-tour", function(e)
           {
             var keypress = e.which;
             if (!keypress)
@@ -65,15 +65,15 @@
             }
           });
         }
-        $(document).on("click", ".popover .next", function(e) {
+        $(document).on("click.bootstrap-tour", ".popover .next", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).on("click", ".popover .prev", function(e) {
+        $(document).on("click.bootstrap-tour", ".popover .prev", function(e) {
           e.preventDefault();
           return _this.prev();
         });
-        $(document).on("click", ".popover .end", function(e) {
+        $(document).on("click.bootstrap-tour", ".popover .end", function(e) {
           e.preventDefault();
           return _this.end();
         });
@@ -135,6 +135,7 @@
 
       Tour.prototype.end = function() {
         this.hideStep(this._current);
+        $(document).off('.bootstrap-tour');
         return this.setState("end", "yes");
       };
 
