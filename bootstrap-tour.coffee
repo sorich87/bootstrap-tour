@@ -51,6 +51,9 @@
         e.preventDefault()
         @end()
 
+      # Reshow popover on window resize using debounced resize
+      @_onresize(=> @showStep(@_current))
+
     setState: (key, value) ->
       $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
@@ -204,6 +207,12 @@
       tipRect = tip.get(0).getBoundingClientRect()
       unless tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width()
         tip.get(0).scrollIntoView(true)
+
+    # Debounced window resize
+    _onresize: (cb, timeout) ->
+      window.onresize = ->
+        clearTimeout(timeout)
+        timeout = setTimeout(cb, 100)
 
   window.Tour = Tour
 

@@ -53,6 +53,9 @@
           e.preventDefault();
           return _this.end();
         });
+        this._onresize(function() {
+          return _this.showStep(_this._current);
+        });
       }
 
       Tour.prototype.setState = function(key, value) {
@@ -231,6 +234,13 @@
         if (!(tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width())) {
           return tip.get(0).scrollIntoView(true);
         }
+      };
+
+      Tour.prototype._onresize = function(cb, timeout) {
+        return window.onresize = function() {
+          clearTimeout(timeout);
+          return timeout = setTimeout(cb, 100);
+        };
       };
 
       return Tour;
