@@ -196,7 +196,7 @@
         }
         content += nav.join(" | ");
         content += "<a href='#' class='pull-right end'>" + this._options.end + "</a>";
-        $(step.element).data('popover', '');
+        $(step.element).removeData('popover');
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",
