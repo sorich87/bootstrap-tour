@@ -41,17 +41,17 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        $(document).on("click", ".popover .next", function(e) {
-          e.preventDefault();
-          return _this.next();
+        $(document).off("click", ".popover .next").on("click", ".popover .next", function(e) {
+            e.preventDefault();
+            return _this.next();
         });
-        $(document).on("click", ".popover .prev", function(e) {
-          e.preventDefault();
-          return _this.prev();
+        $(document).off("click", ".popover .prev").on("click", ".popover .prev", function(e) {
+            e.preventDefault();
+            return _this.prev();
         });
-        $(document).on("click", ".popover .end", function(e) {
-          e.preventDefault();
-          return _this.end();
+        $(document).off("click", ".popover .end").on("click", ".popover .end", function(e) {
+            e.preventDefault();
+            return _this.end();
         });
         this._onresize(function() {
           return _this.showStep(_this._current);
