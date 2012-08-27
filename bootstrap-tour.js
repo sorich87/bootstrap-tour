@@ -24,6 +24,7 @@
 
   (function($, window) {
     var Tour, document;
+    var ns = "bootstrap-tour";
     document = window.document;
     Tour = (function() {
 
@@ -43,17 +44,20 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        $(document).off("click", ".popover .next").on("click", ".popover .next", function(e) {
-            e.preventDefault();
-            return _this.next();
+        $(document).off("click." + ns, ".popover .next").on("click." + ns, ".popover .next", function(e) {
+          e.preventDefault();
+          return _this.next();
         });
-        $(document).off("click", ".popover .prev").on("click", ".popover .prev", function(e) {
-            e.preventDefault();
-            return _this.prev();
+        $(document).off("click." + ns, ".popover .prev").on("click." + ns, ".popover .prev", function(e) {
+          e.preventDefault();
+          return _this.prev();
         });
-        $(document).off("click", ".popover .end").on("click", ".popover .end", function(e) {
-            e.preventDefault();
-            return _this.end();
+        $(document).off("click." + ns, ".popover .end").on("click." + ns, ".popover .end", function(e) {
+          e.preventDefault();
+          return _this.end();
+        });
+        this._onresize(function() {
+          return _this.showStep(_this._current);
         });
         this._onresize(function() {
           return _this.showStep(_this._current);
