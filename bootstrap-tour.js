@@ -38,7 +38,8 @@
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           onShow: function(tour) {},
-          onHide: function(tour) {}
+          onHide: function(tour) {},
+          onEnd: function(tour) {}
         }, options);
         this._steps = [];
         this.setCurrentStep();
@@ -115,7 +116,9 @@
 
       Tour.prototype.end = function() {
         this.hideStep(this._current);
-        return this.setState("end", "yes");
+        var result = this.setState("end", "yes");
+        this._options.onEnd();
+        return result;
       };
 
       Tour.prototype.ended = function() {
