@@ -54,7 +54,9 @@
           return _this.end();
         });
         this._onresize(function() {
-          return _this.showStep(_this._current);
+          if (!_this.ended) {
+            return _this.showStep(_this._current);
+          }
         });
       }
 
