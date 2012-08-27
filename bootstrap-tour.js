@@ -59,9 +59,6 @@
         this._onresize(function() {
           return _this.showStep(_this._current);
         });
-        this._onresize(function() {
-          return _this.showStep(_this._current);
-        });
       }
 
       Tour.prototype.setState = function(key, value) {
