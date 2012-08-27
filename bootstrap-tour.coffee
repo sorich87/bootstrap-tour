@@ -52,7 +52,7 @@
         @end()
 
       # Reshow popover on window resize using debounced resize
-      @_onresize(=> @showStep(@_current))
+      @_onresize(=> @showStep(@_current) unless @ended)
 
     setState: (key, value) ->
       $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
