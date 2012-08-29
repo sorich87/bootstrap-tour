@@ -24,6 +24,7 @@
 
   (function($, window) {
     var Tour, document;
+    var ns = "bootstrap-tour";
     document = window.document;
     Tour = (function() {
 
@@ -34,22 +35,24 @@
           end: 'End tour',
           next: 'Next &raquo;',
           previous: '&laquo; Prev',
+          autoRedirect: true,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           onShow: function(tour) {},
-          onHide: function(tour) {}
+          onHide: function(tour) {},
+          onEnd: function(tour) {}
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        $(document).on("click", ".popover .next", function(e) {
+        $(document).off("click." + ns, ".popover .next").on("click." + ns, ".popover .next", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).on("click", ".popover .prev", function(e) {
+        $(document).off("click." + ns, ".popover .prev").on("click." + ns, ".popover .prev", function(e) {
           e.preventDefault();
           return _this.prev();
         });
-        $(document).on("click", ".popover .end", function(e) {
+        $(document).off("click." + ns, ".popover .end").on("click." + ns, ".popover .end", function(e) {
           e.preventDefault();
           return _this.end();
         });
@@ -116,7 +119,9 @@
 
       Tour.prototype.end = function() {
         this.hideStep(this._current);
-        return this.setState("end", "yes");
+        var result = this.setState("end", "yes");
+        this._options.onEnd();
+        return result;
       };
 
       Tour.prototype.ended = function() {
@@ -139,11 +144,21 @@
         return $(step.element).popover("hide");
       };
 
-      Tour.prototype.showStep = function(i) {
+      Tour.prototype.showStep = function(i, forcedRedirect) {
+        /*This check allows us avoid auto redirect from another page to tour page (if it needed).
+         With default autoRedirect = true it automatically redirects to tour page*/
+        var allowRedirect = forcedRedirect === undefined ? this._options.autoRedirect : true;
         var step;
         step = this.getStep(i);
         if (!step) {
-          return;
+            return;
+        }
+        this.setCurrentStep(i);
+        if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
+            if (allowRedirect === true) {
+                document.location.href = step.path;
+            }
+            return;
         }
         this.setCurrentStep(i);
         if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
@@ -177,13 +192,13 @@
       Tour.prototype.showNextStep = function() {
         var step;
         step = this.getStep(this._current);
-        return this.showStep(step.next);
+        return this.showStep(step.next, true);
       };
 
       Tour.prototype.showPrevStep = function() {
         var step;
         step = this.getStep(this._current);
-        return this.showStep(step.prev);
+        return this.showStep(step.prev, true);
       };
 
       Tour.prototype._showPopover = function(step, i) {
@@ -198,6 +213,7 @@
         }
         content += nav.join(" | ");
         content += "<a href='#' class='pull-right end'>" + this._options.end + "</a>";
+        $(step.element).removeData('popover');
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",
