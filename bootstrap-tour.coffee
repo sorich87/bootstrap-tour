@@ -27,6 +27,7 @@
         end: 'End tour'
         next: 'Next &raquo;'
         previous: '&laquo; Prev'
+        eventKey: true
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         onShow: (tour) ->
@@ -35,19 +36,34 @@
 
       @_steps = []
       @setCurrentStep()
+      if @_options.eventKey
+        $(document).on "keyup.bootstrap-tour", (e) =>
+          keypress = e.which
+          if not keypress
+            return
+          switch keypress
+            when 39
+              e.preventDefault()
+              if @_current < @_steps.length - 1
+                @next()
+            when 37
+              e.preventDefault()
+              if @_current > 0
+                @prev()
+
 
       # Go to next step after click on element with class .next
-      $(document).on "click", ".popover .next", (e) =>
+      $(document).on "click.bootstrap-tour", ".popover .next", (e) =>
         e.preventDefault()
         @next()
 
       # Go to previous step after click on element with class .prev
-      $(document).on "click", ".popover .prev", (e) =>
+      $(document).on "click.bootstrap-tour", ".popover .prev", (e) =>
         e.preventDefault()
         @prev()
 
       # End tour after click on element with class .end
-      $(document).on "click", ".popover .end", (e) =>
+      $(document).on "click.bootstrap-tour", ".popover .end", (e) =>
         e.preventDefault()
         @end()
 
@@ -96,6 +112,7 @@
     # End tour
     end: ->
       @hideStep(@_current)
+      $(document).off ".bootstrap-tour"
       @setState("end", "yes")
 
     # Verify if tour is enabled
@@ -166,14 +183,24 @@
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
 
+      _options = $.extend {}, @_options
+      position = if step.fixed then "popover-fixed" else ""
+
       nav = []
+      if step.options
+        $.extend _options, step.options
+      if step.reflex
+        $(step.element).css "cursor", "pointer"
+        $(step.element).on "click", (e) =>
+          $(step.element).css "cursor", "auto"
+          @next()
       if step.prev >= 0
-        nav.push "<a href='##{step.prev}' class='prev'>#{@_options.previous}</a>"
+        nav.push "<a href='##{step.prev}' class='prev'>#{_options.previous}</a>"
       if step.next >= 0
-        nav.push "<a href='##{step.next}' class='next'>#{@_options.next}</a>"
+        nav.push "<a href='##{step.next}' class='next'>#{_options.next}</a>"
       content += nav.join(" | ")
 
-      content += "<a href='#' class='pull-right end'>#{@_options.end}</a>"
+      content += "<a href='#' class='pull-right end'>#{_options.end}</a>"
 
       $(step.element).popover({
         placement: step.placement
@@ -181,11 +208,15 @@
         title: step.title
         content: content
         animation: step.animation
+        template: "<div class='popover #{position}'><div class='arrow'></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
       @_reposition(tip)
-      @_scrollIntoView(tip)
+      if not step.fixed
+        @_scrollIntoView(tip)
+      tip.css "top", $(step.element).get(0).offsetHeight + 'px'
+      return
 
     # Prevent popups from crossing over the edge of the window
     _reposition: (tip) ->

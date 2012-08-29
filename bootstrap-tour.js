@@ -42,26 +42,25 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        if (this._options.eventKey)
-        {
-          $(document).on("keyup.bootstrap-tour", function(e)
-          {
-            var keypress = e.which;
-            if (!keypress)
-              return ;
-            switch (keypress)
-            {
-              case 39: //right
+        if (this._options.eventKey) {
+          $(document).on("keyup.bootstrap-tour", function(e) {
+            var keypress;
+            keypress = e.which;
+            if (!keypress) {
+              return;
+            }
+            switch (keypress) {
+              case 39:
                 e.preventDefault();
-                if (_this._current < _this._steps.length -1)
+                if (_this._current < _this._steps.length - 1) {
                   return _this.next();
-                return ;
-
-              case 37: //left
+                }
+                break;
+              case 37:
                 e.preventDefault();
-                if (_this._current > 0)
+                if (_this._current > 0) {
                   return _this.prev();
-                return ;
+                }
             }
           });
         }
@@ -135,7 +134,7 @@
 
       Tour.prototype.end = function() {
         this.hideStep(this._current);
-        $(document).off('.bootstrap-tour');
+        $(document).off(".bootstrap-tour");
         return this.setState("end", "yes");
       };
 
@@ -207,22 +206,19 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, tip, position, _this, _options;
-        _this = this;
+        var content, nav, position, tip, _options,
+          _this = this;
+        content = "" + step.content + "<br /><p>";
         _options = $.extend({}, this._options);
-        //.popover-fixed {
-        // position: fixed;
-        //}
-        position = (step.fixed) ? ' popover-fixed' : '';
-        content = "" + step.content + "<p>";
+        position = step.fixed ? "popover-fixed" : "";
         nav = [];
-        if (step.options)
+        if (step.options) {
           $.extend(_options, step.options);
-        if (step.reflex)
-        {
-          $(step.element).css('cursor', 'pointer');
-          $(step.element).on('click', function(e) {
-            $(step.element).css('cursor', 'auto');
+        }
+        if (step.reflex) {
+          $(step.element).css("cursor", "pointer");
+          $(step.element).on("click", function(e) {
+            $(step.element).css("cursor", "auto");
             return _this.next();
           });
         }
@@ -240,14 +236,14 @@
           title: step.title,
           content: content,
           animation: step.animation,
-          template: '<div class="popover'+ position +'"><div class="arrow"></div><div class="popover-inner"><h3 class="popover-title"></h3><div class="popover-content"><p></p></div></div></div>'
+          template: "<div class='popover " + position + "'><div class='arrow'></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
         }).popover("show");
         tip = $(step.element).data("popover").tip();
         this._reposition(tip);
-        if (!step.fixed)
-          return this._scrollIntoView(tip);
-        tip.css('top', $(step.element).get(0).offsetHeight + 'px');
-        return ;
+        if (!step.fixed) {
+          this._scrollIntoView(tip);
+        }
+        tip.css("top", $(step.element).get(0).offsetHeight + 'px');
       };
 
       Tour.prototype._reposition = function(tip) {
