@@ -34,7 +34,7 @@
           end: 'End tour',
           next: 'Next &raquo;',
           previous: '&laquo; Prev',
-          eventKey: true,
+          keyboard: true,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           onShow: function(tour) {},
@@ -42,14 +42,12 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        if (this._options.eventKey) {
+        if (this._options.keyboard) {
           $(document).on("keyup.bootstrap-tour", function(e) {
-            var keypress;
-            keypress = e.which;
-            if (!keypress) {
+            if (!e.which) {
               return;
             }
-            switch (keypress) {
+            switch (e.which) {
               case 39:
                 e.preventDefault();
                 if (_this._current < _this._steps.length - 1) {
@@ -211,7 +209,6 @@
         content = "" + step.content + "<br /><p>";
         _options = $.extend({}, this._options);
         position = step.fixed ? "popover-fixed" : "";
-        nav = [];
         if (step.options) {
           $.extend(_options, step.options);
         }
@@ -222,6 +219,7 @@
             return _this.next();
           });
         }
+        nav = [];
         if (step.prev >= 0) {
           nav.push("<a href='#" + step.prev + "' class='prev'>" + _options.previous + "</a>");
         }

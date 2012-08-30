@@ -27,7 +27,7 @@
         end: 'End tour'
         next: 'Next &raquo;'
         previous: '&laquo; Prev'
-        eventKey: true
+        keyboard: true
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         onShow: (tour) ->
@@ -36,12 +36,10 @@
 
       @_steps = []
       @setCurrentStep()
-      if @_options.eventKey
+      if @_options.keyboard
         $(document).on "keyup.bootstrap-tour", (e) =>
-          keypress = e.which
-          if not keypress
-            return
-          switch keypress
+          return unless e.which
+          switch e.which
             when 39
               e.preventDefault()
               if @_current < @_steps.length - 1
@@ -186,7 +184,6 @@
       _options = $.extend {}, @_options
       position = if step.fixed then "popover-fixed" else ""
 
-      nav = []
       if step.options
         $.extend _options, step.options
       if step.reflex
@@ -194,6 +191,9 @@
         $(step.element).on "click", (e) =>
           $(step.element).css "cursor", "auto"
           @next()
+
+      nav = []
+
       if step.prev >= 0
         nav.push "<a href='##{step.prev}' class='prev'>#{_options.previous}</a>"
       if step.next >= 0
