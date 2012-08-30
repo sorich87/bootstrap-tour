@@ -182,7 +182,6 @@
       content = "#{step.content}<br /><p>"
 
       _options = $.extend {}, @_options
-      position = if step.fixed then "popover-fixed" else ""
 
       if step.options
         $.extend _options, step.options
@@ -208,13 +207,12 @@
         title: step.title
         content: content
         animation: step.animation
-        template: "<div class='popover #{position}'><div class='arrow'></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
+        template: "<div class='popover'><div class='arrow'></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
       @_reposition(tip)
-      if not step.fixed
-        @_scrollIntoView(tip)
+      @_scrollIntoView(tip)
       tip.css "top", $(step.element).get(0).offsetHeight + 'px'
       return
 
