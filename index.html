@@ -35,7 +35,7 @@
 
   <body>
     <a href="https://github.com/pushly/bootstrap-tour">
-      <img style="position: absolute; top: 0; right: 0; border: 0;"
+      <img id="gitban-tour" style="position: fixed; top: 0; right: 0; border: 0;"
       src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
       alt="Fork me on GitHub">
     </a>
@@ -43,7 +43,7 @@
     <div class="container">
 
       <header id="overview">
-        <h1>Bootstrap Tour</h1>
+        <h1 id="reflex-mode">Bootstrap Tour</h1>
         <p class="lead">Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
         <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
       </header>
@@ -193,6 +193,10 @@ tour.addStep({
             <dd>Function to execute right before the step is shown. It overrides the global onShow option.</dd>
             <dt>onHide</dt>
             <dd>Function to execute right before the step is hidden. It overrides the global onHide option.</dd>
+            <dt>options</dt>
+            <dd>(Object) Extend the options for one step.</dd>
+            <dt>reflex</dt>
+            <dd>(Bool) Enable the reflex mode : you can click on the element for continue the tour.</dd>
           </dl>
 
           <h2 id="contributing">Contributing</h2>

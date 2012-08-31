@@ -8,13 +8,14 @@ jQuery(function($) {
     content: "Introduce new users to your product by walking them "
     + "through it step by step. Built on the awesome "
     + "<a href='http://twitter.github.com/bootstrap' target='_blank'>"
-    + "Bootstrap from Twitter.<\/a>"
+    + "Bootstrap from Twitter.<\/a>",
   });
   tour.addStep({
     element: "#usage",
     placement: "right",
     title: "Setup in four easy steps",
-    content: "Easy is better, right? Easy like Bootstrap."
+    content: "Easy is better, right? Easy like Bootstrap.",
+    options: {previous : 'Go back', next : 'Hey', end : 'Stop'}
   });
   tour.addStep({
     path: "index.html",
@@ -22,7 +23,16 @@ jQuery(function($) {
     placement: "right",
     title: "And it is powerful!",
     content: "There are more options for those, like us, who want to do "
-    + "complicated things. <br \/>Power to the people! :P"
+    + "complicated things. <br \/>Power to the people! :P",
+    reflex: true
+  });
+  tour.addStep({
+    path: "index.html",
+    element: "#reflex-mode",
+    placement: "bottom",
+    title: "Reflex mode",
+    content: "Reflex mode is enable, click on element to continue !",
+    reflex: true
   });
   tour.addStep({
     path: "page.html",
