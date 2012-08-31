@@ -27,6 +27,7 @@
         end: 'End tour'
         next: 'Next &raquo;'
         previous: '&laquo; Prev'
+        keyboard: true
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         onShow: (tour) ->
@@ -35,19 +36,32 @@
 
       @_steps = []
       @setCurrentStep()
+      if @_options.keyboard
+        $(document).on "keyup.bootstrap-tour", (e) =>
+          return unless e.which
+          switch e.which
+            when 39
+              e.preventDefault()
+              if @_current < @_steps.length - 1
+                @next()
+            when 37
+              e.preventDefault()
+              if @_current > 0
+                @prev()
+
 
       # Go to next step after click on element with class .next
-      $(document).on "click", ".popover .next", (e) =>
+      $(document).on "click.bootstrap-tour", ".popover .next", (e) =>
         e.preventDefault()
         @next()
 
       # Go to previous step after click on element with class .prev
-      $(document).on "click", ".popover .prev", (e) =>
+      $(document).on "click.bootstrap-tour", ".popover .prev", (e) =>
         e.preventDefault()
         @prev()
 
       # End tour after click on element with class .end
-      $(document).on "click", ".popover .end", (e) =>
+      $(document).on "click.bootstrap-tour", ".popover .end", (e) =>
         e.preventDefault()
         @end()
 
@@ -99,6 +113,7 @@
     # End tour
     end: ->
       @hideStep(@_current)
+      $(document).off ".bootstrap-tour"
       @setState("end", "yes")
 
     # Verify if tour is enabled
@@ -169,14 +184,25 @@
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
 
+      options = $.extend {}, @_options
+
+      if step.options
+        $.extend options, step.options
+      if step.reflex
+        $(step.element).css "cursor", "pointer"
+        $(step.element).on "click", (e) =>
+          $(step.element).css "cursor", "auto"
+          @next()
+
       nav = []
+
       if step.prev >= 0
-        nav.push "<a href='##{step.prev}' class='prev'>#{@_options.previous}</a>"
+        nav.push "<a href='##{step.prev}' class='prev'>#{options.previous}</a>"
       if step.next >= 0
-        nav.push "<a href='##{step.next}' class='next'>#{@_options.next}</a>"
+        nav.push "<a href='##{step.next}' class='next'>#{options.next}</a>"
       content += nav.join(" | ")
 
-      content += "<a href='#' class='pull-right end'>#{@_options.end}</a>"
+      content += "<a href='#' class='pull-right end'>#{options.end}</a>"
 
       $(step.element).popover({
         placement: step.placement
