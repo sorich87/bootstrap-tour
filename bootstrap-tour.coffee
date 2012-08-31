@@ -181,10 +181,10 @@
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
 
-      _options = $.extend {}, @_options
+      options = $.extend {}, @_options
 
       if step.options
-        $.extend _options, step.options
+        $.extend options, step.options
       if step.reflex
         $(step.element).css "cursor", "pointer"
         $(step.element).on "click", (e) =>
@@ -194,12 +194,12 @@
       nav = []
 
       if step.prev >= 0
-        nav.push "<a href='##{step.prev}' class='prev'>#{_options.previous}</a>"
+        nav.push "<a href='##{step.prev}' class='prev'>#{options.previous}</a>"
       if step.next >= 0
-        nav.push "<a href='##{step.next}' class='next'>#{_options.next}</a>"
+        nav.push "<a href='##{step.next}' class='next'>#{options.next}</a>"
       content += nav.join(" | ")
 
-      content += "<a href='#' class='pull-right end'>#{_options.end}</a>"
+      content += "<a href='#' class='pull-right end'>#{options.end}</a>"
 
       $(step.element).popover({
         placement: step.placement
