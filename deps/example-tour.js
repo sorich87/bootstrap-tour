@@ -8,7 +8,7 @@ jQuery(function($) {
     content: "Introduce new users to your product by walking them "
     + "through it step by step. Built on the awesome "
     + "<a href='http://twitter.github.com/bootstrap' target='_blank'>"
-    + "Bootstrap from Twitter.<\/a>",
+    + "Bootstrap from Twitter.<\/a>"
   });
   tour.addStep({
     element: "#usage",
@@ -33,7 +33,7 @@ jQuery(function($) {
     element: "#reflex-mode",
     placement: "bottom",
     title: "Reflex mode",
-    content: "Reflex mode is enable, click on element to continue !",
+    content: "Reflex mode is enabled, click on element to continue!",
     reflex: true
   });
   tour.addStep({
