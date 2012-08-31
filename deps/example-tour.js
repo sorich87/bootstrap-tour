@@ -19,14 +19,6 @@ jQuery(function($) {
   });
   tour.addStep({
     path: "index.html",
-    element: "#gitban-tour",
-    placement: "bottom",
-    title: "Fixed is possible",
-    content: "Fixed",
-    fixed: true
-  });
-  tour.addStep({
-    path: "index.html",
     element: "#options",
     placement: "right",
     title: "And it is powerful!",
