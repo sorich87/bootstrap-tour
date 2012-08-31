@@ -33,7 +33,7 @@ jQuery(function($) {
     element: "#reflex-mode",
     placement: "bottom",
     title: "Reflex mode",
-    content: "Reflex mode is enabled, click on element to continue!",
+    content: "Reflex mode is enabled, click on the page heading to continue!",
     reflex: true
   });
   tour.addStep({
