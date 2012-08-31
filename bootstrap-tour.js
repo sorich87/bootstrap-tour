@@ -31,9 +31,11 @@
         var _this = this;
         this._options = $.extend({
           name: 'tour',
-          end: 'End tour',
-          next: 'Next &raquo;',
-          previous: '&laquo; Prev',
+          labels: {
+            end: 'End tour',
+            next: 'Next &raquo;',
+            prev: '&laquo; Prev'
+          },
           keyboard: true,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
@@ -209,13 +211,12 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, position, tip, _options,
+        var content, nav, options, tip,
           _this = this;
         content = "" + step.content + "<br /><p>";
-        _options = $.extend({}, this._options);
-        position = step.fixed ? "popover-fixed" : "";
+        options = $.extend({}, this._options);
         if (step.options) {
-          $.extend(_options, step.options);
+          $.extend(options, step.options);
         }
         if (step.reflex) {
           $(step.element).css("cursor", "pointer");
@@ -226,27 +227,23 @@
         }
         nav = [];
         if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>" + _options.previous + "</a>");
+          nav.push("<a href='#" + step.prev + "' class='prev'>" + options.labels.prev + "</a>");
         }
         if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>" + _options.next + "</a>");
+          nav.push("<a href='#" + step.next + "' class='next'>" + options.labels.next + "</a>");
         }
         content += nav.join(" | ");
-        content += "<a href='#' class='pull-right end'>" + _options.end + "</a>";
+        content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
         $(step.element).popover({
           placement: step.placement,
           trigger: "manual",
           title: step.title,
           content: content,
-          animation: step.animation,
-          template: "<div class='popover " + position + "'><div class='arrow'></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
+          animation: step.animation
         }).popover("show");
         tip = $(step.element).data("popover").tip();
         this._reposition(tip);
-        if (!step.fixed) {
-          this._scrollIntoView(tip);
-        }
-        tip.css("top", $(step.element).get(0).offsetHeight + 'px');
+        return this._scrollIntoView(tip);
       };
 
       Tour.prototype._reposition = function(tip) {
