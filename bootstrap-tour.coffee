@@ -207,7 +207,6 @@
         title: step.title
         content: content
         animation: step.animation
-        template: "<div class='popover'><div class='arrow'></div><div class='popover-inner'><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
