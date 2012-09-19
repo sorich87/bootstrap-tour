@@ -40,6 +40,7 @@
       @setCurrentStep()
       if @_options.keyboard
         $(document).on "keyup.bootstrap-tour", (e) =>
+          return unless $(".popover").is(":visible")
           return unless e.which
           switch e.which
             when 39
