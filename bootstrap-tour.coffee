@@ -51,22 +51,6 @@
               if @_current > 0
                 @prev()
 
-
-      # Go to next step after click on element with class .next
-      $(document).on "click.bootstrap-tour", ".popover .next", (e) =>
-        e.preventDefault()
-        @next()
-
-      # Go to previous step after click on element with class .prev
-      $(document).on "click.bootstrap-tour", ".popover .prev", (e) =>
-        e.preventDefault()
-        @prev()
-
-      # End tour after click on element with class .end
-      $(document).on "click.bootstrap-tour", ".popover .end", (e) =>
-        e.preventDefault()
-        @end()
-
       # Reshow popover on window resize using debounced resize
       @_onresize(=> @showStep(@_current) unless @ended)
 
@@ -99,6 +83,21 @@
 
     # Start tour from current step
     start: (force = false) ->
+      # Go to next step after click on element with class .next
+      $(document).on "click.bootstrap-tour", ".popover .next", (e) =>
+        e.preventDefault()
+        @next()
+
+      # Go to previous step after click on element with class .prev
+      $(document).on "click.bootstrap-tour", ".popover .prev", (e) =>
+        e.preventDefault()
+        @prev()
+
+      # End tour after click on element with class .end
+      $(document).on "click.bootstrap-tour", ".popover .end", (e) =>
+        e.preventDefault()
+        @end()
+      
       if force || ! @ended()
         @showStep(@_current)
 

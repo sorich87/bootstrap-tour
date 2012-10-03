@@ -64,18 +64,6 @@
             }
           });
         }
-        $(document).on("click.bootstrap-tour", ".popover .next", function(e) {
-          e.preventDefault();
-          return _this.next();
-        });
-        $(document).on("click.bootstrap-tour", ".popover .prev", function(e) {
-          e.preventDefault();
-          return _this.prev();
-        });
-        $(document).on("click.bootstrap-tour", ".popover .end", function(e) {
-          e.preventDefault();
-          return _this.end();
-        });
         this._onresize(function() {
           if (!_this.ended) {
             return _this.showStep(_this._current);
@@ -119,9 +107,22 @@
       };
 
       Tour.prototype.start = function(force) {
+        var _this = this;
         if (force == null) {
           force = false;
         }
+        $(document).on("click.bootstrap-tour", ".popover .next", function(e) {
+          e.preventDefault();
+          return _this.next();
+        });
+        $(document).on("click.bootstrap-tour", ".popover .prev", function(e) {
+          e.preventDefault();
+          return _this.prev();
+        });
+        $(document).on("click.bootstrap-tour", ".popover .end", function(e) {
+          e.preventDefault();
+          return _this.end();
+        });
         if (force || !this.ended()) {
           return this.showStep(this._current);
         }
