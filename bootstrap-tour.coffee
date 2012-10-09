@@ -239,7 +239,8 @@
     _onresize: (cb, timeout) ->
       $(window).resize ->
         clearTimeout(timeout)
-        timeout = setTimeout(cb, 100)			
+        timeout = setTimeout(cb, 100)		
+	
   window.Tour = Tour
 
 )(jQuery, window)
