@@ -97,7 +97,7 @@
       $(document).on "click.bootstrap-tour", ".popover .end", (e) =>
         e.preventDefault()
         @end()
-      
+
       if force || ! @ended()
         @showStep(@_current)
 
@@ -237,7 +237,7 @@
 
     # Debounced window resize
     _onresize: (cb, timeout) ->
-      window.onresize = ->
+      $(window).onresize = ->
         clearTimeout(timeout)
         timeout = setTimeout(cb, 100)
 
