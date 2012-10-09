@@ -237,10 +237,9 @@
 
     # Debounced window resize
     _onresize: (cb, timeout) ->
-      $(window).onresize = ->
+      $(window).resize ->
         clearTimeout(timeout)
-        timeout = setTimeout(cb, 100)
-
+        timeout = setTimeout(cb, 100)			
   window.Tour = Tour
 
 )(jQuery, window)
