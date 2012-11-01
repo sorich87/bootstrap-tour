@@ -84,17 +84,17 @@
     # Start tour from current step
     start: (force = false) ->
       # Go to next step after click on element with class .next
-      $(document).on "click.bootstrap-tour", ".popover .next", (e) =>
+      $(document).off("click.bootstrap-tour",".popover .next").on "click.bootstrap-tour", ".popover .next", (e) =>
         e.preventDefault()
         @next()
 
       # Go to previous step after click on element with class .prev
-      $(document).on "click.bootstrap-tour", ".popover .prev", (e) =>
+      $(document).off("click.bootstrap-tour",".popover .pref").on "click.bootstrap-tour", ".popover .prev", (e) =>
         e.preventDefault()
         @prev()
 
       # End tour after click on element with class .end
-      $(document).on "click.bootstrap-tour", ".popover .end", (e) =>
+      $(document).off("click.bootstrap-tour",".popover .end").on "click.bootstrap-tour", ".popover .end", (e) =>
         e.preventDefault()
         @end()
 
