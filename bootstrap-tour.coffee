@@ -89,7 +89,7 @@
         @next()
 
       # Go to previous step after click on element with class .prev
-      $(document).off("click.bootstrap-tour",".popover .pref").on "click.bootstrap-tour", ".popover .prev", (e) =>
+      $(document).off("click.bootstrap-tour",".popover .prev").on "click.bootstrap-tour", ".popover .prev", (e) =>
         e.preventDefault()
         @prev()
 
@@ -239,8 +239,8 @@
     _onresize: (cb, timeout) ->
       $(window).resize ->
         clearTimeout(timeout)
-        timeout = setTimeout(cb, 100)		
-	
+        timeout = setTimeout(cb, 100)
+
   window.Tour = Tour
 
 )(jQuery, window)
