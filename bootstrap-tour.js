@@ -46,6 +46,9 @@
         this.setCurrentStep();
         if (this._options.keyboard) {
           $(document).on("keyup.bootstrap-tour", function(e) {
+            if (!$(".popover").is(":visible")) {
+              return;
+            }
             if (!e.which) {
               return;
             }
