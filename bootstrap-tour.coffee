@@ -34,6 +34,7 @@
         afterGetState: (key, value) ->
         onShow: (tour) ->
         onHide: (tour) ->
+        onAfterShow: (tour) ->
       }, options)
 
       @_steps = []
@@ -79,6 +80,7 @@
         animation: true
         onShow: @_options.onShow
         onHide: @_options.onHide
+        onAfterShow: @_options.onAfterShow
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -158,6 +160,8 @@
 
       # Show popover
       @_showPopover(step, i)
+
+      step.onAfterShow(@) if step.onAfterShow?
 
     # Setup current step variable
     setCurrentStep: (value) ->
