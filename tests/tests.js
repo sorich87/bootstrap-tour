@@ -81,7 +81,7 @@
     return strictEqual(tour_test, 4, "tour runs onShow when next step shown");
   });
 
-  test("Tour with onAfterShow option should run the callback before showing the step", function() {
+  test("Tour with onAfterShow option should run the callback after showing the step", function() {
     var tour_test;
     tour_test = 0;
     this.tour = new Tour({
@@ -96,9 +96,7 @@
       element: $("<div></div>").appendTo("#qunit-fixture")
     });
     this.tour.start();
-    strictEqual(tour_test, 2, "tour runs onAfterShow when first step shown");
-    this.tour.next();
-    return strictEqual(tour_test, 4, "tour runs onAfterShow when next step shown");
+    return strictEqual(tour_test, 2, "tour runs onAfterShow after first step shown");
   });
 
   test("Tour with onHide option should run the callback before hiding the step", function() {
