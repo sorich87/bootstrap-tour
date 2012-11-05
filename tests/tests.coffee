@@ -59,16 +59,16 @@ test "Tour with onShow option should run the callback before showing the step", 
   @tour.next()
   strictEqual(tour_test, 4, "tour runs onShow when next step shown")
 
-test "Tour with onAfterShow option should run the callback after showing the step", ->
+test "Tour with onShown option should run the callback after showing the step", ->
   tour_test = 0
   @tour = new Tour({
-    onAfterShow: ->
+    onShown: ->
       tour_test += 2
   })
   @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
   @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
   @tour.start()
-  strictEqual(tour_test, 2, "tour runs onAfterShow after first step shown")
+  strictEqual(tour_test, 2, "tour runs onShown after first step shown")
 
 test "Tour with onHide option should run the callback before hiding the step", ->
   tour_test = 0
@@ -126,7 +126,7 @@ test "Tour.getStep should get a step", ->
     animation: false
     onShow: (tour) ->
     onHide: (tour) ->
-    onAfterShow: (tour) ->
+    onShown: (tour) ->
   }
   @tour.addStep(step)
   deepEqual(@tour.getStep(0), step, "tour gets a step")

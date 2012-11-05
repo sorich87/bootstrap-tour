@@ -39,7 +39,7 @@
           afterGetState: function(key, value) {},
           onShow: function(tour) {},
           onHide: function(tour) {},
-          onAfterShow: function(tour) {}
+          onShown: function(tour) {}
         }, options);
         this._steps = [];
         this.setCurrentStep();
@@ -93,7 +93,7 @@
             animation: true,
             onShow: this._options.onShow,
             onHide: this._options.onHide,
-            onAfterShow: this._options.onAfterShow
+            onShown: this._options.onShown
           }, this._steps[i]);
         }
       };
@@ -165,7 +165,7 @@
           return;
         }
         this._showPopover(step, i);
-        if (step.onAfterShow != null) return step.onAfterShow(this);
+        if (step.onShown != null) return step.onShown(this);
       };
 
       Tour.prototype.setCurrentStep = function(value) {
