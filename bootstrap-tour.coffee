@@ -39,18 +39,6 @@
 
       @_steps = []
       @setCurrentStep()
-      if @_options.keyboard
-        $(document).on "keyup.bootstrap-tour", (e) =>
-          return unless e.which
-          switch e.which
-            when 39
-              e.preventDefault()
-              if @_current < @_steps.length - 1
-                @next()
-            when 37
-              e.preventDefault()
-              if @_current > 0
-                @prev()
 
       # Reshow popover on window resize using debounced resize
       @_onresize(=> @showStep(@_current) unless @ended)
@@ -85,6 +73,8 @@
 
     # Start tour from current step
     start: (force = false) ->
+      return if @ended() && !force
+
       # Go to next step after click on element with class .next
       $(document).off("click.bootstrap-tour",".popover .next").on "click.bootstrap-tour", ".popover .next", (e) =>
         e.preventDefault()
@@ -100,8 +90,9 @@
         e.preventDefault()
         @end()
 
-      if force || ! @ended()
-        @showStep(@_current)
+      @_setupKeyboardNavigation()
+
+      @showStep(@_current)
 
     # Hide current step and show next step
     next: ->
@@ -244,6 +235,21 @@
       $(window).resize ->
         clearTimeout(timeout)
         timeout = setTimeout(cb, 100)
+
+    # Keyboard navigation
+    _setupKeyboardNavigation: ->
+      if @_options.keyboard
+        $(document).on "keyup.bootstrap-tour", (e) =>
+          return unless e.which
+          switch e.which
+            when 39
+              e.preventDefault()
+              if @_current < @_steps.length - 1
+                @next()
+            when 37
+              e.preventDefault()
+              if @_current > 0
+                @prev()
 
   window.Tour = Tour
 
