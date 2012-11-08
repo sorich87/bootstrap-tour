@@ -205,6 +205,7 @@
         trigger: "manual"
         title: step.title
         content: content
+        html: true
         animation: step.animation
       }).popover("show")
 
