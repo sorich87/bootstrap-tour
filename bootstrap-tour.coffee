@@ -29,7 +29,8 @@
           next: 'Next &raquo;'
           prev: '&laquo; Prev'
         }
-        keyboard: true
+        keyboard: true,
+        useLocalStorage: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         onShow: (tour) ->
@@ -44,11 +45,14 @@
       @_onresize(=> @showStep(@_current) unless @ended)
 
     setState: (key, value) ->
-      $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
+      if this._options.useLocalStorage
+        window.localStorage.setItem("#{@_options.name}_#{key}", value)
+      else
+        $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
 
     getState: (key) ->
-      value = $.cookie("#{@_options.name}_#{key}")
+      value = if this._options.useLocalStorage then window.localStorage.getItem("#{@_options.name}_#{key}" + key) else $.cookie("#{@_options.name}_#{key}")
       @_options.afterGetState(key, value)
       return value
 
