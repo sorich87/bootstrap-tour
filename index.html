@@ -77,7 +77,7 @@ tour.addStep({
 
           <h2 id="options">Options</h2>
           <h3>Useful Methods</h3>
-          <p>Bootstrap Tour saves the current step in a cookie and will not
+          <p>Bootstrap Tour saves the current step and will not
           display the tour again to users who have already completed it.</p>
           <p>If, for some reasons, you want to force the tour to be
           displayed, pass <code>true</code> to the <code>start()</code>
@@ -101,8 +101,12 @@ tour.addStep({
 <pre class="prettyprint">
 var tour = new Tour({
   name: "tour",
+  keyboard: true,
+  useLocalStorage: false,
   afterGetState: function (key, value) {},
   afterSetState: function (key, value) {},
+  onStart: function (tour) {},
+  onEnd: function (tour) {},
   onShow: function (tour) {},
   onHide: function (tour) {}
 });
@@ -110,24 +114,32 @@ var tour = new Tour({
 
           <h4><code>name</code></h4>
           <p>This option is used to build the name of the
-          cookie where the tour state is stored. You can initialize several
+          cookie or localStorage item where the tour state is stored. You can initialize several
           tours with different names in the same page and application.</p>
+
+          <h4><code>keyboard</code></h4>
+          <p>This option set the left/right arrow navigation. The default is true.</p>
+
+          <h4><code>useLocalStorage</code></h4>
+          <p>You can choose to save the tour state with localStorage instead of
+          cookie. If you decide, you can safely remove the jquery.cookie plugin from the
+          dependencies</p>
 
           <h4><code>afterGetState</code> and <code>afterSetState</code></h4>
           <p>You may want to do something right after
-          Bootstrap Tour read or write the cookies. Just pass functions to
+          Bootstrap Tour read or write the state. Just pass functions to
           <code>afterGetState</code> or <code>afterSetState</code>.</p>
           <p>Your functions can have two parameters:</p>
           <dl>
             <dt>key</dt>
-            <dd>Contains the name of the cookie being saved. It can be
-            <code>current_step</code> (for the cookie where the latest step
-            the visitor viewed is saved) or <code>end</code> (for the cookie
+            <dd>Contains the name of the state being saved. It can be
+            <code>current_step</code> (for the state where the latest step
+            the visitor viewed is saved) or <code>end</code> (for the state
             which is saved when the user complete the tour). Note that
             Bootstrap Tour prepends the key with <code>tour_</code> when
-            saving the cookie.</dd>
+            saving the state.</dd>
             <dt>value</dt>
-            <dd>The value of the cookie been saved. Can be the index of the
+            <dd>The value of the state been saved. Can be the index of the
             current step if the key is <code>current_step</code>, or
             <code>yes</code> if the key is <code>end</code>.</dd>
           </dl>
@@ -140,6 +152,11 @@ var tour = new Tour({
   }
 });
 </pre>
+          <h4><code>onStart</code></h4>
+          <p>Function to execute when the tour starts.</p>
+
+          <h4><code>onEnd</code></h4>
+          <p>Function to execute when the tour ends.</p>
 
           <h4><code>onShow</code></h4>
           <p>Function to execute right before each step is shown.</p>
