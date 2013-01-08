@@ -33,6 +33,8 @@
         useLocalStorage: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
+        onStart: (tour) ->
+        onEnd: (tour) ->
         onShow: (tour) ->
         onHide: (tour) ->
         onShown: (tour) ->
@@ -52,7 +54,10 @@
       @_options.afterSetState(key, value)
 
     getState: (key) ->
-      value = if this._options.useLocalStorage then window.localStorage.getItem("#{@_options.name}_#{key}" + key) else $.cookie("#{@_options.name}_#{key}")
+      if this._options.useLocalStorage
+        value = window.localStorage.getItem("#{@_options.name}_#{key}")
+      else
+        value = $.cookie("#{@_options.name}_#{key}")
       @_options.afterGetState(key, value)
       return value
 
@@ -96,6 +101,8 @@
 
       @_setupKeyboardNavigation()
 
+      @_options.onStart(@) if @_options.onStart?
+
       @showStep(@_current)
 
     # Hide current step and show next step
@@ -113,6 +120,8 @@
       @hideStep(@_current)
       $(document).off ".bootstrap-tour"
       @setState("end", "yes")
+
+      @_options.onEnd(@) if @_options.onEnd?
 
     # Verify if tour is enabled
     ended: ->
