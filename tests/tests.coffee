@@ -32,19 +32,55 @@ test "Tour should accept an array of steps and set the current step", ->
 test "Tour.setState should save state cookie", ->
   @tour = new Tour()
   @tour.setState("test", "yes")
-  strictEqual($.cookie("tour_test"), "yes", "tour saves state")
+  strictEqual($.cookie("tour_test"), "yes", "tour saves state cookie")
 
 test "Tour.getState should get state cookie", ->
   @tour = new Tour()
   @tour.setState("test", "yes")
-  strictEqual(@tour.getState("test"), "yes", "tour gets state")
+  strictEqual(@tour.getState("test"), "yes", "tour gets state cookie")
   $.cookie("tour_test", null)
+
+test "Tour.setState should save state localStorage items", ->
+  @tour = new Tour({
+    useLocalStorage: true
+  })
+  @tour.setState("test", "yes")
+  strictEqual(window.localStorage.getItem("tour_test"), "yes", "tour save state localStorage items")
+
+test "Tour.getState should get state localStorage items", ->
+  @tour = new Tour({
+    useLocalStorage: true
+  })
+  @tour.setState("test", "yes")
+  strictEqual(@tour.getState("test"), "yes", "tour save state localStorage items")
+  window.localStorage.setItem("tour_test", null)
 
 test "Tour.addStep should add a step", ->
   @tour = new Tour()
   step = { element: $("<div></div>").appendTo("#qunit-fixture") }
   @tour.addStep(step)
   deepEqual(@tour._steps, [step], "tour adds steps")
+
+test "Tour with onStart option should run the callback before showing the first step", ->
+  tour_test = 0
+  @tour = new Tour({
+    onStart: ->
+      tour_test += 2
+  })
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  strictEqual(tour_test, 2, "tour runs onStart when the first step shown")
+
+test "Tour with onEnd option should run the callback after hiding the last step", ->
+  tour_test = 0
+  @tour = new Tour({
+    onEnd: ->
+      tour_test += 2
+  })
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  @tour.end()
+  strictEqual(tour_test, 2, "tour runs onEnd when the last step hidden")
 
 test "Tour with onShow option should run the callback before showing the step", ->
   tour_test = 0
