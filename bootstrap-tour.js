@@ -216,7 +216,7 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, options, tip,
+        var content, nav, options, popoverOptions, tip,
           _this = this;
         content = "" + step.content + "<br /><p>";
         options = $.extend({}, this._options);
@@ -239,14 +239,20 @@
         }
         content += nav.join(" | ");
         content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
-        $(step.element).popover({
+        popoverOptions = {
           placement: step.placement,
           trigger: "manual",
           title: step.title,
           content: content,
           html: true,
           animation: step.animation
-        }).popover("show");
+        };
+        if ($(step.element).data('popover')) {
+          $(step.element).data('popover').options = popoverOptions;
+        } else {
+          $(step.element).popover(popoverOptions);
+        }
+        $(step.element).popover("show");
         tip = $(step.element).data("popover").tip();
         this._reposition(tip);
         return this._scrollIntoView(tip);
