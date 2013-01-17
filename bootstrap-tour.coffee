@@ -213,14 +213,19 @@
 
       content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
 
-      $(step.element).popover({
+      popoverOptions = 
         placement: step.placement
         trigger: "manual"
         title: step.title
         content: content
         html: true
         animation: step.animation
-      }).popover("show")
+
+      if $(step.element).data('popover')
+        $(step.element).data('popover').options = popoverOptions
+      else
+        $(step.element).popover(popoverOptions)
+      $(step.element).popover("show")
 
       tip = $(step.element).data("popover").tip()
       @_reposition(tip)
