@@ -1,5 +1,5 @@
 {
-    "name": "Bootstrap Tour",
+    "name": "bootstrap-tour",
     "version": "0.1",
     "main": "./bootstrap-tour.js",
     "dependencies": {
