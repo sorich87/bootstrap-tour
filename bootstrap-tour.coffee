@@ -149,10 +149,13 @@
 
       @setCurrentStep(i)
 
+      # support string or function for path
+      path = ((if typeof step.path is "function" then step.path.call() else step.path))
+
       # Redirect to step path if not already there
-      # Compare to path, then filename
-      if step.path != "" && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
-        document.location.href = step.path
+      # Compare to path, then filename, support paths with query strings
+      if path isnt "" and document.location.pathname isnt path and document.location.pathname isnt path.replace(/\?.*$/, "") and document.location.pathname.replace(/^.*[\\\/]/, "") isnt path
+        document.location.href = path
         return
 
       step.onShow(@) if step.onShow?
