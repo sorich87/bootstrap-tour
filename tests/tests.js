@@ -414,3 +414,19 @@ test("Tour.showPrevStep should show the previous step", function() {
   this.tour.showPrevStep();
   return strictEqual(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour shows previous step");
 });
+
+test("Tour.showStep should show multiple step on the same element", function() {
+  var element;
+  element = $("<div></div>").appendTo("#qunit-fixture");
+  this.tour = new Tour();
+  this.tour.addStep({
+    element: element
+  });
+  this.tour.addStep({
+    element: element
+  });
+  this.tour.start();
+  strictEqual(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour show the first step");
+  this.tour.showNextStep();
+  return strictEqual(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element");
+});

@@ -292,3 +292,12 @@ test "Tour.showPrevStep should show the previous step", ->
   @tour.showPrevStep()
   strictEqual(@tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour shows previous step")
 
+test "Tour.showStep should show multiple step on the same element", ->
+  element = $("<div></div>").appendTo("#qunit-fixture")
+  @tour = new Tour()
+  @tour.addStep({element: element})
+  @tour.addStep({element: element})
+  @tour.start()
+  strictEqual(@tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour show the first step")
+  @tour.showNextStep()
+  strictEqual(@tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element")
