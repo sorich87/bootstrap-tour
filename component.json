@@ -3,7 +3,7 @@
     "version": "0.1",
     "main": "./bootstrap-tour.js",
     "dependencies": {
-        "bootstrap": "2.0.4",
-        "jquery": "~1.7.1"
+        "bootstrap": "2.2.2",
+        "jquery": "~1.9.0"
     }
 }
