@@ -213,7 +213,7 @@
 
       content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
 
-      $(step.element).popover({
+      $(step.element).popover('destroy').popover({
         placement: step.placement
         trigger: "manual"
         title: step.title
