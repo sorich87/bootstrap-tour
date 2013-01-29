@@ -223,6 +223,7 @@
         content: content
         html: true
         animation: step.animation
+        container: "body"
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
