@@ -71,6 +71,9 @@
         var value;
         if (this._options.useLocalStorage) {
           value = window.localStorage.getItem("" + this._options.name + "_" + key);
+          if (value === 'null') {
+            value = null;
+          }
         } else {
           value = $.cookie("" + this._options.name + "_" + key);
         }
