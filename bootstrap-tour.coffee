@@ -151,7 +151,8 @@
 
       # Redirect to step path if not already there
       # Compare to path, then filename
-      if step.path != "" && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
+      current_path = [document.location.pathname, document.location.hash].join('')
+      if step.path != "" && current_path != step.path && current_path.replace(/^.*[\\\/]/, '') != step.path
         document.location.href = step.path
         return
 
