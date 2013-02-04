@@ -173,7 +173,7 @@
         }
         this.setCurrentStep(i);
         path = (typeof step.path === "function" ? step.path.call() : step.path);
-        if (path !== "" && document.location.pathname !== path && document.location.pathname !== path.replace(/\?.*$/, "") && document.location.pathname.replace(/^.*[\\\/]/, "") !== path) {
+        if ((path != null) && path !== "" && document.location.pathname !== path && document.location.pathname !== path.replace(/\?.*$/, "") && document.location.pathname.replace(/^.*[\\\/]/, "") !== path) {
           document.location.href = path;
           return;
         }

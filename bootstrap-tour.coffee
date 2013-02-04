@@ -154,7 +154,7 @@
 
       # Redirect to step path if not already there
       # Compare to path, then filename, support paths with query strings
-      if path isnt "" and document.location.pathname isnt path and document.location.pathname isnt path.replace(/\?.*$/, "") and document.location.pathname.replace(/^.*[\\\/]/, "") isnt path
+      if path? and path isnt "" and document.location.pathname isnt path and document.location.pathname isnt path.replace(/\?.*$/, "") and document.location.pathname.replace(/^.*[\\\/]/, "") isnt path
         document.location.href = path
         return
 
