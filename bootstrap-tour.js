@@ -216,8 +216,13 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, options, tip,
+        var content, nav, options, template, tip,
           _this = this;
+        if (step.stepId) {
+          template = "<div class='popover' id='" + step.stepId + "'><div class='arrow'></div><div class='popover-inner' ><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>";
+        } else {
+          template = "<div class='popover'><div class='arrow'></div><div class='popover-inner' ><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>";
+        }
         content = "" + step.content + "<br /><p>";
         options = $.extend({}, this._options);
         if (step.options) {
@@ -243,6 +248,7 @@
           placement: step.placement,
           trigger: "manual",
           title: step.title,
+          template: template,
           content: content,
           html: true,
           animation: step.animation
