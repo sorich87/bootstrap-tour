@@ -30,6 +30,7 @@
           prev: '&laquo; Prev'
         }
         keyboard: true,
+        allowState: true,
         useLocalStorage: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
@@ -47,6 +48,8 @@
       @_onresize(=> @showStep(@_current) unless @ended)
 
     setState: (key, value) ->
+      if !this._options.allowState
+        return
       if this._options.useLocalStorage
         window.localStorage.setItem("#{@_options.name}_#{key}", value)
       else
@@ -54,6 +57,8 @@
       @_options.afterSetState(key, value)
 
     getState: (key) ->
+      if (!this._options.allowState)
+        return
       if this._options.useLocalStorage
         value = window.localStorage.getItem("#{@_options.name}_#{key}")
       else

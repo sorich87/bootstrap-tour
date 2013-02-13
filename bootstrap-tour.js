@@ -37,6 +37,7 @@
             prev: '&laquo; Prev'
           },
           keyboard: true,
+          allowState: true,
           useLocalStorage: false,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
@@ -56,6 +57,9 @@
       }
 
       Tour.prototype.setState = function(key, value) {
+        if (!this._options.allowState) {
+          return;
+        }
         if (this._options.useLocalStorage) {
           window.localStorage.setItem("" + this._options.name + "_" + key, value);
         } else {
@@ -69,6 +73,9 @@
 
       Tour.prototype.getState = function(key) {
         var value;
+        if (!this._options.allowState) {
+          return;
+        }
         if (this._options.useLocalStorage) {
           value = window.localStorage.getItem("" + this._options.name + "_" + key);
         } else {
