@@ -172,7 +172,9 @@
           return;
         }
         this.setCurrentStep(i);
-        if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
+        queryIndex = step.path.indexOf("?");
+        queryParamsRemoved = (queryIndex > 0) ? step.path.substring(0,queryIndex) : step.path;
+        if (step.path !== "" && document.location.pathname !== queryParamsRemoved && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
           document.location.href = step.path;
           return;
         }
