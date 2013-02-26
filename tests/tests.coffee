@@ -301,3 +301,15 @@ test "Tour.showStep should show multiple step on the same element", ->
   strictEqual(@tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour show the first step")
   @tour.showNextStep()
   strictEqual(@tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element")
+
+test "Tour.getState should return null after Tour.setState with null value using cookies", ->
+  @tour = new Tour({useLocalStorage: false})
+  @tour.setState("test", "test")
+  @tour.setState("test", null)
+  strictEqual(@tour.getState("test"), null, "tour returns null after null setState")
+
+test "Tour.getState should return null after Tour.setState with null value using localStorage", ->
+  @tour = new Tour({useLocalStorage: true})
+  @tour.setState("test", "test")
+  @tour.setState("test", null)
+  strictEqual(@tour.getState("test"), null, "tour returns null after null setState")

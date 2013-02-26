@@ -45,12 +45,21 @@
 
       # Reshow popover on window resize using debounced resize
       @_onresize(=> @showStep(@_current) unless @ended)
-
+    
+    # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       if this._options.useLocalStorage
-        window.localStorage.setItem("#{@_options.name}_#{key}", value)
+        localStorageKey = "#{@_options.name}_#{key}"
+        if value == null
+          window.localStorage.removeItem(localStorageKey)
+        else   
+          window.localStorage.setItem(localStorageKey, value)
       else
-        $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
+        cookieKey = "#{@_options.name}_#{key}"
+        if value == null
+          $.removeCookie(cookieKey, { path: '/' })
+        else
+          $.cookie(cookieKey, value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
 
     getState: (key) ->
