@@ -275,7 +275,7 @@
       Tour.prototype._scrollIntoView = function(tip) {
         var tipRect;
         tipRect = tip.get(0).getBoundingClientRect();
-        if (!(tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width())) {
+        if (!(tipRect.top >= 0 && tipRect.bottom < $(window).height() && tipRect.left >= 0 && tipRect.right < $(window).width())) {
           return tip.get(0).scrollIntoView(true);
         }
       };
