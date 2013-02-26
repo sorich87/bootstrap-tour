@@ -301,3 +301,14 @@ test "Tour.showStep should show multiple step on the same element", ->
   strictEqual(@tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour show the first step")
   @tour.showNextStep()
   strictEqual(@tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element")
+
+test "Tour shouldn't move to the next state until the onShow promise is resolved", ->
+  @tour = new Tour()
+  deferred = $.Deferred()
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})   
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), onShow: -> return deferred})
+  @tour.start()
+  @tour.showNextStep()
+  strictEqual(@tour._current, 0, "tour shows old state until resolving of onShow promise") 
+  deferred.resolve()
+  strictEqual(@tour._current, 1, "tour shows new state after resolving onShow promise")

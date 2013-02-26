@@ -159,7 +159,9 @@ var tour = new Tour({
           <p>Function to execute when the tour ends.</p>
 
           <h4><code>onShow</code></h4>
-          <p>Function to execute right before each step is shown.</p>
+          <p>Function to execute right before each step is shown. If
+          the function returns a Promise object, the next step won't
+          be shown until the Promise is resolved. </p>
 
           <h4><code>onHide</code></h4>
           <p>Function to execute right before each step is hidden.</p>

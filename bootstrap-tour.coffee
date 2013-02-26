@@ -147,25 +147,34 @@
 
       return unless step
 
-      @setCurrentStep(i)
+      onShowResult = step.onShow(@) if step.onShow?
+      
+      # If onShow returns a promise, lets wait until it's done to execute
+      if onShowResult && $.isFunction(onShowResult.done)
+        promise = onShowResult
+      else
+        promise = $.Deferred()
+        # Any actions added to a resolved promise are executed immediately
+        promise.resolve()
 
-      # Redirect to step path if not already there
-      # Compare to path, then filename
-      if step.path != "" && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
-        document.location.href = step.path
-        return
+      promise.done (e) =>
+        @setCurrentStep(i)
 
-      step.onShow(@) if step.onShow?
+        # Redirect to step path if not already there
+        # Compare to path, then filename
+        if step.path != "" && document.location.pathname != step.path && document.location.pathname.replace(/^.*[\\\/]/, '') != step.path
+          document.location.href = step.path
+          return
 
-      # If step element is hidden, skip step
-      unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
-        @showNextStep()
-        return
+        # If step element is hidden, skip step
+        unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
+          @showNextStep()
+          return
 
-      # Show popover
-      @_showPopover(step, i)
+        # Show popover
+        @_showPopover(step, i)
+        step.onShown(@) if step.onShown?
 
-      step.onShown(@) if step.onShown?
 
     # Setup current step variable
     setCurrentStep: (value) ->
