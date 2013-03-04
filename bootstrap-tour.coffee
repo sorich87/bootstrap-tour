@@ -56,6 +56,8 @@
     getState: (key) ->
       if this._options.useLocalStorage
         value = window.localStorage.getItem("#{@_options.name}_#{key}")
+        if value == 'null'
+          value = null
       else
         value = $.cookie("#{@_options.name}_#{key}")
       @_options.afterGetState(key, value)
