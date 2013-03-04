@@ -241,7 +241,7 @@
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (tip) ->
       tipRect = tip.get(0).getBoundingClientRect()
-      unless tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width()
+      unless tipRect.top >= 0 && tipRect.bottom < $(window).height() && tipRect.left >= 0 && tipRect.right < $(window).width()
         tip.get(0).scrollIntoView(true)
 
     # Debounced window resize
