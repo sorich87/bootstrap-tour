@@ -118,7 +118,8 @@
     # End tour
     end: ->
       @hideStep(@_current)
-      $(document).off ".bootstrap-tour"
+      $(document).off "click.bootstrap-tour"
+      $(document).off "keyup.bootstrap-tour"
       @setState("end", "yes")
 
       @_options.onEnd(@) if @_options.onEnd?
