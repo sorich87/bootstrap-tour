@@ -217,7 +217,8 @@
       $(step.element).popover('destroy').popover({
         placement: step.placement
         trigger: "manual"
-        title: step.title
+        title: step.title +
+          "<button type=\"button\" class=\"close #{if step.next >= 0 then 'next' else 'end'}\">&times;</button>"
         content: content
         html: true
         animation: step.animation
