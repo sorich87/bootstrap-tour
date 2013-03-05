@@ -31,6 +31,7 @@
         }
         keyboard: true,
         useLocalStorage: false,
+        stepClass : '',
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         onStart: (tour) ->
@@ -224,6 +225,7 @@
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
+      $(tip).addClass(options.stepClass)
       @_reposition(tip)
       @_scrollIntoView(tip)
 
