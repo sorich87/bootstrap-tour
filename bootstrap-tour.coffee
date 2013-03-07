@@ -225,20 +225,38 @@
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
-      @_reposition(tip)
+      @_reposition(tip, step)
       @_scrollIntoView(tip)
 
     # Prevent popups from crossing over the edge of the window
-    _reposition: (tip) ->
+    _reposition: (tip, step) ->
+      original_offsetWidth = tip[0].offsetWidth
+      original_offsetHeight = tip[0].offsetHeight
+
       tipOffset = tip.offset()
+      original_left = tipOffset.left
+      original_top = tipOffset.top
       offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight()
       tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
-      offsetRight = $(document).outerWidth() - tipOffset.left - $(tip).outerWidth()
+      offsetRight = $("html").outerWidth() - tipOffset.left - $(tip).outerWidth()
       tipOffset.left = tipOffset.left + offsetRight if offsetRight < 0
 
       tipOffset.top = 0 if tipOffset.top < 0
       tipOffset.left = 0 if tipOffset.left < 0
       tip.offset(tipOffset)
+
+      # reposition the arrow
+      if step.placement == 'bottom' or step.placement == 'top'
+        @_bootstrap_tooltip_replaceArrow(tip, (tipOffset.left-original_left)*2, original_offsetWidth, 'left') if original_left != tipOffset.left
+      else
+        @_bootstrap_tooltip_replaceArrow(tip, (tipOffset.top-original_top)*2, original_offsetHeight, 'top') if original_top != tipOffset.top
+
+    # copy pasted from bootstrap-tooltip.js
+    # with some alterations
+    _bootstrap_tooltip_replaceArrow: (tip, delta, dimension, position)->
+      tip
+        .find(".arrow")
+        .css(position, if delta then (50 * (1 - delta / dimension) + "%") else '')
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (tip) ->
