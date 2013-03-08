@@ -58,6 +58,9 @@
         value = window.localStorage.getItem("#{@_options.name}_#{key}")
       else
         value = $.cookie("#{@_options.name}_#{key}")
+
+      value = null if value == undefined || value == "null"
+
       @_options.afterGetState(key, value)
       return value
 
@@ -175,7 +178,7 @@
         @setState("current_step", value)
       else
         @_current = @getState("current_step")
-        if (@_current == null || @_current == "null")
+        if @_current == null
           @_current = 0
         else
           @_current = parseInt(@_current)
