@@ -166,13 +166,14 @@
       };
 
       Tour.prototype.showStep = function(i) {
-        var step;
+        var current_path, step;
         step = this.getStep(i);
         if (!step) {
           return;
         }
         this.setCurrentStep(i);
-        if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
+        current_path = [document.location.pathname, document.location.hash].join('');
+        if (step.path !== "" && current_path !== step.path && current_path.replace(/^.*[\\\/]/, '') !== step.path) {
           document.location.href = step.path;
           return;
         }
