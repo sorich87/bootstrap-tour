@@ -247,13 +247,13 @@
       
       # reposition the arrow
       if step.placement == 'bottom' or step.placement == 'top'
-        @_bootstrap_tooltip_replaceArrow(tip, (tipOffset.left-original_left)*2, original_offsetWidth, 'left') if original_left != tipOffset.left
+        @_replaceArrow(tip, (tipOffset.left-original_left)*2, original_offsetWidth, 'left') if original_left != tipOffset.left
       else
-        @_bootstrap_tooltip_replaceArrow(tip, (tipOffset.top-original_top)*2, original_offsetHeight, 'top') if original_top != tipOffset.top
+        @_replaceArrow(tip, (tipOffset.top-original_top)*2, original_offsetHeight, 'top') if original_top != tipOffset.top
 
     # copy pasted from bootstrap-tooltip.js
     # with some alterations
-    _bootstrap_tooltip_replaceArrow: (tip, delta, dimension, position)->
+    _replaceArrow: (tip, delta, dimension, position)->
       tip
         .find(".arrow")
         .css(position, if delta then (50 * (1 - delta / dimension) + "%") else '')
