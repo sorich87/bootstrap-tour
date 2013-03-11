@@ -225,7 +225,7 @@
 
       tip = $(step.element).data("popover").tip()
       @_reposition(tip, step)
-      @_scrollIntoView(tip) if options.scrollToStep
+      @_scrollIntoView(tip)
 
     # Prevent popups from crossing over the edge of the window
     _reposition: (tip, step) ->
