@@ -30,6 +30,7 @@
           prev: '&laquo; Prev'
         }
         keyboard: true,
+        allowState: true,
         useLocalStorage: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
@@ -47,6 +48,8 @@
       @_onresize(=> @showStep(@_current) unless @ended)
 
     setState: (key, value) ->
+      if !this._options.allowState
+        return
       if this._options.useLocalStorage
         window.localStorage.setItem("#{@_options.name}_#{key}", value)
       else
@@ -54,6 +57,8 @@
       @_options.afterSetState(key, value)
 
     getState: (key) ->
+      if (!this._options.allowState)
+        return
       if this._options.useLocalStorage
         value = window.localStorage.getItem("#{@_options.name}_#{key}")
       else
@@ -202,6 +207,12 @@
 
     # Show step popover
     _showPopover: (step, i) ->
+
+      if step.stepId 
+        template = "<div class='popover' id='#{step.stepId}'><div class='arrow'></div><div class='popover-inner' ><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
+      else 
+        template = "<div class='popover'><div class='arrow'></div><div class='popover-inner' ><h3 class='popover-title'></h3><div class='popover-content'><p></p></div></div></div>"
+
       content = "#{step.content}<br /><p>"
 
       options = $.extend {}, @_options
@@ -228,6 +239,7 @@
         placement: step.placement
         trigger: "manual"
         title: step.title
+        template: template
         content: content
         html: true
         animation: step.animation
