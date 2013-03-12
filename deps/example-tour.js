@@ -20,7 +20,7 @@ jQuery(function($) {
     }
   });
   tour.addStep({
-    path: "index.html",
+    path: "/",
     element: "#options",
     placement: "right",
     title: "And it is powerful!",
@@ -29,7 +29,7 @@ jQuery(function($) {
     reflex: true
   });
   tour.addStep({
-    path: "index.html",
+    path: "/",
     element: "#reflex-mode",
     placement: "bottom",
     title: "Reflex mode",
@@ -37,7 +37,7 @@ jQuery(function($) {
     reflex: true
   });
   tour.addStep({
-    path: "page.html",
+    path: "/page.html",
     element: "h1",
     placement: "bottom",
     title: "See, you are not restricted to only one page",
@@ -45,7 +45,7 @@ jQuery(function($) {
     + "to the index page."
   });
   tour.addStep({
-    path: "index.html",
+    path: "/",
     element: "#contributing",
     placement: "right",
     title: "Best of all, it's free!",
