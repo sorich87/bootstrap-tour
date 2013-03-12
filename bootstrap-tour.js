@@ -103,7 +103,8 @@
       };
 
       Tour.prototype.start = function(force) {
-        var _this = this;
+        var promise,
+          _this = this;
         if (force == null) {
           force = false;
         }
@@ -123,29 +124,50 @@
           return _this.end();
         });
         this._setupKeyboardNavigation();
-        if (this._options.onStart != null) {
-          this._options.onStart(this);
+        promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
+        if (promise) {
+          return promise.then(function(e) {
+            return _this.showStep(_this._current);
+          });
+        } else {
+          return this.showStep(this._current);
         }
-        return this.showStep(this._current);
       };
 
       Tour.prototype.next = function() {
-        this.hideStep(this._current);
-        return this.showNextStep();
+        var promise,
+          _this = this;
+        promise = this.hideStep(this._current);
+        if (promise) {
+          return promise.then(function(e) {
+            return _this.showNextStep();
+          });
+        } else {
+          return this.showNextStep();
+        }
       };
 
       Tour.prototype.prev = function() {
-        this.hideStep(this._current);
-        return this.showPrevStep();
+        var promise;
+        return promise = this.hideStep(this._current);
       };
 
       Tour.prototype.end = function() {
-        this.hideStep(this._current);
-        $(document).off("click.bootstrap-tour");
-        $(document).off("keyup.bootstrap-tour");
-        this.setState("end", "yes");
-        if (this._options.onEnd != null) {
-          return this._options.onEnd(this);
+        var endHelper, hidePromise,
+          _this = this;
+        endHelper = function(e) {
+          $(document).off("click.bootstrap-tour");
+          $(document).off("keyup.bootstrap-tour");
+          _this.setState("end", "yes");
+          if (_this._options.onEnd != null) {
+            return _this._options.onEnd(_this);
+          }
+        };
+        hidePromise = this.hideStep(this._current);
+        if (hidePromise) {
+          return hidePromise.then(endHelper);
+        } else {
+          return endHelper();
         }
       };
 
@@ -161,40 +183,30 @@
       };
 
       Tour.prototype.hideStep = function(i) {
-        var onHideResult, promise, step,
+        var hideStepHelper, promise, step,
           _this = this;
         step = this.getStep(i);
-        if (step.onHide != null) {
-          onHideResult = step.onHide(this);
-        }
-        if (onHideResult && $.isFunction(onHideResult.done)) {
-          promise = onHideResult;
-        } else {
-          promise = $.Deferred();
-          promise.resolve();
-        }
-        return promise.done(function(e) {
+        promise = this._makePromise((step.onHide != null ? step.onHide(this) : void 0));
+        hideStepHelper = function(e) {
           return $(step.element).popover("hide");
-        });
+        };
+        if (promise) {
+          promise.then(hideStepHelper);
+        } else {
+          hideStepHelper();
+        }
+        return promise;
       };
 
       Tour.prototype.showStep = function(i) {
-        var onShowResult, promise, step,
+        var promise, showStepHelper, step,
           _this = this;
         step = this.getStep(i);
         if (!step) {
           return;
         }
-        if (step.onShow != null) {
-          onShowResult = step.onShow(this);
-        }
-        if (onShowResult && $.isFunction(onShowResult.done)) {
-          promise = onShowResult;
-        } else {
-          promise = $.Deferred();
-          promise.resolve();
-        }
-        return promise.done(function(e) {
+        promise = this._makePromise((step.onShow != null ? step.onShow(this) : void 0));
+        showStepHelper = function(e) {
           var path;
           _this.setCurrentStep(i);
           path = typeof step.path === "function" ? step.path.call() : step.path;
@@ -210,7 +222,12 @@
           if (step.onShown != null) {
             return step.onShown(_this);
           }
-        });
+        };
+        if (promise) {
+          return promise.then(showStepHelper);
+        } else {
+          return showStepHelper();
+        }
       };
 
       Tour.prototype.setCurrentStep = function(value) {
@@ -354,6 +371,14 @@
                 }
             }
           });
+        }
+      };
+
+      Tour.prototype._makePromise = function(result) {
+        if (result && $.isFunction(result.then)) {
+          return result;
+        } else {
+          return null;
         }
       };
 

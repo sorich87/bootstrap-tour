@@ -320,7 +320,28 @@ test "Tour shouldn't move to the next state until the onShow promise is resolved
   @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})   
   @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), onShow: -> return deferred})
   @tour.start()
-  @tour.showNextStep()
+  @tour.next()
   strictEqual(@tour._current, 0, "tour shows old state until resolving of onShow promise") 
   deferred.resolve()
   strictEqual(@tour._current, 1, "tour shows new state after resolving onShow promise")
+
+test "Tour shouldn't hide popover until the onHide promise is resolved", ->
+  @tour = new Tour()
+  deferred = $.Deferred()
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), onHide: -> return deferred})   
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  @tour.next()
+  strictEqual(@tour._current, 0, "tour shows old state until resolving of onHide promise")
+  deferred.resolve()
+  strictEqual(@tour._current, 1, "tour shows new state after resolving onShow promise")
+
+test "Tour shouldn't start until the onStart promise is resolved", ->
+  deferred = $.Deferred()
+  @tour = new Tour({onStart: -> return deferred})
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  strictEqual($(".popover").length, 0, "Tour does not start before onStart promise is resolved")
+  deferred.resolve()
+  strictEqual($(".popover").length, 1, "Tour starts after onStart promise is resolved")
+

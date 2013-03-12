@@ -458,10 +458,47 @@
       }
     });
     this.tour.start();
-    this.tour.showNextStep();
+    this.tour.next();
     strictEqual(this.tour._current, 0, "tour shows old state until resolving of onShow promise");
     deferred.resolve();
     return strictEqual(this.tour._current, 1, "tour shows new state after resolving onShow promise");
+  });
+
+  test("Tour shouldn't hide popover until the onHide promise is resolved", function() {
+    var deferred;
+    this.tour = new Tour();
+    deferred = $.Deferred();
+    this.tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture"),
+      onHide: function() {
+        return deferred;
+      }
+    });
+    this.tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    this.tour.start();
+    this.tour.next();
+    strictEqual(this.tour._current, 0, "tour shows old state until resolving of onHide promise");
+    deferred.resolve();
+    return strictEqual(this.tour._current, 1, "tour shows new state after resolving onShow promise");
+  });
+
+  test("Tour shouldn't start until the onStart promise is resolved", function() {
+    var deferred;
+    deferred = $.Deferred();
+    this.tour = new Tour({
+      onStart: function() {
+        return deferred;
+      }
+    });
+    this.tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    this.tour.start();
+    strictEqual($(".popover").length, 0, "Tour does not start before onStart promise is resolved");
+    deferred.resolve();
+    return strictEqual($(".popover").length, 1, "Tour starts after onStart promise is resolved");
   });
 
 }).call(this);
