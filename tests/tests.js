@@ -432,6 +432,18 @@
     return strictEqual(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element");
   });
 
+  test("Tour properly verify paths", function() {
+    this.tour = new Tour();
+    strictEqual(this.tour._redirect(void 0, "/"), false, "don't redirect if no path");
+    strictEqual(this.tour._redirect("", "/"), false, "don't redirect if path empty");
+    strictEqual(this.tour._redirect("/somepath", "/somepath"), false, "don't redirect if path matches current path");
+    strictEqual(this.tour._redirect("/somepath/", "/somepath"), false, "don't redirect if path with slash matches current path");
+    strictEqual(this.tour._redirect("/somepath", "/somepath/"), false, "don't redirect if path matches current path with slash");
+    strictEqual(this.tour._redirect("/somepath?search=true", "/somepath"), false, "don't redirect if path with query params matches current path");
+    strictEqual(this.tour._redirect("/somepath/?search=true", "/somepath"), false, "don't redirect if path with slash and query params matches current path");
+    return strictEqual(this.tour._redirect("/anotherpath", "/somepath"), true, "redirect if path doesn't match current path");
+  });
+
   test("Tour shouldn't move to the next state until the onShow promise is resolved", function() {
     var deferred;
     this.tour = new Tour();

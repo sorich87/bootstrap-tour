@@ -74,6 +74,9 @@
         } else {
           value = $.cookie("" + this._options.name + "_" + key);
         }
+        if (value === void 0 || value === "null") {
+          value = null;
+        }
         this._options.afterGetState(key, value);
         return value;
       };
@@ -138,7 +141,8 @@
 
       Tour.prototype.end = function() {
         this.hideStep(this._current);
-        $(document).off(".bootstrap-tour");
+        $(document).off("click.bootstrap-tour");
+        $(document).off("keyup.bootstrap-tour");
         this.setState("end", "yes");
         if (this._options.onEnd != null) {
           return this._options.onEnd(this);
@@ -157,12 +161,21 @@
       };
 
       Tour.prototype.hideStep = function(i) {
-        var step;
+        var onHideResult, promise, step,
+          _this = this;
         step = this.getStep(i);
         if (step.onHide != null) {
-          step.onHide(this);
+          onHideResult = step.onHide(this);
         }
-        return $(step.element).popover("hide");
+        if (onHideResult && $.isFunction(onHideResult.done)) {
+          promise = onHideResult;
+        } else {
+          promise = $.Deferred();
+          promise.resolve();
+        }
+        return promise.done(function(e) {
+          return $(step.element).popover("hide");
+        });
       };
 
       Tour.prototype.showStep = function(i) {
@@ -182,9 +195,11 @@
           promise.resolve();
         }
         return promise.done(function(e) {
+          var path;
           _this.setCurrentStep(i);
-          if (step.path !== "" && document.location.pathname !== step.path && document.location.pathname.replace(/^.*[\\\/]/, '') !== step.path) {
-            document.location.href = step.path;
+          path = typeof step.path === "function" ? step.path.call() : step.path;
+          if (_this._redirect(path, document.location.pathname)) {
+            document.location.href = path;
             return;
           }
           if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
@@ -204,7 +219,7 @@
           return this.setState("current_step", value);
         } else {
           this._current = this.getState("current_step");
-          if (this._current === null || this._current === "null") {
+          if (this._current === null) {
             return this._current = 0;
           } else {
             return this._current = parseInt(this._current);
@@ -222,6 +237,10 @@
         var step;
         step = this.getStep(this._current);
         return this.showStep(step.prev);
+      };
+
+      Tour.prototype._redirect = function(path, currentPath) {
+        return (path != null) && path !== "" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "");
       };
 
       Tour.prototype._showPopover = function(step, i) {
@@ -254,21 +273,26 @@
           title: step.title,
           content: content,
           html: true,
-          animation: step.animation
+          animation: step.animation,
+          container: "body"
         }).popover("show");
         tip = $(step.element).data("popover").tip();
-        this._reposition(tip);
+        this._reposition(tip, step);
         return this._scrollIntoView(tip);
       };
 
-      Tour.prototype._reposition = function(tip) {
-        var offsetBottom, offsetRight, tipOffset;
+      Tour.prototype._reposition = function(tip, step) {
+        var offsetBottom, offsetRight, original_left, original_offsetHeight, original_offsetWidth, original_top, tipOffset;
+        original_offsetWidth = tip[0].offsetWidth;
+        original_offsetHeight = tip[0].offsetHeight;
         tipOffset = tip.offset();
+        original_left = tipOffset.left;
+        original_top = tipOffset.top;
         offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight();
         if (offsetBottom < 0) {
           tipOffset.top = tipOffset.top + offsetBottom;
         }
-        offsetRight = $(document).outerWidth() - tipOffset.left - $(tip).outerWidth();
+        offsetRight = $("html").outerWidth() - tipOffset.left - $(tip).outerWidth();
         if (offsetRight < 0) {
           tipOffset.left = tipOffset.left + offsetRight;
         }
@@ -278,13 +302,26 @@
         if (tipOffset.left < 0) {
           tipOffset.left = 0;
         }
-        return tip.offset(tipOffset);
+        tip.offset(tipOffset);
+        if (step.placement === 'bottom' || step.placement === 'top') {
+          if (original_left !== tipOffset.left) {
+            return this._replaceArrow(tip, (tipOffset.left - original_left) * 2, original_offsetWidth, 'left');
+          }
+        } else {
+          if (original_top !== tipOffset.top) {
+            return this._replaceArrow(tip, (tipOffset.top - original_top) * 2, original_offsetHeight, 'top');
+          }
+        }
+      };
+
+      Tour.prototype._replaceArrow = function(tip, delta, dimension, position) {
+        return tip.find(".arrow").css(position, delta ? 50 * (1 - delta / dimension) + "%" : '');
       };
 
       Tour.prototype._scrollIntoView = function(tip) {
         var tipRect;
         tipRect = tip.get(0).getBoundingClientRect();
-        if (!(tipRect.top > 0 && tipRect.bottom < $(window).height() && tipRect.left > 0 && tipRect.right < $(window).width())) {
+        if (!(tipRect.top >= 0 && tipRect.bottom < $(window).height() && tipRect.left >= 0 && tipRect.right < $(window).width())) {
           return tip.get(0).scrollIntoView(true);
         }
       };

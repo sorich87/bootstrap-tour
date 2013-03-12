@@ -302,6 +302,18 @@ test "Tour.showStep should show multiple step on the same element", ->
   @tour.showNextStep()
   strictEqual(@tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element")
 
+test "Tour properly verify paths", ->
+  @tour = new Tour()
+
+  strictEqual(@tour._redirect(undefined, "/"), false, "don't redirect if no path")
+  strictEqual(@tour._redirect("", "/"), false, "don't redirect if path empty")
+  strictEqual(@tour._redirect("/somepath", "/somepath"), false, "don't redirect if path matches current path")
+  strictEqual(@tour._redirect("/somepath/", "/somepath"), false, "don't redirect if path with slash matches current path")
+  strictEqual(@tour._redirect("/somepath", "/somepath/"), false, "don't redirect if path matches current path with slash")
+  strictEqual(@tour._redirect("/somepath?search=true", "/somepath"), false, "don't redirect if path with query params matches current path")
+  strictEqual(@tour._redirect("/somepath/?search=true", "/somepath"), false, "don't redirect if path with slash and query params matches current path")
+  strictEqual(@tour._redirect("/anotherpath", "/somepath"), true, "redirect if path doesn't match current path")
+
 test "Tour shouldn't move to the next state until the onShow promise is resolved", ->
   @tour = new Tour()
   deferred = $.Deferred()
