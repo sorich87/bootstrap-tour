@@ -251,7 +251,7 @@
       tipOffset.left = 0 if tipOffset.left < 0
 
       tip.offset(tipOffset)
-      
+
       # reposition the arrow
       if step.placement == 'bottom' or step.placement == 'top'
         @_replaceArrow(tip, (tipOffset.left-original_left)*2, original_offsetWidth, 'left') if original_left != tipOffset.left
