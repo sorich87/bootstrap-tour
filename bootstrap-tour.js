@@ -176,8 +176,8 @@
           return;
         }
         this.setCurrentStep(i);
-        path = (typeof step.path === "function" ? step.path.call() : step.path);
-        if ((path != null) && path !== "" && document.location.pathname !== path && document.location.pathname !== path.replace(/\?.*$/, "") && document.location.pathname.replace(/^.*[\\\/]/, "") !== path) {
+        path = typeof step.path === "function" ? step.path.call() : step.path;
+        if (this._redirect(path, document.location.pathname)) {
           document.location.href = path;
           return;
         }
@@ -218,6 +218,10 @@
         var step;
         step = this.getStep(this._current);
         return this.showStep(step.prev);
+      };
+
+      Tour.prototype._redirect = function(path, currentPath) {
+        return (path != null) && path !== "" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "");
       };
 
       Tour.prototype._showPopover = function(step, i) {

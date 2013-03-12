@@ -153,12 +153,11 @@
 
       @setCurrentStep(i)
 
-      # support string or function for path
-      path = ((if typeof step.path is "function" then step.path.call() else step.path))
+      # Support string or function for path
+      path = if typeof step.path == "function" then step.path.call() else step.path
 
       # Redirect to step path if not already there
-      # Compare to path, then filename, support paths with query strings
-      if path? and path isnt "" and document.location.pathname isnt path and document.location.pathname isnt path.replace(/\?.*$/, "") and document.location.pathname.replace(/^.*[\\\/]/, "") isnt path
+      if @_redirect(path, document.location.pathname)
         document.location.href = path
         return
 
@@ -195,6 +194,11 @@
     showPrevStep: ->
       step = @getStep(@_current)
       @showStep(step.prev)
+
+    # Check if step path equals current document path
+    _redirect: (path, currentPath) ->
+      path? and path isnt "" and
+        path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, "")
 
     # Show step popover
     _showPopover: (step, i) ->
