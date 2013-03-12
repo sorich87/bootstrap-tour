@@ -153,16 +153,22 @@ var tour = new Tour({
 });
 </pre>
           <h4><code>onStart</code></h4>
-          <p>Function to execute when the tour starts.</p>
+          <p>Function to execute when the tour starts. If
+          the function returns a Promise object (including jQuery.Deferred), the first step won't
+          be shown until the Promise is resolved. </p>
 
           <h4><code>onEnd</code></h4>
           <p>Function to execute when the tour ends.</p>
 
           <h4><code>onShow</code></h4>
-          <p>Function to execute right before each step is shown.</p>
+          <p>Function to execute right before each step is shown. If
+          the function returns a Promise object (including jQuery.Deferred), the next step won't
+          be shown until the Promise is resolved. </p>
 
           <h4><code>onHide</code></h4>
-          <p>Function to execute right before each step is hidden.</p>
+          <p>Function to execute right before each step is hidden. If
+          the function returns a Promise object (including jQuery.Deferred), the current step won't
+          be hidden until the Promise is resolved. </p>
 
           <h3>Step Options</h3>
           <p>Default options:</p>
