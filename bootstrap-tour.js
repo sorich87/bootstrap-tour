@@ -40,6 +40,7 @@
           useLocalStorage: false,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
+          afterRemoveState: function(key) {},
           onStart: function(tour) {},
           onEnd: function(tour) {},
           onShow: function(tour) {},
@@ -59,25 +60,29 @@
         var cookieKey, localStorageKey;
         if (this._options.useLocalStorage) {
           localStorageKey = "" + this._options.name + "_" + key;
-          if (value === null) {
-            window.localStorage.removeItem(localStorageKey);
-          } else {
-            window.localStorage.setItem(localStorageKey, value);
-          }
+          window.localStorage.setItem(localStorageKey, value);
         } else {
           cookieKey = "" + this._options.name + "_" + key;
-          if (value === null) {
-            $.removeCookie(cookieKey, {
-              path: '/'
-            });
-          } else {
-            $.cookie(cookieKey, value, {
-              expires: 36500,
-              path: '/'
-            });
-          }
+          $.cookie(cookieKey, value, {
+            expires: 36500,
+            path: '/'
+          });
         }
         return this._options.afterSetState(key, value);
+      };
+
+      Tour.prototype.removeState = function(key) {
+        var cookieKey, localStorageKey;
+        if (this._options.useLocalStorage) {
+          localStorageKey = "" + this._options.name + "_" + key;
+          window.localStorage.removeItem(localStorageKey);
+        } else {
+          cookieKey = "" + this._options.name + "_" + key;
+          $.removeCookie(cookieKey, {
+            path: '/'
+          });
+        }
+        return this._options.afterRemoveState(key);
       };
 
       Tour.prototype.getState = function(key) {
@@ -167,8 +172,8 @@
       };
 
       Tour.prototype.restart = function() {
-        this.setState("current_step", null);
-        this.setState("end", null);
+        this.removeState("current_step");
+        this.removeState("end");
         this.setCurrentStep(0);
         return this.start();
       };

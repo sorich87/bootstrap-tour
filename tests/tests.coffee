@@ -314,15 +314,20 @@ test "Tour properly verify paths", ->
   strictEqual(@tour._redirect("/somepath/?search=true", "/somepath"), false, "don't redirect if path with slash and query params matches current path")
   strictEqual(@tour._redirect("/anotherpath", "/somepath"), true, "redirect if path doesn't match current path")
 
-test "Tour.getState should return null after Tour.setState with null value using cookies", ->
+test "Tour.getState should return null after Tour.removeState with null value using cookies", ->
   @tour = new Tour({useLocalStorage: false})
   @tour.setState("test", "test")
-  @tour.setState("test", null)
+  @tour.removeState("test")
   strictEqual(@tour.getState("test"), null, "tour returns null after null setState")
 
-test "Tour.getState should return null after Tour.setState with null value using localStorage", ->
+test "Tour.getState should return null after Tour.removeState with null value using localStorage", ->
   @tour = new Tour({useLocalStorage: true})
   @tour.setState("test", "test")
-  @tour.setState("test", null)
+  @tour.removeState("test")
   strictEqual(@tour.getState("test"), null, "tour returns null after null setState")
 
+test "Tour.removeState should call afterRemoveState callback", ->
+  sentinel = false
+  @tour = new Tour({afterRemoveState: -> sentinel = true})
+  @tour.removeState("current_step")
+  strictEqual(sentinel, true, "removeState calls callback")

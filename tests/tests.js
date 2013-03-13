@@ -444,22 +444,34 @@
     return strictEqual(this.tour._redirect("/anotherpath", "/somepath"), true, "redirect if path doesn't match current path");
   });
 
-  test("Tour.getState should return null after Tour.setState with null value using cookies", function() {
+  test("Tour.getState should return null after Tour.removeState with null value using cookies", function() {
     this.tour = new Tour({
       useLocalStorage: false
     });
     this.tour.setState("test", "test");
-    this.tour.setState("test", null);
+    this.tour.removeState("test");
     return strictEqual(this.tour.getState("test"), null, "tour returns null after null setState");
   });
 
-  test("Tour.getState should return null after Tour.setState with null value using localStorage", function() {
+  test("Tour.getState should return null after Tour.removeState with null value using localStorage", function() {
     this.tour = new Tour({
       useLocalStorage: true
     });
     this.tour.setState("test", "test");
-    this.tour.setState("test", null);
+    this.tour.removeState("test");
     return strictEqual(this.tour.getState("test"), null, "tour returns null after null setState");
+  });
+
+  test("Tour.removeState should call afterRemoveState callback", function() {
+    var sentinel;
+    sentinel = false;
+    this.tour = new Tour({
+      afterRemoveState: function() {
+        return sentinel = true;
+      }
+    });
+    this.tour.removeState("current_step");
+    return strictEqual(sentinel, true, "removeState calls callback");
   });
 
 }).call(this);

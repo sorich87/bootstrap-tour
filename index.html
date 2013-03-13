@@ -105,6 +105,7 @@ var tour = new Tour({
   useLocalStorage: false,
   afterGetState: function (key, value) {},
   afterSetState: function (key, value) {},
+  afterRemoveState: function (key) {},
   onStart: function (tour) {},
   onEnd: function (tour) {},
   onShow: function (tour) {},
@@ -125,10 +126,11 @@ var tour = new Tour({
           cookie. If you decide, you can safely remove the jquery.cookie plugin from the
           dependencies</p>
 
-          <h4><code>afterGetState</code> and <code>afterSetState</code></h4>
+          <h4><code>afterGetState</code>,  <code>afterSetState</code>
+          and afterRemoveState</h4>
           <p>You may want to do something right after
           Bootstrap Tour read or write the state. Just pass functions to
-          <code>afterGetState</code> or <code>afterSetState</code>.</p>
+          <code>afterGetState</code>, <code>afterSetState</code> or afterRemoveState.</p>
           <p>Your functions can have two parameters:</p>
           <dl>
             <dt>key</dt>
@@ -138,7 +140,7 @@ var tour = new Tour({
             which is saved when the user complete the tour). Note that
             Bootstrap Tour prepends the key with <code>tour_</code> when
             saving the state.</dd>
-            <dt>value</dt>
+            <dt>value (for afterGetState and afterSetState only)</dt>
             <dd>The value of the state been saved. Can be the index of the
             current step if the key is <code>current_step</code>, or
             <code>yes</code> if the key is <code>end</code>.</dd>

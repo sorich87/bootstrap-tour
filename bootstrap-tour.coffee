@@ -33,6 +33,7 @@
         useLocalStorage: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
+        afterRemoveState: (key) ->
         onStart: (tour) ->
         onEnd: (tour) ->
         onShow: (tour) ->
@@ -50,17 +51,20 @@
     setState: (key, value) ->
       if this._options.useLocalStorage
         localStorageKey = "#{@_options.name}_#{key}"
-        if value == null
-          window.localStorage.removeItem(localStorageKey)
-        else   
-          window.localStorage.setItem(localStorageKey, value)
+        window.localStorage.setItem(localStorageKey, value)
       else
         cookieKey = "#{@_options.name}_#{key}"
-        if value == null
-          $.removeCookie(cookieKey, { path: '/' })
-        else
-          $.cookie(cookieKey, value, { expires: 36500, path: '/' })
+        $.cookie(cookieKey, value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
+
+    removeState: (key) ->
+      if this._options.useLocalStorage
+        localStorageKey = "#{@_options.name}_#{key}"
+        window.localStorage.removeItem(localStorageKey)
+      else
+        cookieKey = "#{@_options.name}_#{key}"
+        $.removeCookie(cookieKey, { path: '/' })
+      @_options.afterRemoveState(key)      
 
     getState: (key) ->
       if this._options.useLocalStorage
@@ -142,8 +146,8 @@
 
     # Restart tour
     restart: ->
-      @setState("current_step", null)
-      @setState("end", null)
+      @removeState("current_step")
+      @removeState("end")
       @setCurrentStep(0)
       @start()
 
