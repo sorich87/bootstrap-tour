@@ -117,28 +117,42 @@
 
       @_setupKeyboardNavigation()
 
-      @_options.onStart(@) if @_options.onStart?
+      promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
 
-      @showStep(@_current)
+      if promise
+        promise.then (e) =>
+          @showStep(@_current)
+      else
+        @showStep(@_current)
 
     # Hide current step and show next step
     next: ->
-      @hideStep(@_current)
-      @showNextStep()
+      promise = @hideStep(@_current)
+      if promise
+        promise.then (e) =>
+          @showNextStep()
+      else
+        @showNextStep()
 
     # Hide current step and show prev step
     prev: ->
-      @hideStep(@_current)
-      @showPrevStep()
+      promise = @hideStep(@_current)
+
 
     # End tour
     end: ->
-      @hideStep(@_current)
-      $(document).off "click.bootstrap-tour"
-      $(document).off "keyup.bootstrap-tour"
-      @setState("end", "yes")
+      endHelper = (e) =>
+        $(document).off "click.bootstrap-tour"
+        $(document).off "keyup.bootstrap-tour"
+        @setState("end", "yes")
 
-      @_options.onEnd(@) if @_options.onEnd?
+        @_options.onEnd(@) if @_options.onEnd?
+
+      hidePromise = @hideStep(@_current)
+      if hidePromise
+        hidePromise.then endHelper
+      else
+        endHelper()
 
     # Verify if tour is enabled
     ended: ->
@@ -154,37 +168,52 @@
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep(i)
-      step.onHide(@) if step.onHide?
+      promise = @_makePromise (step.onHide(@) if step.onHide?)
 
-      $(step.element).popover("hide")
+      hideStepHelper = (e) =>
+        $(step.element).popover("hide")
+
+      if promise
+        promise.then hideStepHelper
+      else
+        hideStepHelper()
+
+      promise  
 
     # Show the specified step
     showStep: (i) ->
       step = @getStep(i)
 
       return unless step
+      
+      # If onShow returns a promise, lets wait until it's done to execute
+      promise = @_makePromise (step.onShow(@) if step.onShow?)
 
-      @setCurrentStep(i)
+      showStepHelper = (e) =>
+        @setCurrentStep(i)
 
-      # Support string or function for path
-      path = if typeof step.path == "function" then step.path.call() else step.path
+        # Support string or function for path
+        path = if typeof step.path == "function" then step.path.call() else step.path
 
-      # Redirect to step path if not already there
-      if @_redirect(path, document.location.pathname)
-        document.location.href = path
-        return
+        # Redirect to step path if not already there
+        if @_redirect(path, document.location.pathname)
+          document.location.href = path
+          return
 
-      step.onShow(@) if step.onShow?
+        # If step element is hidden, skip step
+        unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
+          @showNextStep()
+          return
 
-      # If step element is hidden, skip step
-      unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
-        @showNextStep()
-        return
+        # Show popover
+        @_showPopover(step, i)
+        step.onShown(@) if step.onShown?
+      
+      if promise
+        promise.then(showStepHelper)
+      else
+        showStepHelper()
 
-      # Show popover
-      @_showPopover(step, i)
-
-      step.onShown(@) if step.onShown?
 
     # Setup current step variable
     setCurrentStep: (value) ->
@@ -308,6 +337,13 @@
               e.preventDefault()
               if @_current > 0
                 @prev()
+
+    # Checks if the result of a callback is a promise
+    _makePromise: (result) ->
+      if result && $.isFunction(result.then)
+        return result
+      else
+        return null
 
   window.Tour = Tour
 
