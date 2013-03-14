@@ -2,7 +2,7 @@
 Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
 ## Demo and Documentation ##
-[http://sorich87.github.com/bootstrap-tour](http://sorich87.github.com/bootstrap-tour)
+[http://bootstraptour.com](http://bootstraptour.com)
 
 ## TODO ##
 - Add a `id` option to identify each step instead of using integers.
