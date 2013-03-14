@@ -43,9 +43,6 @@
 
       @_steps = []
       @setCurrentStep()
-
-      # Reshow popover on window resize using debounced resize
-      @_onresize(=> @showStep(@_current) unless @ended)
     
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
@@ -113,6 +110,9 @@
         e.preventDefault()
         @end()
 
+      # Reshow popover on window resize using debounced resize
+      @_onresize(=> @showStep(@_current))
+
       @_setupKeyboardNavigation()
 
       promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
@@ -133,6 +133,7 @@
       endHelper = (e) =>
         $(document).off "click.bootstrap-tour"
         $(document).off "keyup.bootstrap-tour"
+        $(window).off "resize.bootstrap-tour"
         @setState("end", "yes")
 
         @_options.onEnd(@) if @_options.onEnd?
@@ -298,7 +299,7 @@
 
     # Debounced window resize
     _onresize: (cb, timeout) ->
-      $(window).resize ->
+      $(window).on "resize.bootstrap-tour", ->
         clearTimeout(timeout)
         timeout = setTimeout(cb, 100)
 

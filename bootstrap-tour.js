@@ -28,7 +28,6 @@
     Tour = (function() {
 
       function Tour(options) {
-        var _this = this;
         this._options = $.extend({
           name: 'tour',
           labels: {
@@ -49,11 +48,6 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
-        this._onresize(function() {
-          if (!_this.ended) {
-            return _this.showStep(_this._current);
-          }
-        });
       }
 
       Tour.prototype.setState = function(key, value) {
@@ -137,6 +131,9 @@
           e.preventDefault();
           return _this.end();
         });
+        this._onresize(function() {
+          return _this.showStep(_this._current);
+        });
         this._setupKeyboardNavigation();
         promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
         return this._callOnPromiseDone(promise, this.showStep, this._current);
@@ -159,6 +156,7 @@
         endHelper = function(e) {
           $(document).off("click.bootstrap-tour");
           $(document).off("keyup.bootstrap-tour");
+          $(window).off("resize.bootstrap-tour");
           _this.setState("end", "yes");
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
@@ -335,7 +333,7 @@
       };
 
       Tour.prototype._onresize = function(cb, timeout) {
-        return $(window).resize(function() {
+        return $(window).on("resize.bootstrap-tour", function() {
           clearTimeout(timeout);
           return timeout = setTimeout(cb, 100);
         });
