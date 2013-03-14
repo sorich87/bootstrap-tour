@@ -49,22 +49,20 @@
     
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
+      key = "#{@_options.name}_#{key}"
       if this._options.useLocalStorage
-        localStorageKey = "#{@_options.name}_#{key}"
-        window.localStorage.setItem(localStorageKey, value)
+        window.localStorage.setItem(key, value)
       else
-        cookieKey = "#{@_options.name}_#{key}"
-        $.cookie(cookieKey, value, { expires: 36500, path: '/' })
+        $.cookie(key, value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
 
     removeState: (key) ->
+      key = "#{@_options.name}_#{key}"
       if this._options.useLocalStorage
-        localStorageKey = "#{@_options.name}_#{key}"
-        window.localStorage.removeItem(localStorageKey)
+        window.localStorage.removeItem(key)
       else
-        cookieKey = "#{@_options.name}_#{key}"
-        $.removeCookie(cookieKey, { path: '/' })
-      @_options.afterRemoveState(key)      
+        $.removeCookie(key, { path: '/' })
+      @_options.afterRemoveState(key)
 
     getState: (key) ->
       if this._options.useLocalStorage
@@ -118,21 +116,12 @@
       @_setupKeyboardNavigation()
 
       promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
-
-      if promise
-        promise.then (e) =>
-          @showStep(@_current)
-      else
-        @showStep(@_current)
+      @_callOnPromiseDone(promise, @showStep, @_current)
 
     # Hide current step and show next step
     next: ->
       promise = @hideStep(@_current)
-      if promise
-        promise.then (e) =>
-          @showNextStep()
-      else
-        @showNextStep()
+      @_callOnPromiseDone(promise, @showNextStep)
 
     # Hide current step and show prev step
     prev: ->
@@ -149,10 +138,7 @@
         @_options.onEnd(@) if @_options.onEnd?
 
       hidePromise = @hideStep(@_current)
-      if hidePromise
-        hidePromise.then endHelper
-      else
-        endHelper()
+      @_callOnPromiseDone(hidePromise, endHelper)
 
     # Verify if tour is enabled
     ended: ->
@@ -173,12 +159,9 @@
       hideStepHelper = (e) =>
         $(step.element).popover("hide")
 
-      if promise
-        promise.then hideStepHelper
-      else
-        hideStepHelper()
+      @_callOnPromiseDone(promise, hideStepHelper)
 
-      promise  
+      promise
 
     # Show the specified step
     showStep: (i) ->
@@ -209,10 +192,7 @@
         @_showPopover(step, i)
         step.onShown(@) if step.onShown?
       
-      if promise
-        promise.then(showStepHelper)
-      else
-        showStepHelper()
+      @_callOnPromiseDone(promise, showStepHelper)
 
 
     # Setup current step variable
@@ -345,6 +325,14 @@
       else
         return null
 
+    _callOnPromiseDone: (promise, cb, arg) ->
+      if promise
+        promise.then (e) =>
+          cb.call(@, arg)
+      else
+        cb.call(@, arg)
+
   window.Tour = Tour
 
 )(jQuery, window)
+
