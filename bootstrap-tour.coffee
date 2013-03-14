@@ -33,6 +33,7 @@
         useLocalStorage: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
+        afterRemoveState: (key) ->
         onStart: (tour) ->
         onEnd: (tour) ->
         onShow: (tour) ->
@@ -45,13 +46,25 @@
 
       # Reshow popover on window resize using debounced resize
       @_onresize(=> @showStep(@_current) unless @ended)
-
+    
+    # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       if this._options.useLocalStorage
-        window.localStorage.setItem("#{@_options.name}_#{key}", value)
+        localStorageKey = "#{@_options.name}_#{key}"
+        window.localStorage.setItem(localStorageKey, value)
       else
-        $.cookie("#{@_options.name}_#{key}", value, { expires: 36500, path: '/' })
+        cookieKey = "#{@_options.name}_#{key}"
+        $.cookie(cookieKey, value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
+
+    removeState: (key) ->
+      if this._options.useLocalStorage
+        localStorageKey = "#{@_options.name}_#{key}"
+        window.localStorage.removeItem(localStorageKey)
+      else
+        cookieKey = "#{@_options.name}_#{key}"
+        $.removeCookie(cookieKey, { path: '/' })
+      @_options.afterRemoveState(key)      
 
     getState: (key) ->
       if this._options.useLocalStorage
@@ -133,8 +146,8 @@
 
     # Restart tour
     restart: ->
-      @setState("current_step", null)
-      @setState("end", null)
+      @removeState("current_step")
+      @removeState("end")
       @setCurrentStep(0)
       @start()
 
