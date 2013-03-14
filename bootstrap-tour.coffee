@@ -157,7 +157,8 @@
       promise = @_makePromise (step.onHide(@) if step.onHide?)
 
       hideStepHelper = (e) =>
-        $(step.element).popover("hide")
+        $element = $(step.element).popover("hide")
+        $element.css("cursor", "").off "click.boostrap-tour" if step.reflex
 
       @_callOnPromiseDone(promise, hideStepHelper)
 
@@ -231,9 +232,7 @@
       if step.options
         $.extend options, step.options
       if step.reflex
-        $(step.element).css "cursor", "pointer"
-        $(step.element).on "click", (e) =>
-          $(step.element).css "cursor", "auto"
+        $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           @next()
 
       nav = []

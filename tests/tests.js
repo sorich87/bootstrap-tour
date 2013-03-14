@@ -531,4 +531,40 @@
     return strictEqual($(".popover").length, 1, "Tour starts after onStart promise is resolved");
   });
 
+  test("Reflex parameter should change the element cursor to pointer when the step is displayed", function() {
+    var $element;
+    $element = $("<div></div>").appendTo("#qunit-fixture");
+    this.tour = new Tour();
+    this.tour.addStep({
+      element: $element,
+      reflex: true
+    });
+    this.tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    strictEqual($element.css("cursor"), "auto", "Tour doesn't change the element cursor before displaying the step");
+    this.tour.start();
+    strictEqual($element.css("cursor"), "pointer", "Tour change the element cursor to pointer when the step is displayed");
+    this.tour.next();
+    return strictEqual($element.css("cursor"), "auto", "Tour reset the element cursor when the step is hidden");
+  });
+
+  test("Reflex parameter should change the element cursor to pointer when the step is displayed", function() {
+    var $element;
+    $element = $("<div></div>").appendTo("#qunit-fixture");
+    this.tour = new Tour();
+    this.tour.addStep({
+      element: $element,
+      reflex: true
+    });
+    this.tour.addStep({
+      element: $("<div></div>").appendTo("#qunit-fixture")
+    });
+    strictEqual($element.css("cursor"), "auto", "Tour doesn't change the element cursor before displaying the step");
+    this.tour.start();
+    strictEqual($element.css("cursor"), "pointer", "Tour change the element cursor to pointer when the step is displayed");
+    this.tour.next();
+    return strictEqual($element.css("cursor"), "auto", "Tour reset the element cursor when the step is hidden");
+  });
+
 }).call(this);

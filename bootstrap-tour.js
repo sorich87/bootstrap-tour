@@ -185,7 +185,11 @@
         step = this.getStep(i);
         promise = this._makePromise((step.onHide != null ? step.onHide(this) : void 0));
         hideStepHelper = function(e) {
-          return $(step.element).popover("hide");
+          var $element;
+          $element = $(step.element).popover("hide");
+          if (step.reflex) {
+            return $element.css("cursor", "").off("click.boostrap-tour");
+          }
         };
         this._callOnPromiseDone(promise, hideStepHelper);
         return promise;
@@ -258,9 +262,7 @@
           $.extend(options, step.options);
         }
         if (step.reflex) {
-          $(step.element).css("cursor", "pointer");
-          $(step.element).on("click", function(e) {
-            $(step.element).css("cursor", "auto");
+          $(step.element).css("cursor", "pointer").on("click.bootstrap-tour", function(e) {
             return _this.next();
           });
         }
