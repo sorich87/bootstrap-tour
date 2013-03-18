@@ -74,12 +74,15 @@ var tour = new Tour({
   name: "tour",
   keyboard: true,
   useLocalStorage: false,
+  debug: false,
   afterGetState: function (key, value) {},
   afterSetState: function (key, value) {},
+  afterRemoveState: function (key, value) {},
   onStart: function (tour) {},
   onEnd: function (tour) {},
   onShow: function (tour) {},
-  onHide: function (tour) {}
+  onHide: function (tour) {},
+  onShown: function (tour) {}
 });
 </pre>
           <h4><code>name</code></h4>
@@ -93,7 +96,10 @@ var tour = new Tour({
           <h4><code>useLocalStorage</code></h4>
           <p>You can choose to save the tour state with localStorage instead of
           cookie. If you decide, you can safely remove the jquery.cookie plugin from the
-          dependencies</p>
+          dependencies.</p>
+
+          <h4><code>debug</code></h4>
+          <p>Set this option to true to have some useful informations printed in the console.</p>
 
           <h4><code>afterGetState</code> and <code>afterSetState</code></h4>
           <p>You may want to do something right after
