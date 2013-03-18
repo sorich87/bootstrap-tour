@@ -4,53 +4,24 @@
     <meta charset="utf-8">
     <title>Bootstrap Tour, easy product tours with Bootstrap from Twitter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!-- Le styles -->
     <link href="deps/bootstrap.css" rel="stylesheet">
-    <style>
-      body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-      }
-      h1 {
-        font-size: 54px;
-        margin-bottom: 9px;
-        font-weight: bold;
-        letter-spacing: -1px;
-        line-height: 1;
-      }
-      h3 {
-        font-weight: 500;
-      }
-    </style>
     <link href="deps/bootstrap-responsive.css" rel="stylesheet">
     <link href="deps/google-code-prettify/prettify.css" rel="stylesheet">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link href="index.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
   </head>
-
-  <body>
-    <a href="https://github.com/sorich87/bootstrap-tour">
-      <img id="gitban-tour" style="position: fixed; top: 0; right: 0; border: 0;"
-      src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
-      alt="Fork me on GitHub">
-    </a>
-
+  <body data-spy="scroll" data-target="#menu">
+    <a href="https://github.com/sorich87/bootstrap-tour"><img id="gitban-tour" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
     <div class="container">
-
       <header id="overview">
         <h1 id="reflex-mode">Bootstrap Tour</h1>
         <p class="lead">Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
-        <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
-        <a href="#" class="btn restart">Restart tour</a>
       </header>
-
       <div class="row">
         <div class="span9 content">
+          <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
+          <a href="#" class="btn-primary btn-large btn start">&#9658; Start tour</a>
+          <hr />
           <h2 id="usage">Usage</h2>
           <h3>1. Link to the JavaScript dependencies.</h3>
 <pre class="prettyprint">
@@ -74,7 +45,7 @@ tour.addStep({
           users will fell asleep!</p>
           <h3>4. Start the tour</h3>
           <pre class="prettyprint">tour.start();</pre>
-
+          <hr />
           <h2 id="options">Options</h2>
           <h3>Useful Methods</h3>
           <p>Bootstrap Tour saves the current step and will not
@@ -105,14 +76,12 @@ var tour = new Tour({
   useLocalStorage: false,
   afterGetState: function (key, value) {},
   afterSetState: function (key, value) {},
-  afterRemoveState: function (key) {},
   onStart: function (tour) {},
   onEnd: function (tour) {},
   onShow: function (tour) {},
   onHide: function (tour) {}
 });
 </pre>
-
           <h4><code>name</code></h4>
           <p>This option is used to build the name of the
           cookie or localStorage item where the tour state is stored. You can initialize several
@@ -126,11 +95,10 @@ var tour = new Tour({
           cookie. If you decide, you can safely remove the jquery.cookie plugin from the
           dependencies</p>
 
-          <h4><code>afterGetState</code>,  <code>afterSetState</code>
-          and afterRemoveState</h4>
+          <h4><code>afterGetState</code> and <code>afterSetState</code></h4>
           <p>You may want to do something right after
           Bootstrap Tour read or write the state. Just pass functions to
-          <code>afterGetState</code>, <code>afterSetState</code> or afterRemoveState.</p>
+          <code>afterGetState</code> or <code>afterSetState</code>.</p>
           <p>Your functions can have two parameters:</p>
           <dl>
             <dt>key</dt>
@@ -140,7 +108,7 @@ var tour = new Tour({
             which is saved when the user complete the tour). Note that
             Bootstrap Tour prepends the key with <code>tour_</code> when
             saving the state.</dd>
-            <dt>value (for afterGetState and afterSetState only)</dt>
+            <dt>value</dt>
             <dd>The value of the state been saved. Can be the index of the
             current step if the key is <code>current_step</code>, or
             <code>yes</code> if the key is <code>end</code>.</dd>
@@ -155,22 +123,16 @@ var tour = new Tour({
 });
 </pre>
           <h4><code>onStart</code></h4>
-          <p>Function to execute when the tour starts. If
-          the function returns a Promise object (including jQuery.Deferred), the first step won't
-          be shown until the Promise is resolved. </p>
+          <p>Function to execute when the tour starts.</p>
 
           <h4><code>onEnd</code></h4>
           <p>Function to execute when the tour ends.</p>
 
           <h4><code>onShow</code></h4>
-          <p>Function to execute right before each step is shown. If
-          the function returns a Promise object (including jQuery.Deferred), the next step won't
-          be shown until the Promise is resolved. </p>
+          <p>Function to execute right before each step is shown.</p>
 
           <h4><code>onHide</code></h4>
-          <p>Function to execute right before each step is hidden. If
-          the function returns a Promise object (including jQuery.Deferred), the current step won't
-          be hidden until the Promise is resolved. </p>
+          <p>Function to execute right before each step is hidden.</p>
 
           <h3>Step Options</h3>
           <p>Default options:</p>
@@ -224,25 +186,20 @@ tour.addStep({
             <dt>reflex</dt>
             <dd>(Bool) Enable the reflex mode : you can click on the element for continue the tour.</dd>
           </dl>
-
+          <hr />
           <h2 id="contributing">Contributing</h2>
           <p><a href="https://github.com/sorich87/bootstrap-tour/issues">Bug
             reports</a> and <a
             href="https://github.com/sorich87/bootstrap-tour/pulls">pull
             requests</a> are much needed!
-
+          <hr />
           <h2 id="license">License</h2>
           <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.
           Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
           Well, the same licenses as Bootstrap. We are lazy! ;)</p>
         </div>
       </div>
-
-    </div> <!-- /container -->
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
+    </div>
     <script src="deps/jquery.js"></script>
     <script src="deps/google-code-prettify/prettify.js"></script>
     <script src="deps/bootstrap-tooltip.js"></script>
@@ -250,6 +207,6 @@ tour.addStep({
     <script src="deps/bootstrap-alert.js"></script>
     <script src="deps/jquery.cookie.js"></script>
     <script src="bootstrap-tour.js"></script>
-    <script src="deps/example-tour.js"></script>
+    <script src="index.js"></script>
   </body>
 </html>
