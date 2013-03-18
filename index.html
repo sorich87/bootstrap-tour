@@ -150,6 +150,7 @@ tour.addStep({
   path: "", // string
   element: "", // (required) jQuery selector
   placement: "right", // string|function
+  container: "body" //string|false
   title: "", // string|function
   content: "", // string|function
   next: 0, // number
@@ -168,6 +169,9 @@ tour.addStep({
             <dt>placement</dt>
             <dd>How to position the popover - top | bottom | left |
             right.</dd>
+            <dt>container</dt>
+            <dd>Attachment of popover - optional: pass an element [string] to append the popover to,
+            default=false appends the popover after the 'element' above. Helpful for IE.</dd>
             <dt>title</dt>
             <dd>Step title</dd>
             <dt>content</dt>
