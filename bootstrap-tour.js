@@ -37,6 +37,7 @@
           },
           keyboard: true,
           useLocalStorage: false,
+          debug: false,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -117,7 +118,7 @@
           force = false;
         }
         if (this.ended() && !force) {
-          return;
+          return this._debug("Tour ended, start prevented.");
         }
         $(document).off("click.bootstrap-tour", ".popover .next").on("click.bootstrap-tour", ".popover .next", function(e) {
           e.preventDefault();
@@ -206,17 +207,20 @@
           _this.setCurrentStep(i);
           path = typeof step.path === "function" ? step.path.call() : step.path;
           if (_this._redirect(path, document.location.pathname)) {
+            _this._debug("Redirect to " + path);
             document.location.href = path;
             return;
           }
           if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
+            _this._debug("Skip the step " + (_this._current + 1) + ". The element does not exist or is not visible.");
             _this.showNextStep();
             return;
           }
           _this._showPopover(step, i);
           if (step.onShown != null) {
-            return step.onShown(_this);
+            step.onShown(_this);
           }
+          return _this._debug("Step " + (_this._current + 1) + " of " + _this._steps.length);
         };
         return this._callOnPromiseDone(promise, showStepHelper);
       };
@@ -245,6 +249,12 @@
         var step;
         step = this.getStep(this._current);
         return this.showStep(step.prev);
+      };
+
+      Tour.prototype._debug = function(text) {
+        if (this._options.debug) {
+          return window.console.log("Bootstrap Tour '" + this._options.name + "' | " + text);
+        }
       };
 
       Tour.prototype._redirect = function(path, currentPath) {

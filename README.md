@@ -6,8 +6,9 @@ Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
 ## TODO ##
 - Add a `id` option to identify each step instead of using integers.
-- Add a `debug` option to show useful logged informations when needed (under development)
 - Add the support for promise object as possible callback response
+- Add the smooth scrolling when the popover is outside the viewport
+- Separate docs files from project files in the repository
 
 ## Contributing ##
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.

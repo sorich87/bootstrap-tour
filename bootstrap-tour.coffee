@@ -31,6 +31,7 @@
         }
         keyboard: true,
         useLocalStorage: false,
+        debug: false,
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -43,7 +44,7 @@
 
       @_steps = []
       @setCurrentStep()
-    
+
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       key = "#{@_options.name}_#{key}"
@@ -93,7 +94,7 @@
 
     # Start tour from current step
     start: (force = false) ->
-      return if @ended() && !force
+      return @_debug "Tour ended, start prevented." if @ended() && !force
 
       # Go to next step after click on element with class .next
       $(document).off("click.bootstrap-tour",".popover .next").on "click.bootstrap-tour", ".popover .next", (e) =>
@@ -168,9 +169,8 @@
     # Show the specified step
     showStep: (i) ->
       step = @getStep(i)
-
       return unless step
-      
+
       # If onShow returns a promise, lets wait until it's done to execute
       promise = @_makePromise (step.onShow(@) if step.onShow?)
 
@@ -182,18 +182,21 @@
 
         # Redirect to step path if not already there
         if @_redirect(path, document.location.pathname)
+          @_debug "Redirect to #{path}"
           document.location.href = path
           return
 
         # If step element is hidden, skip step
         unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
+          @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
           @showNextStep()
           return
 
         # Show popover
         @_showPopover(step, i)
         step.onShown(@) if step.onShown?
-      
+        @_debug "Step #{@_current + 1} of #{@_steps.length}"
+
       @_callOnPromiseDone(promise, showStepHelper)
 
 
@@ -218,6 +221,11 @@
     showPrevStep: ->
       step = @getStep(@_current)
       @showStep(step.prev)
+
+    # Print message in console
+    _debug: (text) ->
+      if @_options.debug
+        window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}";
 
     # Check if step path equals current document path
     _redirect: (path, currentPath) ->
