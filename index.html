@@ -74,12 +74,15 @@ var tour = new Tour({
   name: "tour",
   keyboard: true,
   useLocalStorage: false,
+  debug: false,
   afterGetState: function (key, value) {},
   afterSetState: function (key, value) {},
+  afterRemoveState: function (key, value) {},
   onStart: function (tour) {},
   onEnd: function (tour) {},
   onShow: function (tour) {},
-  onHide: function (tour) {}
+  onHide: function (tour) {},
+  onShown: function (tour) {}
 });
 </pre>
           <h4><code>name</code></h4>
@@ -133,6 +136,9 @@ var tour = new Tour({
 
           <h4><code>onShow</code></h4>
           <p>Function to execute right before each step is shown.</p>
+
+          <h4><code>onShown</code></h4>
+          <p>Function to execute right after each step is shown.</p>
 
           <h4><code>onHide</code></h4>
           <p>Function to execute right before each step is hidden.</p>
