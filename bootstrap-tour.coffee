@@ -127,7 +127,7 @@
     # Hide current step and show prev step
     prev: ->
       promise = @hideStep(@_current)
-
+      @_callOnPromiseDone(promise, @showPrevStep)
 
     # End tour
     end: ->

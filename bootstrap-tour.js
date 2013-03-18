@@ -148,7 +148,8 @@
 
       Tour.prototype.prev = function() {
         var promise;
-        return promise = this.hideStep(this._current);
+        promise = this.hideStep(this._current);
+        return this._callOnPromiseDone(promise, this.showPrevStep);
       };
 
       Tour.prototype.end = function() {
