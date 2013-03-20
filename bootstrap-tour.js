@@ -102,6 +102,7 @@
             placement: "right",
             title: "",
             content: "",
+            id: "step-" + i,
             next: i === this._steps.length - 1 ? -1 : i + 1,
             prev: i - 1,
             animation: true,
@@ -265,7 +266,7 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var content, nav, options, tip,
+        var $tip, content, nav, options,
           _this = this;
         content = "" + step.content + "<br /><p>";
         options = $.extend({}, this._options);
@@ -296,9 +297,10 @@
           container: "body",
           template: step.template
         }).popover("show");
-        tip = $(step.element).data("popover").tip();
-        this._reposition(tip, step);
-        return this._scrollIntoView(tip);
+        $tip = $(step.element).data("popover").tip();
+        $tip.attr("id", step.id);
+        this._reposition($tip, step);
+        return this._scrollIntoView($tip);
       };
 
       Tour.prototype._reposition = function(tip, step) {

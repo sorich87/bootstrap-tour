@@ -89,6 +89,7 @@
         placement: "right"
         title: ""
         content: ""
+        id: "step-#{i}"
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
         animation: true
@@ -271,9 +272,10 @@
         template: step.template
       }).popover("show")
 
-      tip = $(step.element).data("popover").tip()
-      @_reposition(tip, step)
-      @_scrollIntoView(tip)
+      $tip = $(step.element).data("popover").tip()
+      $tip.attr("id", step.id)
+      @_reposition($tip, step)
+      @_scrollIntoView($tip)
 
     # Prevent popups from crossing over the edge of the window
     _reposition: (tip, step) ->
