@@ -32,6 +32,11 @@
         keyboard: true,
         useLocalStorage: false,
         debug: false,
+        template: "<div class='popover tour'>
+            <div class='arrow'></div>
+            <h3 class='popover-title'></h3>
+            <div class='popover-content'></div>
+          </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -90,6 +95,7 @@
         onShow: @_options.onShow
         onHide: @_options.onHide
         onShown: @_options.onShown
+        template: @_options.template
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -262,6 +268,7 @@
         html: true
         animation: step.animation
         container: "body"
+        template: step.template
       }).popover("show")
 
       tip = $(step.element).data("popover").tip()
