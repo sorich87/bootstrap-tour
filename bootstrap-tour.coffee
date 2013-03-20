@@ -1,5 +1,5 @@
 ### ============================================================
-# bootstrap-tour.js v0.1
+# bootstrap-tour.js v0.2.0
 # http://pushly.github.com/bootstrap-tour/
 # ==============================================================
 # Copyright 2012 Push.ly
