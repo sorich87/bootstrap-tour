@@ -45,8 +45,9 @@
           onStart: function(tour) {},
           onEnd: function(tour) {},
           onShow: function(tour) {},
+          onShown: function(tour) {},
           onHide: function(tour) {},
-          onShown: function(tour) {}
+          onHidden: function(tour) {}
         }, options);
         this._steps = [];
         this.setCurrentStep();
@@ -107,8 +108,9 @@
             prev: i - 1,
             animation: true,
             onShow: this._options.onShow,
-            onHide: this._options.onHide,
             onShown: this._options.onShown,
+            onHide: this._options.onHide,
+            onHidden: this._options.onHidden,
             template: this._options.template
           }, this._steps[i]);
         }
@@ -191,7 +193,10 @@
           var $element;
           $element = $(step.element).popover("hide");
           if (step.reflex) {
-            return $element.css("cursor", "").off("click.boostrap-tour");
+            $element.css("cursor", "").off("click.boostrap-tour");
+          }
+          if (step.onHidden != null) {
+            return step.onHidden(_this);
           }
         };
         this._callOnPromiseDone(promise, hideStepHelper);

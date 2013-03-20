@@ -43,8 +43,9 @@
         onStart: (tour) ->
         onEnd: (tour) ->
         onShow: (tour) ->
-        onHide: (tour) ->
         onShown: (tour) ->
+        onHide: (tour) ->
+        onHidden: (tour) ->
       }, options)
 
       @_steps = []
@@ -94,8 +95,9 @@
         prev: i - 1
         animation: true
         onShow: @_options.onShow
-        onHide: @_options.onHide
         onShown: @_options.onShown
+        onHide: @_options.onHide
+        onHidden: @_options.onHidden
         template: @_options.template
       }, @_steps[i]) if @_steps[i]?
 
@@ -168,6 +170,7 @@
       hideStepHelper = (e) =>
         $element = $(step.element).popover("hide")
         $element.css("cursor", "").off "click.boostrap-tour" if step.reflex
+        step.onHidden(@) if step.onHidden?
 
       @_callOnPromiseDone(promise, hideStepHelper)
 

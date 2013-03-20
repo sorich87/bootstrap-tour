@@ -120,6 +120,20 @@ test "Tour with onHide option should run the callback before hiding the step", -
   @tour.hideStep(1)
   strictEqual(tour_test, 4, "tour runs onHide when next step hidden")
 
+test "Tour with onHidden option should run the callback after hiding the step", ->
+  tour_test = 0
+  @tour = new Tour({
+    onHidden: ->
+      tour_test += 2
+  })
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  @tour.next()
+  strictEqual(tour_test, 2, "tour runs onHidden after first step hidden")
+  @tour.next()
+  strictEqual(tour_test, 4, "tour runs onHidden after next step hidden")
+
 test "Tour.addStep with onShow option should run the callback before showing the step", ->
   tour_test = 0
   @tour = new Tour()
@@ -156,13 +170,20 @@ test "Tour.getStep should get a step", ->
     placement: "left"
     title: "Test"
     content: "Just a test"
+    id: "step-0"
     prev: -1
     next: 2
     end: false
     animation: false
     onShow: (tour) ->
-    onHide: (tour) ->
     onShown: (tour) ->
+    onHide: (tour) ->
+    onHidden: (tour) ->
+    template: "<div class='popover tour'>
+    <div class='arrow'></div>
+    <h3 class='popover-title'></h3>
+    <div class='popover-content'></div>
+    </div>"
   }
   @tour.addStep(step)
   deepEqual(@tour.getStep(0), step, "tour gets a step")
