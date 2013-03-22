@@ -430,3 +430,13 @@ test("Tour.showStep should show multiple step on the same element", function() {
   this.tour.showNextStep();
   return strictEqual(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element");
 });
+
+test("Tour.showStep redirects to the anchor when the path is an anchor", function() {
+  this.tour = new Tour();
+  this.tour.addStep({
+    element: $("<div></div>").appendTo("#qunit-fixture"),
+    path: "#mytest"
+  });
+  this.tour.showStep(0);
+  return strictEqual("#mytest", window.location.hash, "Tour step has moved to the anchor");
+});

@@ -301,3 +301,9 @@ test "Tour.showStep should show multiple step on the same element", ->
   strictEqual(@tour.getStep(0).element.data("popover").tip().filter(":visible").length, 1, "tour show the first step")
   @tour.showNextStep()
   strictEqual(@tour.getStep(1).element.data("popover").tip().filter(":visible").length, 1, "tour show the second step on the same element")
+
+test "Tour.showStep redirects to the anchor when the path is an anchor", ->
+  @tour = new Tour()
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), path: "#mytest"})
+  @tour.showStep(0)
+  strictEqual("#mytest", window.location.hash, "Tour step has moved to the anchor")
