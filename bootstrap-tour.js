@@ -295,10 +295,10 @@
         }
         nav = [];
         if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>" + options.labels.prev + "</a>");
+          nav.push("<a href='#' class='prev'>" + options.labels.prev + "</a>");
         }
         if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>" + options.labels.next + "</a>");
+          nav.push("<a href='#' class='next'>" + options.labels.next + "</a>");
         }
         content += nav.join(" | ");
         content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
