@@ -333,10 +333,14 @@
               e.preventDefault()
               if @_current < @_steps.length - 1
                 @next()
+              else
+                @end()
             when 37
               e.preventDefault()
               if @_current > 0
                 @prev()
+              else
+                @end()
 
     # Checks if the result of a callback is a promise
     _makePromise: (result) ->
