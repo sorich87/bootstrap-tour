@@ -191,7 +191,8 @@
         path = if typeof step.path == "function" then step.path.call() else step.path
 
         # Redirect to step path if not already there
-        if @_redirect(path, document.location.pathname)
+        current_path = [document.location.pathname, document.location.hash].join('')
+        if @_redirect(path, current_path)
           @_debug "Redirect to #{path}"
           document.location.href = path
           return

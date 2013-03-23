@@ -413,3 +413,10 @@ test "Reflex parameter should change the element cursor to pointer when the step
   @tour.next()
   strictEqual($element.css("cursor"), "auto", "Tour reset the element cursor when the step is hidden")
 
+test "Tour.showStep redirects to the anchor when the path is an anchor", ->
+  @tour = new Tour()
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), path: "#mytest"})
+  @tour.showStep(0)
+  strictEqual("#mytest", document.location.hash, "Tour step has moved to the anchor")
+  document.location.hash = ""
+

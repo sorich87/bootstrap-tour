@@ -212,10 +212,11 @@
         }
         promise = this._makePromise((step.onShow != null ? step.onShow(this) : void 0));
         showStepHelper = function(e) {
-          var path;
+          var current_path, path;
           _this.setCurrentStep(i);
           path = typeof step.path === "function" ? step.path.call() : step.path;
-          if (_this._redirect(path, document.location.pathname)) {
+          current_path = [document.location.pathname, document.location.hash].join('');
+          if (_this._redirect(path, current_path)) {
             _this._debug("Redirect to " + path);
             document.location.href = path;
             return;
