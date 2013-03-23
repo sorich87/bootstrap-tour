@@ -61,6 +61,13 @@ test "Tour.addStep should add a step", ->
   @tour.addStep(step)
   deepEqual(@tour._steps, [step], "tour adds steps")
 
+test "Tour step should have an id", ->
+  @tour = new Tour()
+  $element = $("<div></div>").appendTo("#qunit-fixture")
+  @tour.addStep({element: $element})
+  @tour.start()
+  strictEqual($element.data("popover").tip().attr("id"), "step-0", "tour runs onStart when the first step shown")
+
 test "Tour with onStart option should run the callback before showing the first step", ->
   tour_test = 0
   @tour = new Tour({

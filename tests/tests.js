@@ -79,6 +79,17 @@
     return deepEqual(this.tour._steps, [step], "tour adds steps");
   });
 
+  test("Tour step should have an id", function() {
+    var $element;
+    this.tour = new Tour();
+    $element = $("<div></div>").appendTo("#qunit-fixture");
+    this.tour.addStep({
+      element: $element
+    });
+    this.tour.start();
+    return strictEqual($element.data("popover").tip().attr("id"), "step-0", "tour runs onStart when the first step shown");
+  });
+
   test("Tour with onStart option should run the callback before showing the first step", function() {
     var tour_test;
     tour_test = 0;
