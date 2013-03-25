@@ -29,14 +29,15 @@
           next: 'Next &raquo;'
           prev: '&laquo; Prev'
         }
-        keyboard: true,
-        useLocalStorage: false,
-        debug: false,
         template: "<div class='popover tour'>
             <div class='arrow'></div>
             <h3 class='popover-title'></h3>
             <div class='popover-content'></div>
           </div>"
+        container: 'body'
+        keyboard: true
+        useLocalStorage: false
+        debug: false
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -99,6 +100,7 @@
         onHide: @_options.onHide
         onHidden: @_options.onHidden
         template: @_options.template
+        container: @_options.container
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -272,7 +274,7 @@
         content: content
         html: true
         animation: step.animation
-        container: "body"
+        container: step.container
         template: step.template
       }).popover("show")
 

@@ -35,10 +35,11 @@
             next: 'Next &raquo;',
             prev: '&laquo; Prev'
           },
+          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>",
+          container: 'body',
           keyboard: true,
           useLocalStorage: false,
           debug: false,
-          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -111,7 +112,8 @@
             onShown: this._options.onShown,
             onHide: this._options.onHide,
             onHidden: this._options.onHidden,
-            template: this._options.template
+            template: this._options.template,
+            container: this._options.container
           }, this._steps[i]);
         }
       };
@@ -300,7 +302,7 @@
           content: content,
           html: true,
           animation: step.animation,
-          container: "body",
+          container: step.container,
           template: step.template
         }).popover("show");
         $tip = $(step.element).data("popover").tip();
