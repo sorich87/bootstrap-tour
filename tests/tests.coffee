@@ -420,3 +420,19 @@ test "Tour.showStep redirects to the anchor when the path is an anchor", ->
   strictEqual("#mytest", document.location.hash, "Tour step has moved to the anchor")
   document.location.hash = ""
 
+test "Backdrop parameter should show backdrop with step", ->
+  @tour = new Tour()
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), backdrop: false})
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), backdrop: true})
+  @tour.showStep(0)
+  strictEqual($(".tour-backdrop").length, 0, "disable backdrop")
+  strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop")
+  strictEqual($(".tour-step-background").length, 0, "disable backdrop")
+  @tour.showStep(1)
+  strictEqual($(".tour-backdrop").length, 1, "enable backdrop")
+  strictEqual($(".tour-step-backdrop").length, 1, "enable backdrop")
+  strictEqual($(".tour-step-background").length, 1, "enable backdrop")
+  @tour.end()
+  strictEqual($(".tour-backdrop").length, 0, "disable backdrop")
+  strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop")
+  strictEqual($(".tour-step-background").length, 0, "disable backdrop")

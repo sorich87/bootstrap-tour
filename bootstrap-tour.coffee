@@ -38,6 +38,7 @@
         keyboard: true
         useLocalStorage: false
         debug: false
+        backdrop: false
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -51,6 +52,11 @@
 
       @_steps = []
       @setCurrentStep()
+      @backdrop = {
+        overlay: null
+        step: null
+        background: null
+      }
 
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
@@ -147,6 +153,7 @@
         $(document).off "keyup.bootstrap-tour"
         $(window).off "resize.bootstrap-tour"
         @setState("end", "yes")
+        @_hideBackdrop()
 
         @_options.onEnd(@) if @_options.onEnd?
 
@@ -172,6 +179,8 @@
       hideStepHelper = (e) =>
         $element = $(step.element).popover("hide")
         $element.css("cursor", "").off "click.boostrap-tour" if step.reflex
+        @_hideBackdrop() if step.backdrop
+
         step.onHidden(@) if step.onHidden?
 
       @_callOnPromiseDone(promise, hideStepHelper)
@@ -204,6 +213,8 @@
           @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
           @showNextStep()
           return
+
+        @_showBackdrop(step.element) if step.backdrop
 
         # Show popover
         @_showPopover(step, i)
@@ -356,6 +367,58 @@
           cb.call(@, arg)
       else
         cb.call(@, arg)
+
+    _showBackdrop: (el) ->
+      return unless @backdrop.overlay == null
+
+      @_showOverlay()
+      @_showOverlayElement(el)
+
+    _hideBackdrop: ->
+      return if @backdrop.overlay == null
+
+      @_hideOverlayElement()
+      @_hideOverlay()
+
+    _showOverlay: ->
+      @backdrop = $('<div/>')
+      @backdrop.addClass('tour-backdrop')
+      @backdrop.height $(document).innerHeight()
+
+      $('body').append @backdrop
+
+    _hideOverlay: ->
+      @backdrop.remove()
+      @backdrop.overlay = null
+
+    _showOverlayElement: (el) ->
+      step = $(el)
+
+      padding = 5
+
+      offset = step.offset()
+      offset.top = offset.top - padding
+      offset.left = offset.left - padding
+
+      background = $('<div/>')
+      background
+        .width(step.innerWidth() + padding)
+        .height(step.innerHeight() + padding)
+        .addClass('tour-step-background')
+        .offset(offset)
+
+      step.addClass('tour-step-backdrop')
+
+      $('body').append background
+      @backdrop.step = step
+      @backdrop.background = background
+
+    _hideOverlayElement: ->
+      @backdrop.step.removeClass('tour-step-backdrop')
+
+      @backdrop.background.remove()
+      @backdrop.step = null
+      @backdrop.background = null
 
   window.Tour = Tour
 
