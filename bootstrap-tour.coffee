@@ -53,29 +53,34 @@
 
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
-      key = "#{@_options.name}_#{key}"
-      if this._options.useLocalStorage
-        window.localStorage.setItem(key, value)
+      nameKey = "#{@_options.name}_#{key}"
+      if this._options.setState
+        this._options.setState(key, value, @_options.name)
+      else  if this._options.useLocalStorage
+        window.localStorage.setItem(nameKey, value)
       else
-        $.cookie(key, value, { expires: 36500, path: '/' })
-      @_options.afterSetState(key, value)
+        $.cookie(nameKey, value, { expires: 36500, path: '/' })
+      @_options.afterSetState(nameKey, value)
 
     removeState: (key) ->
-      key = "#{@_options.name}_#{key}"
-      if this._options.useLocalStorage
-        window.localStorage.removeItem(key)
+      nameKey = "#{@_options.name}_#{key}"
+      if this._options.removeState
+        this._options.removeState(key, @_options.name)
+      else  if this._options.useLocalStorage
+        window.localStorage.removeItem(nameKey)
       else
-        $.removeCookie(key, { path: '/' })
-      @_options.afterRemoveState(key)
+        $.removeCookie(nameKey, { path: '/' })
+      @_options.afterRemoveState(nameKey)
 
     getState: (key) ->
-      if this._options.useLocalStorage
-        value = window.localStorage.getItem("#{@_options.name}_#{key}")
+      nameKey = "#{@_options.name}_#{key}"
+      if this._options.getState
+        value = this._options.getState(key, @_options.name)
+      else  if this._options.useLocalStorage
+        value = window.localStorage.getItem(nameKey)
       else
-        value = $.cookie("#{@_options.name}_#{key}")
-
+        value = $.cookie(nameKey)
       value = null if value == undefined || value == "null"
-
       @_options.afterGetState(key, value)
       return value
 
