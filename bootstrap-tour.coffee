@@ -55,7 +55,7 @@
     setState: (key, value) ->
       nameKey = "#{@_options.name}_#{key}"
       if this._options.setState
-        this._options.setState(key, value, @_options.name)
+        this._options.setState(nameKey, value, key, @_options.name)
       else  if this._options.useLocalStorage
         window.localStorage.setItem(nameKey, value)
       else
@@ -65,7 +65,7 @@
     removeState: (key) ->
       nameKey = "#{@_options.name}_#{key}"
       if this._options.removeState
-        this._options.removeState(key, @_options.name)
+        this._options.removeState(nameKey, key, @_options.name)
       else  if this._options.useLocalStorage
         window.localStorage.removeItem(nameKey)
       else
@@ -75,7 +75,7 @@
     getState: (key) ->
       nameKey = "#{@_options.name}_#{key}"
       if this._options.getState
-        value = this._options.getState(key, @_options.name)
+        value = this._options.getState(nameKey, key, @_options.name)
       else  if this._options.useLocalStorage
         value = window.localStorage.getItem(nameKey)
       else
