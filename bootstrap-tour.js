@@ -438,7 +438,3 @@
   })(jQuery, window);
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=bootstrap-tour.map
-*/
