@@ -31,7 +31,7 @@
         }
         keyboard: true,
         useLocalStorage: false,
-        state: 'cookies',
+        state: 'cookie',
         debug: false,
         template: "<div class='popover tour'>
             <div class='arrow'></div>
@@ -55,8 +55,8 @@
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       nameKey = "#{@_options.name}_#{key}"
-      if @_options.state.set
-        @_options.state.set(nameKey, value, key, @_options.name)
+      if typeof @_options.state.setItem == "function"
+        @_options.state.setItem(nameKey, value, key, @_options.name)
       else if @_options.state == "localStorage" || @_options.useLocalStorage
         window.localStorage.setItem(nameKey, value)
       else
@@ -65,8 +65,8 @@
 
     removeState: (key) ->
       nameKey = "#{@_options.name}_#{key}"
-      if @_options.state.remove
-        @_options.state.remove(nameKey, key, @_options.name)
+      if typeof @_options.state.removeItem == "function"
+        @_options.state.removeItem(nameKey, key, @_options.name)
       else if @_options.state == "localStorage" || @_options.useLocalStorage
         window.localStorage.removeItem(nameKey)
       else
@@ -75,8 +75,8 @@
 
     getState: (key) ->
       nameKey = "#{@_options.name}_#{key}"
-      if @_options.state.get
-        value = @_options.state.get(nameKey, key, @_options.name)
+      if typeof @_options.state.getItem == "function"
+        value = @_options.state.getItem(nameKey, key, @_options.name)
       else if @_options.state == "localStorage" || @_options.useLocalStorage
         value = window.localStorage.getItem(nameKey)
       else
