@@ -35,6 +35,7 @@
           },
           keyboard: true,
           useLocalStorage: false,
+          state: 'cookies',
           debug: false,
           template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>",
           afterSetState: function(key, value) {},
@@ -55,9 +56,9 @@
         var nameKey;
 
         nameKey = "" + this._options.name + "_" + key;
-        if (this._options.setState) {
-          this._options.setState(nameKey, value, key, this._options.name);
-        } else if (this._options.useLocalStorage) {
+        if (this._options.state.set) {
+          this._options.state.set(nameKey, value, key, this._options.name);
+        } else if (this._options.state === "localStorage" || this._options.useLocalStorage) {
           window.localStorage.setItem(nameKey, value);
         } else {
           $.cookie(nameKey, value, {
@@ -72,9 +73,9 @@
         var nameKey;
 
         nameKey = "" + this._options.name + "_" + key;
-        if (this._options.removeState) {
-          this._options.removeState(nameKey, key, this._options.name);
-        } else if (this._options.useLocalStorage) {
+        if (this._options.state.remove) {
+          this._options.state.remove(nameKey, key, this._options.name);
+        } else if (this._options.state === "localStorage" || this._options.useLocalStorage) {
           window.localStorage.removeItem(nameKey);
         } else {
           $.removeCookie(nameKey, {
@@ -88,9 +89,9 @@
         var nameKey, value;
 
         nameKey = "" + this._options.name + "_" + key;
-        if (this._options.getState) {
-          value = this._options.getState(nameKey, key, this._options.name);
-        } else if (this._options.useLocalStorage) {
+        if (this._options.state.get) {
+          value = this._options.state.get(nameKey, key, this._options.name);
+        } else if (this._options.state === "localStorage" || this._options.useLocalStorage) {
           value = window.localStorage.getItem(nameKey);
         } else {
           value = $.cookie(nameKey);
@@ -98,7 +99,7 @@
         if (value === void 0 || value === "null") {
           value = null;
         }
-        this._options.afterGetState(key, value);
+        this._options.afterGetState(nameKey, value);
         return value;
       };
 

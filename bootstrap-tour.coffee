@@ -31,6 +31,7 @@
         }
         keyboard: true,
         useLocalStorage: false,
+        state: 'cookies',
         debug: false,
         template: "<div class='popover tour'>
             <div class='arrow'></div>
@@ -54,9 +55,9 @@
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       nameKey = "#{@_options.name}_#{key}"
-      if this._options.setState
-        this._options.setState(nameKey, value, key, @_options.name)
-      else  if this._options.useLocalStorage
+      if @_options.state.set
+        @_options.state.set(nameKey, value, key, @_options.name)
+      else if @_options.state == "localStorage" || @_options.useLocalStorage
         window.localStorage.setItem(nameKey, value)
       else
         $.cookie(nameKey, value, { expires: 36500, path: '/' })
@@ -64,9 +65,9 @@
 
     removeState: (key) ->
       nameKey = "#{@_options.name}_#{key}"
-      if this._options.removeState
-        this._options.removeState(nameKey, key, @_options.name)
-      else  if this._options.useLocalStorage
+      if @_options.state.remove
+        @_options.state.remove(nameKey, key, @_options.name)
+      else if @_options.state == "localStorage" || @_options.useLocalStorage
         window.localStorage.removeItem(nameKey)
       else
         $.removeCookie(nameKey, { path: '/' })
@@ -74,14 +75,14 @@
 
     getState: (key) ->
       nameKey = "#{@_options.name}_#{key}"
-      if this._options.getState
-        value = this._options.getState(nameKey, key, @_options.name)
-      else  if this._options.useLocalStorage
+      if @_options.state.get
+        value = @_options.state.get(nameKey, key, @_options.name)
+      else if @_options.state == "localStorage" || @_options.useLocalStorage
         value = window.localStorage.getItem(nameKey)
       else
         value = $.cookie(nameKey)
       value = null if value == undefined || value == "null"
-      @_options.afterGetState(key, value)
+      @_options.afterGetState(nameKey, value)
       return value
 
     # Add a new step
