@@ -33,11 +33,13 @@
             next: 'Next &raquo;',
             prev: '&laquo; Prev'
           },
+          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>",
+          container: 'body',
           keyboard: true,
           useLocalStorage: false,
-          state: 'cookies',
+          state: 'cookie',
           debug: false,
-          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>",
+          backdrop: false,
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -50,14 +52,19 @@
         }, options);
         this._steps = [];
         this.setCurrentStep();
+        this.backdrop = {
+          overlay: null,
+          step: null,
+          background: null
+        };
       }
 
       Tour.prototype.setState = function(key, value) {
         var nameKey;
 
         nameKey = "" + this._options.name + "_" + key;
-        if (this._options.state.set) {
-          this._options.state.set(nameKey, value, key, this._options.name);
+        if (typeof this._options.state.setItem === "function") {
+          this._options.state.setItem(nameKey, value, key, this._options.name);
         } else if (this._options.state === "localStorage" || this._options.useLocalStorage) {
           window.localStorage.setItem(nameKey, value);
         } else {
@@ -73,8 +80,8 @@
         var nameKey;
 
         nameKey = "" + this._options.name + "_" + key;
-        if (this._options.state.remove) {
-          this._options.state.remove(nameKey, key, this._options.name);
+        if (typeof this._options.state.removeItem === "function") {
+          this._options.state.removeItem(nameKey, key, this._options.name);
         } else if (this._options.state === "localStorage" || this._options.useLocalStorage) {
           window.localStorage.removeItem(nameKey);
         } else {
@@ -89,8 +96,8 @@
         var nameKey, value;
 
         nameKey = "" + this._options.name + "_" + key;
-        if (this._options.state.get) {
-          value = this._options.state.get(nameKey, key, this._options.name);
+        if (typeof this._options.state.getItem === "function") {
+          value = this._options.state.getItem(nameKey, key, this._options.name);
         } else if (this._options.state === "localStorage" || this._options.useLocalStorage) {
           value = window.localStorage.getItem(nameKey);
         } else {
@@ -122,7 +129,8 @@
             onShown: this._options.onShown,
             onHide: this._options.onHide,
             onHidden: this._options.onHidden,
-            template: this._options.template
+            template: this._options.template,
+            container: this._options.container
           }, this._steps[i]);
         }
       };
@@ -180,6 +188,7 @@
           $(document).off("keyup.bootstrap-tour");
           $(window).off("resize.bootstrap-tour");
           _this.setState("end", "yes");
+          _this._hideBackdrop();
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
           }
@@ -211,6 +220,9 @@
           $element = $(step.element).popover("hide");
           if (step.reflex) {
             $element.css("cursor", "").off("click.boostrap-tour");
+          }
+          if (step.backdrop) {
+            _this._hideBackdrop();
           }
           if (step.onHidden != null) {
             return step.onHidden(_this);
@@ -244,6 +256,9 @@
             _this._debug("Skip the step " + (_this._current + 1) + ". The element does not exist or is not visible.");
             _this.showNextStep();
             return;
+          }
+          if (step.backdrop) {
+            _this._showBackdrop(step.element);
           }
           _this._showPopover(step, i);
           if (step.onShown != null) {
@@ -322,7 +337,7 @@
           content: content,
           html: true,
           animation: step.animation,
-          container: "body",
+          container: step.container,
           template: step.template
         }).popover("show");
         $tip = $(step.element).data("popover").tip();
@@ -430,6 +445,57 @@
         } else {
           return cb.call(this, arg);
         }
+      };
+
+      Tour.prototype._showBackdrop = function(el) {
+        if (this.backdrop.overlay !== null) {
+          return;
+        }
+        this._showOverlay();
+        return this._showOverlayElement(el);
+      };
+
+      Tour.prototype._hideBackdrop = function() {
+        if (this.backdrop.overlay === null) {
+          return;
+        }
+        this._hideOverlayElement();
+        return this._hideOverlay();
+      };
+
+      Tour.prototype._showOverlay = function() {
+        this.backdrop = $('<div/>');
+        this.backdrop.addClass('tour-backdrop');
+        this.backdrop.height($(document).innerHeight());
+        return $('body').append(this.backdrop);
+      };
+
+      Tour.prototype._hideOverlay = function() {
+        this.backdrop.remove();
+        return this.backdrop.overlay = null;
+      };
+
+      Tour.prototype._showOverlayElement = function(el) {
+        var background, offset, padding, step;
+
+        step = $(el);
+        padding = 5;
+        offset = step.offset();
+        offset.top = offset.top - padding;
+        offset.left = offset.left - padding;
+        background = $('<div/>');
+        background.width(step.innerWidth() + padding).height(step.innerHeight() + padding).addClass('tour-step-background').offset(offset);
+        step.addClass('tour-step-backdrop');
+        $('body').append(background);
+        this.backdrop.step = step;
+        return this.backdrop.background = background;
+      };
+
+      Tour.prototype._hideOverlayElement = function() {
+        this.backdrop.step.removeClass('tour-step-backdrop');
+        this.backdrop.background.remove();
+        this.backdrop.step = null;
+        return this.backdrop.background = null;
       };
 
       return Tour;
