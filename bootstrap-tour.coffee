@@ -29,15 +29,17 @@
           next: 'Next &raquo;'
           prev: '&laquo; Prev'
         }
-        keyboard: true,
-        useLocalStorage: false,
-        state: 'cookie',
-        debug: false,
         template: "<div class='popover tour'>
             <div class='arrow'></div>
             <h3 class='popover-title'></h3>
             <div class='popover-content'></div>
           </div>"
+        container: 'body'
+        keyboard: true
+        useLocalStorage: false
+        state: 'cookie'
+        debug: false
+        backdrop: false
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -51,6 +53,11 @@
 
       @_steps = []
       @setCurrentStep()
+      @backdrop = {
+        overlay: null
+        step: null
+        background: null
+      }
 
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
@@ -105,6 +112,7 @@
         onHide: @_options.onHide
         onHidden: @_options.onHidden
         template: @_options.template
+        container: @_options.container
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -151,6 +159,7 @@
         $(document).off "keyup.bootstrap-tour"
         $(window).off "resize.bootstrap-tour"
         @setState("end", "yes")
+        @_hideBackdrop()
 
         @_options.onEnd(@) if @_options.onEnd?
 
@@ -176,6 +185,8 @@
       hideStepHelper = (e) =>
         $element = $(step.element).popover("hide")
         $element.css("cursor", "").off "click.boostrap-tour" if step.reflex
+        @_hideBackdrop() if step.backdrop
+
         step.onHidden(@) if step.onHidden?
 
       @_callOnPromiseDone(promise, hideStepHelper)
@@ -208,6 +219,8 @@
           @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
           @showNextStep()
           return
+
+        @_showBackdrop(step.element) if step.backdrop
 
         # Show popover
         @_showPopover(step, i)
@@ -278,7 +291,7 @@
         content: content
         html: true
         animation: step.animation
-        container: "body"
+        container: step.container
         template: step.template
       }).popover("show")
 
@@ -360,6 +373,58 @@
           cb.call(@, arg)
       else
         cb.call(@, arg)
+
+    _showBackdrop: (el) ->
+      return unless @backdrop.overlay == null
+
+      @_showOverlay()
+      @_showOverlayElement(el)
+
+    _hideBackdrop: ->
+      return if @backdrop.overlay == null
+
+      @_hideOverlayElement()
+      @_hideOverlay()
+
+    _showOverlay: ->
+      @backdrop = $('<div/>')
+      @backdrop.addClass('tour-backdrop')
+      @backdrop.height $(document).innerHeight()
+
+      $('body').append @backdrop
+
+    _hideOverlay: ->
+      @backdrop.remove()
+      @backdrop.overlay = null
+
+    _showOverlayElement: (el) ->
+      step = $(el)
+
+      padding = 5
+
+      offset = step.offset()
+      offset.top = offset.top - padding
+      offset.left = offset.left - padding
+
+      background = $('<div/>')
+      background
+        .width(step.innerWidth() + padding)
+        .height(step.innerHeight() + padding)
+        .addClass('tour-step-background')
+        .offset(offset)
+
+      step.addClass('tour-step-backdrop')
+
+      $('body').append background
+      @backdrop.step = step
+      @backdrop.background = background
+
+    _hideOverlayElement: ->
+      @backdrop.step.removeClass('tour-step-backdrop')
+
+      @backdrop.background.remove()
+      @backdrop.step = null
+      @backdrop.background = null
 
   window.Tour = Tour
 
