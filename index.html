@@ -72,13 +72,6 @@ tour.addStep({
 <pre class="prettyprint">
 var tour = new Tour({
   name: "tour",
-  labels: {
-    end: "End tour",
-    next: 'Next &raquo;'
-    prev: '&laquo; Prev'
-  },
-  template: string,
-  container: "body",
   keyboard: true,
   useLocalStorage: false,
   debug: false,
@@ -88,9 +81,8 @@ var tour = new Tour({
   onStart: function (tour) {},
   onEnd: function (tour) {},
   onShow: function (tour) {},
-  onShown: function (tour) {}
   onHide: function (tour) {},
-  onHidden: function (tour) {},
+  onShown: function (tour) {}
 });
 </pre>
           <h4><code>name</code></h4>
@@ -151,17 +143,13 @@ var tour = new Tour({
           <h4><code>onHide</code></h4>
           <p>Function to execute right before each step is hidden.</p>
 
-          <h4><code>onHidden</code></h4>
-          <p>Function to execute right after each step is hidden.</p>
-
           <h3>Step Options</h3>
           <p>Default options:</p>
 <pre class="prettyprint">
 tour.addStep({
   path: "", // string
-  element: "", // jQuery selector (required)
+  element: "", // (required) jQuery selector
   placement: "right", // string|function
-  container: false // string|false
   title: "", // string|function
   content: "", // string|function
   next: 0, // number
@@ -173,17 +161,13 @@ tour.addStep({
 </pre>
           <dl>
             <dt>path</dt>
-            <dd>Path to the page on which the step should be shown. This
+            <dd>Path to the page on which the step should be shown. this
             allows you to build tours that span several pages!</dd>
             <dt>element</dt>
             <dd>HTML element on which the step popover should be shown.</dd>
             <dt>placement</dt>
             <dd>How to position the popover - top | bottom | left |
             right.</dd>
-            <dt>container</dt>
-            <dd>Attachment of popover (optional). Pass an element (string) to append the popover to.
-            By default (false), the popover is appended after the 'element' above.
-            This option is particularly helpful for Internet Explorer.</dd>
             <dt>title</dt>
             <dd>Step title</dd>
             <dt>content</dt>

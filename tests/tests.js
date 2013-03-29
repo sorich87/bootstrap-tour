@@ -630,28 +630,52 @@
     return document.location.hash = "";
   });
 
-  test("Backdrop parameter should show backdrop with step", function() {
-    this.tour = new Tour();
-    this.tour.addStep({
-      element: $("<div></div>").appendTo("#qunit-fixture"),
-      backdrop: false
+  test("setState calls custom setItem state handler when provided", function() {
+    var outerKey, outerName, outerNameKey, outerValue, setItem;
+
+    outerNameKey = void 0;
+    outerValue = void 0;
+    outerKey = void 0;
+    outerName = void 0;
+    setItem = function(nameKey, value, key, name) {
+      outerNameKey = nameKey;
+      outerValue = value;
+      outerKey = key;
+      return outerName = name;
+    };
+    this.tour = new Tour({
+      state: {
+        setItem: setItem
+      },
+      name: "myTour"
     });
-    this.tour.addStep({
-      element: $("<div></div>").appendTo("#qunit-fixture"),
-      backdrop: true
+    this.tour.setState("test", "yes");
+    strictEqual(outerNameKey, "myTour_test", "custom setItem is called with correct name_key");
+    strictEqual(outerValue, "yes", "custom setItem is called with correct value");
+    strictEqual(outerKey, "test", "custom setItem is called with correct key");
+    return strictEqual(outerName, "myTour", "custom setItem is called with correct tour name");
+  });
+
+  test("setState calls custom getItem state handler when provided", function() {
+    var getItem, gotState, setItem, valueStore;
+
+    valueStore = {};
+    setItem = function(nameKey, value, key, name) {
+      return valueStore[nameKey] = value;
+    };
+    getItem = function(nameKey, key, name) {
+      return valueStore[nameKey];
+    };
+    this.tour = new Tour({
+      state: {
+        setItem: setItem,
+        getItem: getItem
+      },
+      name: "myTour"
     });
-    this.tour.showStep(0);
-    strictEqual($(".tour-backdrop").length, 0, "disable backdrop");
-    strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop");
-    strictEqual($(".tour-step-background").length, 0, "disable backdrop");
-    this.tour.showStep(1);
-    strictEqual($(".tour-backdrop").length, 1, "enable backdrop");
-    strictEqual($(".tour-step-backdrop").length, 1, "enable backdrop");
-    strictEqual($(".tour-step-background").length, 1, "enable backdrop");
-    this.tour.end();
-    strictEqual($(".tour-backdrop").length, 0, "disable backdrop");
-    strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop");
-    return strictEqual($(".tour-step-background").length, 0, "disable backdrop");
+    this.tour.setState("test", "yes");
+    gotState = this.tour.getState("test");
+    return strictEqual(gotState, "yes", "custom getItem is called with correct tour name");
   });
 
 }).call(this);

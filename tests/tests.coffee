@@ -420,19 +420,41 @@ test "Tour.showStep redirects to the anchor when the path is an anchor", ->
   strictEqual("#mytest", document.location.hash, "Tour step has moved to the anchor")
   document.location.hash = ""
 
-test "Backdrop parameter should show backdrop with step", ->
-  @tour = new Tour()
-  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), backdrop: false})
-  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), backdrop: true})
-  @tour.showStep(0)
-  strictEqual($(".tour-backdrop").length, 0, "disable backdrop")
-  strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop")
-  strictEqual($(".tour-step-background").length, 0, "disable backdrop")
-  @tour.showStep(1)
-  strictEqual($(".tour-backdrop").length, 1, "enable backdrop")
-  strictEqual($(".tour-step-backdrop").length, 1, "enable backdrop")
-  strictEqual($(".tour-step-background").length, 1, "enable backdrop")
-  @tour.end()
-  strictEqual($(".tour-backdrop").length, 0, "disable backdrop")
-  strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop")
-  strictEqual($(".tour-step-background").length, 0, "disable backdrop")
+test "setState calls custom setItem state handler when provided", ->
+  outerNameKey = undefined
+  outerValue = undefined
+  outerKey = undefined
+  outerName = undefined
+  setItem = (nameKey, value, key, name) ->
+    outerNameKey = nameKey
+    outerValue = value
+    outerKey = key
+    outerName = name
+
+  @tour = new Tour({
+    state:{ setItem:setItem }, 
+    name:"myTour"
+  });
+  @tour.setState("test", "yes")
+
+  strictEqual(outerNameKey, "myTour_test", "custom setItem is called with correct name_key")
+  strictEqual(outerValue, "yes", "custom setItem is called with correct value")
+  strictEqual(outerKey, "test", "custom setItem is called with correct key")
+  strictEqual(outerName, "myTour", "custom setItem is called with correct tour name")
+
+test "setState calls custom getItem state handler when provided", ->
+  valueStore = {}
+
+  setItem = (nameKey, value, key, name) ->
+    valueStore[nameKey] = value
+  getItem = (nameKey, key, name) ->
+    return valueStore[nameKey]
+
+  @tour = new Tour({
+    state:{ setItem:setItem, getItem:getItem }, 
+    name:"myTour"
+  });
+  @tour.setState("test", "yes")
+  gotState = @tour.getState("test")
+
+  strictEqual(gotState, "yes", "custom getItem is called with correct tour name")
