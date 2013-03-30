@@ -173,6 +173,7 @@ test "Tour.getStep should get a step", ->
   @tour = new Tour()
   step = {
     element: $("<div></div>").appendTo("#qunit-fixture")
+    container: "body"
     path: "test"
     placement: "left"
     title: "Test"

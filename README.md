@@ -1,13 +1,10 @@
-# Bootstrap Tour #
 Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
 ## Demo and Documentation ##
 [http://bootstraptour.com](http://bootstraptour.com)
 
 ## TODO ##
-- Add optional backdrop feature in order to highlight the current step element
 - Add the smooth scrolling when the popover is outside the viewport
-- Separate docs files from project files in the repository
 - Define an appropriate tag + milestone system
 
 ## Contributing ##
