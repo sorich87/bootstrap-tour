@@ -256,6 +256,18 @@
       path? and path isnt "" and
         path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, "")
 
+    # Render navigation
+    _renderNavigation: (step, options) ->
+      nav = []
+
+      if (step.prev >= 0)
+        nav.push "<a href='##{step.prev}' class='prev'>#{options.labels.prev}</a>"
+      if (step.next >= 0)
+        nav.push "<a href='##{step.next}' class='next'>#{options.labels.next}</a>"
+
+      content = nav.join(" | ");
+      content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
+
     # Show step popover
     _showPopover: (step, i) ->
       content = "#{step.content}<br /><p>"
@@ -268,15 +280,7 @@
         $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           @next()
 
-      nav = []
-
-      if step.prev >= 0
-        nav.push "<a href='#' class='prev'>#{options.labels.prev}</a>"
-      if step.next >= 0
-        nav.push "<a href='#' class='next'>#{options.labels.next}</a>"
-      content += nav.join(" | ")
-
-      content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
+      content += @_renderNavigation(step, options)
 
       $(step.element).popover('destroy').popover({
         placement: step.placement

@@ -282,8 +282,21 @@
       return (path != null) && path !== "" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "");
     };
 
+    Tour.prototype._renderNavigation = function(step, options) {
+      var content, nav;
+      nav = [];
+      if (step.prev >= 0) {
+        nav.push("<a href='#" + step.prev + "' class='prev'>" + options.labels.prev + "</a>");
+      }
+      if (step.next >= 0) {
+        nav.push("<a href='#" + step.next + "' class='next'>" + options.labels.next + "</a>");
+      }
+      content = nav.join(" | ");
+      return content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
+    };
+
     Tour.prototype._showPopover = function(step, i) {
-      var $tip, content, nav, options,
+      var $tip, content, options,
         _this = this;
       content = "" + step.content + "<br /><p>";
       options = $.extend({}, this._options);
@@ -295,15 +308,7 @@
           return _this.next();
         });
       }
-      nav = [];
-      if (step.prev >= 0) {
-        nav.push("<a href='#' class='prev'>" + options.labels.prev + "</a>");
-      }
-      if (step.next >= 0) {
-        nav.push("<a href='#' class='next'>" + options.labels.next + "</a>");
-      }
-      content += nav.join(" | ");
-      content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
+      content += this._renderNavigation(step, options);
       $(step.element).popover('destroy').popover({
         placement: step.placement,
         trigger: "manual",
