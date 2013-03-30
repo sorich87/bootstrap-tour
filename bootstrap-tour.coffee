@@ -353,6 +353,9 @@
               e.preventDefault()
               if @_current > 0
                 @prev()
+            when 27
+              e.preventDefault()
+              @end()
 
     # Checks if the result of a callback is a promise
     _makePromise: (result) ->
