@@ -101,6 +101,7 @@
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
         animation: true
+        redirect: true
         onShow: @_options.onShow
         onShown: @_options.onShown
         onHide: @_options.onHide
@@ -203,9 +204,8 @@
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
-        if @_redirect(path, current_path)
-          @_debug "Redirect to #{path}"
-          document.location.href = path
+        if @_isRedirect(path, current_path)
+          @_redirect(step, path)
           return
 
         # If step element is hidden, skip step
@@ -252,9 +252,17 @@
         window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}"
 
     # Check if step path equals current document path
-    _redirect: (path, currentPath) ->
+    _isRedirect: (path, currentPath) ->
       path? and path isnt "" and
         path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, "")
+
+    _redirect: (step, path) ->
+      if typeof step.redirect == 'function'
+        step.redirect.call(this, path)
+
+      else if step.redirect == true
+        @_debug "Redirect to #{path}"
+        document.location.href = path
 
     # Render navigation
     _renderNavigation: (step, options) ->
