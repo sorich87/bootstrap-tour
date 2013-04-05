@@ -249,7 +249,7 @@
     # Print message in console
     _debug: (text) ->
       if @_options.debug
-        window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}";
+        window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}"
 
     # Check if step path equals current document path
     _redirect: (path, currentPath) ->
