@@ -265,7 +265,7 @@
       if (step.next >= 0)
         nav.push "<a href='##{step.next}' class='next'>#{options.labels.next}</a>"
 
-      content = nav.join(" | ");
+      content = nav.join(" | ")
       content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
 
     # Show step popover
