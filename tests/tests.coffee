@@ -183,6 +183,7 @@ test "Tour.getStep should get a step", ->
     next: 2
     end: false
     animation: false
+    redirect: true
     onShow: (tour) ->
     onShown: (tour) ->
     onHide: (tour) ->
@@ -334,14 +335,14 @@ test "Tour.showStep should show multiple step on the same element", ->
 test "Tour properly verify paths", ->
   @tour = new Tour()
 
-  strictEqual(@tour._redirect(undefined, "/"), false, "don't redirect if no path")
-  strictEqual(@tour._redirect("", "/"), false, "don't redirect if path empty")
-  strictEqual(@tour._redirect("/somepath", "/somepath"), false, "don't redirect if path matches current path")
-  strictEqual(@tour._redirect("/somepath/", "/somepath"), false, "don't redirect if path with slash matches current path")
-  strictEqual(@tour._redirect("/somepath", "/somepath/"), false, "don't redirect if path matches current path with slash")
-  strictEqual(@tour._redirect("/somepath?search=true", "/somepath"), false, "don't redirect if path with query params matches current path")
-  strictEqual(@tour._redirect("/somepath/?search=true", "/somepath"), false, "don't redirect if path with slash and query params matches current path")
-  strictEqual(@tour._redirect("/anotherpath", "/somepath"), true, "redirect if path doesn't match current path")
+  strictEqual(@tour._isRedirect(undefined, "/"), false, "don't redirect if no path")
+  strictEqual(@tour._isRedirect("", "/"), false, "don't redirect if path empty")
+  strictEqual(@tour._isRedirect("/somepath", "/somepath"), false, "don't redirect if path matches current path")
+  strictEqual(@tour._isRedirect("/somepath/", "/somepath"), false, "don't redirect if path with slash matches current path")
+  strictEqual(@tour._isRedirect("/somepath", "/somepath/"), false, "don't redirect if path matches current path with slash")
+  strictEqual(@tour._isRedirect("/somepath?search=true", "/somepath"), false, "don't redirect if path with query params matches current path")
+  strictEqual(@tour._isRedirect("/somepath/?search=true", "/somepath"), false, "don't redirect if path with slash and query params matches current path")
+  strictEqual(@tour._isRedirect("/anotherpath", "/somepath"), true, "redirect if path doesn't match current path")
 
 test "Tour.getState should return null after Tour.removeState with null value using cookies", ->
   @tour = new Tour({useLocalStorage: false})
