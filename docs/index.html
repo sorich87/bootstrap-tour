@@ -1,238 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Bootstrap Tour, easy product tours with Bootstrap from Twitter</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../deps/bootstrap.css" rel="stylesheet">
-    <link href="../deps/bootstrap-responsive.css" rel="stylesheet">
-    <link href="../deps/google-code-prettify/prettify.css" rel="stylesheet">
-    <link href="../bootstrap-tour.css" rel="stylesheet">
-    <link href="index.css" rel="stylesheet">
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-  </head>
-  <body>
-    <a href="https://github.com/sorich87/bootstrap-tour"><img id="gitban-tour" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
-    <div class="container">
-      <header id="overview">
-        <h1 id="reflex-mode">Bootstrap Tour</h1>
-        <p class="lead">Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
-      </header>
-      <div class="row">
-        <div class="span9 content">
-          <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
-          <a href="#" class="btn-primary btn-large btn start">&#9658; Start tour</a>
-          <hr />
-          <h2 id="usage">Usage</h2>
-          <h3>1. Link to the JavaScript dependencies.</h3>
-<pre class="prettyprint">
-&lt;script src="jquery.js"&gt;&lt;/script&gt;
-&lt;script src="jquery.cookie.js"&gt;&lt;/script&gt;
-&lt;script src="bootstrap.tooltip.js"&gt;&lt;/script&gt;
-&lt;script src="bootstrap.popover.js"&gt;&lt;/script&gt;
-&lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
-</pre>
-          <h3>2. Initialize the tour</h3>
-          <pre class="prettyprint">var tour = new Tour();</pre>
-          <h3>3. Add steps</h3>
-<pre class="prettyprint">
-tour.addStep({
-  element: "", /* html element next to which the step popover should be shown */
-  title: "", /* title of the popover */
-  content: "" /* content of the popover */
-});
-</pre>
-          <p>You can add as many steps as you want, but not too much or your
-          users will fell asleep!</p>
-          <h3>4. Start the tour</h3>
-          <pre class="prettyprint">tour.start();</pre>
-          <hr />
-          <h2 id="options">Options</h2>
-          <h3>Useful Methods</h3>
-          <p>Bootstrap Tour saves the current step and will not
-          display the tour again to users who have already completed it.</p>
-          <p>If, for some reasons, you want to force the tour to be
-          displayed, pass <code>true</code> to the <code>start()</code>
-          method.</p>
-          <pre class="prettyprint">tour.start(true);</pre>
-          <p>Sometimes you want to end the tour prematurely:</p>
-          <pre class="prettyprint">tour.end();</pre>
-          <p>Or skip to the next step:</p>
-          <pre class="prettyprint">tour.next();</pre>
-          <p>Or go back to the previous step:</p>
-          <pre class="prettyprint">tour.prev();</pre>
-          <p>Or skip to a specific step:</p>
-          <pre class="prettyprint">tour.showStep(i); // i is the position of the step in the tour, starting from 0 for the first step</pre>
-          <p>Or restart the tour after it ended:</p>
-          <pre class="prettyprint">tour.restart();</pre>
-          <p>Or verify if the tour ended:</p>
-          <pre class="prettyprint">tour.ended();</pre>
-
-          <h3>Initialization Options</h3>
-          <p>Default options:</p>
-<pre class="prettyprint">
-var tour = new Tour({
-  name: "tour",
-  labels: {
-    end: "End tour",
-    next: 'Next &raquo;'
-    prev: '&laquo; Prev'
-  },
-  template: string,
-  container: "body",
-  keyboard: true,
-  useLocalStorage: false,
-  debug: false,
-  afterGetState: function (key, value) {},
-  afterSetState: function (key, value) {},
-  afterRemoveState: function (key, value) {},
-  onStart: function (tour) {},
-  onEnd: function (tour) {},
-  onShow: function (tour) {},
-  onShown: function (tour) {}
-  onHide: function (tour) {},
-  onHidden: function (tour) {},
-});
-</pre>
-          <h4><code>name</code></h4>
-          <p>This option is used to build the name of the
-          cookie or localStorage item where the tour state is stored. You can initialize several
-          tours with different names in the same page and application.</p>
-
-          <h4><code>keyboard</code></h4>
-          <p>This option set the left/right arrow navigation. The default is true.</p>
-
-          <h4><code>useLocalStorage</code></h4>
-          <p>You can choose to save the tour state with localStorage instead of
-          cookie. If you decide, you can safely remove the jquery.cookie plugin from the
-          dependencies</p>
-
-          <h4><code>debug</code></h4>
-          <p>Set this option to true to have some useful informations printed in the console.</p>
-
-          <h4><code>afterGetState</code>, <code>afterSetState</code>,
-          <code>afterRemoveState</code></h4>
-          <p>You may want to do something right after Bootstrap Tour read, write or remove
-          the state. Just pass functions to these.<br />
-          Your functions can have two parameters:</p>
-          <dl>
-            <dt>key</dt>
-            <dd>Contains the name of the state being saved. It can be
-            <code>current_step</code> (for the state where the latest step
-            the visitor viewed is saved) or <code>end</code> (for the state
-            which is saved when the user complete the tour). Note that
-            Bootstrap Tour prepends the key with <code>tour_</code> when
-            saving the state.</dd>
-            <dt>value</dt>
-            <dd>The value of the state been saved. Can be the index of the
-            current step if the key is <code>current_step</code>, or
-            <code>yes</code> if the key is <code>end</code>.</dd>
-          </dl>
-          <p>A simple example if to send a post request to your server each
-          time there is a change:</p>
-<pre class="prettyprint">
-var tour = new Tour({
-  afterSetState: function (key, value) {
-    jQuery.post("/some/path", value);
-  }
-});
-</pre>
-          <h4><code>onStart</code></h4>
-          <p>Function to execute when the tour starts.</p>
-
-          <h4><code>onEnd</code></h4>
-          <p>Function to execute when the tour ends.</p>
-
-          <h4><code>onShow</code></h4>
-          <p>Function to execute right before each step is shown.</p>
-
-          <h4><code>onShown</code></h4>
-          <p>Function to execute right after each step is shown.</p>
-
-          <h4><code>onHide</code></h4>
-          <p>Function to execute right before each step is hidden.</p>
-
-          <h4><code>onHidden</code></h4>
-          <p>Function to execute right after each step is hidden.</p>
-
-          <h3>Step Options</h3>
-          <p>Default options:</p>
-<pre class="prettyprint">
-tour.addStep({
-  path: "", // string
-  element: "", // jQuery selector (required)
-  placement: "right", // string|function
-  container: false // string|false
-  title: "", // string|function
-  content: "", // string|function
-  next: 0, // number
-  prev: 0, // number
-  animation: true, // boolean
-  onShow: function (tour) {}, // function
-  onHide: function (tour) {} // function
-});
-</pre>
-          <dl>
-            <dt>path</dt>
-            <dd>Path to the page on which the step should be shown. This
-            allows you to build tours that span several pages!</dd>
-            <dt>element</dt>
-            <dd>HTML element on which the step popover should be shown.</dd>
-            <dt>placement</dt>
-            <dd>How to position the popover - top | bottom | left |
-            right.</dd>
-            <dt>container</dt>
-            <dd>Attachment of popover (optional). Pass an element (string) to append the popover to.
-            By default (false), the popover is appended after the 'element' above.
-            This option is particularly helpful for Internet Explorer.</dd>
-            <dt>title</dt>
-            <dd>Step title</dd>
-            <dt>content</dt>
-            <dd>Step content</dd>
-            <dt>next</dt>
-            <dd>Index of the step to show after this one, starting from 0 for the
-            first step of the tour. -1 to not show the link to next step.
-            By default, the next step (in the order you added
-            them) will be shown.
-            <br /><em>This option should be used in conjunction with "prev".</em></dd>
-            <dt>prev</dt>
-            <dd>Index of the step to show before this one, starting from 0 for the
-            first step of the tour. -1 to not show the link to previous step.
-            By default, the previous step (in the order you added
-            them) will be shown.
-            <br /><em>This option should be used in conjunction with "next".</em></dd>
-            <dt>animation</dt>
-            <dd>Apply a css fade transition to the tooltip.</dd>
-            <dt>onShow</dt>
-            <dd>Function to execute right before the step is shown. It overrides the global onShow option.</dd>
-            <dt>onHide</dt>
-            <dd>Function to execute right before the step is hidden. It overrides the global onHide option.</dd>
-            <dt>options</dt>
-            <dd>(Object) Extend the options for one step.</dd>
-            <dt>reflex</dt>
-            <dd>(Bool) Enable the reflex mode : you can click on the element for continue the tour.</dd>
-          </dl>
-          <hr />
-          <h2 id="contributing">Contributing</h2>
-          <p><a href="https://github.com/sorich87/bootstrap-tour/issues">Bug
-            reports</a> and <a
-            href="https://github.com/sorich87/bootstrap-tour/pulls">pull
-            requests</a> are much needed!
-          <hr />
-          <h2 id="license">License</h2>
-          <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.
-          Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
-          Well, the same licenses as Bootstrap. We are lazy! ;)</p>
+    <head>
+        <meta charset="utf-8">
+        <title>Bootstrap Tour, easy product tours with Bootstrap from Twitter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../deps/bootstrap.css" rel="stylesheet">
+        <link href="../deps/bootstrap-responsive.css" rel="stylesheet">
+        <link href="../deps/prism.css" rel="stylesheet">
+        <link href="../bootstrap-tour.css" rel="stylesheet">
+        <link href="index.css" rel="stylesheet">
+        <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    </head>
+    <body>
+        <a href="https://github.com/sorich87/bootstrap-tour"><img id="gitban-tour" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+        <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <ul class="nav">
+                        <li>
+                            <a href="#home">Home</a>
+                        </li>
+                        <li>
+                            <a href="#demo">Demo</a>
+                        </li>
+                        <li>
+                            <a href="#usage">Usage</a>
+                        </li>
+                        <li>
+                            <a href="#options">Options</a>
+                        </li>
+                        <li>
+                            <a href="#contributing">Contributing</a>
+                        </li>
+                        <li>
+                            <a href="#license">License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <script src="../deps/jquery.js"></script>
-    <script src="../deps/google-code-prettify/prettify.js"></script>
-    <script src="../deps/bootstrap-tooltip.js"></script>
-    <script src="../deps/bootstrap-popover.js"></script>
-    <script src="../deps/bootstrap-alert.js"></script>
-    <script src="../deps/jquery.cookie.js"></script>
-    <script src="../bootstrap-tour.js"></script>
-    <script src="index.js"></script>
-  </body>
+        <header id="home">
+            <div class="jumbotron masthead">
+                <h1 id="reflex">Bootstrap Tour</h1>
+                <p>Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
+                <p><a href="https://github.com/sorich87/bootstrap-tour/archive/master.zip" id="download" class="btn-primary btn-large btn">Download Bootstrap Tour</a></p>
+            </div>
+        </header>
+        <section id="demo">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Demo <small>Try it now!</small></h2>
+                </div>
+                <div class="row">
+                    <div class="span9 content">
+                        <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
+                        <a href="#" class="btn-primary btn-large btn start">&#9658; Start tour</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="usage">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Usage <small>Oh wait, is it so simple?</small></h2>
+                </div>
+                <h3>1. Add the dependencies</h3>
+<pre class="language-markup"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    ...
+    &lt;link href="bootstrap-tour.css" rel="stylesheet"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    ...
+    &lt;script src="jquery.js"&gt;&lt;/script&gt;
+    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- optional --&gt;
+    &lt;script src="bootstrap.tooltip.js"&gt;&lt;/script&gt;
+    &lt;script src="bootstrap.popover.js"&gt;&lt;/script&gt;
+    &lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                <h3>2. Initialize the tour</h3>
+                <pre class="language-javascript"><code>var tour = new Tour();</code></pre>
+                <h3>3. Add steps</h3>
+<pre class="language-javascript"><code>tour.addStep({
+    element: "", // string - html element next to which the step popover should be shown
+    title: "", // string - title of the popover
+    content: "" // string - content of the popover
+});</code></pre>
+                <p>You can add as many steps as you want, but not too much or your
+                users will fell asleep!</p>
+                <h3>4. Start the tour</h3>
+                <pre class="language-javascript"><code>tour.start();</code></pre>
+            </div>
+        </section>
+        <section id="options"></section>
+            <div class="container">
+                <div class="page-header">
+                    <h2>Options <small>Well, let's go deeper</small></h2>
+                </div>
+                <h3>Useful Methods</h3>
+                <p>Bootstrap Tour saves the current step and will not
+                display the tour again to users who have already completed it.</p>
+                <p>If, for some reasons, you want to force the tour to be
+                displayed, pass <code class="language-javascript">true</code> to the <code class="language-javascript">start()</code>
+                method.</p>
+                <pre class="language-javascript"><code>tour.start(true);</code></pre>
+                <p>Sometimes you want to end the tour prematurely:</p>
+                <pre class="language-javascript"><code>tour.end();</code></pre>
+                <p>Or skip to the next step:</p>
+                <pre class="language-javascript"><code>tour.next();</code></pre>
+                <p>Or go back to the previous step:</p>
+                <pre class="language-javascript"><code>tour.prev();</code></pre>
+                <p>Or skip to a specific step:</p>
+                <pre class="language-javascript"><code>tour.showStep(i); // i is the position of the step in the tour, starting from 0 for the first step</code></pre>
+                <p>Or restart the tour after it ended:</p>
+                <pre class="language-javascript"><code>tour.restart();</code></pre>
+                <p>Or verify if the tour ended:</p>
+                <pre class="language-javascript"><code>tour.ended();</code></pre>
+
+                <h3>Initialization Options</h3>
+                <p>Default options:</p>
+<pre class="language-javascript"><code>var tour = new Tour({
+    name: "tour",
+    labels: {
+        end: "End tour",
+        next: "Next &raquo;",
+        prev: "&laquo; Prev"
+    },
+    template: "",
+    container: "body",
+    keyboard: true,
+    useLocalStorage: false,
+    debug: false,
+    afterGetState: function(key, value) {},
+    afterSetState: function(key, value) {},
+    afterRemoveState: function(key, value) {},
+    onStart: function(tour) {},
+    onEnd: function(tour) {},
+    onShow: function(tour) {},
+    onShown: function(tour) {}
+    onHide: function(tour) {},
+    onHidden: function(tour) {},
+});</code></pre>
+                <h4><code class="language-javascript">name</code></h4>
+                <p>This option is used to build the name of the
+                cookie or localStorage item where the tour state is stored. You can initialize
+                several tours with different names in the same page and application.</p>
+
+                <h4><code class="language-javascript">keyboard</code></h4>
+                <p>This option set the left/right arrow navigation. The default is true.</p>
+
+                <h4><code class="language-javascript">useLocalStorage</code></h4>
+                <p>You can choose to save the tour state with localStorage instead of
+                cookie. If you decide, you can safely remove the jquery.cookie plugin from the
+                dependencies</p>
+
+                <h4><code class="language-javascript">debug</code></h4>
+                <p>Set this option to true to have some useful informations printed in the
+                console.</p>
+
+                <h4><code class="language-javascript">afterGetState</code>,
+                <code class="language-javascript">afterSetState</code>,
+                <code class="language-javascript">afterRemoveState</code></h4>
+                <p>You may want to do something right after Bootstrap Tour read, write or remove
+                the state. Just pass functions to these.<br />
+                Your functions can have two parameters:</p>
+                <ul class="unstyled">
+                    <li>
+                        <strong>key</strong>
+                        Contains the name of the state being saved. It can be
+                        <code class="language-javascript">current_step</code> (for the state where the
+                        latest step the visitor viewed is saved) or
+                        <code class="language-javascript">end</code> (for the state which is saved when
+                        the user complete the tour). Note that Bootstrap Tour prepends the key with
+                        <code class="language-javascript">tour_</code> when saving the state.
+                    </li>
+                    <li>
+                        <strong>value</strong>
+                        The value of the state been saved. Can be the index of the
+                        current step if the key is <code class="language-javascript">current_step</code>, or
+                        <code class="language-javascript">yes</code> if the key is <code class="language-javascript">end</code>.
+                    </li>
+                </ul>
+                <p>A simple example if to send a post request to your server each
+                time there is a change:</p>
+<pre class="language-javascript"><code>
+var tour = new Tour({
+    afterSetState: function(key, value) {
+        $.post("/some/path", value);
+    }
+});
+</code></pre>
+                <h4><code class="language-javascript">onStart</code></h4>
+                <p>Function to execute when the tour starts.</p>
+
+                <h4><code class="language-javascript">onEnd</code></h4>
+                <p>Function to execute when the tour ends.</p>
+
+                <h4><code class="language-javascript">onShow</code></h4>
+                <p>Function to execute right before each step is shown.</p>
+
+                <h4><code class="language-javascript">onShown</code></h4>
+                <p>Function to execute right after each step is shown.</p>
+
+                <h4><code class="language-javascript">onHide</code></h4>
+                <p>Function to execute right before each step is hidden.</p>
+
+                <h4><code class="language-javascript">onHidden</code></h4>
+                <p>Function to execute right after each step is hidden.</p>
+
+                <h3>Step Options</h3>
+                <p>Default options:</p>
+<pre class="language-javascript"><code>tour.addStep({
+    path: "", // string
+    element: "", // jQuery selector (required)
+    placement: "right", // string|function
+    container: false // string|false
+    title: "", // string|function
+    content: "", // string|function
+    next: 0, // number
+    prev: 0, // number
+    animation: true, // boolean
+    onShow: function(tour) {}, // function
+    onHide: function(tour) {} // function
+});</code></pre>
+                <h4><code class="language-javascript">path</code></h4>
+                <p>Path to the page on which the step should be shown. This
+                allows you to build tours that span several pages!</p>
+
+                <h4><code class="language-javascript">element</code></h4>
+                <p>HTML element on which the step popover should be shown.</p>
+
+                <h4><code class="language-javascript">placement</code></h4>
+                <p>How to position the popover - top | bottom | left |
+                right.</p>
+
+                <h4><code class="language-javascript">container</code></h4>
+                <p>Attachment of popover (optional). Pass an element (string) to append the popover
+                to. By default (false), the popover is appended after the 'element' above.
+                This option is particularly helpful for Internet Explorer.</p>
+
+                <h4><code class="language-javascript">title</code></h4>
+                <p>Step title</p>
+
+                <h4><code class="language-javascript">content</code></h4>
+                <p>Step content</p>
+
+                <h4><code class="language-javascript">next</code></h4>
+                <p>Index of the step to show after this one, starting from 0 for the
+                first step of the tour. -1 to not show the link to next step.
+                By default, the next step (in the order you added
+                them) will be shown.
+                <br /><em>This option should be used in conjunction with "prev".</em></p>
+
+                <h4><code class="language-javascript">prev</code></h4>
+                <p>Index of the step to show before this one, starting from 0 for the
+                first step of the tour. -1 to not show the link to previous step.
+                By default, the previous step (in the order you added
+                them) will be shown.
+                <br /><em>This option should be used in conjunction with "next".</em></p>
+
+                <h4><code class="language-javascript">animation</code></h4>
+                <p>Apply a css fade transition to the tooltip.</p>
+
+                <h4><code class="language-javascript">onShow</code></h4>
+                <p>Function to execute right before the step is shown. It overrides the global
+                onShow option.</p>
+
+                <h4><code class="language-javascript">onHide</code></h4>
+                <p>Function to execute right before the step is hidden. It overrides the global
+                onHide option.</p>
+
+                <h4><code class="language-javascript">options</code></h4>
+                <p>(Object) Extend the options for one step.</p>
+
+                <h4><code class="language-javascript">reflex</code></h4>
+                <p>(Bool) Enable the reflex mode : you can click on the element for continue the tour.</p>
+            </div>
+        </section>
+        <section id="contributing">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Contributing</h2>
+                </div>
+                <p><a href="https://github.com/sorich87/bootstrap-tour/issues">Bug
+                    reports</a> and <a
+                    href="https://github.com/sorich87/bootstrap-tour/pulls">pull
+                    requests</a> are much needed!
+            </div>
+        </section>
+        <section id="license">
+            <div class="container">
+                <div class="page-header">
+                    <h2>License</h2>
+                </div>
+                <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.
+                Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+                Well, the same licenses as Bootstrap. We are lazy! ;)</p>
+            </div>
+        </section>
+        <script src="../deps/jquery.js"></script>
+        <script src="../deps/prism.js"></script>
+        <script src="../deps/bootstrap-tooltip.js"></script>
+        <script src="../deps/bootstrap-popover.js"></script>
+        <script src="../deps/bootstrap-alert.js"></script>
+        <script src="../deps/jquery.cookie.js"></script>
+        <script src="../bootstrap-tour.js"></script>
+        <script src="index.js"></script>
+    </body>
 </html>
