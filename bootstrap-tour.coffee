@@ -39,6 +39,7 @@
         useLocalStorage: false
         debug: false
         backdrop: false
+        redirect: true
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -101,7 +102,8 @@
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
         animation: true
-        redirect: true
+        backdrop: @_options.backdrop
+        redirect: @_options.redirect
         onShow: @_options.onShow
         onShown: @_options.onShown
         onHide: @_options.onHide
