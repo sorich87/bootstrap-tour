@@ -30,7 +30,7 @@
                             <a href="#options">Options</a>
                         </li>
                         <li>
-                            <a href="#contributing">Contributing</a>
+                            <a href="#contribute">Contribute</a>
                         </li>
                         <li>
                             <a href="#license">License</a>
@@ -54,7 +54,7 @@
                 <div class="row">
                     <div class="span9 content">
                         <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
-                        <a href="#" class="btn-primary btn-large btn start">&#9658; Start tour</a>
+                        <a href="#" id="start" class="btn-primary btn-large btn">&#9658; Start tour</a>
                     </div>
                 </div>
             </div>
@@ -84,17 +84,17 @@
                 <pre class="language-javascript"><code>var tour = new Tour();</code></pre>
                 <h3>3. Add steps</h3>
 <pre class="language-javascript"><code>tour.addStep({
-    element: "", // string - html element next to which the step popover should be shown
-    title: "", // string - title of the popover
-    content: "" // string - content of the popover
+    element: "#my-element", // string (jQuery selector) - html element next to which the step popover should be shown
+    title: "Title of my popover", // string - title of the popover
+    content: "Content of my popover" // string - content of the popover
 });</code></pre>
                 <p>You can add as many steps as you want, but not too much or your
-                users will fell asleep!</p>
+                users will fall asleep!</p>
                 <h3>4. Start the tour</h3>
                 <pre class="language-javascript"><code>tour.start();</code></pre>
             </div>
         </section>
-        <section id="options"></section>
+        <section id="options">
             <div class="container">
                 <div class="page-header">
                     <h2>Options <small>Well, let's go deeper</small></h2>
@@ -118,21 +118,21 @@
                 <pre class="language-javascript"><code>tour.restart();</code></pre>
                 <p>Or verify if the tour ended:</p>
                 <pre class="language-javascript"><code>tour.ended();</code></pre>
-
-                <h3>Initialization Options</h3>
-                <p>Default options:</p>
+                <h3>Tour Options</h3>
 <pre class="language-javascript"><code>var tour = new Tour({
     name: "tour",
     labels: {
-        end: "End tour",
         next: "Next &raquo;",
         prev: "&laquo; Prev"
+        end: "End tour",
     },
     template: "",
     container: "body",
     keyboard: true,
     useLocalStorage: false,
     debug: false,
+    backdrop: false,
+    redirect: true,
     afterGetState: function(key, value) {},
     afterSetState: function(key, value) {},
     afterRemoveState: function(key, value) {},
@@ -143,151 +143,323 @@
     onHide: function(tour) {},
     onHidden: function(tour) {},
 });</code></pre>
-                <h4><code class="language-javascript">name</code></h4>
-                <p>This option is used to build the name of the
-                cookie or localStorage item where the tour state is stored. You can initialize
-                several tours with different names in the same page and application.</p>
-
-                <h4><code class="language-javascript">keyboard</code></h4>
-                <p>This option set the left/right arrow navigation. The default is true.</p>
-
-                <h4><code class="language-javascript">useLocalStorage</code></h4>
-                <p>You can choose to save the tour state with localStorage instead of
-                cookie. If you decide, you can safely remove the jquery.cookie plugin from the
-                dependencies</p>
-
-                <h4><code class="language-javascript">debug</code></h4>
-                <p>Set this option to true to have some useful informations printed in the
-                console.</p>
-
-                <h4><code class="language-javascript">afterGetState</code>,
-                <code class="language-javascript">afterSetState</code>,
-                <code class="language-javascript">afterRemoveState</code></h4>
-                <p>You may want to do something right after Bootstrap Tour read, write or remove
-                the state. Just pass functions to these.<br />
-                Your functions can have two parameters:</p>
-                <ul class="unstyled">
-                    <li>
-                        <strong>key</strong>
-                        Contains the name of the state being saved. It can be
-                        <code class="language-javascript">current_step</code> (for the state where the
-                        latest step the visitor viewed is saved) or
-                        <code class="language-javascript">end</code> (for the state which is saved when
-                        the user complete the tour). Note that Bootstrap Tour prepends the key with
-                        <code class="language-javascript">tour_</code> when saving the state.
-                    </li>
-                    <li>
-                        <strong>value</strong>
-                        The value of the state been saved. Can be the index of the
-                        current step if the key is <code class="language-javascript">current_step</code>, or
-                        <code class="language-javascript">yes</code> if the key is <code class="language-javascript">end</code>.
-                    </li>
-                </ul>
-                <p>A simple example if to send a post request to your server each
-                time there is a change:</p>
-<pre class="language-javascript"><code>
-var tour = new Tour({
+                <table class="table  table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Default</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>name</td>
+                            <td>String</td>
+                            <td>This option is used to build the name of the
+                            cookie or localStorage item where the tour state is stored. You can initialize
+                            several tours with different names in the same page and application.</td>
+                            <td><code class="language-javascript">'tour'</code></td>
+                        </tr>
+                        <tr>
+                            <td>labels</td>
+                            <td>Object</td>
+                            <td>The text of the 'Previous', 'Next' and 'End tour' links</td>
+                            <td><pre class="language-javascript"><code>{
+    end: "End tour",
+    next: "Next &raquo;",
+    prev: "&laquo; Prev"
+}</code></pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>template</td>
+                            <td>String</td>
+                            <td>The HTML template for the popovers.</td>
+                            <td><pre class="language-markup">"<code>&lt;div class='popover tour'&gt;
+    &lt;div class='arrow'&gt;&lt;/div&gt;
+    &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
+    &lt;div class='popover-content'&gt;&lt;/div&gt;
+&lt;/div&gt;</code>"</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>keyboard</td>
+                            <td>Boolean</td>
+                            <td>This option set the left and right arrow navigation.</td>
+                            <td><code class="language-javascript">true</code></td>
+                        </tr>
+                        <tr>
+                            <td>useLocalStorage</td>
+                            <td>Boolean</td>
+                            <td>You can choose to save the tour state with localStorage instead of
+                            cookie. If you decide, you can safely remove the jquery.cookie plugin from the
+                            dependencies</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr>
+                            <td>debug</td>
+                            <td>Boolean</td>
+                            <td>Set this option to true to have some useful informations printed in the
+                            console.</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr>
+                            <td>backdrop</td>
+                            <td>Boolean</td>
+                            <td>Show a dark backdrop behind the popover and its element, highlighting the current step.</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr>
+                            <td>redirect</td>
+                            <td>Function|Boolean</td>
+                            <td>Set a custom function to execute as redirect function.
+                            The default redirect relies on the traditional
+                            <code class="language-javascrip">document.location.href</code></td>
+                            <td><code class="language-javascript">true</code></td>
+                        </tr>
+                        <tr>
+                            <td>afterGetState, afterSetState, afterRemoveState</td>
+                            <td>Function</td>
+                            <td>You may want to do something right after Bootstrap Tour read, write or remove
+                            the state. Just pass functions to these.<br />
+                            Your functions can have two parameters:
+                            <ul class="unstyled">
+                                <li>
+                                    <strong>key</strong>
+                                    Contains the name of the state being saved. It can be
+                                    <code class="language-javascript">current_step</code> (for the state where the
+                                    latest step the visitor viewed is saved) or
+                                    <code class="language-javascript">end</code> (for the state which is saved when
+                                    the user complete the tour). Note that Bootstrap Tour prepends the key with
+                                    <code class="language-javascript">tour_</code> when saving the state.
+                                </li>
+                                <li>
+                                    <strong>value</strong>
+                                    The value of the state been saved. Can be the index of the
+                                    current step if the key is <code class="language-javascript">current_step</code>, or
+                                    <code class="language-javascript">yes</code> if the key is <code class="language-javascript">end</code>.
+                                </li>
+                            </ul>
+                            <p>A simple example if to send a post request to your server each
+                            time there is a change:</p>
+<pre class="language-javascript"><code>var tour = new Tour({
     afterSetState: function(key, value) {
         $.post("/some/path", value);
     }
 });
 </code></pre>
-                <h4><code class="language-javascript">onStart</code></h4>
-                <p>Function to execute when the tour starts.</p>
-
-                <h4><code class="language-javascript">onEnd</code></h4>
-                <p>Function to execute when the tour ends.</p>
-
-                <h4><code class="language-javascript">onShow</code></h4>
-                <p>Function to execute right before each step is shown.</p>
-
-                <h4><code class="language-javascript">onShown</code></h4>
-                <p>Function to execute right after each step is shown.</p>
-
-                <h4><code class="language-javascript">onHide</code></h4>
-                <p>Function to execute right before each step is hidden.</p>
-
-                <h4><code class="language-javascript">onHidden</code></h4>
-                <p>Function to execute right after each step is hidden.</p>
-
+                            </td>
+                            <td><code class="language-javascript">function(key, value) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onStart</td>
+                            <td>Function</td>
+                            <td>Function to execute when the tour starts.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onEnd</td>
+                            <td>Function</td>
+                            <td>Function to execute when the tour ends.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onShow</td>
+                            <td>Function</td>
+                            <td>Function to execute right before each step is shown.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onShown</td>
+                            <td>Function</td>
+                            <td>Function to execute right after each step is shown.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onHide</td>
+                            <td>Function</td>
+                            <td>Function to execute right before each step is hidden.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onHidden</td>
+                            <td>Function</td>
+                            <td>Function to execute right after each step is hidden.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                    </tbody>
+                </table>
                 <h3>Step Options</h3>
-                <p>Default options:</p>
 <pre class="language-javascript"><code>tour.addStep({
-    path: "", // string
-    element: "", // jQuery selector (required)
-    placement: "right", // string|function
-    container: false // string|false
-    title: "", // string|function
-    content: "", // string|function
-    next: 0, // number
-    prev: 0, // number
-    animation: true, // boolean
-    onShow: function(tour) {}, // function
-    onHide: function(tour) {} // function
+    path: "",
+    element: "",
+    placement: "right",
+    container: "body",
+    title: "",
+    content: "",
+    next: 0,
+    prev: 0,
+    animation: true,
+    backdrop: false,
+    redirect: true,
+    reflex: false,
+    option: {},
+    onShow: function(tour) {},
+    onHide: function(tour) {}
 });</code></pre>
-                <h4><code class="language-javascript">path</code></h4>
-                <p>Path to the page on which the step should be shown. This
-                allows you to build tours that span several pages!</p>
-
-                <h4><code class="language-javascript">element</code></h4>
-                <p>HTML element on which the step popover should be shown.</p>
-
-                <h4><code class="language-javascript">placement</code></h4>
-                <p>How to position the popover - top | bottom | left |
-                right.</p>
-
-                <h4><code class="language-javascript">container</code></h4>
-                <p>Attachment of popover (optional). Pass an element (string) to append the popover
-                to. By default (false), the popover is appended after the 'element' above.
-                This option is particularly helpful for Internet Explorer.</p>
-
-                <h4><code class="language-javascript">title</code></h4>
-                <p>Step title</p>
-
-                <h4><code class="language-javascript">content</code></h4>
-                <p>Step content</p>
-
-                <h4><code class="language-javascript">next</code></h4>
-                <p>Index of the step to show after this one, starting from 0 for the
-                first step of the tour. -1 to not show the link to next step.
-                By default, the next step (in the order you added
-                them) will be shown.
-                <br /><em>This option should be used in conjunction with "prev".</em></p>
-
-                <h4><code class="language-javascript">prev</code></h4>
-                <p>Index of the step to show before this one, starting from 0 for the
-                first step of the tour. -1 to not show the link to previous step.
-                By default, the previous step (in the order you added
-                them) will be shown.
-                <br /><em>This option should be used in conjunction with "next".</em></p>
-
-                <h4><code class="language-javascript">animation</code></h4>
-                <p>Apply a css fade transition to the tooltip.</p>
-
-                <h4><code class="language-javascript">onShow</code></h4>
-                <p>Function to execute right before the step is shown. It overrides the global
-                onShow option.</p>
-
-                <h4><code class="language-javascript">onHide</code></h4>
-                <p>Function to execute right before the step is hidden. It overrides the global
-                onHide option.</p>
-
-                <h4><code class="language-javascript">options</code></h4>
-                <p>(Object) Extend the options for one step.</p>
-
-                <h4><code class="language-javascript">reflex</code></h4>
-                <p>(Bool) Enable the reflex mode : you can click on the element for continue the tour.</p>
+                <table class="table  table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Default</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>element</td>
+                            <td>String (jQuery selector)</td>
+                            <td>HTML element on which the step popover should be shown.<br />
+                            <em>This option is required.</em></td>
+                            <td><code class="language-javascript">''</code></td>
+                        </tr>
+                        </tr>
+                            <td>path</td>
+                            <td>String</td>
+                            <td>Path to the page on which the step should be shown. This
+                            allows you to build tours that span several pages!</td>
+                            <td><code class="language-javascript">''</code></td>
+                        </tr>
+                        <tr>
+                            <td>placement</td>
+                            <td>String|Function</td>
+                            <td>How to position the popover. Possible choices:
+                            <code class="language-javascript">'top'</code>,
+                            <code class="language-javascript">'bottom'</code>,
+                            <code class="language-javascript">'left'</code>,
+                            <code class="language-javascript">'right'</code>.
+                            </td>
+                            <td><code class="language-javascript">'right'</code></td>
+                        </tr>
+                        <tr>
+                            <td>container</td>
+                            <td>String (jQuery selector)</td>
+                            <td>Attachment of popover. Pass an element to append the popover
+                            to. By default the popover is appended after the 'element' above.
+                            This option is particularly helpful for Internet Explorer.</td>
+                            <td><code class="language-javascript">'body'</code></td>
+                        </tr>
+                        <tr>
+                            <td>title</td>
+                            <td>String|Function</td>
+                            <td>Step title</td>
+                            <td><code class="language-javascript">''</code></td>
+                        </tr>
+                        <tr>
+                            <td>content</td>
+                            <td>String|Function</td>
+                            <td>Step content</td>
+                            <td><code class="language-javascript">''</code></td>
+                        </tr>
+                        <tr>
+                            <td>next</td>
+                            <td>Integer</td>
+                            <td>Index of the step to show after this one, starting from
+                            <code class="language-javascript">0</code> for the first step of the
+                            tour. <code class="language-javascript">-1</code> to not show the link
+                            to next step. By default, the next step (in the order you added
+                            them) will be shown.<br />
+                            <em>This option should be used in conjunction with
+                            <code class="language-javascript">prev</code>.</em></td>
+                            <td><code class="language-javascript">0</code></td>
+                        </tr>
+                        <tr>
+                            <td>prev</td>
+                            <td>Integer</td>
+                            <td>Index of the step to show before this one, starting from
+                            <code class="language-javascript">0</code> for the first step of the
+                            tour. <code class="language-javascript">-1</code> to not show the link
+                            to previous step. By default, the previous step (in the order you added
+                            them) will be shown.<br />
+                            <em>This option should be used in conjunction with
+                            <code class="language-javascript">next</code>.</em></td>
+                            <td><code class="language-javascript">0</code></td>
+                        </tr>
+                        <tr>
+                            <td>animation</td>
+                            <td>Boolean</td>
+                            <td>Apply a css fade transition to the tooltip.</td>
+                            <td><code class="language-javascript">true</code></td>
+                        </tr>
+                        <tr>
+                            <td>backdrop</td>
+                            <td>Boolean</td>
+                            <td>Show a dark backdrop behind the popover and its element, highlighting the current step.</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr>
+                            <td>redirect</td>
+                            <td>Function|Boolean</td>
+                            <td>Set a custom function to execute as redirect function.
+                            The default redirect relies on the traditional
+                            <code class="language-javascrip">document.location.href</code></td>
+                            <td><code class="language-javascript">true</code></td>
+                        </tr>
+                        <tr>
+                            <td>reflex</td>
+                            <td>Boolean</td>
+                            <td>Enable the reflex mode: you can click on the element for
+                            continue the tour.</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr>
+                            <td>options</td>
+                            <td>Object</td>
+                            <td>Extend the options for one step.</td>
+                            <td><code class="language-javascript">{}</code></td>
+                        </tr>
+                        <tr>
+                            <td>onShow</td>
+                            <td>Function</td>
+                            <td>Function to execute right before the step is shown. It overrides the
+                            global <code class="language-javascript">onShow</code> option.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onShown</td>
+                            <td>Function</td>
+                            <td>Function to execute right after the step is shown. It overrides the
+                            global <code class="language-javascript">onShown</code> option.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onHide</td>
+                            <td>Function</td>
+                            <td>Function to execute right before the step is hidden. It overrides
+                            the global <code class="language-javascript">onHide</code> option.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onHidden</td>
+                            <td>Function</td>
+                            <td>Function to execute right after the step is hidden. It overrides the
+                            global <code class="language-javascript">onHidden</code> option.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
-        <section id="contributing">
+        <section id="contribute">
             <div class="container">
                 <div class="page-header">
-                    <h2>Contributing</h2>
+                    <h2>Contribute <small>Do you think we need help? You are totally right</small></h2>
                 </div>
-                <p><a href="https://github.com/sorich87/bootstrap-tour/issues">Bug
-                    reports</a> and <a
-                    href="https://github.com/sorich87/bootstrap-tour/pulls">pull
-                    requests</a> are much needed!
+                <p>Without your <a href="https://github.com/sorich87/bootstrap-tour/issues">bug
+                reports</a> and <a href="https://github.com/sorich87/bootstrap-tour/pulls">pull
+                requests</a>, we are nothing. Make this plugin better!</p>
             </div>
         </section>
         <section id="license">
