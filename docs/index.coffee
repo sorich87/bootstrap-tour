@@ -67,8 +67,11 @@ $ ->
     content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
 
   tour.start()
+
   $('<div class="alert"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
-  $(document).on "click", ".start:not(.disabled)", (e) ->
+
+  $(document).on "click", ".start", (e) ->
     e.preventDefault()
+    return false if $(this).hasClass "disabled"
     tour.restart()
     $(".alert").alert "close"
