@@ -12,7 +12,7 @@ $ ->
     placement: "bottom"
     title: "Welcome to Bootstrap Tour!"
     content: "Introduce new users to your product by walking them through it step by step. Built" +
-      "on the awesome <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap" +
+      "on the awesome <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap " +
       "from Twitter.</a>"
 
   tour.addStep
@@ -40,7 +40,7 @@ $ ->
     element: "#demo"
     placement: "top"
     title: "A new shiny Backdrop option"
-    content: "If you need to highlight the current step's element, activate the backdrop" +
+    content: "If you need to highlight the current step's element, activate the backdrop " +
       "and you won't lose the focus anymore!"
     backdrop: true
 
