@@ -68,6 +68,7 @@
         $.cookie(key, value, { expires: 36500, path: '/' })
       @_options.afterSetState(key, value)
 
+    # Remove the current state from the storage layer
     removeState: (key) ->
       key = "#{@_options.name}_#{key}"
       if this._options.useLocalStorage
@@ -76,6 +77,7 @@
         $.removeCookie(key, { path: '/' })
       @_options.afterRemoveState(key)
 
+    # Get the current state from the storage layer
     getState: (key) ->
       if this._options.useLocalStorage
         value = window.localStorage.getItem("#{@_options.name}_#{key}")
@@ -225,7 +227,6 @@
 
       @_callOnPromiseDone(promise, showStepHelper)
 
-
     # Setup current step variable
     setCurrentStep: (value) ->
       if value?
@@ -258,6 +259,7 @@
       path? and path isnt "" and
         path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, "")
 
+    # Execute the redirect
     _redirect: (step, path) ->
       if typeof step.redirect == 'function'
         step.redirect.call(this, path)
