@@ -237,7 +237,7 @@
           var current_path, path;
 
           _this.setCurrentStep(i);
-          path = typeof step.path === "function" ? step.path.call() : this._options.basePath + step.path;
+          path = typeof step.path === "function" ? step.path.call() : _this._options.basePath + step.path;
           current_path = [document.location.pathname, document.location.hash].join('');
           if (_this._isRedirect(path, current_path)) {
             _this._redirect(step, path);
