@@ -183,6 +183,7 @@ test "Tour.getStep should get a step", ->
     next: 2
     end: false
     animation: false
+    backdrop: false
     redirect: true
     onShow: (tour) ->
     onShown: (tour) ->
@@ -438,3 +439,10 @@ test "Backdrop parameter should show backdrop with step", ->
   strictEqual($(".tour-backdrop").length, 0, "disable backdrop")
   strictEqual($(".tour-step-backdrop").length, 0, "disable backdrop")
   strictEqual($(".tour-step-background").length, 0, "disable backdrop")
+
+test "basePath should prepend the path to the steps", ->
+  @tour = new Tour({
+    basePath: 'test/'
+  });
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), path: 'test.html'})
+  strictEqual(@tour._isRedirect(@tour._options.basePath + @tour.getStep(0).path, 'test/test.html'), false, "Tour adds basePath to step path")

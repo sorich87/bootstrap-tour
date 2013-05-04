@@ -133,6 +133,7 @@
     debug: false,
     backdrop: false,
     redirect: true,
+    basePath: "",
     afterGetState: function(key, value) {},
     afterSetState: function(key, value) {},
     afterRemoveState: function(key, value) {},
@@ -207,7 +208,8 @@
                         <tr>
                             <td>backdrop</td>
                             <td>Boolean</td>
-                            <td>Show a dark backdrop behind the popover and its element, highlighting the current step.</td>
+                            <td>Show a dark backdrop behind the popover and its element,
+                            highlighting the current step.</td>
                             <td><code class="language-javascript">false</code></td>
                         </tr>
                         <tr>
@@ -217,6 +219,15 @@
                             The default redirect relies on the traditional
                             <code class="language-javascrip">document.location.href</code></td>
                             <td><code class="language-javascript">true</code></td>
+                        </tr>
+                        </tr>
+                            <td>basePath</td>
+                            <td>String</td>
+                            <td>Specify a default base path prepended to the
+                            <code class="language-javascript">path</code> option of every single
+                            step. Very useful if you need to reuse the same tour on different
+                            environments or sub-projects.</td>
+                            <td><code class="language-javascript">''</code></td>
                         </tr>
                         <tr>
                             <td>afterGetState, afterSetState, afterRemoveState</td>
