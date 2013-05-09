@@ -75,3 +75,5 @@ $ ->
     return false if $(this).hasClass "disabled"
     tour.restart()
     $(".alert").alert "close"
+
+  $("html").smoothScroll();
