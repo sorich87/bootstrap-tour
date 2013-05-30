@@ -51,6 +51,9 @@
           onHide: function(tour) {},
           onHidden: function(tour) {}
         }, options);
+        if (!this._options.useLocalStorage && !$.cookie) {
+          throw new Error("jQuery.cookie is not loaded.");
+        }
         this._steps = [];
         this.setCurrentStep();
         this.backdrop = {

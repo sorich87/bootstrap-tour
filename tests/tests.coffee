@@ -20,6 +20,12 @@ test "Tour should set the tour options", ->
   ok(@tour._options.afterGetState, "options.afterGetState is set")
   ok(@tour._options.afterSetState, "options.afterSetState is set")
 
+test "Tour should throw an error if the jquery.cookie is not loaded", ->
+  cookie = $.cookie
+  $.cookie = false
+  throws(@tour = new Tour(), new Error "jQuery.cookie is not loaded.", "tour show 'message' if jquery.cookie is not loaded")
+  $.cookie = cookie
+
 test "Tour should have default name of 'tour'", ->
   @tour = new Tour()
   equal(@tour._options.name, "tour", "tour default name is 'tour'")
