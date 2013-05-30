@@ -85,7 +85,7 @@
 &lt;body&gt;
     ...
     &lt;script src="jquery.js"&gt;&lt;/script&gt;
-    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- optional --&gt;
+    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- remove this if you set Tour.useLocalStorage as true --&gt;
     &lt;script src="bootstrap.tooltip.js"&gt;&lt;/script&gt;
     &lt;script src="bootstrap.popover.js"&gt;&lt;/script&gt;
     &lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
@@ -94,11 +94,18 @@
                 <h3>2. Initialize the tour</h3>
                 <pre class="language-javascript"><code>var tour = new Tour();</code></pre>
                 <h3>3. Add steps</h3>
-<pre class="language-javascript"><code>tour.addStep({
-    element: "#my-element", // string (jQuery selector) - html element next to which the step popover should be shown
-    title: "Title of my popover", // string - title of the popover
-    content: "Content of my popover" // string - content of the popover
-});</code></pre>
+<pre class="language-javascript"><code>tour.addSteps([
+    {
+        element: "#my-element", // string (jQuery selector) - html element next to which the step popover should be shown
+        title: "Title of my popover", // string - title of the popover
+        content: "Content of my popover" // string - content of the popover
+    },
+    {
+        element: "#my-other-element",
+        title: "Title of my popover",
+        content: "Content of my popover"
+    }
+]);</code></pre>
                 <p>You can add as many steps as you want, but not too much or your
                 users will fall asleep!</p>
                 <h3>4. Start the tour</h3>
