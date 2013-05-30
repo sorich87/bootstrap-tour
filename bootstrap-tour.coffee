@@ -53,8 +53,7 @@
       }, options)
 
       # validation
-      if ! @_options.useLocalStorage and ! $.cookie
-        @_debug "jQuery.cookie is not loaded."
+      throw new Error "jQuery.cookie is not loaded." if ! @_options.useLocalStorage and ! $.cookie
 
       @_steps = []
       @setCurrentStep()
