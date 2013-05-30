@@ -20,12 +20,6 @@ test "Tour should set the tour options", ->
   ok(@tour._options.afterGetState, "options.afterGetState is set")
   ok(@tour._options.afterSetState, "options.afterSetState is set")
 
-test "Tour should throw an error if the jquery.cookie is not loaded", ->
-  cookie = $.cookie
-  $.cookie = false
-  throws(@tour = new Tour(), new Error "jQuery.cookie is not loaded.", "tour show 'message' if jquery.cookie is not loaded")
-  $.cookie = cookie
-
 test "Tour should have default name of 'tour'", ->
   @tour = new Tour()
   equal(@tour._options.name, "tour", "tour default name is 'tour'")
@@ -37,14 +31,15 @@ test "Tour should accept an array of steps and set the current step", ->
 
 test "Tour.setState should save state cookie", ->
   @tour = new Tour()
-  @tour.setState("test", "yes")
-  strictEqual($.cookie("tour_test"), "yes", "tour saves state cookie")
+  @tour.setState("save", "yes")
+  strictEqual($.cookie("tour_save"), "yes", "tour saves state cookie")
+  $.removeCookie("tour_save")
 
 test "Tour.getState should get state cookie", ->
   @tour = new Tour()
-  @tour.setState("test", "yes")
-  strictEqual(@tour.getState("test"), "yes", "tour gets state cookie")
-  $.cookie("tour_test", null)
+  @tour.setState("get", "yes")
+  strictEqual(@tour.getState("get"), "yes", "tour gets state cookie")
+  $.removeCookie("tour_get")
 
 test "Tour.setState should save state localStorage items", ->
   @tour = new Tour({
