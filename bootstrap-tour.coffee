@@ -90,6 +90,10 @@
       @_options.afterGetState(key, value)
       return value
 
+    # Add multiple steps
+    addSteps: (steps) ->
+      @addStep step for step in steps
+
     # Add a new step
     addStep: (step) ->
       @_steps.push step

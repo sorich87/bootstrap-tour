@@ -100,6 +100,17 @@
         return value;
       };
 
+      Tour.prototype.addSteps = function(steps) {
+        var step, _i, _len, _results;
+
+        _results = [];
+        for (_i = 0, _len = steps.length; _i < _len; _i++) {
+          step = steps[_i];
+          _results.push(this.addStep(step));
+        }
+        return _results;
+      };
+
       Tour.prototype.addStep = function(step) {
         return this._steps.push(step);
       };

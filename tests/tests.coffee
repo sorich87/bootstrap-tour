@@ -52,14 +52,21 @@ test "Tour.getState should get state localStorage items", ->
     useLocalStorage: true
   })
   @tour.setState("test", "yes")
-  strictEqual(@tour.getState("test"), "yes", "tour save state localStorage items")
+  strictEqual(@tour.getState("test"), "yes", "tour saves state localStorage items")
   window.localStorage.setItem("tour_test", null)
 
 test "Tour.addStep should add a step", ->
   @tour = new Tour()
   step = { element: $("<div></div>").appendTo("#qunit-fixture") }
   @tour.addStep(step)
-  deepEqual(@tour._steps, [step], "tour adds steps")
+  deepEqual(@tour._steps, [step], "tour adds the step")
+
+test "Tour.addSteps should add multiple step", ->
+  @tour = new Tour()
+  firstStep = { element: $("<div></div>").appendTo("#qunit-fixture") }
+  secondStep = { element: $("<div></div>").appendTo("#qunit-fixture") }
+  @tour.addSteps([firstStep, secondStep])
+  deepEqual(@tour._steps, [firstStep, secondStep], "tour adds multiple steps")
 
 test "Tour step should have an id", ->
   @tour = new Tour()
