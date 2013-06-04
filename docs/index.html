@@ -161,6 +161,8 @@
     onShown: function(tour) {}
     onHide: function(tour) {},
     onHidden: function(tour) {},
+    onNext: function(tour) {},
+    onPrev: function(tour) {}
 });</code></pre>
                 <table class="table  table-bordered table-striped">
                     <thead>
@@ -317,6 +319,18 @@
                             <td>Function to execute right after each step is hidden.</td>
                             <td><code class="language-javascript">function(tour) { }</code></td>
                         </tr>
+                        <tr>
+                            <td>onNext</td>
+                            <td>Function</td>
+                            <td>Function to execute when next step is called.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onPrev</td>
+                            <td>Function</td>
+                            <td>Function to execute when prev step is called.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
                     </tbody>
                 </table>
                 <h3>Step Options</h3>
@@ -335,7 +349,9 @@
     reflex: false,
     option: {},
     onShow: function(tour) {},
-    onHide: function(tour) {}
+    onHide: function(tour) {},
+    onNext: function(tour) {},
+    onPrev: function(tour) {}
 });</code></pre>
                 <table class="table  table-bordered table-striped">
                     <thead>
@@ -475,6 +491,20 @@
                             <td>Function</td>
                             <td>Function to execute right after the step is hidden. It overrides the
                             global <code class="language-javascript">onHidden</code> option.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onNext</td>
+                            <td>Function</td>
+                            <td>Function to execute when next step is called. It overrides the
+                            global <code class="language-javascript">onNext</code> option.</td>
+                            <td><code class="language-javascript">function(tour) { }</code></td>
+                        </tr>
+                        <tr>
+                            <td>onPrev</td>
+                            <td>Function</td>
+                            <td>Function to execute when prev step is called. It overrides the
+                            global <code class="language-javascript">onPrev</code> option.</td>
                             <td><code class="language-javascript">function(tour) { }</code></td>
                         </tr>
                     </tbody>
