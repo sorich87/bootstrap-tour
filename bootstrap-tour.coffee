@@ -50,6 +50,8 @@
         onShown: (tour) ->
         onHide: (tour) ->
         onHidden: (tour) ->
+        onNext: (tour) ->
+        onPrev: (tour) ->
       }, options)
 
       # validation
@@ -119,6 +121,8 @@
         onShown: @_options.onShown
         onHide: @_options.onHide
         onHidden: @_options.onHidden
+        onNext: @_options.onNext
+        onPrev: @_options.onPrev
         template: @_options.template
         container: @_options.container
       }, @_steps[i]) if @_steps[i]?
@@ -251,12 +255,18 @@
     # Show next step
     showNextStep: ->
       step = @getStep(@_current)
-      @showStep(step.next)
+      showNextStepHelper = (e) => @showStep(step.next)
+
+      promise = @_makePromise (step.onNext(@) if step.onNext?)
+      @_callOnPromiseDone(promise, showNextStepHelper)
 
     # Show prev step
     showPrevStep: ->
       step = @getStep(@_current)
-      @showStep(step.prev)
+      showPrevStepHelper = (e) => @showStep(step.prev)
+
+      promise = @_makePromise (step.onPrev(@) if step.onPrev?)
+      @_callOnPromiseDone(promise, showPrevStepHelper)
 
     # Print message in console
     _debug: (text) ->

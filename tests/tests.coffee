@@ -197,6 +197,8 @@ test "Tour.getStep should get a step", ->
     onShown: (tour) ->
     onHide: (tour) ->
     onHidden: (tour) ->
+    onNext: (tour) ->
+    onPrev: (tour) ->
     template: "<div class='popover tour'>
     <div class='arrow'></div>
     <h3 class='popover-title'></h3>
@@ -454,3 +456,55 @@ test "basePath should prepend the path to the steps", ->
   });
   @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture"), path: 'test.html'})
   strictEqual(@tour._isRedirect(@tour._options.basePath + @tour.getStep(0).path, 'test/test.html'), false, "Tour adds basePath to step path")
+
+test "Tour with onNext option should run the callback before showing the next step", ->
+  tour_test = 0
+  @tour = new Tour({
+    onNext: ->
+      tour_test += 2
+  })
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  @tour.next()
+  strictEqual(tour_test, 2, "tour runs onNext when next step is called")
+
+test "Tour.addStep with onNext option should run the callback before showing the next step", ->
+  tour_test = 0
+  @tour = new Tour()
+  @tour.addStep({
+    element: $("<div></div>").appendTo("#qunit-fixture")
+    onNext: ->
+      tour_test = 2 })
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  strictEqual(tour_test, 0, "tour does not run onNext when next step is not called")
+  @tour.next()
+  strictEqual(tour_test, 2, "tour runs onNext when next step is called")
+
+test "Tour with onPrev option should run the callback before showing the prev step", ->
+  tour_test = 0
+  @tour = new Tour({
+    onPrev: ->
+      tour_test += 2
+  })
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.start()
+  @tour.next()
+  @tour.prev()
+  strictEqual(tour_test, 2, "tour runs onPrev when prev step is called")
+
+test "Tour.addStep with onPrev option should run the callback before showing the prev step", ->
+  tour_test = 0
+  @tour = new Tour()
+  @tour.addStep({element: $("<div></div>").appendTo("#qunit-fixture")})
+  @tour.addStep({
+    element: $("<div></div>").appendTo("#qunit-fixture")
+    onPrev: ->
+      tour_test = 2 })
+  @tour.start()
+  strictEqual(tour_test, 0, "tour does not run onPrev when prev step is not called")
+  @tour.next()
+  @tour.prev()
+  strictEqual(tour_test, 2, "tour runs onPrev when prev step is called")
