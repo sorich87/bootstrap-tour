@@ -1,14 +1,22 @@
 {
   "name": "bootstrap-tour",
   "description": "Quick and easy way to build your product tours with Twitter Bootstrap Popovers.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "http://bootstraptour.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/sorich87/bootstrap-tour.git"
   },
-  "dependencies": {
-    "bootstrap": "2.3.1",
-    "jquery": "~1.8.0"
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.x",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-jasmine": "*"
   }
 }
