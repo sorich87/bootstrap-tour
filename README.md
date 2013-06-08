@@ -51,12 +51,19 @@ uglify
 watch
 watch:default // tasks: clean:default, coffee:default, uglify
 watch:test // tasks: clean:test, coffee:test, jasmine
+watch:doc // tasks: coffee:doc (with livereload)
 
 // run the jasmine specs headlessly through 'phantomjs'
 jasmine
 
 // copy sources into doc assets
 copy
+
+// small server to serve the static files
+connect
+
+// open automatically the browser to the port defined in connect options
+open
 ```
 
 There are also some _aliases_ for multiple tasks
@@ -66,12 +73,19 @@ There are also some _aliases_ for multiple tasks
 grunt
 grunt default
 
+// alias for connect, open, watch:doc
+grunt run
+
 // alias for clean:default, coffee:default, coffee:doc, less, uglify, copy
 grunt build
 
 // alias for clean:test, coffee:test, jasmine
 grunt test
 ```
+
+### Live reload
+
+Running `grunt run` will start a small server on port `3000` and opens the browser to the webpage. It will also start watching for changes in the `index.coffee` which will trigger then live reloading of the page in the browser.
 
 
 ## License ##

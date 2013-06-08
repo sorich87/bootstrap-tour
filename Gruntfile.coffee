@@ -42,6 +42,11 @@ module.exports = (grunt)->
       test:
         files: ["test/spec/*.coffee"]
         tasks: ["clean:test", "coffee:test", "jasmine"]
+      doc:
+        files: ["docs/*.coffee"]
+        tasks: ["coffee:doc"]
+        options:
+          livereload: true
 
     jasmine:
       # keep an eye on the order of deps import
@@ -70,6 +75,16 @@ module.exports = (grunt)->
             src: ["*.css"]
         ]
 
+    connect:
+      default:
+        options:
+          port: 3000
+          base: "docs"
+
+    open:
+      default:
+        path: "http://localhost:<%= connect.default.options.port %>"
+
     # TODO:
     # - browser sample page reloads on watch when developing
 
@@ -81,8 +96,11 @@ module.exports = (grunt)->
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-copy"
+  grunt.loadNpmTasks "grunt-contrib-connect"
+  grunt.loadNpmTasks "grunt-open"
 
   # register tasks
+  grunt.registerTask "run", ["connect", "open", "watch:doc"]
   grunt.registerTask "build", ["clean:default", "coffee:default", "coffee:doc", "less", "uglify", "copy"]
   grunt.registerTask "test", ["clean:test", "coffee:test", "jasmine"]
   grunt.registerTask "default", ["watch:default"]

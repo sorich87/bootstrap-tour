@@ -30,21 +30,18 @@
           }
         }
       }, {
-        path: "/",
         element: "#options",
         placement: "top",
         title: "And it is powerful!",
         content: "There are more options for those, like us, who want to do complicated things. " + "<br />Power to the people! :P",
         reflex: true
       }, {
-        path: "/",
         element: "#demo",
         placement: "top",
         title: "A new shiny Backdrop option",
         content: "If you need to highlight the current step's element, activate the backdrop " + "and you won't lose the focus anymore!",
         backdrop: true
       }, {
-        path: "/",
         element: "#reflex",
         placement: "bottom",
         title: "Reflex mode",

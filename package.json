@@ -18,6 +18,8 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-jasmine": "*",
-    "grunt-contrib-copy": "*"
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-open": "*"
   }
 }
