@@ -17,6 +17,7 @@
     "grunt-contrib-less": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-jasmine": "*"
+    "grunt-contrib-jasmine": "*",
+    "grunt-contrib-copy": "*"
   }
 }

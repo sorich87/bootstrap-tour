@@ -15,6 +15,9 @@ module.exports = (grunt)->
       test:
         src: "test/spec/bootstrap-tour.spec.coffee"
         dest: "test/build/bootstrap-tour.spec.js"
+      doc:
+        src: "docs/index.coffee"
+        dest: "docs/assets/js/index.js"
 
     less:
       default:
@@ -27,8 +30,9 @@ module.exports = (grunt)->
           yuicompress: true
 
     uglify:
-      src: "build/js/bootstrap-tour.js"
-      dest: "build/js/bootstrap-tour.min.js"
+      default:
+        src: "build/js/bootstrap-tour.js"
+        dest: "build/js/bootstrap-tour.min.js"
 
     # watching for changes
     watch:
@@ -42,18 +46,31 @@ module.exports = (grunt)->
     jasmine:
       # keep an eye on the order of deps import
       src: [
-        "deps/jquery.js"
-        "deps/jquery.cookie.js"
-        "deps/bootstrap-alert.js"
-        "deps/bootstrap-tooltip.js"
-        "deps/bootstrap-popover.js"
+        "docs/assets/vendor/jquery.js"
+        "docs/assets/vendor/jquery.cookie.js"
+        "docs/assets/vendor/bootstrap-alert.js"
+        "docs/assets/vendor/bootstrap-tooltip.js"
+        "docs/assets/vendor/bootstrap-popover.js"
         "build/js/bootstrap-tour.js"
       ]
       options:
         specs: "test/build/bootstrap-tour.spec.js"
 
+    copy:
+      default:
+        files: [
+            expand: true,
+            cwd: "build/js",
+            dest: "docs/assets/js",
+            src: ["*.js"]
+          ,
+            expand: true,
+            cwd: "build/css",
+            dest: "docs/assets/css",
+            src: ["*.css"]
+        ]
+
     # TODO:
-    # - jasmine html runner
     # - browser sample page reloads on watch when developing
 
   # load plugins that provide the tasks defined in the config
@@ -63,8 +80,9 @@ module.exports = (grunt)->
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-contrib-jasmine"
+  grunt.loadNpmTasks "grunt-contrib-copy"
 
   # register tasks
-  grunt.registerTask "build", ["clean:default", "coffee:default", "less", "uglify"]
+  grunt.registerTask "build", ["clean:default", "coffee:default", "coffee:doc", "less", "uglify", "copy"]
   grunt.registerTask "test", ["clean:test", "coffee:test", "jasmine"]
   grunt.registerTask "default", ["watch:default"]

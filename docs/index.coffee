@@ -2,10 +2,8 @@ $ ->
   $start = $("#start")
 
   tour = new Tour(
-    onStart: ->
-      $start.addClass "disabled", true
-    onEnd: ->
-      $start.removeClass "disabled", true
+    onStart: -> $start.addClass "disabled", true
+    onEnd: -> $start.removeClass "disabled", true
     debug: on
   )
 
@@ -73,4 +71,4 @@ $ ->
     tour.restart()
     $(".alert").alert "close"
 
-  $("html").smoothScroll();
+  $("html").smoothScroll()
