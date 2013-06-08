@@ -27,9 +27,8 @@ module.exports = (grunt)->
           yuicompress: true
 
     uglify:
-      default:
-        src: "build/js/bootstrap-tour.js"
-        dest: "build/js/bootstrap-tour.min.js"
+      src: "build/js/bootstrap-tour.js"
+      dest: "build/js/bootstrap-tour.min.js"
 
     # watching for changes
     watch:
@@ -48,13 +47,12 @@ module.exports = (grunt)->
         "deps/bootstrap-alert.js"
         "deps/bootstrap-tooltip.js"
         "deps/bootstrap-popover.js"
-        "build/js/*.js"
+        "build/js/bootstrap-tour.js"
       ]
       options:
         specs: "test/build/bootstrap-tour.spec.js"
 
     # TODO:
-    # - download bootstrap.js / bootstrap.css from cdn if not present
     # - jasmine html runner
     # - browser sample page reloads on watch when developing
 
@@ -69,4 +67,4 @@ module.exports = (grunt)->
   # register tasks
   grunt.registerTask "build", ["clean:default", "coffee:default", "less", "uglify"]
   grunt.registerTask "test", ["clean:test", "coffee:test", "jasmine"]
-  grunt.registerTask "default", ["coffee", "watch"]
+  grunt.registerTask "default", ["watch:default"]
