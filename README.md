@@ -37,6 +37,7 @@ clean:test
 coffee
 coffee:default
 coffee:test
+coffee:doc
 
 // compile the less file into the 'build' directory with a minified version, or specify a single target
 less
@@ -53,6 +54,9 @@ watch:test // tasks: clean:test, coffee:test, jasmine
 
 // run the jasmine specs headlessly through 'phantomjs'
 jasmine
+
+// copy sources into doc assets
+copy
 ```
 
 There are also some _aliases_ for multiple tasks
@@ -62,7 +66,7 @@ There are also some _aliases_ for multiple tasks
 grunt
 grunt default
 
-// alias for clean:default, coffee:default, less, uglify
+// alias for clean:default, coffee:default, coffee:doc, less, uglify, copy
 grunt build
 
 // alias for clean:test, coffee:test, jasmine
