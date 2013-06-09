@@ -2,10 +2,8 @@ $ ->
   $start = $("#start")
 
   tour = new Tour(
-    onStart: ->
-      $start.addClass "disabled", true
-    onEnd: ->
-      $start.removeClass "disabled", true
+    onStart: -> $start.addClass "disabled", true
+    onEnd: -> $start.removeClass "disabled", true
     debug: on
   )
 
@@ -27,7 +25,6 @@ $ ->
           next: "Hey"
           end: "Stop"
     ,
-      path: "/"
       element: "#options"
       placement: "top"
       title: "And it is powerful!"
@@ -35,7 +32,6 @@ $ ->
         "<br />Power to the people! :P"
       reflex: true
     ,
-      path: "/"
       element: "#demo"
       placement: "top"
       title: "A new shiny Backdrop option"
@@ -43,7 +39,6 @@ $ ->
         "and you won't lose the focus anymore!"
       backdrop: true
     ,
-      path: "/"
       element: "#reflex"
       placement: "bottom"
       title: "Reflex mode"
@@ -73,4 +68,4 @@ $ ->
     tour.restart()
     $(".alert").alert "close"
 
-  $("html").smoothScroll();
+  $("html").smoothScroll()
