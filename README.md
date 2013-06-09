@@ -13,7 +13,6 @@ Feel free to contribute with pull requests, bug reports or enhancement suggestio
 
 _We use [Grunt](http://gruntjs.com/) as our Task Runner, which makes your life way more easy ;)_
 
-
 ### How to run/develop
 
 Install the dependencies
