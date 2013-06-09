@@ -11,12 +11,11 @@ Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 ## Contributing ##
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
 
-_We use [Grunt](http://gruntjs.com/) as our Task Runner, which makes your life way more easy ;)_
+_We use [Grunt](http://gruntjs.com/) as our Task Runner, which makes your life way easier ;)_
 
+### Run / Develop ###
 
-### How to run/develop
-
-Install the dependencies
+#### Install the dependencies ####
 
 ```bash
 npm install -d
@@ -24,6 +23,8 @@ npm install -d
 
 Files to be developed are located under `./src/` and `./test/spec/`
 Compiled sources are then automatically put under `./build/` and `./test/build/`
+
+#### List of commands ####
 
 Now you can perform a series of predefined Tasks by executing `grunt <task>:<target>`
 
@@ -83,7 +84,7 @@ grunt build
 grunt test
 ```
 
-### Live reload
+#### Live reload ####
 
 Running `grunt run` will start a small server on port `3000` and opens the browser to the webpage. It will also start watching for changes in the `index.coffee` which will trigger then live reloading of the page in the browser.
 
