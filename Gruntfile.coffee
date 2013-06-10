@@ -4,6 +4,21 @@ module.exports = (grunt)->
     # load package information
     pkg: grunt.file.readJSON 'package.json'
 
+    coffeelint:
+      options:
+        indentation:
+          value: 2
+          level: "error"
+        no_trailing_semicolons:
+          level: "error"
+        no_trailing_whitespace:
+          level: "error"
+        max_line_length:
+          level: "ignore"
+      default: ["Gruntfile.coffee", "src/**/*.coffee"]
+      test: ["Gruntfile.coffee", "test/**/*.coffee"]
+      doc: ["Gruntfile.coffee", "docs/*.coffee"]
+
     clean:
       default: "build"
       test: "test/build"
@@ -38,13 +53,13 @@ module.exports = (grunt)->
     watch:
       default:
         files: ["src/coffee/*.coffee"]
-        tasks: ["clean:default", "coffee:default", "uglify"]
+        tasks: ["clean:default", "coffeelint:default", "coffee:default", "uglify"]
       test:
         files: ["test/spec/*.coffee"]
-        tasks: ["clean:test", "coffee:test", "jasmine"]
+        tasks: ["clean:test", "coffeelint:test", "coffee:test", "jasmine"]
       doc:
         files: ["docs/*.coffee"]
-        tasks: ["coffee:doc"]
+        tasks: ["coffeelint:doc", "coffee:doc"]
         options:
           livereload: true
 
@@ -89,6 +104,7 @@ module.exports = (grunt)->
     # - browser sample page reloads on watch when developing
 
   # load plugins that provide the tasks defined in the config
+  grunt.loadNpmTasks "grunt-coffeelint"
   grunt.loadNpmTasks "grunt-contrib-clean"
   grunt.loadNpmTasks "grunt-contrib-coffee"
   grunt.loadNpmTasks "grunt-contrib-less"
@@ -101,6 +117,6 @@ module.exports = (grunt)->
 
   # register tasks
   grunt.registerTask "run", ["connect", "open", "watch:doc"]
-  grunt.registerTask "build", ["clean:default", "coffee:default", "coffee:doc", "less", "uglify", "copy"]
-  grunt.registerTask "test", ["clean:test", "coffee:test", "jasmine"]
+  grunt.registerTask "build", ["clean:default", "coffeelint", "coffee:default", "coffee:doc", "less", "uglify", "copy"]
+  grunt.registerTask "test", ["clean:test", "coffeelint:test", "coffee:test", "jasmine"]
   grunt.registerTask "default", ["watch:default"]

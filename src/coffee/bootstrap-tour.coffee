@@ -217,7 +217,7 @@
         @setCurrentStep(i)
 
         # Support string or function for path
-        path = if typeof step.path == "function" then step.path.call() else @_options.basePath + step.path;
+        path = if typeof step.path == "function" then step.path.call() else @_options.basePath + step.path
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
