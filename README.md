@@ -27,6 +27,12 @@ Compiled sources are then automatically put under `./build/` and `./test/build/`
 Now you can perform a series of predefined Tasks by executing `grunt <task>:<target>`
 
 ```javascript
+// check your coffeescripts style, or specify a single target
+coffeelint
+coffeelint:default
+coffeelint:test
+coffeelint:doc
+
 // clean all the 'build' directories, or specify a single target
 clean
 clean:default
@@ -48,9 +54,9 @@ uglify
 
 // watch for changes of the coffeescripts (main and spec) and execute the assigned tasks, or specify a single target
 watch
-watch:default // tasks: clean:default, coffee:default, uglify
-watch:test // tasks: clean:test, coffee:test, jasmine
-watch:doc // tasks: coffee:doc (with livereload)
+watch:default // tasks: clean:default, coffeelint:default, coffee:default, uglify
+watch:test // tasks: clean:test, coffeelint:test, coffee:test, jasmine
+watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)
 
 // run the jasmine specs headlessly through 'phantomjs'
 jasmine
@@ -75,16 +81,21 @@ grunt default
 // alias for connect, open, watch:doc
 grunt run
 
-// alias for clean:default, coffee:default, coffee:doc, less, uglify, copy
+// alias for clean:default, coffeelint, coffee:default, coffee:doc, less, uglify, copy
 grunt build
 
-// alias for clean:test, coffee:test, jasmine
+// alias for clean:test, coffeelint:test, coffee:test, jasmine
 grunt test
 ```
 
 ### Live reload
 
 Running `grunt run` will start a small server on port `3000` and opens the browser to the webpage. It will also start watching for changes in the `index.coffee` which will trigger then live reloading of the page in the browser.
+
+### Test
+
+Tests are written using [Jasmine framework](http://pivotal.github.io/jasmine/) and they run headlessly through PhantomJS.<br>
+Simply run `grunt test` or watch them with `grunt watch:test` (this will execute them automatically every time you change the specs).
 
 
 ## License ##
