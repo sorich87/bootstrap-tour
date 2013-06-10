@@ -1,6 +1,6 @@
-/* ============================================================
-# bootstrap-tour.js v0.4.0
-# http://bootstraptour.com/
+/* ===========================================================
+# bootstrap-tour - v0.4.0
+# http://bootstraptour.com
 # ==============================================================
 # Copyright 2012-2013 Ulrich Sossou
 #
@@ -16,8 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 */
-
-
 (function() {
   (function($, window) {
     var Tour, document;
