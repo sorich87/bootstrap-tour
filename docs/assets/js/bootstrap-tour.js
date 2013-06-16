@@ -354,7 +354,8 @@
           html: true,
           animation: step.animation,
           container: step.container,
-          template: step.template
+          template: step.template,
+          selector: step.element
         }).popover("show");
         $tip = $(step.element).data("popover").tip();
         $tip.attr("id", step.id);
