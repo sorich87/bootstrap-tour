@@ -10,11 +10,6 @@
           next: 'Next &raquo;'
           prev: '&laquo; Prev'
         }
-        template: "<div class='popover tour'>
-            <div class='arrow'></div>
-            <h3 class='popover-title'></h3>
-            <div class='popover-content'></div>
-          </div>"
         container: 'body'
         keyboard: true
         useLocalStorage: false
@@ -22,6 +17,12 @@
         backdrop: false
         redirect: true
         basePath: ''
+        template: (i, step) ->
+          "<div class='popover tour'>
+            <div class='arrow'></div>
+            <h3 class='popover-title'></h3>
+            <div class='popover-content'></div>
+          </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -301,7 +302,7 @@
         html: true
         animation: step.animation
         container: step.container
-        template: step.template
+        template: step.template(i, step)
         selector: step.element
       }).popover("show")
 

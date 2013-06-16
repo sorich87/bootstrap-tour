@@ -514,11 +514,111 @@
         <section id="contribute">
             <div class="container">
                 <div class="page-header">
-                    <h2>Contribute <small>Do you think we need help? You are totally right</small></h2>
+                    <h2>Contributing <small>Do you think we need help? You are totally right</small></h2>
                 </div>
                 <p>Without your <a href="https://github.com/sorich87/bootstrap-tour/issues">bug
                 reports</a> and <a href="https://github.com/sorich87/bootstrap-tour/pulls">pull
                 requests</a>, we are nothing. Make this plugin better!</p>
+                <h3>Grunt Usage</h3>
+                <div id="grunt-usage" class="accordion">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#install-dependencies">Install Dependencies</a>
+                        </div>
+                        <div id="install-dependencies" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <p>Files to be developed inside the project are located under
+                                <code>/src/</code> and <code>/test/spec/</code>.</p>
+                                <p>Compiled sources are then automatically put under
+                                <code>/build/</code> and <code>/test/build/</code>.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run predefined tasks by executing <code class="language-bash">grunt &lt;task&gt;:&lt;target&gt;</code></a>
+                        </div>
+                        <div id="run-tasks" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <p><em>Check your coffeescripts style, or specify a single target</em></p>
+<pre class="language-bash"><code>coffeelint
+coffeelint:default
+coffeelint:test
+coffeelint:doc</code></pre>
+                                <p><em>Clean all the 'build' directories, or specify a single target</em></p>
+<pre class="language-bash"><code>clean
+clean:default
+clean:test</code></pre>
+                                <p><em>Compile the coffeescripts into the 'build' directories, or specify a single target</em></p>
+<pre class="language-bash"><code>coffee
+coffee:default
+coffee:test
+coffee:doc</code></pre>
+                                <p><em>Compile the less file into the 'build' directory with a minified version, or specify a single target</em></p>
+<pre class="language-bash"><code>less
+less:default
+less:min</code></pre>
+                                <p><em>Minify the javascripts in the 'build' directory</em></p>
+<pre class="language-bash"><code>uglify</code></pre>
+                                <p><em>Watch for changes of the coffeescripts (main and spec) and execute the assigned tasks, or specify a single target</em></p>
+<pre class="language-bash"><code>watch
+watch:default // tasks: clean:default, coffeelint:default, coffee:default, uglify
+watch:test // tasks: clean:test, coffeelint:test, coffee:test, jasmine
+watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
+                                <p><em>Run the jasmine specs headlessly through 'phantomjs'</em></p>
+<pre class="language-bash"><code>jasmine</code></pre>
+                                <p><em>Copy sources into doc assets</em></p>
+<pre class="language-bash"><code>copy</code></pre>
+                                <p><em>Small server to serve the static files</em></p>
+<pre class="language-bash">con<code>nect</code></pre>
+                                <p><em>Open automatically the browser to the port defined in connect options</em></p>
+<pre class="language-bash"><code>open</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-aliases">Run aliases for multiple tasks</a>
+                        </div>
+                        <div id="run-aliases" class="accordion-body collapse">
+                            <div class="accordion-inner">
+<pre class="language-javascript"><code>// watch : default
+grunt
+grunt default
+
+// connect, open, watch:doc
+grunt run
+
+// clean:default, coffeelint, coffee:default, coffee:doc, less, uglify, copy
+grunt build
+
+// clean:test, coffeelint:test, coffee:test, jasmine
+grunt test</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#live-reload">Live reload</a>
+                        </div>
+                        <div id="live-reload" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <p>Running <code class="language-bash">grunt run</code> will start a small server on port <code class="language-bash">3000</code> and opens the browser to the webpage. It will also start watching for changes in the <code class="language-bash">index.coffee</code> which will trigger then live reloading of the page in the browser.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#test">Run the tests</a>
+                        </div>
+                        <div id="test" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <p>Tests are written using <a href="http://pivotal.github.io/jasmine/" target="_blank">Jasmine framework</a> and they run headlessly through PhantomJS.<br>
+                                Simply run <code class="language-bash">grunt test</code> or watch them with <code class="language-bash">grunt watch:test</code> (this will execute them automatically every time you change the specs).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section id="license">
@@ -526,8 +626,8 @@
                 <div class="page-header">
                     <h2>License</h2>
                 </div>
-                <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.
-                Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.
+                <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.<br>
+                Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.<br>
                 Well, the same licenses as Bootstrap. We are lazy! ;)</p>
             </div>
         </section>
@@ -535,6 +635,7 @@
         <script src="assets/vendor/bootstrap-tooltip.js"></script>
         <script src="assets/vendor/bootstrap-popover.js"></script>
         <script src="assets/vendor/bootstrap-alert.js"></script>
+        <script src="assets/vendor/bootstrap-collapse.js"></script>
         <script src="assets/vendor/jquery.cookie.js"></script>
         <script src="assets/vendor/prism.js"></script>
         <script src="assets/vendor/jquery.smoothscroll.js"></script>
