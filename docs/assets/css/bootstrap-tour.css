@@ -17,3 +17,9 @@
   background: #fff;
   border-radius: 6px;
 }
+.popover.tour .popover-footer {
+  padding: 9px 14px;
+}
+.popover.tour .popover-footer .end {
+  float: right;
+}

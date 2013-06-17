@@ -27,9 +27,10 @@
           labels: {
             end: 'End tour',
             next: 'Next &raquo;',
-            prev: '&laquo; Prev'
+            prev: '&laquo; Prev',
+            separator: '|'
           },
-          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>",
+          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>            <div class='popover-footer'>              <a class='prev'></a>              <span class='separator'></span>              <a class='next'></a>              <a class='end'></a>            </div>          </div>",
           container: 'body',
           keyboard: true,
           useLocalStorage: false,
@@ -120,7 +121,7 @@
             path: "",
             placement: "right",
             title: "",
-            content: "",
+            content: "<p></p>",
             id: "step-" + i,
             next: i === this._steps.length - 1 ? -1 : i + 1,
             prev: i - 1,
@@ -320,22 +321,30 @@
       };
 
       Tour.prototype._renderNavigation = function(step, options) {
-        var content, nav;
-        nav = [];
+        var template;
+        template = $(step.template);
         if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>" + options.labels.prev + "</a>");
+          template.find(".popover-footer .prev").html(options.labels.prev).attr("href", "#" + step.prev);
+        } else {
+          template.find(".popover-footer .prev").remove();
         }
         if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>" + options.labels.next + "</a>");
+          template.find(".popover-footer .next").html(options.labels.next).attr("href", "#" + step.next);
+        } else {
+          template.find(".popover-footer .next").remove();
         }
-        content = nav.join(" | ");
-        return content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
+        if (step.prev >= 0 && step.next >= 0) {
+          template.find(".popover-footer .separator").html(options.labels.separator);
+        } else {
+          template.find(".popover-footer .separator").remove();
+        }
+        template.find(".popover-footer .end").html(options.labels.end).attr("href", "#");
+        return template.clone().wrap("<div>").parent().html();
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var $tip, content, options,
+        var $tip, options, rendered,
           _this = this;
-        content = "" + step.content + "<br /><p>";
         options = $.extend({}, this._options);
         if (step.options) {
           $.extend(options, step.options);
@@ -345,16 +354,16 @@
             return _this.next();
           });
         }
-        content += this._renderNavigation(step, options);
+        rendered = this._renderNavigation(step, options);
         $(step.element).popover('destroy').popover({
           placement: step.placement,
           trigger: "manual",
           title: step.title,
-          content: content,
+          content: step.content,
           html: true,
           animation: step.animation,
           container: step.container,
-          template: step.template,
+          template: rendered,
           selector: step.element
         }).popover("show");
         $tip = $(step.element).data("popover").tip();

@@ -9,11 +9,18 @@
           end: 'End tour'
           next: 'Next &raquo;'
           prev: '&laquo; Prev'
+          separator: '|'
         }
         template: "<div class='popover tour'>
             <div class='arrow'></div>
             <h3 class='popover-title'></h3>
             <div class='popover-content'></div>
+            <div class='popover-footer'>
+              <a class='prev'></a>
+              <span class='separator'></span>
+              <a class='next'></a>
+              <a class='end'></a>
+            </div>
           </div>"
         container: 'body'
         keyboard: true
@@ -91,7 +98,7 @@
         path: ""
         placement: "right"
         title: ""
-        content: ""
+        content: "<p></p>" # no empty as default, otherwise popover won't show up
         id: "step-#{i}"
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
@@ -269,20 +276,29 @@
 
     # Render navigation
     _renderNavigation: (step, options) ->
-      nav = []
+      template = $(step.template)
 
-      if (step.prev >= 0)
-        nav.push "<a href='##{step.prev}' class='prev'>#{options.labels.prev}</a>"
-      if (step.next >= 0)
-        nav.push "<a href='##{step.next}' class='next'>#{options.labels.next}</a>"
+      if step.prev >= 0
+        template.find(".popover-footer .prev").html(options.labels.prev).attr("href", "##{step.prev}")
+      else
+        template.find(".popover-footer .prev").remove()
 
-      content = nav.join(" | ")
-      content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
+      if step.next >= 0
+        template.find(".popover-footer .next").html(options.labels.next).attr("href", "##{step.next}")
+      else
+        template.find(".popover-footer .next").remove()
+
+      if step.prev >=0 and step.next >= 0
+        template.find(".popover-footer .separator").html(options.labels.separator)
+      else
+        template.find(".popover-footer .separator").remove()
+
+      template.find(".popover-footer .end").html(options.labels.end).attr("href", "#")
+      # return the outerHTML of the jQuery el
+      template.clone().wrap("<div>").parent().html()
 
     # Show step popover
     _showPopover: (step, i) ->
-      content = "#{step.content}<br /><p>"
-
       options = $.extend {}, @_options
 
       if step.options
@@ -291,17 +307,17 @@
         $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           @next()
 
-      content += @_renderNavigation(step, options)
+      rendered = @_renderNavigation(step, options)
 
       $(step.element).popover('destroy').popover({
         placement: step.placement
         trigger: "manual"
         title: step.title
-        content: content
+        content: step.content
         html: true
         animation: step.animation
         container: step.container
-        template: step.template
+        template: rendered
         selector: step.element
       }).popover("show")
 
@@ -442,4 +458,3 @@
   window.Tour = Tour
 
 )(jQuery, window)
-
