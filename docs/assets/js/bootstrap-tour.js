@@ -333,7 +333,7 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var $tip, content, options,
+        var $element, $tip, content, options,
           _this = this;
         content = "" + step.content + "<br /><p>";
         options = $.extend({}, this._options);
@@ -346,7 +346,11 @@
           });
         }
         content += this._renderNavigation(step, options);
-        $(step.element).popover('destroy').popover({
+        $element = $(step.element);
+        if ($element.data('popover')) {
+          $element.popover('destroy');
+        }
+        $element.popover({
           placement: step.placement,
           trigger: "manual",
           title: step.title,

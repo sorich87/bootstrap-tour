@@ -293,7 +293,11 @@
 
       content += @_renderNavigation(step, options)
 
-      $(step.element).popover('destroy').popover({
+      $element = $(step.element)
+
+      $element.popover('destroy') if $element.data('popover')
+
+      $element.popover({
         placement: step.placement
         trigger: "manual"
         title: step.title
