@@ -10,11 +10,6 @@
           next: 'Next &raquo;'
           prev: '&laquo; Prev'
         }
-        template: "<div class='popover tour'>
-            <div class='arrow'></div>
-            <h3 class='popover-title'></h3>
-            <div class='popover-content'></div>
-          </div>"
         container: 'body'
         keyboard: true
         useLocalStorage: false
@@ -22,6 +17,12 @@
         backdrop: false
         redirect: true
         basePath: ''
+        template: (i, step) ->
+          "<div class='popover tour'>
+            <div class='arrow'></div>
+            <h3 class='popover-title'></h3>
+            <div class='popover-content'></div>
+          </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -88,24 +89,24 @@
     # Get a step by its indice
     getStep: (i) ->
       $.extend({
+        id: "step-#{i}"
         path: ""
         placement: "right"
         title: ""
         content: ""
-        id: "step-#{i}"
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
         animation: true
+        container: @_options.container
         backdrop: @_options.backdrop
         redirect: @_options.redirect
+        template: @_options.template
         onShow: @_options.onShow
         onShown: @_options.onShown
         onHide: @_options.onHide
         onHidden: @_options.onHidden
         onNext: @_options.onNext
         onPrev: @_options.onPrev
-        template: @_options.template
-        container: @_options.container
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -305,7 +306,7 @@
         html: true
         animation: step.animation
         container: step.container
-        template: step.template
+        template: step.template(i, step)
         selector: step.element
       }).popover("show")
 

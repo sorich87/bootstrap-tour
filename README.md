@@ -11,7 +11,7 @@ Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 ## Contributing ##
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
 
-_We use [Grunt](http://gruntjs.com/) as our Task Runner, which makes your life way more easy ;)_
+We use [Grunt](http://gruntjs.com/) and [Jasmine](http://pivotal.github.io/jasmine/). Both make your lives easier ;)
 
 ### How to run/develop
 
@@ -21,57 +21,10 @@ Install the dependencies
 npm install -d
 ```
 
-Files to be developed are located under `./src/` and `./test/spec/`
+Files to be developed are located under `./src/` and `./test/spec/`.
 Compiled sources are then automatically put under `./build/` and `./test/build/`
 
-Now you can perform a series of predefined Tasks by executing `grunt <task>:<target>`
-
-```javascript
-// check your coffeescripts style, or specify a single target
-coffeelint
-coffeelint:default
-coffeelint:test
-coffeelint:doc
-
-// clean all the 'build' directories, or specify a single target
-clean
-clean:default
-clean:test
-
-// compile the coffeescripts into the 'build' directories, or specify a single target
-coffee
-coffee:default
-coffee:test
-coffee:doc
-
-// compile the less file into the 'build' directory with a minified version, or specify a single target
-less
-less:default
-less:min
-
-// minify the javascripts in the 'build' directory
-uglify
-
-// watch for changes of the coffeescripts (main and spec) and execute the assigned tasks, or specify a single target
-watch
-watch:default // tasks: clean:default, coffeelint:default, coffee:default, uglify
-watch:test // tasks: clean:test, coffeelint:test, coffee:test, jasmine
-watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)
-
-// run the jasmine specs headlessly through 'phantomjs'
-jasmine
-
-// copy sources into doc assets
-copy
-
-// small server to serve the static files
-connect
-
-// open automatically the browser to the port defined in connect options
-open
-```
-
-There are also some _aliases_ for multiple tasks
+The following ones are the _aliases_ for multiple tasks. You can also run every task separately:
 
 ```javascript
 // alias for watch:default
@@ -88,15 +41,7 @@ grunt build
 grunt test
 ```
 
-### Live reload
-
-Running `grunt run` will start a small server on port `3000` and opens the browser to the webpage. It will also start watching for changes in the `index.coffee` which will trigger then live reloading of the page in the browser.
-
-### Test
-
-Tests are written using [Jasmine framework](http://pivotal.github.io/jasmine/) and they run headlessly through PhantomJS.<br>
-Simply run `grunt test` or watch them with `grunt watch:test` (this will execute them automatically every time you change the specs).
-
+[More information here](http://bootstraptour.com/#grunt-usage)
 
 ## License ##
 Code licensed under the [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0).
