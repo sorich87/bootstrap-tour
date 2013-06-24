@@ -24,7 +24,6 @@
       function Tour(options) {
         this._options = $.extend({
           name: 'tour',
-          template: "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>            <div class='popover-navigation'>              <a class='prev'>&laquo; Prev</a>              <span class='separator'>|</span>              <a class='next'>Next &raquo;</a>              <a class='end'>End tour</a>            </div>          </div>",
           container: 'body',
           keyboard: true,
           useLocalStorage: false,
@@ -32,6 +31,9 @@
           backdrop: false,
           redirect: true,
           basePath: '',
+          template: function(i, step) {
+            return "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>            <div class='popover-navigation'>              <a class='prev'>&laquo; Prev</a>              <span class='separator'>|</span>              <a class='next'>Next &raquo;</a>              <a class='end'>End tour</a>            </div>          </div>";
+          },
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -112,24 +114,24 @@
       Tour.prototype.getStep = function(i) {
         if (this._steps[i] != null) {
           return $.extend({
+            id: "step-" + i,
             path: "",
             placement: "right",
             title: "",
             content: "<p></p>",
-            id: "step-" + i,
             next: i === this._steps.length - 1 ? -1 : i + 1,
             prev: i - 1,
             animation: true,
+            container: this._options.container,
             backdrop: this._options.backdrop,
             redirect: this._options.redirect,
+            template: this._options.template,
             onShow: this._options.onShow,
             onShown: this._options.onShown,
             onHide: this._options.onHide,
             onHidden: this._options.onHidden,
             onNext: this._options.onNext,
-            onPrev: this._options.onPrev,
-            template: this._options.template,
-            container: this._options.container
+            onPrev: this._options.onPrev
           }, this._steps[i]);
         }
       };
@@ -316,7 +318,7 @@
 
       Tour.prototype._renderNavigation = function(step, options) {
         var template;
-        template = $(step.template);
+        template = $(step.template(i, step));
         if (step.prev >= 0) {
           template.find(".popover-navigation .prev").attr("href", "#" + step.prev);
         } else {
@@ -337,7 +339,7 @@
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var $tip, options, rendered,
+        var $element, $tip, options, rendered,
           _this = this;
         options = $.extend({}, this._options);
         if (step.options) {
@@ -349,7 +351,11 @@
           });
         }
         rendered = this._renderNavigation(step, options);
-        $(step.element).popover('destroy').popover({
+        $element = $(step.element);
+        if ($element.data('popover')) {
+          $element.popover('destroy');
+        }
+        $element.popover({
           placement: step.placement,
           trigger: "manual",
           title: step.title,

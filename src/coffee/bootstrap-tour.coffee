@@ -5,7 +5,15 @@
     constructor: (options) ->
       @_options = $.extend({
         name: 'tour'
-        template: "<div class='popover tour'>
+        container: 'body'
+        keyboard: true
+        useLocalStorage: false
+        debug: false
+        backdrop: false
+        redirect: true
+        basePath: ''
+        template: (i, step) ->
+          "<div class='popover tour'>
             <div class='arrow'></div>
             <h3 class='popover-title'></h3>
             <div class='popover-content'></div>
@@ -16,13 +24,6 @@
               <a class='end'>End tour</a>
             </div>
           </div>"
-        container: 'body'
-        keyboard: true
-        useLocalStorage: false
-        debug: false
-        backdrop: false
-        redirect: true
-        basePath: ''
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -89,24 +90,24 @@
     # Get a step by its indice
     getStep: (i) ->
       $.extend({
+        id: "step-#{i}"
         path: ""
         placement: "right"
         title: ""
         content: "<p></p>" # no empty as default, otherwise popover won't show up
-        id: "step-#{i}"
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
         animation: true
+        container: @_options.container
         backdrop: @_options.backdrop
         redirect: @_options.redirect
+        template: @_options.template
         onShow: @_options.onShow
         onShown: @_options.onShown
         onHide: @_options.onHide
         onHidden: @_options.onHidden
         onNext: @_options.onNext
         onPrev: @_options.onPrev
-        template: @_options.template
-        container: @_options.container
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -270,7 +271,7 @@
 
     # Render navigation
     _renderNavigation: (step, options) ->
-      template = $(step.template)
+      template = $(step.template(i, step))
 
       if step.prev >= 0
         template.find(".popover-navigation .prev").attr("href", "##{step.prev}")
@@ -303,7 +304,11 @@
 
       rendered = @_renderNavigation(step, options)
 
-      $(step.element).popover('destroy').popover({
+      $element = $(step.element)
+
+      $element.popover('destroy') if $element.data('popover')
+
+      $element.popover({
         placement: step.placement
         trigger: "manual"
         title: step.title
