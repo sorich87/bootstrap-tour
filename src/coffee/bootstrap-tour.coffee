@@ -5,21 +5,15 @@
     constructor: (options) ->
       @_options = $.extend({
         name: 'tour'
-        labels: {
-          end: 'End tour'
-          next: 'Next &raquo;'
-          prev: '&laquo; Prev'
-          separator: '|'
-        }
         template: "<div class='popover tour'>
             <div class='arrow'></div>
             <h3 class='popover-title'></h3>
             <div class='popover-content'></div>
-            <div class='popover-footer'>
-              <a class='prev'></a>
-              <span class='separator'></span>
-              <a class='next'></a>
-              <a class='end'></a>
+            <div class='popover-navigation'>
+              <a class='prev'>&laquo; Prev</a>
+              <span class='separator'>|</span>
+              <a class='next'>Next &raquo;</a>
+              <a class='end'>End tour</a>
             </div>
           </div>"
         container: 'body'
@@ -279,21 +273,21 @@
       template = $(step.template)
 
       if step.prev >= 0
-        template.find(".popover-footer .prev").html(options.labels.prev).attr("href", "##{step.prev}")
+        template.find(".popover-navigation .prev").attr("href", "##{step.prev}")
       else
-        template.find(".popover-footer .prev").remove()
+        template.find(".popover-navigation .prev").remove()
 
       if step.next >= 0
-        template.find(".popover-footer .next").html(options.labels.next).attr("href", "##{step.next}")
+        template.find(".popover-navigation .next").attr("href", "##{step.next}")
       else
-        template.find(".popover-footer .next").remove()
+        template.find(".popover-navigation .next").remove()
 
       if step.prev >=0 and step.next >= 0
-        template.find(".popover-footer .separator").html(options.labels.separator)
+        template.find(".popover-navigation .separator")
       else
-        template.find(".popover-footer .separator").remove()
+        template.find(".popover-navigation .separator").remove()
 
-      template.find(".popover-footer .end").html(options.labels.end).attr("href", "#")
+      template.find(".popover-navigation .end").attr("href", "#")
       # return the outerHTML of the jQuery el
       template.clone().wrap("<div>").parent().html()
 
