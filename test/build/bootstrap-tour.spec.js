@@ -689,7 +689,9 @@
     });
     return it("should render custom navigation template", function() {
       this.tour = new Tour({
-        template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-footer'>            <button class='prev'></button>            <button class='next'></button>            <button class='end'></button>          </div>        </div>"
+        template: function(i, step) {
+          return "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-footer'>            <button class='prev'></button>            <button class='next'></button>            <button class='end'></button>          </div>        </div>";
+        }
       });
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")

@@ -501,7 +501,8 @@ describe "Bootstrap Tour", ->
 
   it "should render custom navigation template", ->
     @tour = new Tour
-      template: "<div class='popover tour'>
+      template: (i, step)->
+        "<div class='popover tour'>
           <div class='arrow'></div>
           <h3 class='popover-title'></h3>
           <div class='popover-content'></div>

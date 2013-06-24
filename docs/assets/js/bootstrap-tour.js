@@ -316,7 +316,7 @@
         }
       };
 
-      Tour.prototype._renderNavigation = function(step, options) {
+      Tour.prototype._renderNavigation = function(step, i, options) {
         var template;
         template = $(step.template(i, step));
         if (step.prev >= 0) {
@@ -350,7 +350,7 @@
             return _this.next();
           });
         }
-        rendered = this._renderNavigation(step, options);
+        rendered = this._renderNavigation(step, i, options);
         $element = $(step.element);
         if ($element.data('popover')) {
           $element.popover('destroy');

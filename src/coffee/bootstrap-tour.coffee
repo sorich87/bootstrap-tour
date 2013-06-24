@@ -270,7 +270,7 @@
         document.location.href = path
 
     # Render navigation
-    _renderNavigation: (step, options) ->
+    _renderNavigation: (step, i, options) ->
       template = $(step.template(i, step))
 
       if step.prev >= 0
@@ -302,7 +302,7 @@
         $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           @next()
 
-      rendered = @_renderNavigation(step, options)
+      rendered = @_renderNavigation(step, i, options)
 
       $element = $(step.element)
 
