@@ -320,12 +320,12 @@
         var template;
         template = $(step.template(i, step));
         if (step.prev >= 0) {
-          template.find(".popover-navigation .prev").attr("href", "#" + step.prev);
+          template.find(".popover-navigation .prev").attr("data-step", "" + step.prev);
         } else {
           template.find(".popover-navigation .prev").remove();
         }
         if (step.next >= 0) {
-          template.find(".popover-navigation .next").attr("href", "#" + step.next);
+          template.find(".popover-navigation .next").attr("data-step", "" + step.next);
         } else {
           template.find(".popover-navigation .next").remove();
         }
@@ -334,7 +334,6 @@
         } else {
           template.find(".popover-navigation .separator").remove();
         }
-        template.find(".popover-navigation .end").attr("href", "#");
         return template.clone().wrap("<div>").parent().html();
       };
 
