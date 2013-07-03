@@ -36,9 +36,7 @@
           backdrop: false,
           redirect: true,
           basePath: '',
-          template: function(i, step) {
-            return "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>          </div>";
-          },
+          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -119,24 +117,24 @@
       Tour.prototype.getStep = function(i) {
         if (this._steps[i] != null) {
           return $.extend({
+            id: "step-" + i,
             path: "",
             placement: "right",
             title: "",
             content: "",
-            id: "step-" + i,
             next: i === this._steps.length - 1 ? -1 : i + 1,
             prev: i - 1,
             animation: true,
+            container: this._options.container,
             backdrop: this._options.backdrop,
             redirect: this._options.redirect,
+            template: this._options.template,
             onShow: this._options.onShow,
             onShown: this._options.onShown,
             onHide: this._options.onHide,
             onHidden: this._options.onHidden,
             onNext: this._options.onNext,
-            onPrev: this._options.onPrev,
-            template: this._options.template,
-            container: this._options.container
+            onPrev: this._options.onPrev
           }, this._steps[i]);
         }
       };
@@ -243,7 +241,7 @@
         showStepHelper = function(e) {
           var current_path, path;
           _this.setCurrentStep(i);
-          path = typeof step.path === "function" ? step.path.call() : _this._options.basePath + step.path;
+          path = $.isFunction(step.path) ? step.path.call() : _this._options.basePath + step.path;
           current_path = [document.location.pathname, document.location.hash].join('');
           if (_this._isRedirect(path, current_path)) {
             _this._redirect(step, path);
@@ -313,7 +311,7 @@
       };
 
       Tour.prototype._redirect = function(step, path) {
-        if (typeof step.redirect === 'function') {
+        if ($.isFunction(step.redirect)) {
           return step.redirect.call(this, path);
         } else if (step.redirect === true) {
           this._debug("Redirect to " + path);
@@ -360,7 +358,7 @@
           html: true,
           animation: step.animation,
           container: step.container,
-          template: step.template(i, step),
+          template: $.isFunction(step.template) ? step.template(i, step) : step.template,
           selector: step.element
         }).popover("show");
         $tip = $(step.element).data("popover").tip();

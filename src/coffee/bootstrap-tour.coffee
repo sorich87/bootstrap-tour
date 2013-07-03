@@ -17,12 +17,11 @@
         backdrop: false
         redirect: true
         basePath: ''
-        template: (i, step) ->
-          "<div class='popover tour'>
-            <div class='arrow'></div>
-            <h3 class='popover-title'></h3>
-            <div class='popover-content'></div>
-          </div>"
+        template: "<div class='popover tour'>
+          <div class='arrow'></div>
+          <h3 class='popover-title'></h3>
+          <div class='popover-content'></div>
+        </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -199,7 +198,7 @@
         @setCurrentStep(i)
 
         # Support string or function for path
-        path = if typeof step.path == "function" then step.path.call() else @_options.basePath + step.path
+        path = if $.isFunction(step.path) then step.path.call() else @_options.basePath + step.path
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
@@ -261,7 +260,7 @@
 
     # Execute the redirect
     _redirect: (step, path) ->
-      if typeof step.redirect == 'function'
+      if $.isFunction(step.redirect)
         step.redirect.call(this, path)
 
       else if step.redirect == true
@@ -306,7 +305,7 @@
         html: true
         animation: step.animation
         container: step.container
-        template: step.template(i, step)
+        template: if $.isFunction(step.template) then step.template(i, step) else step.template
         selector: step.element
       }).popover("show")
 
