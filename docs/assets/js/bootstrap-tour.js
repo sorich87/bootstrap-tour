@@ -24,11 +24,6 @@
       function Tour(options) {
         this._options = $.extend({
           name: 'tour',
-          labels: {
-            end: 'End tour',
-            next: 'Next &raquo;',
-            prev: '&laquo; Prev'
-          },
           container: 'body',
           keyboard: true,
           useLocalStorage: false,
@@ -36,7 +31,7 @@
           backdrop: false,
           redirect: true,
           basePath: '',
-          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>        </div>",
+          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <button class='btn' data-role='prev'>&laquo; Prev</button>            <span data-role='separator'>|</span>            <button class='btn' data-role='next'>Next &raquo;</button>            <button class='btn' data-role='end'>End tour</button>          </div>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -121,7 +116,7 @@
             path: "",
             placement: "right",
             title: "",
-            content: "",
+            content: "<p></p>",
             next: i === this._steps.length - 1 ? -1 : i + 1,
             prev: i - 1,
             animation: true,
@@ -148,15 +143,15 @@
         if (this.ended() && !force) {
           return this._debug("Tour ended, start prevented.");
         }
-        $(document).off("click.bootstrap-tour", ".popover .next").on("click.bootstrap-tour", ".popover .next", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=next]").on("click.bootstrap-tour", ".popover *[data-role=next]", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).off("click.bootstrap-tour", ".popover .prev").on("click.bootstrap-tour", ".popover .prev", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=prev]").on("click.bootstrap-tour", ".popover *[data-role=prev]", function(e) {
           e.preventDefault();
           return _this.prev();
         });
-        $(document).off("click.bootstrap-tour", ".popover .end").on("click.bootstrap-tour", ".popover .end", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=end]").on("click.bootstrap-tour", ".popover *[data-role=end]", function(e) {
           e.preventDefault();
           return _this.end();
         });
@@ -319,23 +314,28 @@
         }
       };
 
-      Tour.prototype._renderNavigation = function(step, options) {
-        var content, nav;
-        nav = [];
-        if (step.prev >= 0) {
-          nav.push("<a href='#" + step.prev + "' class='prev'>" + options.labels.prev + "</a>");
+      Tour.prototype._renderNavigation = function(step, i, options) {
+        var template;
+        if ($.isFunction(step.template)) {
+          template = $(step.template(i, step));
+        } else {
+          template = $(step.template);
         }
-        if (step.next >= 0) {
-          nav.push("<a href='#" + step.next + "' class='next'>" + options.labels.next + "</a>");
+        if (!(step.prev >= 0)) {
+          template.find(".popover-navigation *[data-role=prev]").remove();
         }
-        content = nav.join(" | ");
-        return content += "<a href='#' class='pull-right end'>" + options.labels.end + "</a>";
+        if (!(step.next >= 0)) {
+          template.find(".popover-navigation *[data-role=next]").remove();
+        }
+        if (!(step.prev >= 0 && step.next >= 0)) {
+          template.find(".popover-navigation *[data-role=separator]").remove();
+        }
+        return template.clone().wrap("<div>").parent().html();
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var $element, $tip, content, options,
+        var $element, $tip, options, rendered,
           _this = this;
-        content = "" + step.content + "<br /><p>";
         options = $.extend({}, this._options);
         if (step.options) {
           $.extend(options, step.options);
@@ -345,7 +345,7 @@
             return _this.next();
           });
         }
-        content += this._renderNavigation(step, options);
+        rendered = this._renderNavigation(step, i, options);
         $element = $(step.element);
         if ($element.data('popover')) {
           $element.popover('destroy');
@@ -354,11 +354,11 @@
           placement: step.placement,
           trigger: "manual",
           title: step.title,
-          content: content,
+          content: step.content,
           html: true,
           animation: step.animation,
           container: step.container,
-          template: $.isFunction(step.template) ? step.template(i, step) : step.template,
+          template: rendered,
           selector: step.element
         }).popover("show");
         $tip = $(step.element).data("popover").tip();
