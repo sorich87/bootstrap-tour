@@ -23,3 +23,8 @@
 .popover.tour .popover-navigation .end {
   float: right;
 }
+.popover.tour .popover-navigation .prev,
+.popover.tour .popover-navigation .next,
+.popover.tour .popover-navigation .end {
+  cursor: pointer;
+}
