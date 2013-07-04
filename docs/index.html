@@ -151,13 +151,11 @@
     backdrop: false,
     redirect: true,
     basePath: "",
-    template: function(i, step) {
-        "&lt;div class='popover tour'&gt;
+    template: "&lt;div class='popover tour'&gt;
         &lt;div class='arrow'&gt;&lt;/div&gt;
         &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
         &lt;div class='popover-content'&gt;&lt;/div&gt;
-        &lt;/div&gt;";
-    },
+        &lt;/div&gt;",
     afterGetState: function(key, value) {},
     afterSetState: function(key, value) {},
     afterRemoveState: function(key, value) {},
@@ -246,15 +244,13 @@
                         </tr>
                         <tr>
                             <td>template</td>
-                            <td>Function</td>
-                            <td>Function that returns a string of the HTML template for the popovers. Two parameters are available: <strong>i</strong> is the position of step in the tour and <strong>step</strong> is the an object that contains all the other step options.</td>
-                            <td><pre class="language-javascript"><code>function(i, step) {
-    return "&lt;div class='popover tour'&gt;
-        &lt;div class='arrow'&gt;&lt;/div&gt;
-        &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
-        &lt;div class='popover-content'&gt;&lt;/div&gt;
-    &lt;/div&gt;";
-}</code></pre>
+                            <td>String|Function</td>
+                            <td>String or function that returns a string of the HTML template for the popovers. If you pass a Function, two parameters are available: <strong>i</strong> is the position of step in the tour and <strong>step</strong> is the an object that contains all the other step options.</td>
+                            <td><pre class="language-javascript"><code>"&lt;div class='popover tour'&gt;
+    &lt;div class='arrow'&gt;&lt;/div&gt;
+    &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
+    &lt;div class='popover-content'&gt;&lt;/div&gt;
+&lt;/div&gt;"</code></pre>
                             </td>
                         </tr>
                         <tr>
@@ -355,7 +351,7 @@
     backdrop: false,
     redirect: true,
     reflex: false,
-    template: function(i, step) {},
+    template: "",
     onShow: function(tour) {},
     onShown: function(tour) {},
     onHide: function(tour) {},
@@ -451,7 +447,8 @@
                         <tr>
                             <td>backdrop</td>
                             <td>Boolean</td>
-                            <td>Show a dark backdrop behind the popover and its element, highlighting the current step.</td>
+                            <td>Show a dark backdrop behind the popover and its element,
+                            highlighting the current step.</td>
                             <td><code class="language-javascript">false</code></td>
                         </tr>
                         <tr>
@@ -471,15 +468,17 @@
                         </tr>
                         <tr>
                             <td>template</td>
-                            <td>Function</td>
-                            <td>Function that returns a string of the HTML template for the popovers. Two parameters are available: <strong>i</strong> is the position of step in the tour and <strong>step</strong> is the an object that contains all the other step options.</td>
-                            <td><pre class="language-javascript"><code>function(i, step) {
-    return "&lt;div class='popover tour'&gt;
-        &lt;div class='arrow'&gt;&lt;/div&gt;
-        &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
-        &lt;div class='popover-content'&gt;&lt;/div&gt;
-    &lt;/div&gt;";
-}</code></pre>
+                            <td>String|Function</td>
+                            <td>String or function that returns a string of the HTML template for
+                            the popovers. If you pass a function, two parameters are available:
+                            <strong>i</strong> is the position of step in the tour and
+                            <strong>step</strong> is the an object that contains all the other step
+                            options.</td>
+                            <td><pre class="language-javascript"><code>"&lt;div class='popover tour'&gt;
+    &lt;div class='arrow'&gt;&lt;/div&gt;
+    &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
+    &lt;div class='popover-content'&gt;&lt;/div&gt;
+&lt;/div&gt;"</code></pre>
                             </td>
                         </tr>
                         <tr>

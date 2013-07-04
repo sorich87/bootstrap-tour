@@ -31,9 +31,7 @@
           backdrop: false,
           redirect: true,
           basePath: '',
-          template: function(i, step) {
-            return "<div class='popover tour'>            <div class='arrow'></div>            <h3 class='popover-title'></h3>            <div class='popover-content'></div>            <div class='popover-navigation'>              <a class='prev'>&laquo; Prev</a>              <span class='separator'>|</span>              <a class='next'>Next &raquo;</a>              <a class='end'>End tour</a>            </div>          </div>";
-          },
+          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <a class='prev'>&laquo; Prev</a>            <span class='separator'>|</span>            <a class='next'>Next &raquo;</a>            <a class='end'>End tour</a>          </div>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -238,7 +236,7 @@
         showStepHelper = function(e) {
           var current_path, path;
           _this.setCurrentStep(i);
-          path = typeof step.path === "function" ? step.path.call() : _this._options.basePath + step.path;
+          path = $.isFunction(step.path) ? step.path.call() : _this._options.basePath + step.path;
           current_path = [document.location.pathname, document.location.hash].join('');
           if (_this._isRedirect(path, current_path)) {
             _this._redirect(step, path);
@@ -308,7 +306,7 @@
       };
 
       Tour.prototype._redirect = function(step, path) {
-        if (typeof step.redirect === 'function') {
+        if ($.isFunction(step.redirect)) {
           return step.redirect.call(this, path);
         } else if (step.redirect === true) {
           this._debug("Redirect to " + path);
@@ -318,7 +316,11 @@
 
       Tour.prototype._renderNavigation = function(step, i, options) {
         var template;
-        template = $(step.template(i, step));
+        if ($.isFunction(step.template)) {
+          template = $(step.template(i, step));
+        } else {
+          template = $(step.template);
+        }
         if (step.prev >= 0) {
           template.find(".popover-navigation .prev").attr("data-step", "" + step.prev);
         } else {

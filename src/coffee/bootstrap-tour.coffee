@@ -12,18 +12,17 @@
         backdrop: false
         redirect: true
         basePath: ''
-        template: (i, step) ->
-          "<div class='popover tour'>
-            <div class='arrow'></div>
-            <h3 class='popover-title'></h3>
-            <div class='popover-content'></div>
-            <div class='popover-navigation'>
-              <a class='prev'>&laquo; Prev</a>
-              <span class='separator'>|</span>
-              <a class='next'>Next &raquo;</a>
-              <a class='end'>End tour</a>
-            </div>
-          </div>"
+        template: "<div class='popover tour'>
+          <div class='arrow'></div>
+          <h3 class='popover-title'></h3>
+          <div class='popover-content'></div>
+          <div class='popover-navigation'>
+            <a class='prev'>&laquo; Prev</a>
+            <span class='separator'>|</span>
+            <a class='next'>Next &raquo;</a>
+            <a class='end'>End tour</a>
+          </div>
+        </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -200,7 +199,7 @@
         @setCurrentStep(i)
 
         # Support string or function for path
-        path = if typeof step.path == "function" then step.path.call() else @_options.basePath + step.path
+        path = if $.isFunction(step.path) then step.path.call() else @_options.basePath + step.path
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
@@ -262,7 +261,7 @@
 
     # Execute the redirect
     _redirect: (step, path) ->
-      if typeof step.redirect == 'function'
+      if $.isFunction(step.redirect)
         step.redirect.call(this, path)
 
       else if step.redirect == true
@@ -271,7 +270,9 @@
 
     # Render navigation
     _renderNavigation: (step, i, options) ->
-      template = $(step.template(i, step))
+      if $.isFunction(step.template)
+        template = $(step.template(i, step))
+      else template = $(step.template)
 
       if step.prev >= 0
         template.find(".popover-navigation .prev").attr("data-step", "#{step.prev}")
