@@ -687,11 +687,9 @@
       this.tour.prev();
       return expect(tour_test).toBe(2);
     });
-    return it("should render custom navigation template", function() {
+    it("should render custom navigation template", function() {
       this.tour = new Tour({
-        template: function(i, step) {
-          return "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-footer'>            <button class='prev'></button>            <button class='next'></button>            <button class='end'></button>          </div>        </div>";
-        }
+        template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <a data-role='prev'></a>            <a data-role='next'></a>            <a data-role='end'></a>          </div>        </div>"
       });
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
@@ -704,7 +702,16 @@
       });
       this.tour.start();
       this.tour.next();
-      return expect($(".popover .popover-footer button").length).toBe(3);
+      return expect($(".popover .popover-navigation a").length).toBe(3);
+    });
+    return it("should have 'data-role' attribute for navigation template", function() {
+      var template;
+      this.tour = new Tour;
+      template = $(this.tour._options.template);
+      expect(template.find("*[data-role=next]").size()).toBe(1);
+      expect(template.find("*[data-role=prev]").size()).toBe(1);
+      expect(template.find("*[data-role=separator]").size()).toBe(1);
+      return expect(template.find("*[data-role=end]").size()).toBe(1);
     });
   });
 

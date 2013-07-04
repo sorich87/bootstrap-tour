@@ -31,7 +31,7 @@
           backdrop: false,
           redirect: true,
           basePath: '',
-          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <a class='prev'>&laquo; Prev</a>            <span class='separator'>|</span>            <a class='next'>Next &raquo;</a>            <a class='end'>End tour</a>          </div>        </div>",
+          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <button class='btn' data-role='prev'>&laquo; Prev</button>            <span data-role='separator'>|</span>            <button class='btn' data-role='next'>Next &raquo;</button>            <button class='btn' data-role='end'>End tour</button>          </div>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -143,15 +143,15 @@
         if (this.ended() && !force) {
           return this._debug("Tour ended, start prevented.");
         }
-        $(document).off("click.bootstrap-tour", ".popover .next").on("click.bootstrap-tour", ".popover .next", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=next]").on("click.bootstrap-tour", ".popover *[data-role=next]", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).off("click.bootstrap-tour", ".popover .prev").on("click.bootstrap-tour", ".popover .prev", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=prev]").on("click.bootstrap-tour", ".popover *[data-role=prev]", function(e) {
           e.preventDefault();
           return _this.prev();
         });
-        $(document).off("click.bootstrap-tour", ".popover .end").on("click.bootstrap-tour", ".popover .end", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=end]").on("click.bootstrap-tour", ".popover *[data-role=end]", function(e) {
           e.preventDefault();
           return _this.end();
         });
@@ -321,20 +321,14 @@
         } else {
           template = $(step.template);
         }
-        if (step.prev >= 0) {
-          template.find(".popover-navigation .prev").attr("data-step", "" + step.prev);
-        } else {
-          template.find(".popover-navigation .prev").remove();
+        if (!(step.prev >= 0)) {
+          template.find(".popover-navigation *[data-role=prev]").remove();
         }
-        if (step.next >= 0) {
-          template.find(".popover-navigation .next").attr("data-step", "" + step.next);
-        } else {
-          template.find(".popover-navigation .next").remove();
+        if (!(step.next >= 0)) {
+          template.find(".popover-navigation *[data-role=next]").remove();
         }
-        if (step.prev >= 0 && step.next >= 0) {
-          template.find(".popover-navigation .separator");
-        } else {
-          template.find(".popover-navigation .separator").remove();
+        if (!(step.prev >= 0 && step.next >= 0)) {
+          template.find(".popover-navigation *[data-role=separator]").remove();
         }
         return template.clone().wrap("<div>").parent().html();
       };

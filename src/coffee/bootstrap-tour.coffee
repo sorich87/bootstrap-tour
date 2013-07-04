@@ -17,10 +17,10 @@
           <h3 class='popover-title'></h3>
           <div class='popover-content'></div>
           <div class='popover-navigation'>
-            <a class='prev'>&laquo; Prev</a>
-            <span class='separator'>|</span>
-            <a class='next'>Next &raquo;</a>
-            <a class='end'>End tour</a>
+            <button class='btn' data-role='prev'>&laquo; Prev</button>
+            <span data-role='separator'>|</span>
+            <button class='btn' data-role='next'>Next &raquo;</button>
+            <button class='btn' data-role='end'>End tour</button>
           </div>
         </div>"
         afterSetState: (key, value) ->
@@ -113,18 +113,18 @@
     start: (force = false) ->
       return @_debug "Tour ended, start prevented." if @ended() && !force
 
-      # Go to next step after click on element with class .next
-      $(document).off("click.bootstrap-tour",".popover .next").on "click.bootstrap-tour", ".popover .next", (e) =>
+      # Go to next step after click on element with attribute 'data-role=next'
+      $(document).off("click.bootstrap-tour",".popover *[data-role=next]").on "click.bootstrap-tour", ".popover *[data-role=next]", (e) =>
         e.preventDefault()
         @next()
 
-      # Go to previous step after click on element with class .prev
-      $(document).off("click.bootstrap-tour",".popover .prev").on "click.bootstrap-tour", ".popover .prev", (e) =>
+      # Go to previous step after click on element with attribute 'data-role=prev'
+      $(document).off("click.bootstrap-tour",".popover *[data-role=prev]").on "click.bootstrap-tour", ".popover *[data-role=prev]", (e) =>
         e.preventDefault()
         @prev()
 
-      # End tour after click on element with class .end
-      $(document).off("click.bootstrap-tour",".popover .end").on "click.bootstrap-tour", ".popover .end", (e) =>
+      # End tour after click on element with attribute 'data-role=end'
+      $(document).off("click.bootstrap-tour",".popover *[data-role=end]").on "click.bootstrap-tour", ".popover *[data-role=end]", (e) =>
         e.preventDefault()
         @end()
 
@@ -274,20 +274,9 @@
         template = $(step.template(i, step))
       else template = $(step.template)
 
-      if step.prev >= 0
-        template.find(".popover-navigation .prev").attr("data-step", "#{step.prev}")
-      else
-        template.find(".popover-navigation .prev").remove()
-
-      if step.next >= 0
-        template.find(".popover-navigation .next").attr("data-step", "#{step.next}")
-      else
-        template.find(".popover-navigation .next").remove()
-
-      if step.prev >=0 and step.next >= 0
-        template.find(".popover-navigation .separator")
-      else
-        template.find(".popover-navigation .separator").remove()
+      template.find(".popover-navigation *[data-role=prev]").remove() unless step.prev >= 0
+      template.find(".popover-navigation *[data-role=next]").remove() unless step.next >= 0
+      template.find(".popover-navigation *[data-role=separator]").remove() unless step.prev >=0 and step.next >= 0
 
       # return the outerHTML of the jQuery el
       template.clone().wrap("<div>").parent().html()
