@@ -498,3 +498,31 @@ describe "Bootstrap Tour", ->
     @tour.next()
     @tour.prev()
     expect(tour_test).toBe 2 # tour runs onPrev when prev step is called
+
+  it "should render custom navigation template", ->
+    @tour = new Tour
+      template:
+        "<div class='popover tour'>
+          <div class='arrow'></div>
+          <h3 class='popover-title'></h3>
+          <div class='popover-content'></div>
+          <div class='popover-navigation'>
+            <a data-role='prev'></a>
+            <a data-role='next'></a>
+            <a data-role='end'></a>
+          </div>
+        </div>"
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.start()
+    @tour.next()
+    expect($(".popover .popover-navigation a").length).toBe 3
+
+  it "should have 'data-role' attribute for navigation template", ->
+    @tour = new Tour
+    template = $(@tour._options.template)
+    expect(template.find("*[data-role=next]").size()).toBe 1
+    expect(template.find("*[data-role=prev]").size()).toBe 1
+    expect(template.find("*[data-role=separator]").size()).toBe 1
+    expect(template.find("*[data-role=end]").size()).toBe 1

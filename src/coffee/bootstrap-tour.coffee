@@ -5,11 +5,6 @@
     constructor: (options) ->
       @_options = $.extend({
         name: 'tour'
-        labels: {
-          end: 'End tour'
-          next: 'Next &raquo;'
-          prev: '&laquo; Prev'
-        }
         container: 'body'
         keyboard: true
         useLocalStorage: false
@@ -21,6 +16,12 @@
           <div class='arrow'></div>
           <h3 class='popover-title'></h3>
           <div class='popover-content'></div>
+          <div class='popover-navigation'>
+            <button class='btn' data-role='prev'>&laquo; Prev</button>
+            <span data-role='separator'>|</span>
+            <button class='btn' data-role='next'>Next &raquo;</button>
+            <button class='btn' data-role='end'>End tour</button>
+          </div>
         </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
@@ -92,7 +93,7 @@
         path: ""
         placement: "right"
         title: ""
-        content: ""
+        content: "<p></p>" # no empty as default, otherwise popover won't show up
         next: if i == @_steps.length - 1 then -1 else i + 1
         prev: i - 1
         animation: true
@@ -112,18 +113,18 @@
     start: (force = false) ->
       return @_debug "Tour ended, start prevented." if @ended() && !force
 
-      # Go to next step after click on element with class .next
-      $(document).off("click.bootstrap-tour",".popover .next").on "click.bootstrap-tour", ".popover .next", (e) =>
+      # Go to next step after click on element with attribute 'data-role=next'
+      $(document).off("click.bootstrap-tour",".popover *[data-role=next]").on "click.bootstrap-tour", ".popover *[data-role=next]", (e) =>
         e.preventDefault()
         @next()
 
-      # Go to previous step after click on element with class .prev
-      $(document).off("click.bootstrap-tour",".popover .prev").on "click.bootstrap-tour", ".popover .prev", (e) =>
+      # Go to previous step after click on element with attribute 'data-role=prev'
+      $(document).off("click.bootstrap-tour",".popover *[data-role=prev]").on "click.bootstrap-tour", ".popover *[data-role=prev]", (e) =>
         e.preventDefault()
         @prev()
 
-      # End tour after click on element with class .end
-      $(document).off("click.bootstrap-tour",".popover .end").on "click.bootstrap-tour", ".popover .end", (e) =>
+      # End tour after click on element with attribute 'data-role=end'
+      $(document).off("click.bootstrap-tour",".popover *[data-role=end]").on "click.bootstrap-tour", ".popover *[data-role=end]", (e) =>
         e.preventDefault()
         @end()
 
@@ -268,21 +269,20 @@
         document.location.href = path
 
     # Render navigation
-    _renderNavigation: (step, options) ->
-      nav = []
+    _renderNavigation: (step, i, options) ->
+      if $.isFunction(step.template)
+        template = $(step.template(i, step))
+      else template = $(step.template)
 
-      if (step.prev >= 0)
-        nav.push "<a href='##{step.prev}' class='prev'>#{options.labels.prev}</a>"
-      if (step.next >= 0)
-        nav.push "<a href='##{step.next}' class='next'>#{options.labels.next}</a>"
+      template.find(".popover-navigation *[data-role=prev]").remove() unless step.prev >= 0
+      template.find(".popover-navigation *[data-role=next]").remove() unless step.next >= 0
+      template.find(".popover-navigation *[data-role=separator]").remove() unless step.prev >=0 and step.next >= 0
 
-      content = nav.join(" | ")
-      content += "<a href='#' class='pull-right end'>#{options.labels.end}</a>"
+      # return the outerHTML of the jQuery el
+      template.clone().wrap("<div>").parent().html()
 
     # Show step popover
     _showPopover: (step, i) ->
-      content = "#{step.content}<br /><p>"
-
       options = $.extend {}, @_options
 
       if step.options
@@ -291,7 +291,7 @@
         $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           @next()
 
-      content += @_renderNavigation(step, options)
+      rendered = @_renderNavigation(step, i, options)
 
       $element = $(step.element)
 
@@ -301,11 +301,11 @@
         placement: step.placement
         trigger: "manual"
         title: step.title
-        content: content
+        content: step.content
         html: true
         animation: step.animation
         container: step.container
-        template: if $.isFunction(step.template) then step.template(i, step) else step.template
+        template: rendered
         selector: step.element
       }).popover("show")
 
@@ -446,4 +446,3 @@
   window.Tour = Tour
 
 )(jQuery, window)
-
