@@ -155,7 +155,13 @@
         &lt;div class='arrow'&gt;&lt;/div&gt;
         &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
         &lt;div class='popover-content'&gt;&lt;/div&gt;
-        &lt;/div&gt;",
+        &lt;div class='popover-navigation'&gt;
+            &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+            &lt;span data-role='separator'&gt;|&lt;/span&gt;
+            &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+            &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;",
     afterGetState: function(key, value) {},
     afterSetState: function(key, value) {},
     afterRemoveState: function(key, value) {},
@@ -245,11 +251,28 @@
                         <tr>
                             <td>template</td>
                             <td>String|Function</td>
-                            <td>String or function that returns a string of the HTML template for the popovers. If you pass a Function, two parameters are available: <strong>i</strong> is the position of step in the tour and <strong>step</strong> is the an object that contains all the other step options.</td>
+                            <td>String or function that returns a string of the HTML template for
+                            the popovers. If you pass a Function, two parameters are available:
+                            <strong>i</strong> is the position of step in the tour and
+                            <strong>step</strong> is the an object that contains all the other step
+                            options.<br>
+                            From version 0.5, the navigation template is included inside the
+                            template so you can easily rewrite it. However, Bootstrap Tour maps the
+                            <em>previous</em>, <em>next</em> and <em>end</em> logics to the elements
+                            which have the related <code class="language-markup">data-role</code>
+                            attribute. Therefore, you can also have multiple elements with the same
+                            <code class="language-markup">data-role</code> attribute.
+                            </td>
                             <td><pre class="language-javascript"><code>"&lt;div class='popover tour'&gt;
     &lt;div class='arrow'&gt;&lt;/div&gt;
     &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
     &lt;div class='popover-content'&gt;&lt;/div&gt;
+    &lt;div class='popover-navigation'&gt;
+        &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+        &lt;span data-role='separator'&gt;|&lt;/span&gt;
+        &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+        &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
+    &lt;/div&gt;
 &lt;/div&gt;"</code></pre>
                             </td>
                         </tr>
@@ -470,14 +493,27 @@
                             <td>template</td>
                             <td>String|Function</td>
                             <td>String or function that returns a string of the HTML template for
-                            the popovers. If you pass a function, two parameters are available:
+                            the popovers. If you pass a Function, two parameters are available:
                             <strong>i</strong> is the position of step in the tour and
                             <strong>step</strong> is the an object that contains all the other step
-                            options.</td>
+                            options.<br>
+                            From version 0.5, the navigation template is included inside the
+                            template so you can easily rewrite it. However, Bootstrap Tour maps the
+                            <em>previous</em>, <em>next</em> and <em>end</em> logics to the elements
+                            which have the related <code class="language-markup">data-role</code>
+                            attribute. Therefore, you can also have multiple elements with the same
+                            <code class="language-markup">data-role</code> attribute.
+                            </td>
                             <td><pre class="language-javascript"><code>"&lt;div class='popover tour'&gt;
     &lt;div class='arrow'&gt;&lt;/div&gt;
     &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
     &lt;div class='popover-content'&gt;&lt;/div&gt;
+    &lt;div class='popover-navigation'&gt;
+        &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+        &lt;span data-role='separator'&gt;|&lt;/span&gt;
+        &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+        &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
+    &lt;/div&gt;
 &lt;/div&gt;"</code></pre>
                             </td>
                         </tr>
