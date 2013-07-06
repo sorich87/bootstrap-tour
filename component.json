@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-tour",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": ["./build/js/bootstrap-tour.js", "./build/css/bootstrap-tour.css"],
   "dependencies": {
     "bootstrap": "2.3.1",
