@@ -178,7 +178,7 @@
 
       hideStepHelper = (e) =>
         $element = $(step.element).popover("hide")
-        $element.css("cursor", "").off "click.boostrap-tour" if step.reflex
+        $element.css("cursor", "").off "click.bootstrap-tour" if step.reflex
         @_hideBackdrop() if step.backdrop
 
         step.onHidden(@) if step.onHidden?

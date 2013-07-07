@@ -212,7 +212,7 @@
           var $element;
           $element = $(step.element).popover("hide");
           if (step.reflex) {
-            $element.css("cursor", "").off("click.boostrap-tour");
+            $element.css("cursor", "").off("click.bootstrap-tour");
           }
           if (step.backdrop) {
             _this._hideBackdrop();
