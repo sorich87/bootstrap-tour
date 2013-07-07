@@ -484,9 +484,11 @@
                         </tr>
                         <tr>
                             <td>reflex</td>
-                            <td>Boolean</td>
-                            <td>Enable the reflex mode: you can click on the element for
-                            continue the tour.</td>
+                            <td>Boolean|String (jQuery selector)</td>
+                            <td>If <code class="language-javascript">true</code>, enable the reflex
+                            mode: you can click on the element to continue the tour.  If you give a
+                            selector, instead you can click any selected element to continue the
+                            tour</td>
                             <td><code class="language-javascript">false</code></td>
                         </tr>
                         <tr>

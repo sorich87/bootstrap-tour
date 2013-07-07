@@ -178,7 +178,8 @@
 
       hideStepHelper = (e) =>
         $element = $(step.element).popover("hide")
-        $element.css("cursor", "").off "click.bootstrap-tour" if step.reflex
+        selector = if typeof step.reflex is 'string' then step.reflex else step.element
+        $(selector).css("cursor", "").off "click.bootstrap-tour" if step.reflex
         @_hideBackdrop() if step.backdrop
 
         step.onHidden(@) if step.onHidden?
@@ -288,7 +289,8 @@
       if step.options
         $.extend options, step.options
       if step.reflex
-        $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
+        selector = if typeof step.reflex is 'string' then step.reflex else step.element
+        $(selector).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           @next()
 
       rendered = @_renderNavigation(step, i, options)
