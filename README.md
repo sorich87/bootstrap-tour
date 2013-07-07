@@ -1,4 +1,4 @@
-Bootstrap Tour [![Build Status](https://travis-ci.org/sorich87/bootstrap-tour.png)](https://travis-ci.org/sorich87/bootstrap-tour)
+# Bootstrap Tour [![Build Status](https://travis-ci.org/sorich87/bootstrap-tour.png)](https://travis-ci.org/sorich87/bootstrap-tour)
 
 Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
