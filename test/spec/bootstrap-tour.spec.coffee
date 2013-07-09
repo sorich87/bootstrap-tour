@@ -27,9 +27,49 @@ describe "Bootstrap Tour", ->
 
   it "'setState' should save state cookie", ->
     @tour = new Tour
+    @tour.setState("test", "yes")
+    expect($.cookie("tour_test")).toBe "yes"
+    $.removeCookie("tour_test")
+
+  it "'setState' should save state localStorage item", ->
+    @tour = new Tour
+      state: "localStorage"
+    @tour.setState("test", "yes")
+    expect(window.localStorage.getItem("tour_test")).toBe "yes"
+
+  it "'setState' should execute state.set function if provided", ->
+    aliasKeyName = undefined
+    aliasValue = undefined
+    aliasKey = undefined
+    aliasTourName = undefined
+
+    @tour = new Tour
+      name: "test"
+      state:
+        set: (keyName, value, key, tourName) ->
+          aliasKeyName = keyName
+          aliasValue = value
+          aliasKey = key
+          aliasTourName = tourName
+
     @tour.setState("save", "yes")
-    expect($.cookie("tour_save")).toBe "yes"
-    $.removeCookie("tour_save")
+    expect(aliasKeyName).toBe "test_save"
+    expect(aliasValue).toBe "yes"
+    expect(aliasKey).toBe "save"
+    expect(aliasTourName).toBe "test"
+
+  it "'removeState' should remove state cookie", ->
+    @tour = new Tour
+    @tour.setState("test", "yes")
+    @tour.removeState("test")
+    expect($.cookie("tour_test")).toBe undefined
+
+  it "'removeState' should remove state localStorage item", ->
+    @tour = new Tour
+      state: "localStorage"
+    @tour.setState("test", "yes")
+    @tour.removeState("test")
+    expect(window.localStorage.getItem("tour_test")).toBe null
 
   it "'getState' should get state cookie", ->
     @tour = new Tour
@@ -37,15 +77,9 @@ describe "Bootstrap Tour", ->
     expect(@tour.getState("get")).toBe "yes"
     $.removeCookie("tour_get")
 
-  it "'setState' should save state localStorage items", ->
-    @tour = new Tour
-      useLocalStorage: true
-    @tour.setState("test", "yes")
-    expect(window.localStorage.getItem("tour_test")).toBe "yes"
-
   it "'getState' should get state localStorage items", ->
     @tour = new Tour
-      useLocalStorage: true
+      state: "localStorage"
     @tour.setState("test", "yes")
     expect(@tour.getState("test")).toBe "yes"
     window.localStorage.setItem("tour_test", null)
@@ -332,21 +366,21 @@ describe "Bootstrap Tour", ->
     expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false # don't redirect if path with slash and query params matches current path
     expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true # redirect if path doesn't match current path
 
-  it "'getState' should return null after Tour.removeState with null value using cookies", ->
+  it "'getState' should return null after 'removeState' with null value using cookies", ->
     @tour = new Tour
-      useLocalStorage: false
+      state: "localStorage"
     @tour.setState("test", "test")
     @tour.removeState("test")
     expect(@tour.getState("test")).toBe null
 
-  it "'getState' should return null after Tour.removeState with null value using localStorage", ->
+  it "'getState' should return null after 'removeState' with null value using localStorage", ->
     @tour = new Tour
-      useLocalStorage: true
+      state: "localStorage"
     @tour.setState("test", "test")
     @tour.removeState("test")
     expect(@tour.getState("test")).toBe null
 
-  it "'removeState' should call afterRemoveState callback", ->
+  it "'removeState' should call 'afterRemoveState' callback", ->
     sentinel = false
     @tour = new Tour
       afterRemoveState: -> sentinel = true
@@ -486,7 +520,7 @@ describe "Bootstrap Tour", ->
     @tour.prev()
     expect(tour_test).toBe 2 # tour runs onPrev when prev step is called
 
-  it "Tour.addStep with onPrev option should run the callback before showing the prev step", ->
+  it "'addStep' with 'onPrev' option should run the callback before showing the prev step", ->
     tour_test = 0
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))

@@ -34,9 +34,53 @@
     });
     it("'setState' should save state cookie", function() {
       this.tour = new Tour;
+      this.tour.setState("test", "yes");
+      expect($.cookie("tour_test")).toBe("yes");
+      return $.removeCookie("tour_test");
+    });
+    it("'setState' should save state localStorage item", function() {
+      this.tour = new Tour({
+        state: "localStorage"
+      });
+      this.tour.setState("test", "yes");
+      return expect(window.localStorage.getItem("tour_test")).toBe("yes");
+    });
+    it("'setState' should execute state.set function if provided", function() {
+      var aliasKey, aliasKeyName, aliasTourName, aliasValue;
+      aliasKeyName = void 0;
+      aliasValue = void 0;
+      aliasKey = void 0;
+      aliasTourName = void 0;
+      this.tour = new Tour({
+        name: "test",
+        state: {
+          set: function(keyName, value, key, tourName) {
+            aliasKeyName = keyName;
+            aliasValue = value;
+            aliasKey = key;
+            return aliasTourName = tourName;
+          }
+        }
+      });
       this.tour.setState("save", "yes");
-      expect($.cookie("tour_save")).toBe("yes");
-      return $.removeCookie("tour_save");
+      expect(aliasKeyName).toBe("test_save");
+      expect(aliasValue).toBe("yes");
+      expect(aliasKey).toBe("save");
+      return expect(aliasTourName).toBe("test");
+    });
+    it("'removeState' should remove state cookie", function() {
+      this.tour = new Tour;
+      this.tour.setState("test", "yes");
+      this.tour.removeState("test");
+      return expect($.cookie("tour_test")).toBe(void 0);
+    });
+    it("'removeState' should remove state localStorage item", function() {
+      this.tour = new Tour({
+        state: "localStorage"
+      });
+      this.tour.setState("test", "yes");
+      this.tour.removeState("test");
+      return expect(window.localStorage.getItem("tour_test")).toBe(null);
     });
     it("'getState' should get state cookie", function() {
       this.tour = new Tour;
@@ -44,16 +88,9 @@
       expect(this.tour.getState("get")).toBe("yes");
       return $.removeCookie("tour_get");
     });
-    it("'setState' should save state localStorage items", function() {
-      this.tour = new Tour({
-        useLocalStorage: true
-      });
-      this.tour.setState("test", "yes");
-      return expect(window.localStorage.getItem("tour_test")).toBe("yes");
-    });
     it("'getState' should get state localStorage items", function() {
       this.tour = new Tour({
-        useLocalStorage: true
+        state: "localStorage"
       });
       this.tour.setState("test", "yes");
       expect(this.tour.getState("test")).toBe("yes");
@@ -455,23 +492,23 @@
       expect(this.tour._isRedirect("/somepath/?search=true", "/somepath")).toBe(false);
       return expect(this.tour._isRedirect("/anotherpath", "/somepath")).toBe(true);
     });
-    it("'getState' should return null after Tour.removeState with null value using cookies", function() {
+    it("'getState' should return null after 'removeState' with null value using cookies", function() {
       this.tour = new Tour({
-        useLocalStorage: false
+        state: "localStorage"
       });
       this.tour.setState("test", "test");
       this.tour.removeState("test");
       return expect(this.tour.getState("test")).toBe(null);
     });
-    it("'getState' should return null after Tour.removeState with null value using localStorage", function() {
+    it("'getState' should return null after 'removeState' with null value using localStorage", function() {
       this.tour = new Tour({
-        useLocalStorage: true
+        state: "localStorage"
       });
       this.tour.setState("test", "test");
       this.tour.removeState("test");
       return expect(this.tour.getState("test")).toBe(null);
     });
-    it("'removeState' should call afterRemoveState callback", function() {
+    it("'removeState' should call 'afterRemoveState' callback", function() {
       var sentinel;
       sentinel = false;
       this.tour = new Tour({
@@ -668,7 +705,7 @@
       this.tour.prev();
       return expect(tour_test).toBe(2);
     });
-    it("Tour.addStep with onPrev option should run the callback before showing the prev step", function() {
+    it("'addStep' with 'onPrev' option should run the callback before showing the prev step", function() {
       var tour_test;
       tour_test = 0;
       this.tour = new Tour;
