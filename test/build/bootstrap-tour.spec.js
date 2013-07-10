@@ -590,23 +590,6 @@
       this.tour.next();
       return expect($element.css("cursor")).toBe("auto");
     });
-    it("'reflex' parameter should change the element cursor to pointer when the step is displayed", function() {
-      var $element;
-      $element = $("<div></div>").appendTo("body");
-      this.tour = new Tour;
-      this.tour.addStep({
-        element: $element,
-        reflex: true
-      });
-      this.tour.addStep({
-        element: $("<div></div>").appendTo("body")
-      });
-      expect($element.css("cursor")).toBe("auto");
-      this.tour.start();
-      expect($element.css("cursor")).toBe("pointer");
-      this.tour.next();
-      return expect($element.css("cursor")).toBe("auto");
-    });
     it("'showStep' redirects to the anchor when the path is an anchor", function() {
       this.tour = new Tour;
       this.tour.addStep({
@@ -741,7 +724,7 @@
       this.tour.next();
       return expect($(".popover .popover-navigation a").length).toBe(3);
     });
-    return it("should have 'data-role' attribute for navigation template", function() {
+    it("should have 'data-role' attribute for navigation template", function() {
       var template;
       this.tour = new Tour;
       template = $(this.tour._options.template);
@@ -749,6 +732,30 @@
       expect(template.find("*[data-role=prev]").size()).toBe(1);
       expect(template.find("*[data-role=separator]").size()).toBe(1);
       return expect(template.find("*[data-role=end]").size()).toBe(1);
+    });
+    return it("should unbind click events when hiding step (in reflex mode)", function() {
+      var $element,
+        _this = this;
+      $element = $("<div></div>").appendTo("body");
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $element,
+        reflex: true
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      expect($._data($element[0], "events")).not.toBeDefined();
+      this.tour.start();
+      expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
+      expect($._data($element[0], "events").click[0].namespace).toBe("bootstrap-tour");
+      return $.each([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function() {
+        _this.tour.next();
+        expect($._data($element[0], "events")).not.toBeDefined();
+        _this.tour.prev();
+        expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
+        return expect($._data($element[0], "events").click[0].namespace).toBe("bootstrap-tour");
+      });
     });
   });
 

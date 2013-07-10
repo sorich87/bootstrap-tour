@@ -436,19 +436,6 @@ describe "Bootstrap Tour", ->
     @tour.next()
     expect($element.css("cursor")).toBe "auto" # Tour reset the element cursor when the step is hidden
 
-  it "'reflex' parameter should change the element cursor to pointer when the step is displayed", ->
-    $element = $("<div></div>").appendTo("body")
-    @tour = new Tour
-    @tour.addStep
-      element: $element
-      reflex: true
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    expect($element.css("cursor")).toBe "auto" # Tour doesn't change the element cursor before displaying the step
-    @tour.start()
-    expect($element.css("cursor")).toBe "pointer" # Tour change the element cursor to pointer when the step is displayed
-    @tour.next()
-    expect($element.css("cursor")).toBe "auto" # Tour reset the element cursor when the step is hidden
-
   it "'showStep' redirects to the anchor when the path is an anchor", ->
     @tour = new Tour
     @tour.addStep
@@ -560,3 +547,23 @@ describe "Bootstrap Tour", ->
     expect(template.find("*[data-role=prev]").size()).toBe 1
     expect(template.find("*[data-role=separator]").size()).toBe 1
     expect(template.find("*[data-role=end]").size()).toBe 1
+
+  it "should unbind click events when hiding step (in reflex mode)", ->
+    $element = $("<div></div>").appendTo("body")
+    @tour = new Tour
+    @tour.addStep
+      element: $element
+      reflex: true
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+
+    expect($._data($element[0], "events")).not.toBeDefined()
+    @tour.start()
+    expect($._data($element[0], "events").click.length).toBeGreaterThan 0
+    expect($._data($element[0], "events").click[0].namespace).toBe "bootstrap-tour"
+
+    $.each [0..10], =>
+      @tour.next()
+      expect($._data($element[0], "events")).not.toBeDefined()
+      @tour.prev()
+      expect($._data($element[0], "events").click.length).toBeGreaterThan 0
+      expect($._data($element[0], "events").click[0].namespace).toBe "bootstrap-tour"
