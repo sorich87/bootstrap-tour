@@ -7,7 +7,7 @@
         name: 'tour'
         container: 'body'
         keyboard: true
-        state: 'cookies'
+        storage: "cookies"
         debug: false
         backdrop: false
         redirect: true
@@ -36,8 +36,11 @@
         onPrev: (tour) ->
       }, options)
 
+      if @_options.useLocalStorage
+        @_options.storage = window.localStorage
+
       # validation
-      if ! @_options.useLocalStorage and ! $.cookie
+      if @_options.storage == "cookies" and ! $.cookie
         @_debug "jQuery.cookie is not loaded."
 
       @_steps = []
@@ -51,37 +54,28 @@
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.state.set)
-        @_options.state.set(keyName, value, key, @_options.name)
+      if $.isFunction(@_options.storage.setItem)
+        @_options.storage.setItem(keyName, value)
       else
-        if @_options.state == "localStorage" || @_options.useLocalStorage
-          window.localStorage.setItem(keyName, value)
-        else
-          $.cookie(keyName, value, { expires: 36500, path: '/' })
+        $.cookie(keyName, value, { expires: 36500, path: '/' })
       @_options.afterSetState(keyName, value)
 
     # Remove the current state from the storage layer
     removeState: (key) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.state.remove)
-        @_options.state.remove(keyName, value, key, @_options.name)
+      if $.isFunction(@_options.storage.removeItem)
+        @_options.storage.removeItem(keyName)
       else
-        if @_options.state == "localStorage" || @_options.useLocalStorage
-          window.localStorage.removeItem(keyName)
-        else
-          $.removeCookie(keyName, { path: '/' })
+        $.removeCookie(keyName, { path: '/' })
       @_options.afterRemoveState(keyName)
 
     # Get the current state from the storage layer
     getState: (key) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.state.get)
-        value = @_options.state.get(keyName, key, @_options.name)
+      if $.isFunction(@_options.storage.getItem)
+        value = @_options.storage.getItem(keyName)
       else
-        if @_options.state == "localStorage" || @_options.useLocalStorage
-          value = window.localStorage.getItem(keyName)
-        else
-          value = $.cookie(keyName)
+        value = $.cookie(keyName)
 
       value = null if value == undefined || value == "null"
 

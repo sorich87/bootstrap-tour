@@ -40,33 +40,27 @@
     });
     it("'setState' should save state localStorage item", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "yes");
       return expect(window.localStorage.getItem("tour_test")).toBe("yes");
     });
-    it("'setState' should execute state.set function if provided", function() {
-      var aliasKey, aliasKeyName, aliasTourName, aliasValue;
+    it("'setState' should execute storage.setItem function if provided", function() {
+      var aliasKeyName, aliasValue;
       aliasKeyName = void 0;
       aliasValue = void 0;
-      aliasKey = void 0;
-      aliasTourName = void 0;
       this.tour = new Tour({
         name: "test",
-        state: {
-          set: function(keyName, value, key, tourName) {
+        storage: {
+          setItem: function(keyName, value) {
             aliasKeyName = keyName;
-            aliasValue = value;
-            aliasKey = key;
-            return aliasTourName = tourName;
+            return aliasValue = value;
           }
         }
       });
       this.tour.setState("save", "yes");
       expect(aliasKeyName).toBe("test_save");
-      expect(aliasValue).toBe("yes");
-      expect(aliasKey).toBe("save");
-      return expect(aliasTourName).toBe("test");
+      return expect(aliasValue).toBe("yes");
     });
     it("'removeState' should remove state cookie", function() {
       this.tour = new Tour;
@@ -76,7 +70,7 @@
     });
     it("'removeState' should remove state localStorage item", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "yes");
       this.tour.removeState("test");
@@ -90,7 +84,7 @@
     });
     it("'getState' should get state localStorage items", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "yes");
       expect(this.tour.getState("test")).toBe("yes");
@@ -494,7 +488,7 @@
     });
     it("'getState' should return null after 'removeState' with null value using cookies", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "test");
       this.tour.removeState("test");
@@ -502,7 +496,7 @@
     });
     it("'getState' should return null after 'removeState' with null value using localStorage", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "test");
       this.tour.removeState("test");

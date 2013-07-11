@@ -26,7 +26,7 @@
           name: 'tour',
           container: 'body',
           keyboard: true,
-          state: 'cookies',
+          storage: "cookies",
           debug: false,
           backdrop: false,
           redirect: true,
@@ -44,7 +44,10 @@
           onNext: function(tour) {},
           onPrev: function(tour) {}
         }, options);
-        if (!this._options.useLocalStorage && !$.cookie) {
+        if (this._options.useLocalStorage) {
+          this._options.storage = window.localStorage;
+        }
+        if (this._options.storage === "cookies" && !$.cookie) {
           this._debug("jQuery.cookie is not loaded.");
         }
         this._steps = [];
@@ -59,17 +62,13 @@
       Tour.prototype.setState = function(key, value) {
         var keyName;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.state.set)) {
-          this._options.state.set(keyName, value, key, this._options.name);
+        if ($.isFunction(this._options.storage.setItem)) {
+          this._options.storage.setItem(keyName, value);
         } else {
-          if (this._options.state === "localStorage" || this._options.useLocalStorage) {
-            window.localStorage.setItem(keyName, value);
-          } else {
-            $.cookie(keyName, value, {
-              expires: 36500,
-              path: '/'
-            });
-          }
+          $.cookie(keyName, value, {
+            expires: 36500,
+            path: '/'
+          });
         }
         return this._options.afterSetState(keyName, value);
       };
@@ -77,16 +76,12 @@
       Tour.prototype.removeState = function(key) {
         var keyName;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.state.remove)) {
-          this._options.state.remove(keyName, value, key, this._options.name);
+        if ($.isFunction(this._options.storage.removeItem)) {
+          this._options.storage.removeItem(keyName);
         } else {
-          if (this._options.state === "localStorage" || this._options.useLocalStorage) {
-            window.localStorage.removeItem(keyName);
-          } else {
-            $.removeCookie(keyName, {
-              path: '/'
-            });
-          }
+          $.removeCookie(keyName, {
+            path: '/'
+          });
         }
         return this._options.afterRemoveState(keyName);
       };
@@ -94,14 +89,10 @@
       Tour.prototype.getState = function(key) {
         var keyName, value;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.state.get)) {
-          value = this._options.state.get(keyName, key, this._options.name);
+        if ($.isFunction(this._options.storage.getItem)) {
+          value = this._options.storage.getItem(keyName);
         } else {
-          if (this._options.state === "localStorage" || this._options.useLocalStorage) {
-            value = window.localStorage.getItem(keyName);
-          } else {
-            value = $.cookie(keyName);
-          }
+          value = $.cookie(keyName);
         }
         if (value === void 0 || value === "null") {
           value = null;

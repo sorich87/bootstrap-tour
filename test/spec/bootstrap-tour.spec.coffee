@@ -33,30 +33,24 @@ describe "Bootstrap Tour", ->
 
   it "'setState' should save state localStorage item", ->
     @tour = new Tour
-      state: "localStorage"
+      storage: window.localStorage
     @tour.setState("test", "yes")
     expect(window.localStorage.getItem("tour_test")).toBe "yes"
 
-  it "'setState' should execute state.set function if provided", ->
+  it "'setState' should execute storage.setItem function if provided", ->
     aliasKeyName = undefined
     aliasValue = undefined
-    aliasKey = undefined
-    aliasTourName = undefined
 
     @tour = new Tour
       name: "test"
-      state:
-        set: (keyName, value, key, tourName) ->
+      storage:
+        setItem: (keyName, value) ->
           aliasKeyName = keyName
           aliasValue = value
-          aliasKey = key
-          aliasTourName = tourName
 
     @tour.setState("save", "yes")
     expect(aliasKeyName).toBe "test_save"
     expect(aliasValue).toBe "yes"
-    expect(aliasKey).toBe "save"
-    expect(aliasTourName).toBe "test"
 
   it "'removeState' should remove state cookie", ->
     @tour = new Tour
@@ -66,7 +60,7 @@ describe "Bootstrap Tour", ->
 
   it "'removeState' should remove state localStorage item", ->
     @tour = new Tour
-      state: "localStorage"
+      storage: window.localStorage
     @tour.setState("test", "yes")
     @tour.removeState("test")
     expect(window.localStorage.getItem("tour_test")).toBe null
@@ -79,7 +73,7 @@ describe "Bootstrap Tour", ->
 
   it "'getState' should get state localStorage items", ->
     @tour = new Tour
-      state: "localStorage"
+      storage: window.localStorage
     @tour.setState("test", "yes")
     expect(@tour.getState("test")).toBe "yes"
     window.localStorage.setItem("tour_test", null)
@@ -368,14 +362,14 @@ describe "Bootstrap Tour", ->
 
   it "'getState' should return null after 'removeState' with null value using cookies", ->
     @tour = new Tour
-      state: "localStorage"
+      storage: window.localStorage
     @tour.setState("test", "test")
     @tour.removeState("test")
     expect(@tour.getState("test")).toBe null
 
   it "'getState' should return null after 'removeState' with null value using localStorage", ->
     @tour = new Tour
-      state: "localStorage"
+      storage: window.localStorage
     @tour.setState("test", "test")
     @tour.removeState("test")
     expect(@tour.getState("test")).toBe null
