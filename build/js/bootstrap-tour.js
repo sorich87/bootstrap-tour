@@ -31,7 +31,7 @@
           backdrop: false,
           redirect: true,
           basePath: '',
-          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <button class='btn' data-role='prev'>&laquo; Prev</button>            <span data-role='separator'>|</span>            <button class='btn' data-role='next'>Next &raquo;</button>            <button class='btn' data-role='end'>End tour</button>          </div>        </div>",
+          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <nav class='popover-navigation'>            <div class='btn-group'>              <button class='btn' data-role='prev'>&laquo; Prev</button>              <button class='btn' data-role='next'>Next &raquo;</button>            </div>            <button class='btn' data-role='end'>End tour</button>          </nav>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -158,11 +158,11 @@
         if (this.ended() && !force) {
           return this._debug("Tour ended, start prevented.");
         }
-        $(document).off("click.bootstrap-tour", ".popover *[data-role=next]").on("click.bootstrap-tour", ".popover *[data-role=next]", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=next]").on("click.bootstrap-tour", ".popover *[data-role=next]:not(.disabled)", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).off("click.bootstrap-tour", ".popover *[data-role=prev]").on("click.bootstrap-tour", ".popover *[data-role=prev]", function(e) {
+        $(document).off("click.bootstrap-tour", ".popover *[data-role=prev]").on("click.bootstrap-tour", ".popover *[data-role=prev]:not(.disabled)", function(e) {
           e.preventDefault();
           return _this.prev();
         });
@@ -170,7 +170,7 @@
           e.preventDefault();
           return _this.end();
         });
-        this._onresize(function() {
+        this._onResize(function() {
           return _this.showStep(_this._current);
         });
         this._setupKeyboardNavigation();
@@ -330,20 +330,16 @@
       };
 
       Tour.prototype._renderNavigation = function(step, i, options) {
-        var template;
-        if ($.isFunction(step.template)) {
-          template = $(step.template(i, step));
-        } else {
-          template = $(step.template);
+        var navigation, template;
+        template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+        navigation = template.find(".popover-navigation");
+        console.log(step.prev);
+        console.log(step.next);
+        if (step.prev < 0) {
+          navigation.find("*[data-role=prev]").addClass("disabled");
         }
-        if (!(step.prev >= 0)) {
-          template.find(".popover-navigation *[data-role=prev]").remove();
-        }
-        if (!(step.next >= 0)) {
-          template.find(".popover-navigation *[data-role=next]").remove();
-        }
-        if (!(step.prev >= 0 && step.next >= 0)) {
-          template.find(".popover-navigation *[data-role=separator]").remove();
+        if (step.next < 0) {
+          navigation.find("*[data-role=next]").addClass("disabled");
         }
         return template.clone().wrap("<div>").parent().html();
       };
@@ -427,10 +423,10 @@
         }
       };
 
-      Tour.prototype._onresize = function(cb, timeout) {
+      Tour.prototype._onResize = function(callback, timeout) {
         return $(window).on("resize.bootstrap-tour", function() {
           clearTimeout(timeout);
-          return timeout = setTimeout(cb, 100);
+          return timeout = setTimeout(callback, 100);
         });
       };
 

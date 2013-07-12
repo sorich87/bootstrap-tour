@@ -28,3 +28,8 @@
 .popover.tour .popover-navigation *[data-role=end] {
   cursor: pointer;
 }
+.popover.tour .popover-navigation *[data-role=prev].disabled,
+.popover.tour .popover-navigation *[data-role=next].disabled,
+.popover.tour .popover-navigation *[data-role=end].disabled {
+  cursor: default;
+}

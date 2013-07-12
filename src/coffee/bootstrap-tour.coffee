@@ -16,12 +16,13 @@
           <div class='arrow'></div>
           <h3 class='popover-title'></h3>
           <div class='popover-content'></div>
-          <div class='popover-navigation'>
-            <button class='btn' data-role='prev'>&laquo; Prev</button>
-            <span data-role='separator'>|</span>
-            <button class='btn' data-role='next'>Next &raquo;</button>
+          <nav class='popover-navigation'>
+            <div class='btn-group'>
+              <button class='btn' data-role='prev'>&laquo; Prev</button>
+              <button class='btn' data-role='next'>Next &raquo;</button>
+            </div>
             <button class='btn' data-role='end'>End tour</button>
-          </div>
+          </nav>
         </div>"
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
@@ -124,22 +125,28 @@
       return @_debug "Tour ended, start prevented." if @ended() && !force
 
       # Go to next step after click on element with attribute 'data-role=next'
-      $(document).off("click.bootstrap-tour",".popover *[data-role=next]").on "click.bootstrap-tour", ".popover *[data-role=next]", (e) =>
+      $(document)
+      .off("click.bootstrap-tour", ".popover *[data-role=next]")
+      .on "click.bootstrap-tour", ".popover *[data-role=next]:not(.disabled)", (e) =>
         e.preventDefault()
         @next()
 
       # Go to previous step after click on element with attribute 'data-role=prev'
-      $(document).off("click.bootstrap-tour",".popover *[data-role=prev]").on "click.bootstrap-tour", ".popover *[data-role=prev]", (e) =>
+      $(document)
+      .off("click.bootstrap-tour", ".popover *[data-role=prev]")
+      .on "click.bootstrap-tour", ".popover *[data-role=prev]:not(.disabled)", (e) =>
         e.preventDefault()
         @prev()
 
       # End tour after click on element with attribute 'data-role=end'
-      $(document).off("click.bootstrap-tour",".popover *[data-role=end]").on "click.bootstrap-tour", ".popover *[data-role=end]", (e) =>
+      $(document)
+      .off("click.bootstrap-tour",".popover *[data-role=end]")
+      .on "click.bootstrap-tour", ".popover *[data-role=end]", (e) =>
         e.preventDefault()
         @end()
 
       # Reshow popover on window resize using debounced resize
-      @_onresize(=> @showStep(@_current))
+      @_onResize(=> @showStep(@_current))
 
       @_setupKeyboardNavigation()
 
@@ -280,13 +287,17 @@
 
     # Render navigation
     _renderNavigation: (step, i, options) ->
-      if $.isFunction(step.template)
-        template = $(step.template(i, step))
-      else template = $(step.template)
+      template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
+      navigation = template.find(".popover-navigation")
 
-      template.find(".popover-navigation *[data-role=prev]").remove() unless step.prev >= 0
-      template.find(".popover-navigation *[data-role=next]").remove() unless step.next >= 0
-      template.find(".popover-navigation *[data-role=separator]").remove() unless step.prev >=0 and step.next >= 0
+      console.log step.prev
+      console.log step.next
+
+      if step.prev < 0
+        navigation.find("*[data-role=prev]").addClass("disabled")
+
+      if step.next < 0
+        navigation.find("*[data-role=next]").addClass("disabled")
 
       # return the outerHTML of the jQuery el
       template.clone().wrap("<div>").parent().html()
@@ -362,10 +373,10 @@
         tip.get(0).scrollIntoView(true)
 
     # Debounced window resize
-    _onresize: (cb, timeout) ->
+    _onResize: (callback, timeout) ->
       $(window).on "resize.bootstrap-tour", ->
         clearTimeout(timeout)
-        timeout = setTimeout(cb, 100)
+        timeout = setTimeout(callback, 100)
 
     # Keyboard navigation
     _setupKeyboardNavigation: ->
@@ -389,10 +400,7 @@
 
     # Checks if the result of a callback is a promise
     _makePromise: (result) ->
-      if result && $.isFunction(result.then)
-        return result
-      else
-        return null
+      if result && $.isFunction(result.then) then result else null
 
     _callOnPromiseDone: (promise, cb, arg) ->
       if promise
