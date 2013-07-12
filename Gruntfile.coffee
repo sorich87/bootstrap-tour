@@ -150,5 +150,5 @@ module.exports = (grunt)->
   # register tasks
   grunt.registerTask "run", ["connect", "open", "watch:doc"]
   grunt.registerTask "build", ["clean:default", "coffeelint", "coffee:default", "coffee:doc", "concat", "less", "uglify", "copy"]
-  grunt.registerTask "test", ["clean:test", "coffeelint:test", "coffee:test", "jasmine"]
+  grunt.registerTask "test", ["build", "clean:test", "coffeelint:test", "coffee:test", "jasmine"]
   grunt.registerTask "default", ["watch:default"]
