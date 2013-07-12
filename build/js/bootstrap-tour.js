@@ -348,7 +348,11 @@
         }
         if (step.reflex) {
           $(step.element).css("cursor", "pointer").on("click.bootstrap-tour", function(e) {
-            return _this.next();
+            if (_this._current < _this._steps.length - 1) {
+              return _this.next();
+            } else {
+              return _this.end();
+            }
           });
         }
         rendered = this._renderNavigation(step, i, options);

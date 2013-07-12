@@ -293,7 +293,10 @@
         $.extend options, step.options
       if step.reflex
         $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
-          @next()
+          if @_current < @_steps.length - 1
+            @next()
+          else
+            @end()
 
       rendered = @_renderNavigation(step, i, options)
 
