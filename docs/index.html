@@ -86,7 +86,7 @@
 &lt;body&gt;
     ...
     &lt;script src="jquery.js"&gt;&lt;/script&gt;
-    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- remove this if you set Tour.useLocalStorage as true --&gt;
+    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- remove this if you set Tour.storage as 'localStorage' --&gt;
     &lt;script src="bootstrap.tooltip.js"&gt;&lt;/script&gt;
     &lt;script src="bootstrap.popover.js"&gt;&lt;/script&gt;
     &lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
@@ -131,8 +131,8 @@
                 <pre class="language-javascript"><code>tour.next();</code></pre>
                 <p>Or go back to the previous step:</p>
                 <pre class="language-javascript"><code>tour.prev();</code></pre>
-                <p>Or skip to a specific step:</p>
-                <pre class="language-javascript"><code>tour.showStep(i); // i is the position of the step in the tour, starting from 0 for the first step</code></pre>
+                <p>Or skip to a specific step. Pass <code class="language-javascript">i</code> as the position of the step in the tour, starting from 0 for the first step:</p>
+                <pre class="language-javascript"><code>tour.showStep(i);</code></pre>
                 <p>Or restart the tour after it ended:</p>
                 <pre class="language-javascript"><code>tour.restart();</code></pre>
                 <p>Or verify if the tour ended:</p>
@@ -140,14 +140,9 @@
                 <h3>Tour Options</h3>
 <pre class="language-javascript"><code>var tour = new Tour({
     name: "tour",
-    labels: {
-        next: "Next &raquo;",
-        prev: "&laquo; Prev",
-        end: "End tour",
-    },
     container: "body",
     keyboard: true,
-    useLocalStorage: false,
+    storage: "cookies",
     debug: false,
     backdrop: false,
     redirect: true,
@@ -156,12 +151,13 @@
         &lt;div class='arrow'&gt;&lt;/div&gt;
         &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
         &lt;div class='popover-content'&gt;&lt;/div&gt;
-        &lt;div class='popover-navigation'&gt;
-            &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
-            &lt;span data-role='separator'&gt;|&lt;/span&gt;
-            &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+        &lt;nav class='popover-navigation'&gt;
+            &lt;div class='btn-group'&gt;
+                &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+                &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+            &lt;/div&gt;
             &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
-        &lt;/div&gt;
+        &lt;/nav&gt;
     &lt;/div&gt;",
     afterGetState: function(key, value) {},
     afterSetState: function(key, value) {},
@@ -189,20 +185,20 @@
                             <td>name</td>
                             <td>String</td>
                             <td>This option is used to build the name of the
-                            cookie or localStorage item where the tour state is stored. You can initialize
-                            several tours with different names in the same page and application.</td>
+                            cookie or localStorage item where the tour state is stored. You can
+                            initialize several tours with different names in the same page and
+                            application.</td>
                             <td><code class="language-javascript">'tour'</code></td>
                         </tr>
                         <tr>
-                            <td>labels</td>
-                            <td>Object</td>
-                            <td>The text of the 'Previous', 'Next' and 'End tour' links</td>
-                            <td><pre class="language-javascript"><code>{
-    end: "End tour",
-    next: "Next &raquo;",
-    prev: "&laquo; Prev"
-}</code></pre>
+                            <td>container</td>
+                            <td>String</td>
+                            <td>Appends the step popover to a specific element.<br>
+                            <em>See Usage section of
+                            <a href="http://twitter.github.io/bootstrap/javascript.html#popovers" target="_blank">Popover</a>
+                            </em>
                             </td>
+                            <td><code class="language-javascript">'body'</code></td>
                         </tr>
                         <tr>
                             <td>keyboard</td>
@@ -211,11 +207,24 @@
                             <td><code class="language-javascript">true</code></td>
                         </tr>
                         <tr>
+                            <td>storage</td>
+                            <td>String|Object</td>
+                            <td>The storage system you want to user. <!--TO FINISH--></td>
+                            <td><code class="language-javascript">'cookies'</code></td>
+                        </tr>
+                        <tr>
                             <td>useLocalStorage</td>
                             <td>Boolean</td>
-                            <td>You can choose to save the tour state with localStorage instead of
-                            cookie. If you decide, you can safely remove the jquery.cookie plugin from the
-                            dependencies</td>
+                            <td><p>You can choose to save the tour state with localStorage instead of
+                            cookie. If you decide, you can safely remove the jquery.cookie plugin
+                            from the dependencies.</p>
+                            <div class="alert alert-warning">
+                                <strong>Deprecated option!</strong><br>
+                                This feature is deprecated from version <em>0.6.0</em>. Set
+                                <code class="language-javascript">storage</code> option as
+                                <code class="language-javascript">'localStorage'</code> instead
+                            </div>
+                            </td>
                             <td><code class="language-javascript">false</code></td>
                         </tr>
                         <tr>

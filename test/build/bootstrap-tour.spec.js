@@ -40,33 +40,27 @@
     });
     it("'setState' should save state localStorage item", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "yes");
       return expect(window.localStorage.getItem("tour_test")).toBe("yes");
     });
-    it("'setState' should execute state.set function if provided", function() {
-      var aliasKey, aliasKeyName, aliasTourName, aliasValue;
+    it("'setState' should execute storage.setItem function if provided", function() {
+      var aliasKeyName, aliasValue;
       aliasKeyName = void 0;
       aliasValue = void 0;
-      aliasKey = void 0;
-      aliasTourName = void 0;
       this.tour = new Tour({
         name: "test",
-        state: {
-          set: function(keyName, value, key, tourName) {
+        storage: {
+          setItem: function(keyName, value) {
             aliasKeyName = keyName;
-            aliasValue = value;
-            aliasKey = key;
-            return aliasTourName = tourName;
+            return aliasValue = value;
           }
         }
       });
       this.tour.setState("save", "yes");
       expect(aliasKeyName).toBe("test_save");
-      expect(aliasValue).toBe("yes");
-      expect(aliasKey).toBe("save");
-      return expect(aliasTourName).toBe("test");
+      return expect(aliasValue).toBe("yes");
     });
     it("'removeState' should remove state cookie", function() {
       this.tour = new Tour;
@@ -76,7 +70,7 @@
     });
     it("'removeState' should remove state localStorage item", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "yes");
       this.tour.removeState("test");
@@ -90,7 +84,7 @@
     });
     it("'getState' should get state localStorage items", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "yes");
       expect(this.tour.getState("test")).toBe("yes");
@@ -333,7 +327,7 @@
       });
       this.tour.start();
       this.tour.next();
-      expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(0);
+      expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
     it("'end' should hide current step and set end state", function() {
@@ -343,7 +337,7 @@
       });
       this.tour.start();
       this.tour.end();
-      expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(0);
+      expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
       return expect(this.tour.getState("end")).toBe("yes");
     });
     it("'ended' should return true is tour ended and false if not", function() {
@@ -379,7 +373,7 @@
       });
       this.tour.start();
       this.tour.hideStep(0);
-      return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(0);
+      return expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
     });
     it("'showStep' should set a step and show it", function() {
       this.tour = new Tour;
@@ -444,7 +438,7 @@
       this.tour.setCurrentStep();
       return expect(this.tour._current).toBe(2);
     });
-    it("'showNextStep' should show the next step", function() {
+    it("'next' should show the next step", function() {
       this.tour = new Tour;
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
@@ -453,10 +447,10 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.start();
-      this.tour.showNextStep();
+      this.tour.next();
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
-    it("'showPrevStep' should show the previous step", function() {
+    it("'prev' should show the previous step", function() {
       this.tour = new Tour;
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
@@ -465,7 +459,7 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.showStep(1);
-      this.tour.showPrevStep();
+      this.tour.prev();
       return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
     it("'showStep' should show multiple step on the same element", function() {
@@ -478,7 +472,7 @@
       });
       this.tour.start();
       expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
-      this.tour.showNextStep();
+      this.tour.next();
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
     it("properly verify paths", function() {
@@ -494,7 +488,7 @@
     });
     it("'getState' should return null after 'removeState' with null value using cookies", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "test");
       this.tour.removeState("test");
@@ -502,7 +496,7 @@
     });
     it("'getState' should return null after 'removeState' with null value using localStorage", function() {
       this.tour = new Tour({
-        state: "localStorage"
+        storage: window.localStorage
       });
       this.tour.setState("test", "test");
       this.tour.removeState("test");

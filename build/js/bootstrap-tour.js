@@ -26,7 +26,7 @@
           name: 'tour',
           container: 'body',
           keyboard: true,
-          state: 'cookies',
+          storage: "cookies",
           debug: false,
           backdrop: false,
           redirect: true,
@@ -44,7 +44,10 @@
           onNext: function(tour) {},
           onPrev: function(tour) {}
         }, options);
-        if (!this._options.useLocalStorage && !$.cookie) {
+        if (this._options.useLocalStorage) {
+          this._options.storage = window.localStorage;
+        }
+        if (this._options.storage === "cookies" && !$.cookie) {
           this._debug("jQuery.cookie is not loaded.");
         }
         this._steps = [];
@@ -59,17 +62,13 @@
       Tour.prototype.setState = function(key, value) {
         var keyName;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.state.set)) {
-          this._options.state.set(keyName, value, key, this._options.name);
+        if ($.isFunction(this._options.storage.setItem)) {
+          this._options.storage.setItem(keyName, value);
         } else {
-          if (this._options.state === "localStorage" || this._options.useLocalStorage) {
-            window.localStorage.setItem(keyName, value);
-          } else {
-            $.cookie(keyName, value, {
-              expires: 36500,
-              path: '/'
-            });
-          }
+          $.cookie(keyName, value, {
+            expires: 36500,
+            path: '/'
+          });
         }
         return this._options.afterSetState(keyName, value);
       };
@@ -77,16 +76,12 @@
       Tour.prototype.removeState = function(key) {
         var keyName;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.state.remove)) {
-          this._options.state.remove(keyName, value, key, this._options.name);
+        if ($.isFunction(this._options.storage.removeItem)) {
+          this._options.storage.removeItem(keyName);
         } else {
-          if (this._options.state === "localStorage" || this._options.useLocalStorage) {
-            window.localStorage.removeItem(keyName);
-          } else {
-            $.removeCookie(keyName, {
-              path: '/'
-            });
-          }
+          $.removeCookie(keyName, {
+            path: '/'
+          });
         }
         return this._options.afterRemoveState(keyName);
       };
@@ -94,14 +89,10 @@
       Tour.prototype.getState = function(key) {
         var keyName, value;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.state.get)) {
-          value = this._options.state.get(keyName, key, this._options.name);
+        if ($.isFunction(this._options.storage.getItem)) {
+          value = this._options.storage.getItem(keyName);
         } else {
-          if (this._options.state === "localStorage" || this._options.useLocalStorage) {
-            value = window.localStorage.getItem(keyName);
-          } else {
-            value = $.cookie(keyName);
-          }
+          value = $.cookie(keyName);
         }
         if (value === void 0 || value === "null") {
           value = null;
@@ -180,14 +171,20 @@
 
       Tour.prototype.next = function() {
         var promise;
+        if (this.ended()) {
+          return this._debug("Tour ended, next prevented.");
+        }
         promise = this.hideStep(this._current);
-        return this._callOnPromiseDone(promise, this.showNextStep);
+        return this._callOnPromiseDone(promise, this._showNextStep);
       };
 
       Tour.prototype.prev = function() {
         var promise;
+        if (this.ended()) {
+          return this._debug("Tour ended, prev prevented.");
+        }
         promise = this.hideStep(this._current);
-        return this._callOnPromiseDone(promise, this.showPrevStep);
+        return this._callOnPromiseDone(promise, this._showPrevStep);
       };
 
       Tour.prototype.end = function() {
@@ -225,7 +222,7 @@
         promise = this._makePromise((step.onHide != null ? step.onHide(this) : void 0));
         hideStepHelper = function(e) {
           var $element;
-          $element = $(step.element).popover("hide");
+          $element = $(step.element).popover("destroy");
           if (step.reflex) {
             $element.css("cursor", "").off("click.bootstrap-tour");
           }
@@ -259,7 +256,7 @@
           }
           if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
             _this._debug("Skip the step " + (_this._current + 1) + ". The element does not exist or is not visible.");
-            _this.showNextStep();
+            _this._showNextStep();
             return;
           }
           if (step.backdrop) {
@@ -288,7 +285,7 @@
         }
       };
 
-      Tour.prototype.showNextStep = function() {
+      Tour.prototype._showNextStep = function() {
         var promise, showNextStepHelper, step,
           _this = this;
         step = this.getStep(this._current);
@@ -299,7 +296,7 @@
         return this._callOnPromiseDone(promise, showNextStepHelper);
       };
 
-      Tour.prototype.showPrevStep = function() {
+      Tour.prototype._showPrevStep = function() {
         var promise, showPrevStepHelper, step,
           _this = this;
         step = this.getStep(this._current);
@@ -353,14 +350,15 @@
         }
         if (step.reflex) {
           $(step.element).css("cursor", "pointer").on("click.bootstrap-tour", function(e) {
-            return _this.next();
+            if (_this._current < _this._steps.length - 1) {
+              return _this.next();
+            } else {
+              return _this.end();
+            }
           });
         }
         rendered = this._renderNavigation(step, i, options);
         $element = $(step.element);
-        if ($element.data('popover')) {
-          $element.popover('destroy');
-        }
         $element.popover({
           placement: step.placement,
           trigger: "manual",
@@ -372,7 +370,7 @@
           template: rendered,
           selector: step.element
         }).popover("show");
-        $tip = $(step.element).data("popover").tip();
+        $tip = $element.data("popover").tip();
         $tip.attr("id", step.id);
         this._reposition($tip, step);
         return this._scrollIntoView($tip);

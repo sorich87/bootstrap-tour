@@ -7,7 +7,7 @@
         name: 'tour'
         container: 'body'
         keyboard: true
-        state: 'cookies'
+        storage: "cookies"
         debug: false
         backdrop: false
         redirect: true
@@ -37,8 +37,11 @@
         onPrev: (tour) ->
       }, options)
 
+      if @_options.useLocalStorage
+        @_options.storage = window.localStorage
+
       # validation
-      if ! @_options.useLocalStorage and ! $.cookie
+      if @_options.storage == "cookies" and ! $.cookie
         @_debug "jQuery.cookie is not loaded."
 
       @_steps = []
@@ -52,37 +55,28 @@
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.state.set)
-        @_options.state.set(keyName, value, key, @_options.name)
+      if $.isFunction(@_options.storage.setItem)
+        @_options.storage.setItem(keyName, value)
       else
-        if @_options.state == "localStorage" || @_options.useLocalStorage
-          window.localStorage.setItem(keyName, value)
-        else
-          $.cookie(keyName, value, { expires: 36500, path: '/' })
+        $.cookie(keyName, value, { expires: 36500, path: '/' })
       @_options.afterSetState(keyName, value)
 
     # Remove the current state from the storage layer
     removeState: (key) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.state.remove)
-        @_options.state.remove(keyName, value, key, @_options.name)
+      if $.isFunction(@_options.storage.removeItem)
+        @_options.storage.removeItem(keyName)
       else
-        if @_options.state == "localStorage" || @_options.useLocalStorage
-          window.localStorage.removeItem(keyName)
-        else
-          $.removeCookie(keyName, { path: '/' })
+        $.removeCookie(keyName, { path: '/' })
       @_options.afterRemoveState(keyName)
 
     # Get the current state from the storage layer
     getState: (key) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.state.get)
-        value = @_options.state.get(keyName, key, @_options.name)
+      if $.isFunction(@_options.storage.getItem)
+        value = @_options.storage.getItem(keyName)
       else
-        if @_options.state == "localStorage" || @_options.useLocalStorage
-          value = window.localStorage.getItem(keyName)
-        else
-          value = $.cookie(keyName)
+        value = $.cookie(keyName)
 
       value = null if value == undefined || value == "null"
 
@@ -155,13 +149,17 @@
 
     # Hide current step and show next step
     next: ->
+      return @_debug "Tour ended, next prevented." if @ended()
+
       promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @showNextStep)
+      @_callOnPromiseDone(promise, @_showNextStep)
 
     # Hide current step and show prev step
     prev: ->
+      return @_debug "Tour ended, prev prevented." if @ended()
+
       promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @showPrevStep)
+      @_callOnPromiseDone(promise, @_showPrevStep)
 
     # End tour
     end: ->
@@ -170,7 +168,6 @@
         $(document).off "keyup.bootstrap-tour"
         $(window).off "resize.bootstrap-tour"
         @setState("end", "yes")
-        @_hideBackdrop()
 
         @_options.onEnd(@) if @_options.onEnd?
 
@@ -194,7 +191,7 @@
       promise = @_makePromise (step.onHide(@) if step.onHide?)
 
       hideStepHelper = (e) =>
-        $element = $(step.element).popover("hide")
+        $element = $(step.element).popover("destroy")
         $element.css("cursor", "").off "click.bootstrap-tour" if step.reflex
         @_hideBackdrop() if step.backdrop
 
@@ -227,7 +224,7 @@
         # If step element is hidden, skip step
         unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
           @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
-          @showNextStep()
+          @_showNextStep()
           return
 
         @_showBackdrop(step.element) if step.backdrop
@@ -252,7 +249,7 @@
           @_current = parseInt(@_current)
 
     # Show next step
-    showNextStep: ->
+    _showNextStep: ->
       step = @getStep(@_current)
       showNextStepHelper = (e) => @showStep(step.next)
 
@@ -260,7 +257,7 @@
       @_callOnPromiseDone(promise, showNextStepHelper)
 
     # Show prev step
-    showPrevStep: ->
+    _showPrevStep: ->
       step = @getStep(@_current)
       showPrevStepHelper = (e) => @showStep(step.prev)
 
@@ -310,13 +307,14 @@
         $.extend options, step.options
       if step.reflex
         $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
-          @next()
+          if @_current < @_steps.length - 1
+            @next()
+          else
+            @end()
 
       rendered = @_renderNavigation(step, i, options)
 
       $element = $(step.element)
-
-      $element.popover('destroy') if $element.data('popover')
 
       $element.popover({
         placement: step.placement
@@ -330,7 +328,7 @@
         selector: step.element
       }).popover("show")
 
-      $tip = $(step.element).data("popover").tip()
+      $tip = $element.data("popover").tip()
       $tip.attr("id", step.id)
       @_reposition($tip, step)
       @_scrollIntoView($tip)
