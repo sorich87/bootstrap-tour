@@ -161,7 +161,6 @@
         $(document).off "keyup.bootstrap-tour"
         $(window).off "resize.bootstrap-tour"
         @setState("end", "yes")
-        @_hideBackdrop()
 
         @_options.onEnd(@) if @_options.onEnd?
 
