@@ -287,9 +287,6 @@
       template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
       navigation = template.find(".popover-navigation")
 
-      console.log step.prev
-      console.log step.next
-
       if step.prev < 0
         navigation.find("*[data-role=prev]").addClass("disabled")
 

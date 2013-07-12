@@ -539,7 +539,6 @@ describe "Bootstrap Tour", ->
     template = $(@tour._options.template)
     expect(template.find("*[data-role=next]").size()).toBe 1
     expect(template.find("*[data-role=prev]").size()).toBe 1
-    expect(template.find("*[data-role=separator]").size()).toBe 1
     expect(template.find("*[data-role=end]").size()).toBe 1
 
   it "should unbind click events when hiding step (in reflex mode)", ->

@@ -195,7 +195,6 @@
           $(document).off("keyup.bootstrap-tour");
           $(window).off("resize.bootstrap-tour");
           _this.setState("end", "yes");
-          _this._hideBackdrop();
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
           }
@@ -330,8 +329,6 @@
         var navigation, template;
         template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
         navigation = template.find(".popover-navigation");
-        console.log(step.prev);
-        console.log(step.next);
         if (step.prev < 0) {
           navigation.find("*[data-role=prev]").addClass("disabled");
         }
