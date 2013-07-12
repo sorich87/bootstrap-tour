@@ -171,12 +171,18 @@
 
       Tour.prototype.next = function() {
         var promise;
+        if (this.ended()) {
+          return this._debug("Tour ended, next prevented.");
+        }
         promise = this.hideStep(this._current);
         return this._callOnPromiseDone(promise, this.showNextStep);
       };
 
       Tour.prototype.prev = function() {
         var promise;
+        if (this.ended()) {
+          return this._debug("Tour ended, prev prevented.");
+        }
         promise = this.hideStep(this._current);
         return this._callOnPromiseDone(promise, this.showPrevStep);
       };

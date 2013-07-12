@@ -142,11 +142,15 @@
 
     # Hide current step and show next step
     next: ->
+      return @_debug "Tour ended, next prevented." if @ended()
+
       promise = @hideStep(@_current)
       @_callOnPromiseDone(promise, @showNextStep)
 
     # Hide current step and show prev step
     prev: ->
+      return @_debug "Tour ended, prev prevented." if @ended()
+
       promise = @hideStep(@_current)
       @_callOnPromiseDone(promise, @showPrevStep)
 
