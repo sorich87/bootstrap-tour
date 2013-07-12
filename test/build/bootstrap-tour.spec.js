@@ -327,7 +327,7 @@
       });
       this.tour.start();
       this.tour.next();
-      expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(0);
+      expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
     it("'end' should hide current step and set end state", function() {
@@ -337,7 +337,7 @@
       });
       this.tour.start();
       this.tour.end();
-      expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(0);
+      expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
       return expect(this.tour.getState("end")).toBe("yes");
     });
     it("'ended' should return true is tour ended and false if not", function() {
@@ -373,7 +373,7 @@
       });
       this.tour.start();
       this.tour.hideStep(0);
-      return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(0);
+      return expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
     });
     it("'showStep' should set a step and show it", function() {
       this.tour = new Tour;
@@ -438,7 +438,7 @@
       this.tour.setCurrentStep();
       return expect(this.tour._current).toBe(2);
     });
-    it("'showNextStep' should show the next step", function() {
+    it("'next' should show the next step", function() {
       this.tour = new Tour;
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
@@ -447,10 +447,10 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.start();
-      this.tour.showNextStep();
+      this.tour.next();
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
-    it("'showPrevStep' should show the previous step", function() {
+    it("'prev' should show the previous step", function() {
       this.tour = new Tour;
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
@@ -459,7 +459,7 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.showStep(1);
-      this.tour.showPrevStep();
+      this.tour.prev();
       return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
     it("'showStep' should show multiple step on the same element", function() {
@@ -472,7 +472,7 @@
       });
       this.tour.start();
       expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
-      this.tour.showNextStep();
+      this.tour.next();
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
     it("properly verify paths", function() {

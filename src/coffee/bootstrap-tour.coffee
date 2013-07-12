@@ -145,14 +145,14 @@
       return @_debug "Tour ended, next prevented." if @ended()
 
       promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @showNextStep)
+      @_callOnPromiseDone(promise, @_showNextStep)
 
     # Hide current step and show prev step
     prev: ->
       return @_debug "Tour ended, prev prevented." if @ended()
 
       promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @showPrevStep)
+      @_callOnPromiseDone(promise, @_showPrevStep)
 
     # End tour
     end: ->
@@ -185,7 +185,7 @@
       promise = @_makePromise (step.onHide(@) if step.onHide?)
 
       hideStepHelper = (e) =>
-        $element = $(step.element).popover("hide")
+        $element = $(step.element).popover("destroy")
         $element.css("cursor", "").off "click.bootstrap-tour" if step.reflex
         @_hideBackdrop() if step.backdrop
 
@@ -218,7 +218,7 @@
         # If step element is hidden, skip step
         unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
           @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
-          @showNextStep()
+          @_showNextStep()
           return
 
         @_showBackdrop(step.element) if step.backdrop
@@ -243,7 +243,7 @@
           @_current = parseInt(@_current)
 
     # Show next step
-    showNextStep: ->
+    _showNextStep: ->
       step = @getStep(@_current)
       showNextStepHelper = (e) => @showStep(step.next)
 
@@ -251,7 +251,7 @@
       @_callOnPromiseDone(promise, showNextStepHelper)
 
     # Show prev step
-    showPrevStep: ->
+    _showPrevStep: ->
       step = @getStep(@_current)
       showPrevStepHelper = (e) => @showStep(step.prev)
 
@@ -306,8 +306,6 @@
 
       $element = $(step.element)
 
-      $element.popover('destroy') if $element.data('popover')
-
       $element.popover({
         placement: step.placement
         trigger: "manual"
@@ -320,7 +318,7 @@
         selector: step.element
       }).popover("show")
 
-      $tip = $(step.element).data("popover").tip()
+      $tip = $element.data("popover").tip()
       $tip.attr("id", step.id)
       @_reposition($tip, step)
       @_scrollIntoView($tip)
