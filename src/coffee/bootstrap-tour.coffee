@@ -188,7 +188,7 @@
       promise
 
     # Show the specified step
-    showStep: (i) ->
+    showStep: (i, skipToPrevious = false) ->
       step = @getStep(i)
       return unless step
 
@@ -209,8 +209,8 @@
 
         # If step element is hidden, skip step
         unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
-          @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
-          @showNextStep()
+          @_debug "Skip the step #{@_current + if skipToPrevious then -1 else 1}. The element does not exist or is not visible."
+          if skipToPrevious then @showPrevStep() else @showNextStep()
           return
 
         @_showBackdrop(step.element) if step.backdrop
@@ -245,7 +245,7 @@
     # Show prev step
     showPrevStep: ->
       step = @getStep(@_current)
-      showPrevStepHelper = (e) => @showStep(step.prev)
+      showPrevStepHelper = (e) => @showStep(step.prev, true)
 
       promise = @_makePromise (step.onPrev(@) if step.onPrev?)
       @_callOnPromiseDone(promise, showPrevStepHelper)

@@ -225,9 +225,12 @@
         return promise;
       };
 
-      Tour.prototype.showStep = function(i) {
+      Tour.prototype.showStep = function(i, skipToPrevious) {
         var promise, showStepHelper, step,
           _this = this;
+        if (skipToPrevious == null) {
+          skipToPrevious = false;
+        }
         step = this.getStep(i);
         if (!step) {
           return;
@@ -243,8 +246,12 @@
             return;
           }
           if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
-            _this._debug("Skip the step " + (_this._current + 1) + ". The element does not exist or is not visible.");
-            _this.showNextStep();
+            _this._debug("Skip the step " + (_this._current + (skipToPrevious ? -1 : 1)) + ". The element does not exist or is not visible.");
+            if (skipToPrevious) {
+              _this.showPrevStep();
+            } else {
+              _this.showNextStep();
+            }
             return;
           }
           if (step.backdrop) {
@@ -289,7 +296,7 @@
           _this = this;
         step = this.getStep(this._current);
         showPrevStepHelper = function(e) {
-          return _this.showStep(step.prev);
+          return _this.showStep(step.prev, true);
         };
         promise = this._makePromise((step.onPrev != null ? step.onPrev(this) : void 0));
         return this._callOnPromiseDone(promise, showPrevStepHelper);

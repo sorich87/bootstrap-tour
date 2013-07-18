@@ -399,6 +399,19 @@
       this.tour.showStep(1);
       return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
+    it("'showStep' should skip step in correct direction when looking for previous step", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.addStep({});
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.showStep(2);
+      this.tour.showPrevStep();
+      return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
+    });
     it("'setCurrentStep' should set the current step", function() {
       this.tour = new Tour;
       this.tour.setCurrentStep(4);
