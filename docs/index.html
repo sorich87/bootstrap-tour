@@ -86,7 +86,7 @@
 &lt;body&gt;
     ...
     &lt;script src="jquery.js"&gt;&lt;/script&gt;
-    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- remove this if you set Tour.storage as 'localStorage' --&gt;
+    &lt;script src="jquery.cookie.js"&gt;&lt;/script&gt; &lt;!-- remove this if you assign window.localStorage to Tour.storage --&gt;
     &lt;script src="bootstrap.tooltip.js"&gt;&lt;/script&gt;
     &lt;script src="bootstrap.popover.js"&gt;&lt;/script&gt;
     &lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
@@ -195,7 +195,7 @@
                             <td>String</td>
                             <td>Appends the step popover to a specific element.<br>
                             <em>See Usage section of
-                            <a href="http://twitter.github.io/bootstrap/javascript.html#popovers" target="_blank">Popover</a>
+                            <a href="http://twitter.github.io/bootstrap/javascript.html#popovers" target="_blank">Popover</a>.
                             </em>
                             </td>
                             <td><code class="language-javascript">'body'</code></td>
@@ -209,20 +209,23 @@
                         <tr>
                             <td>storage</td>
                             <td>String|Object</td>
-                            <td>The storage system you want to user. <!--TO FINISH--></td>
+                            <td>The storage system you want to use. could be the default 'cookies'
+                            or the object window.localStorage.
+                            <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/DOM/Storage#localStorage" target="_blank">localStorage</a>.</em>
+                            </td>
                             <td><code class="language-javascript">'cookies'</code></td>
                         </tr>
                         <tr>
                             <td>useLocalStorage</td>
                             <td>Boolean</td>
-                            <td><p>You can choose to save the tour state with localStorage instead of
-                            cookie. If you decide, you can safely remove the jquery.cookie plugin
+                            <td><p>You can choose to save the tour state with localStorage instead
+                            of cookie. If you decide, you can safely remove the jquery.cookie plugin
                             from the dependencies.</p>
                             <div class="alert alert-warning">
                                 <strong>Deprecated option!</strong><br>
-                                This feature is deprecated from version <em>0.6.0</em>. Set
-                                <code class="language-javascript">storage</code> option as
-                                <code class="language-javascript">'localStorage'</code> instead
+                                This feature is deprecated from the next version (<em>0.6.0</em>). Assign
+                                <code class="language-javascript">window.localStorage</code> object
+                                to <code class="language-javascript">storage</code> option instead
                             </div>
                             </td>
                             <td><code class="language-javascript">false</code></td>
