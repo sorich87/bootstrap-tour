@@ -490,14 +490,13 @@
       };
 
       Tour.prototype._showOverlayElement = function(el) {
-        var background, offset, padding, step;
+        var background, offset, step;
         step = $(el);
-        padding = 5;
         offset = step.offset();
-        offset.top = offset.top - padding;
-        offset.left = offset.left - padding;
+        offset.top = offset.top;
+        offset.left = offset.left;
         background = $('<div/>');
-        background.width(step.innerWidth() + padding).height(step.innerHeight() + padding).addClass('tour-step-background').offset(offset);
+        background.width(step.innerWidth()).height(step.innerHeight()).addClass('tour-step-background').offset(offset);
         step.addClass('tour-step-backdrop');
         $('body').append(background);
         this.backdrop.step = step;

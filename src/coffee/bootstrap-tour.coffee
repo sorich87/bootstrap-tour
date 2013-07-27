@@ -421,16 +421,14 @@
     _showOverlayElement: (el) ->
       step = $(el)
 
-      padding = 5
-
       offset = step.offset()
-      offset.top = offset.top - padding
-      offset.left = offset.left - padding
+      offset.top = offset.top
+      offset.left = offset.left
 
       background = $('<div/>')
       background
-        .width(step.innerWidth() + padding)
-        .height(step.innerHeight() + padding)
+        .width(step.innerWidth())
+        .height(step.innerHeight())
         .addClass('tour-step-background')
         .offset(offset)
 
