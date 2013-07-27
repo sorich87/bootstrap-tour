@@ -204,7 +204,7 @@
         var hideStepHelper, promise, step,
           _this = this;
         step = this.getStep(i);
-        promise = this._makePromise((step.onHide != null ? step.onHide(this) : void 0));
+        promise = this._makePromise((step.onHide != null ? step.onHide(this, i) : void 0));
         hideStepHelper = function(e) {
           var $element;
           $element = $(step.element).popover("destroy");
@@ -229,7 +229,7 @@
         if (!step) {
           return;
         }
-        promise = this._makePromise((step.onShow != null ? step.onShow(this) : void 0));
+        promise = this._makePromise((step.onShow != null ? step.onShow(this, i) : void 0));
         showStepHelper = function(e) {
           var current_path, path;
           _this.setCurrentStep(i);
