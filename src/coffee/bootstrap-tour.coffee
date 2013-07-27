@@ -317,8 +317,9 @@
 
       $tip = $element.data("popover").tip()
       $tip.attr("id", step.id)
-      @_reposition($tip, step)
+      @_scrollIntoView($element)
       @_scrollIntoView($tip)
+      @_reposition($tip, step)
 
     # Prevent popups from crossing over the edge of the window
     _reposition: (tip, step) ->

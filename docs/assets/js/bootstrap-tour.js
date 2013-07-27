@@ -355,8 +355,9 @@
         }).popover("show");
         $tip = $element.data("popover").tip();
         $tip.attr("id", step.id);
-        this._reposition($tip, step);
-        return this._scrollIntoView($tip);
+        this._scrollIntoView($element);
+        this._scrollIntoView($tip);
+        return this._reposition($tip, step);
       };
 
       Tour.prototype._reposition = function(tip, step) {
