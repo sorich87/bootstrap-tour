@@ -187,6 +187,15 @@
         return this._callOnPromiseDone(promise, this._showPrevStep);
       };
 
+      Tour.prototype.goto = function(i) {
+        var promise;
+        if (this.ended()) {
+          return this._debug("Tour ended, goto prevented.");
+        }
+        promise = this.hideStep(this._current);
+        return this._callOnPromiseDone(promise, this.showStep, i);
+      };
+
       Tour.prototype.end = function() {
         var endHelper, hidePromise,
           _this = this;

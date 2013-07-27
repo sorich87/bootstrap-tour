@@ -438,6 +438,17 @@
       this.tour.setCurrentStep();
       return expect(this.tour._current).toBe(2);
     });
+    it("'goto' should show the specified step", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.goto(1);
+      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+    });
     it("'next' should show the next step", function() {
       this.tour = new Tour;
       this.tour.addStep({
@@ -458,7 +469,7 @@
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
       });
-      this.tour.showStep(1);
+      this.tour.goto(1);
       this.tour.prev();
       return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
     });
@@ -604,11 +615,11 @@
         element: $("<div></div>").appendTo("body"),
         backdrop: true
       });
-      this.tour.showStep(0);
+      this.tour.start();
       expect($(".tour-backdrop").length).toBe(0);
       expect($(".tour-step-backdrop").length).toBe(0);
       expect($(".tour-step-background").length).toBe(0);
-      this.tour.showStep(1);
+      this.tour.next();
       expect($(".tour-backdrop").length).toBe(1);
       expect($(".tour-step-backdrop").length).toBe(1);
       expect($(".tour-step-background").length).toBe(1);

@@ -323,6 +323,13 @@ describe "Bootstrap Tour", ->
     @tour.setCurrentStep()
     expect(@tour._current).toBe 2 # tour reads current step state if not passed a value
 
+  it "'goto' should show the specified step", ->
+    @tour = new Tour
+    @tour.addStep({element: $("<div></div>").appendTo("body")})
+    @tour.addStep({element: $("<div></div>").appendTo("body")})
+    @tour.goto(1)
+    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1
+
   it "'next' should show the next step", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -335,7 +342,7 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     @tour.addStep({element: $("<div></div>").appendTo("body")})
     @tour.addStep({element: $("<div></div>").appendTo("body")})
-    @tour.showStep(1)
+    @tour.goto(1)
     @tour.prev()
     expect(@tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe 1
 
@@ -447,11 +454,11 @@ describe "Bootstrap Tour", ->
     @tour.addStep
       element: $("<div></div>").appendTo("body")
       backdrop: true
-    @tour.showStep(0)
+    @tour.start()
     expect($(".tour-backdrop").length).toBe 0 # disable backdrop
     expect($(".tour-step-backdrop").length).toBe 0 # disable backdrop
     expect($(".tour-step-background").length).toBe 0 # disable backdrop
-    @tour.showStep(1)
+    @tour.next()
     expect($(".tour-backdrop").length).toBe 1 # enable backdrop
     expect($(".tour-step-backdrop").length).toBe 1 # enable backdrop
     expect($(".tour-step-background").length).toBe 1 # enable backdrop

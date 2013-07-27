@@ -161,6 +161,12 @@
       promise = @hideStep(@_current)
       @_callOnPromiseDone(promise, @_showPrevStep)
 
+    goto: (i) ->
+      return @_debug "Tour ended, goto prevented." if @ended()
+
+      promise = @hideStep(@_current)
+      @_callOnPromiseDone(promise, @showStep, i)
+
     # End tour
     end: ->
       endHelper = (e) =>
