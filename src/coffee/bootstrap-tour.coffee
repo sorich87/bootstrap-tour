@@ -45,7 +45,7 @@
         background: null
       }
 
-    # Set a state in localstorage or cookies. Setting to null deletes the state
+    # Set a state in storage
     setState: (key, value) ->
       keyName = "#{@_options.name}_#{key}"
       @_options.storage.setItem(keyName, value)
