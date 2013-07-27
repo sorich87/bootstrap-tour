@@ -7,7 +7,7 @@
         name: 'tour'
         container: 'body'
         keyboard: true
-        storage: "cookies"
+        storage: window.localStorage
         debug: false
         backdrop: false
         redirect: true
@@ -37,13 +37,6 @@
         onPrev: (tour) ->
       }, options)
 
-      if @_options.useLocalStorage
-        @_options.storage = window.localStorage
-
-      # validation
-      if @_options.storage == "cookies" and ! $.cookie
-        @_debug "jQuery.cookie is not loaded."
-
       @_steps = []
       @setCurrentStep()
       @backdrop = {
@@ -55,28 +48,19 @@
     # Set a state in localstorage or cookies. Setting to null deletes the state
     setState: (key, value) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.storage.setItem)
-        @_options.storage.setItem(keyName, value)
-      else
-        $.cookie(keyName, value, { expires: 36500, path: '/' })
+      @_options.storage.setItem(keyName, value)
       @_options.afterSetState(keyName, value)
 
     # Remove the current state from the storage layer
     removeState: (key) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.storage.removeItem)
-        @_options.storage.removeItem(keyName)
-      else
-        $.removeCookie(keyName, { path: '/' })
+      @_options.storage.removeItem(keyName)
       @_options.afterRemoveState(keyName)
 
     # Get the current state from the storage layer
     getState: (key) ->
       keyName = "#{@_options.name}_#{key}"
-      if $.isFunction(@_options.storage.getItem)
-        value = @_options.storage.getItem(keyName)
-      else
-        value = $.cookie(keyName)
+      value = @_options.storage.getItem(keyName)
 
       value = null if value == undefined || value == "null"
 

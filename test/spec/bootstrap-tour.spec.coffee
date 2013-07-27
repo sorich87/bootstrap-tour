@@ -25,15 +25,8 @@ describe "Bootstrap Tour", ->
     expect(@tour._steps).toEqual [] # tour accepts an array of steps
     expect(@tour._current).toBe 0 # tour initializes current step
 
-  it "'setState' should save state cookie", ->
-    @tour = new Tour
-    @tour.setState("test", "yes")
-    expect($.cookie("tour_test")).toBe "yes"
-    $.removeCookie("tour_test")
-
   it "'setState' should save state localStorage item", ->
     @tour = new Tour
-      storage: window.localStorage
     @tour.setState("test", "yes")
     expect(window.localStorage.getItem("tour_test")).toBe "yes"
 
@@ -47,33 +40,21 @@ describe "Bootstrap Tour", ->
         setItem: (keyName, value) ->
           aliasKeyName = keyName
           aliasValue = value
+        getItem: (value) ->
+          return aliasValue
 
     @tour.setState("save", "yes")
     expect(aliasKeyName).toBe "test_save"
     expect(aliasValue).toBe "yes"
 
-  it "'removeState' should remove state cookie", ->
-    @tour = new Tour
-    @tour.setState("test", "yes")
-    @tour.removeState("test")
-    expect($.cookie("tour_test")).toBe undefined
-
   it "'removeState' should remove state localStorage item", ->
     @tour = new Tour
-      storage: window.localStorage
     @tour.setState("test", "yes")
     @tour.removeState("test")
     expect(window.localStorage.getItem("tour_test")).toBe null
 
-  it "'getState' should get state cookie", ->
-    @tour = new Tour
-    @tour.setState("get", "yes")
-    expect(@tour.getState("get")).toBe "yes"
-    $.removeCookie("tour_get")
-
   it "'getState' should get state localStorage items", ->
     @tour = new Tour
-      storage: window.localStorage
     @tour.setState("test", "yes")
     expect(@tour.getState("test")).toBe "yes"
     window.localStorage.setItem("tour_test", null)
@@ -367,16 +348,8 @@ describe "Bootstrap Tour", ->
     expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false # don't redirect if path with slash and query params matches current path
     expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true # redirect if path doesn't match current path
 
-  it "'getState' should return null after 'removeState' with null value using cookies", ->
+  it "'getState' should return null after 'removeState' with null value", ->
     @tour = new Tour
-      storage: window.localStorage
-    @tour.setState("test", "test")
-    @tour.removeState("test")
-    expect(@tour.getState("test")).toBe null
-
-  it "'getState' should return null after 'removeState' with null value using localStorage", ->
-    @tour = new Tour
-      storage: window.localStorage
     @tour.setState("test", "test")
     @tour.removeState("test")
     expect(@tour.getState("test")).toBe null

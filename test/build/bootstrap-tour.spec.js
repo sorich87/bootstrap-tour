@@ -32,16 +32,8 @@
       expect(this.tour._steps).toEqual([]);
       return expect(this.tour._current).toBe(0);
     });
-    it("'setState' should save state cookie", function() {
-      this.tour = new Tour;
-      this.tour.setState("test", "yes");
-      expect($.cookie("tour_test")).toBe("yes");
-      return $.removeCookie("tour_test");
-    });
     it("'setState' should save state localStorage item", function() {
-      this.tour = new Tour({
-        storage: window.localStorage
-      });
+      this.tour = new Tour;
       this.tour.setState("test", "yes");
       return expect(window.localStorage.getItem("tour_test")).toBe("yes");
     });
@@ -55,6 +47,9 @@
           setItem: function(keyName, value) {
             aliasKeyName = keyName;
             return aliasValue = value;
+          },
+          getItem: function(value) {
+            return aliasValue;
           }
         }
       });
@@ -62,30 +57,14 @@
       expect(aliasKeyName).toBe("test_save");
       return expect(aliasValue).toBe("yes");
     });
-    it("'removeState' should remove state cookie", function() {
-      this.tour = new Tour;
-      this.tour.setState("test", "yes");
-      this.tour.removeState("test");
-      return expect($.cookie("tour_test")).toBe(void 0);
-    });
     it("'removeState' should remove state localStorage item", function() {
-      this.tour = new Tour({
-        storage: window.localStorage
-      });
+      this.tour = new Tour;
       this.tour.setState("test", "yes");
       this.tour.removeState("test");
       return expect(window.localStorage.getItem("tour_test")).toBe(null);
     });
-    it("'getState' should get state cookie", function() {
-      this.tour = new Tour;
-      this.tour.setState("get", "yes");
-      expect(this.tour.getState("get")).toBe("yes");
-      return $.removeCookie("tour_get");
-    });
     it("'getState' should get state localStorage items", function() {
-      this.tour = new Tour({
-        storage: window.localStorage
-      });
+      this.tour = new Tour;
       this.tour.setState("test", "yes");
       expect(this.tour.getState("test")).toBe("yes");
       return window.localStorage.setItem("tour_test", null);
@@ -497,18 +476,8 @@
       expect(this.tour._isRedirect("/somepath/?search=true", "/somepath")).toBe(false);
       return expect(this.tour._isRedirect("/anotherpath", "/somepath")).toBe(true);
     });
-    it("'getState' should return null after 'removeState' with null value using cookies", function() {
-      this.tour = new Tour({
-        storage: window.localStorage
-      });
-      this.tour.setState("test", "test");
-      this.tour.removeState("test");
-      return expect(this.tour.getState("test")).toBe(null);
-    });
-    it("'getState' should return null after 'removeState' with null value using localStorage", function() {
-      this.tour = new Tour({
-        storage: window.localStorage
-      });
+    it("'getState' should return null after 'removeState' with null value", function() {
+      this.tour = new Tour;
       this.tour.setState("test", "test");
       this.tour.removeState("test");
       return expect(this.tour.getState("test")).toBe(null);

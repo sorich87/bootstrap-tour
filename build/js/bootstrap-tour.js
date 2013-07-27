@@ -26,7 +26,7 @@
           name: 'tour',
           container: 'body',
           keyboard: true,
-          storage: "cookies",
+          storage: window.localStorage,
           debug: false,
           backdrop: false,
           redirect: true,
@@ -44,12 +44,6 @@
           onNext: function(tour) {},
           onPrev: function(tour) {}
         }, options);
-        if (this._options.useLocalStorage) {
-          this._options.storage = window.localStorage;
-        }
-        if (this._options.storage === "cookies" && !$.cookie) {
-          this._debug("jQuery.cookie is not loaded.");
-        }
         this._steps = [];
         this.setCurrentStep();
         this.backdrop = {
@@ -62,38 +56,21 @@
       Tour.prototype.setState = function(key, value) {
         var keyName;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.storage.setItem)) {
-          this._options.storage.setItem(keyName, value);
-        } else {
-          $.cookie(keyName, value, {
-            expires: 36500,
-            path: '/'
-          });
-        }
+        this._options.storage.setItem(keyName, value);
         return this._options.afterSetState(keyName, value);
       };
 
       Tour.prototype.removeState = function(key) {
         var keyName;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.storage.removeItem)) {
-          this._options.storage.removeItem(keyName);
-        } else {
-          $.removeCookie(keyName, {
-            path: '/'
-          });
-        }
+        this._options.storage.removeItem(keyName);
         return this._options.afterRemoveState(keyName);
       };
 
       Tour.prototype.getState = function(key) {
         var keyName, value;
         keyName = "" + this._options.name + "_" + key;
-        if ($.isFunction(this._options.storage.getItem)) {
-          value = this._options.storage.getItem(keyName);
-        } else {
-          value = $.cookie(keyName);
-        }
+        value = this._options.storage.getItem(keyName);
         if (value === void 0 || value === "null") {
           value = null;
         }
