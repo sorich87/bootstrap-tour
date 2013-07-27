@@ -42,6 +42,7 @@
         content: "If you need to highlight the current step's element, activate the backdrop " + "and you won't lose the focus anymore!",
         backdrop: true
       }, {
+        path: "/",
         element: "#reflex",
         placement: "bottom",
         title: "Reflex mode",

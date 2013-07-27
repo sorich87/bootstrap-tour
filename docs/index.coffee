@@ -39,6 +39,7 @@ $ ->
         "and you won't lose the focus anymore!"
       backdrop: true
     ,
+      path: "/"
       element: "#reflex"
       placement: "bottom"
       title: "Reflex mode"
