@@ -18,10 +18,10 @@
           <div class='popover-content'></div>
           <nav class='popover-navigation'>
             <div class='btn-group'>
-              <button class='btn' data-role='prev'>&laquo; Prev</button>
-              <button class='btn' data-role='next'>Next &raquo;</button>
+              <button class='btn btn-default' data-role='prev'>&laquo; Prev</button>
+              <button class='btn btn-default' data-role='next'>Next &raquo;</button>
             </div>
-            <button class='btn' data-role='end'>End tour</button>
+            <button class='btn btn-default' data-role='end'>End tour</button>
           </nav>
         </div>"
         afterSetState: (key, value) ->
@@ -315,7 +315,7 @@
         selector: step.element
       }).popover("show")
 
-      $tip = $element.data("popover").tip()
+      $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
       $tip.attr("id", step.id)
       @_scrollIntoView($element)
       @_scrollIntoView($tip)

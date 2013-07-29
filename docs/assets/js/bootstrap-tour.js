@@ -31,7 +31,7 @@
           backdrop: false,
           redirect: true,
           basePath: '',
-          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <nav class='popover-navigation'>            <div class='btn-group'>              <button class='btn' data-role='prev'>&laquo; Prev</button>              <button class='btn' data-role='next'>Next &raquo;</button>            </div>            <button class='btn' data-role='end'>End tour</button>          </nav>        </div>",
+          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <nav class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-default' data-role='next'>Next &raquo;</button>            </div>            <button class='btn btn-default' data-role='end'>End tour</button>          </nav>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -353,7 +353,7 @@
           template: rendered,
           selector: step.element
         }).popover("show");
-        $tip = $element.data("popover").tip();
+        $tip = $element.data("bs.popover") ? $element.data("bs.popover").tip() : $element.data("popover").tip();
         $tip.attr("id", step.id);
         this._scrollIntoView($element);
         this._scrollIntoView($tip);

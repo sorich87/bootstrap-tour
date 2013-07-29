@@ -4,8 +4,7 @@
         <meta charset="utf-8">
         <title>Bootstrap Tour, easy product tours with Bootstrap from Twitter</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="assets/vendor/bootstrap.css" rel="stylesheet">
-        <link href="assets/vendor/bootstrap-responsive.css" rel="stylesheet">
+        <link href="assets/vendor/bootstrap/bootstrap.css" rel="stylesheet">
         <link href="assets/vendor/prism.css" rel="stylesheet">
         <link href="assets/css/bootstrap-tour.css" rel="stylesheet">
         <link href="assets/css/index.css" rel="stylesheet">
@@ -14,29 +13,30 @@
     <body>
         <a href="https://github.com/sorich87/bootstrap-tour" id="github"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
         <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <ul class="nav">
-                        <li>
-                            <a href="#home">Home</a>
-                        </li>
-                        <li>
-                            <a href="#demo">Demo</a>
-                        </li>
-                        <li>
-                            <a href="#usage">Usage</a>
-                        </li>
-                        <li>
-                            <a href="#options">Options</a>
-                        </li>
-                        <li>
-                            <a href="#contribute">Contribute</a>
-                        </li>
-                        <li>
-                            <a href="#license">License</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="container">
+                <ul class="navbar-nav nav">
+                    <li>
+                        <a href="#home">Home</a>
+                    </li>
+                    <li>
+                        <a href="#demo">Demo</a>
+                    </li>
+                    <li>
+                        <a href="#usage">Usage</a>
+                    </li>
+                    <li>
+                        <a href="#options">Options</a>
+                    </li>
+                    <li>
+                        <a href="#contribute">Contribute</a>
+                    </li>
+                    <li>
+                        <a href="#license">License</a>
+                    </li>
+                </ul>
+                <h4 class="navbar-text pull-right">
+                    <a href="http://getbootstrap.com" target="_blank" class="label label-info">Bootstrap 3 ready!</a>
+                </h4>
             </div>
         </div>
         <header id="home">
@@ -53,6 +53,9 @@
                     </li>
                     <li>
                         Version 0.5.0
+                    </li>
+                    <li>
+                        Compatible with Bootstrap <= 3.0.0
                     </li>
                 </ul>
             </div>
@@ -152,10 +155,10 @@
         &lt;div class='popover-content'&gt;&lt;/div&gt;
         &lt;nav class='popover-navigation'&gt;
             &lt;div class='btn-group'&gt;
-                &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
-                &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+                &lt;button class='btn btn-default' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+                &lt;button class='btn btn-default' data-role='next'&gt;Next &raquo;&lt;/button&gt;
             &lt;/div&gt;
-            &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
+            &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
         &lt;/nav&gt;
     &lt;/div&gt;",
     afterGetState: function(key, value) {},
@@ -265,10 +268,10 @@
     &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
     &lt;div class='popover-content'&gt;&lt;/div&gt;
     &lt;div class='popover-navigation'&gt;
-        &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+        &lt;button class='btn btn-default' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
         &lt;span data-role='separator'&gt;|&lt;/span&gt;
-        &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
-        &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
+        &lt;button class='btn btn-default' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+        &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
     &lt;/div&gt;
 &lt;/div&gt;"</code></pre>
                             </td>
@@ -506,10 +509,10 @@
     &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
     &lt;div class='popover-content'&gt;&lt;/div&gt;
     &lt;div class='popover-navigation'&gt;
-        &lt;button class='btn' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
+        &lt;button class='btn btn-default' data-role='prev'&gt;&laquo; Prev&lt;/button&gt;
         &lt;span data-role='separator'&gt;|&lt;/span&gt;
-        &lt;button class='btn' data-role='next'&gt;Next &raquo;&lt;/button&gt;
-        &lt;button class='btn' data-role='end'&gt;End tour&lt;/button&gt;
+        &lt;button class='btn btn-default' data-role='next'&gt;Next &raquo;&lt;/button&gt;
+        &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
     &lt;/div&gt;
 &lt;/div&gt;"</code></pre>
                             </td>
@@ -681,10 +684,10 @@ grunt test</code></pre>
             </div>
         </section>
         <script src="assets/vendor/jquery.js"></script>
-        <script src="assets/vendor/bootstrap-tooltip.js"></script>
-        <script src="assets/vendor/bootstrap-popover.js"></script>
-        <script src="assets/vendor/bootstrap-alert.js"></script>
-        <script src="assets/vendor/bootstrap-collapse.js"></script>
+        <script src="assets/vendor/bootstrap/tooltip.js"></script>
+        <script src="assets/vendor/bootstrap/popover.js"></script>
+        <script src="assets/vendor/bootstrap/alert.js"></script>
+        <script src="assets/vendor/bootstrap/collapse.js"></script>
         <script src="assets/vendor/prism.js"></script>
         <script src="assets/vendor/jquery.smoothscroll.js"></script>
         <script src="assets/js/bootstrap-tour.js"></script>

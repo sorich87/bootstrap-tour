@@ -5,7 +5,7 @@
       this.tour.setState("end", null);
       return $.each(this.tour._steps, function(i, s) {
         if ((s.element != null) && (s.element.popover != null)) {
-          return s.element.popover("hide").removeData("popover");
+          return s.element.popover("hide").removeData("bs.popover");
         }
       });
     });
@@ -98,7 +98,7 @@
         element: $element
       });
       this.tour.start();
-      return expect($element.data("popover").tip().attr("id")).toBe("step-0");
+      return expect($element.data("bs.popover").tip().attr("id")).toBe("step-0");
     });
     it("with 'onStart' option should run the callback before showing the first step", function() {
       var tour_test;
@@ -306,8 +306,8 @@
       });
       this.tour.start();
       this.tour.next();
-      expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      expect(this.tour.getStep(0).element.data("bs.popover")).toBeUndefined();
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'end' should hide current step and set end state", function() {
       this.tour = new Tour;
@@ -316,7 +316,7 @@
       });
       this.tour.start();
       this.tour.end();
-      expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
+      expect(this.tour.getStep(0).element.data("bs.popover")).toBeUndefined();
       return expect(this.tour.getState("end")).toBe("yes");
     });
     it("'ended' should return true is tour ended and false if not", function() {
@@ -352,7 +352,7 @@
       });
       this.tour.start();
       this.tour.hideStep(0);
-      return expect(this.tour.getStep(0).element.data("popover")).toBeUndefined();
+      return expect(this.tour.getStep(0).element.data("bs.popover")).toBeUndefined();
     });
     it("'showStep' should set a step and show it", function() {
       this.tour = new Tour;
@@ -365,7 +365,7 @@
       this.tour.showStep(1);
       expect(this.tour._current).toBe(1);
       expect($(".popover").length).toBe(1);
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'showStep' should not show anything when the step doesn't exist", function() {
       this.tour = new Tour;
@@ -385,7 +385,7 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.showStep(1);
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'showStep' should skip step when element doesn't exist", function() {
       this.tour = new Tour;
@@ -396,7 +396,7 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.showStep(1);
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'showStep' should skip step when element is invisible", function() {
       this.tour = new Tour;
@@ -407,7 +407,7 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.showStep(1);
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'setCurrentStep' should set the current step", function() {
       this.tour = new Tour;
@@ -426,7 +426,7 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.goto(1);
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'next' should show the next step", function() {
       this.tour = new Tour;
@@ -438,7 +438,7 @@
       });
       this.tour.start();
       this.tour.next();
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'prev' should show the previous step", function() {
       this.tour = new Tour;
@@ -450,7 +450,7 @@
       });
       this.tour.goto(1);
       this.tour.prev();
-      return expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(0).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("'showStep' should show multiple step on the same element", function() {
       this.tour = new Tour;
@@ -461,9 +461,9 @@
         element: $("<div></div>").appendTo("body")
       });
       this.tour.start();
-      expect(this.tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe(1);
+      expect(this.tour.getStep(0).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
       this.tour.next();
-      return expect(this.tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe(1);
+      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
     it("properly verify paths", function() {
       this.tour = new Tour;

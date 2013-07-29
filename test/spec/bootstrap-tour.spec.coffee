@@ -5,7 +5,7 @@ describe "Bootstrap Tour", ->
     @tour.setState("end", null)
     $.each @tour._steps, (i, s) ->
       if s.element? && s.element.popover?
-        s.element.popover("hide").removeData("popover")
+        s.element.popover("hide").removeData("bs.popover")
 
   it "should set the tour options", ->
     @tour = new Tour
@@ -77,7 +77,7 @@ describe "Bootstrap Tour", ->
     $element = $("<div></div>").appendTo("body")
     @tour.addStep({element: $element})
     @tour.start()
-    expect($element.data("popover").tip().attr("id")).toBe "step-0" # tour runs onStart when the first step shown
+    expect($element.data("bs.popover").tip().attr("id")).toBe "step-0" # tour runs onStart when the first step shown
 
   it "with 'onStart' option should run the callback before showing the first step", ->
     tour_test = 0
@@ -221,15 +221,15 @@ describe "Bootstrap Tour", ->
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     @tour.next()
-    expect(@tour.getStep(0).element.data("popover")).toBeUndefined() # tour hides current step
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1 # tour shows next step
+    expect(@tour.getStep(0).element.data("bs.popover")).toBeUndefined() # tour hides current step
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1 # tour shows next step
 
   it "'end' should hide current step and set end state", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     @tour.end()
-    expect(@tour.getStep(0).element.data("popover")).toBeUndefined() # tour hides current step
+    expect(@tour.getStep(0).element.data("bs.popover")).toBeUndefined() # tour hides current step
     expect(@tour.getState("end")).toBe "yes"
 
   it "'ended' should return true is tour ended and false if not", ->
@@ -257,7 +257,7 @@ describe "Bootstrap Tour", ->
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     @tour.hideStep(0)
-    expect(@tour.getStep(0).element.data("popover")).toBeUndefined()
+    expect(@tour.getStep(0).element.data("bs.popover")).toBeUndefined()
 
   it "'showStep' should set a step and show it", ->
     @tour = new Tour
@@ -266,7 +266,7 @@ describe "Bootstrap Tour", ->
     @tour.showStep(1)
     expect(@tour._current).toBe 1
     expect($(".popover").length).toBe 1 # tour shows one step
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1 # tour shows correct step
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1 # tour shows correct step
 
   it "'showStep' should not show anything when the step doesn't exist", ->
     @tour = new Tour
@@ -280,21 +280,21 @@ describe "Bootstrap Tour", ->
     @tour.addStep({})
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'showStep' should skip step when element doesn't exist", ->
     @tour = new Tour
     @tour.addStep(element: "#tour-test")
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'showStep' should skip step when element is invisible", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body").hide())
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
@@ -309,7 +309,7 @@ describe "Bootstrap Tour", ->
     @tour.addStep({element: $("<div></div>").appendTo("body")})
     @tour.addStep({element: $("<div></div>").appendTo("body")})
     @tour.goto(1)
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'next' should show the next step", ->
     @tour = new Tour
@@ -317,7 +317,7 @@ describe "Bootstrap Tour", ->
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     @tour.next()
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'prev' should show the previous step", ->
     @tour = new Tour
@@ -325,16 +325,16 @@ describe "Bootstrap Tour", ->
     @tour.addStep({element: $("<div></div>").appendTo("body")})
     @tour.goto(1)
     @tour.prev()
-    expect(@tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe 1
+    expect(@tour.getStep(0).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'showStep' should show multiple step on the same element", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
-    expect(@tour.getStep(0).element.data("popover").tip().filter(":visible").length).toBe 1 # tour show the first step
+    expect(@tour.getStep(0).element.data("bs.popover").tip().filter(":visible").length).toBe 1 # tour show the first step
     @tour.next()
-    expect(@tour.getStep(1).element.data("popover").tip().filter(":visible").length).toBe 1 # tour show the second step on the same element
+    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1 # tour show the second step on the same element
 
   it "properly verify paths", ->
     @tour = new Tour
