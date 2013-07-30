@@ -80,10 +80,7 @@
     return this.$tip
   }
 
-  Popover.prototype.destroy = function () {
-    this.hide().$element.off('.' + this.type).removeData(this.type)
-  }
-
+  // removed destroy method. leverage on tooltip's one. waiting for official bootstrap 3.0 patch
 
   // POPOVER PLUGIN DEFINITION
   // =========================
