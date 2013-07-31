@@ -80,7 +80,6 @@
     return this.$tip
   }
 
-  // removed destroy method. leverage on tooltip's one. waiting for official bootstrap 3.0 patch
 
   // POPOVER PLUGIN DEFINITION
   // =========================
