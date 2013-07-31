@@ -2,13 +2,14 @@
 
 Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
+*Compatible with Bootstrap <= 3.0.0*
+
 ## Demo and Documentation ##
 [http://bootstraptour.com](http://bootstraptour.com)
 
 ## TODO ##
 - Add the smooth scrolling when the popover is outside the viewport
 - Define an appropriate tag + milestone system
-- Integrate Travis build
 
 ## Contributing ##
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
