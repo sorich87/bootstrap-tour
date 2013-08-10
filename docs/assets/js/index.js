@@ -13,7 +13,6 @@
     });
     tour.addSteps([
       {
-        element: "#download",
         placement: "bottom",
         title: "Welcome to Bootstrap Tour!",
         content: "Introduce new users to your product by walking them through it step by step. Built" + "on the awesome <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap " + "from Twitter.</a>"
@@ -56,7 +55,6 @@
         content: "Well, nothing to see here. Click next to go back to the index page."
       }, {
         path: "/",
-        element: "#contribute",
         placement: "bottom",
         title: "Best of all, it's free!",
         content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"

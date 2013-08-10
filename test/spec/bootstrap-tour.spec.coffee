@@ -128,7 +128,7 @@ describe "Bootstrap Tour", ->
     @tour.hideStep(1)
     expect(tour_test).toBe 4 # tour runs onHide when next step hidden
 
-  it " with onHidden option should run the callback after hiding the step", ->
+  it "with onHidden option should run the callback after hiding the step", ->
     tour_test = 0
     @tour = new Tour
       onHidden: -> tour_test += 2
@@ -275,26 +275,32 @@ describe "Bootstrap Tour", ->
     @tour.showStep(2)
     expect($(".popover").length).toBe 0
 
-  it "'showStep' should skip step when no element is specified", ->
+  it "'showStep' should show a step even if the element is not specified, does not exist or is invisible", ->
     @tour = new Tour
     @tour.addStep({})
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
+    @tour.showStep(0)
+    expect($(".popover").length).toBe 1
 
-  it "'showStep' should skip step when element doesn't exist", ->
-    @tour = new Tour
-    @tour.addStep(element: "#tour-test")
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
+  # it "'showStep' should skip step when no element is specified", ->
+  #  @tour = new Tour
+  #  @tour.addStep({})
+  #  @tour.addStep(element: $("<div></div>").appendTo("body"))
+  #  @tour.showStep(1)
+  #  expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
-  it "'showStep' should skip step when element is invisible", ->
-    @tour = new Tour
-    @tour.addStep(element: $("<div></div>").appendTo("body").hide())
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
+  # it "'showStep' should skip step when element doesn't exist", ->
+  #  @tour = new Tour
+  #  @tour.addStep(element: "#tour-test")
+  #  @tour.addStep(element: $("<div></div>").appendTo("body"))
+  #  @tour.showStep(1)
+  #  expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
+
+  # it "'showStep' should skip step when element is invisible", ->
+  #  @tour = new Tour
+  #  @tour.addStep(element: $("<div></div>").appendTo("body").hide())
+  #  @tour.addStep(element: $("<div></div>").appendTo("body"))
+  #  @tour.showStep(1)
+  #  expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
@@ -361,7 +367,7 @@ describe "Bootstrap Tour", ->
     @tour.removeState("current_step")
     expect(sentinel).toBe true
 
-  it "shouldn't move to the next state until the onShow promise is resolved", ->
+  it "should not move to the next state until the onShow promise is resolved", ->
     @tour = new Tour
     deferred = $.Deferred()
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -374,7 +380,7 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
 
-  it "shouldn't hide popover until the onHide promise is resolved", ->
+  it "should not hide popover until the onHide promise is resolved", ->
     @tour = new Tour
     deferred = $.Deferred()
     @tour.addStep
@@ -387,7 +393,7 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
 
-  it "shouldn't start until the onStart promise is resolved", ->
+  it "should not start until the onStart promise is resolved", ->
     deferred = $.Deferred()
     @tour = new Tour
       onStart: -> return deferred
@@ -397,7 +403,7 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect($(".popover").length).toBe 1
 
-  it "'reflex' parameter should change the element cursor to pointer when the step is displayed", ->
+  it "'reflex' parameter should change the element cursor to pointer when the step is shown", ->
     $element = $("<div></div>").appendTo("body")
     @tour = new Tour
     @tour.addStep

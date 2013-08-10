@@ -33,3 +33,10 @@
 .popover.tour .popover-navigation *[data-role=end].disabled {
   cursor: default;
 }
+.popover.tour.orphan {
+  position: absolute;
+  margin-top: 40px;
+}
+.popover.tour.orphan .arrow {
+  display: none;
+}

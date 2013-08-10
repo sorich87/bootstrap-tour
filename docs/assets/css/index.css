@@ -1069,7 +1069,7 @@ form.bs-docs-example {
 /* custom */
 #github {
   display: block;
-  position: absolute;
+  position: fixed;
   width: 150px;
   height: 150px;
   top: 0;

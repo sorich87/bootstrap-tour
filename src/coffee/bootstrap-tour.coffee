@@ -178,10 +178,16 @@
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep(i)
+
+      # If onHide returns a promise, lets wait until it's done to execute
       promise = @_makePromise (step.onHide(@, i) if step.onHide?)
 
       hideStepHelper = (e) =>
-        $element = $(step.element).popover("destroy")
+        unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
+          step.element = 'body'
+
+        $element = $(step.element)
+        $element.popover("destroy")
         $element.css("cursor", "").off "click.bootstrap-tour" if step.reflex
         @_hideBackdrop() if step.backdrop
 
@@ -211,11 +217,13 @@
           @_redirect(step, path)
           return
 
-        # If step element is hidden, skip step
         unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
-          @_debug "Skip the step #{@_current + 1}. The element does not exist or is not visible."
-          @_showNextStep()
-          return
+          step.element = 'body'
+          step.placement = 'top'
+          $template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
+          $template = $template.addClass('orphan')
+          step.template = $template.clone().wrap("<div>").parent().html()
+          @_debug "Show the step #{@_current + 1} centered, since the element does not exist or is not visible."
 
         @_showBackdrop(step.element) if step.backdrop
 
@@ -274,34 +282,33 @@
 
     # Render navigation
     _renderNavigation: (step, i, options) ->
-      template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
-      navigation = template.find(".popover-navigation")
+      $template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
+      $navigation = $template.find(".popover-navigation")
 
       if step.prev < 0
-        navigation.find("*[data-role=prev]").addClass("disabled")
+        $navigation.find("*[data-role=prev]").addClass("disabled")
 
       if step.next < 0
-        navigation.find("*[data-role=next]").addClass("disabled")
+        $navigation.find("*[data-role=next]").addClass("disabled")
 
       # return the outerHTML of the jQuery el
-      template.clone().wrap("<div>").parent().html()
+      $template.clone().wrap("<div>").parent().html()
 
     # Show step popover
     _showPopover: (step, i) ->
       options = $.extend {}, @_options
+      $element = $(step.element)
 
       if step.options
         $.extend options, step.options
       if step.reflex
-        $(step.element).css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
+        $element.css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
           if @_current < @_steps.length - 1
             @next()
           else
             @end()
 
-      rendered = @_renderNavigation(step, i, options)
-
-      $element = $(step.element)
+      template = @_renderNavigation(step, i, options)
 
       $element.popover({
         placement: step.placement
@@ -311,7 +318,7 @@
         html: true
         animation: step.animation
         container: step.container
-        template: rendered
+        template: template
         selector: step.element
       }).popover("show")
 

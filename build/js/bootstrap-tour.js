@@ -207,7 +207,11 @@
         promise = this._makePromise((step.onHide != null ? step.onHide(this, i) : void 0));
         hideStepHelper = function(e) {
           var $element;
-          $element = $(step.element).popover("destroy");
+          if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
+            step.element = 'body';
+          }
+          $element = $(step.element);
+          $element.popover("destroy");
           if (step.reflex) {
             $element.css("cursor", "").off("click.bootstrap-tour");
           }
@@ -231,7 +235,7 @@
         }
         promise = this._makePromise((step.onShow != null ? step.onShow(this, i) : void 0));
         showStepHelper = function(e) {
-          var current_path, path;
+          var $template, current_path, path;
           _this.setCurrentStep(i);
           path = $.isFunction(step.path) ? step.path.call() : _this._options.basePath + step.path;
           current_path = [document.location.pathname, document.location.hash].join('');
@@ -240,9 +244,12 @@
             return;
           }
           if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
-            _this._debug("Skip the step " + (_this._current + 1) + ". The element does not exist or is not visible.");
-            _this._showNextStep();
-            return;
+            step.element = 'body';
+            step.placement = 'top';
+            $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+            $template = $template.addClass('orphan');
+            step.template = $template.clone().wrap("<div>").parent().html();
+            _this._debug("Show the step " + (_this._current + 1) + " centered, since the element does not exist or is not visible.");
           }
           if (step.backdrop) {
             _this._showBackdrop(step.element);
@@ -312,27 +319,28 @@
       };
 
       Tour.prototype._renderNavigation = function(step, i, options) {
-        var navigation, template;
-        template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
-        navigation = template.find(".popover-navigation");
+        var $navigation, $template;
+        $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+        $navigation = $template.find(".popover-navigation");
         if (step.prev < 0) {
-          navigation.find("*[data-role=prev]").addClass("disabled");
+          $navigation.find("*[data-role=prev]").addClass("disabled");
         }
         if (step.next < 0) {
-          navigation.find("*[data-role=next]").addClass("disabled");
+          $navigation.find("*[data-role=next]").addClass("disabled");
         }
-        return template.clone().wrap("<div>").parent().html();
+        return $template.clone().wrap("<div>").parent().html();
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var $element, $tip, options, rendered,
+        var $element, $tip, options, template,
           _this = this;
         options = $.extend({}, this._options);
+        $element = $(step.element);
         if (step.options) {
           $.extend(options, step.options);
         }
         if (step.reflex) {
-          $(step.element).css("cursor", "pointer").on("click.bootstrap-tour", function(e) {
+          $element.css("cursor", "pointer").on("click.bootstrap-tour", function(e) {
             if (_this._current < _this._steps.length - 1) {
               return _this.next();
             } else {
@@ -340,8 +348,7 @@
             }
           });
         }
-        rendered = this._renderNavigation(step, i, options);
-        $element = $(step.element);
+        template = this._renderNavigation(step, i, options);
         $element.popover({
           placement: step.placement,
           trigger: "manual",
@@ -350,7 +357,7 @@
           html: true,
           animation: step.animation,
           container: step.container,
-          template: rendered,
+          template: template,
           selector: step.element
         }).popover("show");
         $tip = $element.data("bs.popover") ? $element.data("bs.popover").tip() : $element.data("popover").tip();
