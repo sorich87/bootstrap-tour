@@ -145,6 +145,7 @@ module.exports = (grunt)->
   grunt.loadNpmTasks "grunt-contrib-copy"
   grunt.loadNpmTasks "grunt-contrib-connect"
   grunt.loadNpmTasks "grunt-open"
+  grunt.loadNpmTasks "grunt-notify"
 
   # register tasks
   grunt.registerTask "run", ["connect", "open", "watch:doc"]

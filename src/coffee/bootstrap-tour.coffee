@@ -12,16 +12,16 @@
         backdrop: false
         redirect: true
         basePath: ''
-        template: "<div class='popover tour'>
+        template: "<div class='popover'>
           <div class='arrow'></div>
           <h3 class='popover-title'></h3>
           <div class='popover-content'></div>
           <nav class='popover-navigation'>
             <div class='btn-group'>
-              <button class='btn btn-default' data-role='prev'>&laquo; Prev</button>
-              <button class='btn btn-default' data-role='next'>Next &raquo;</button>
+              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
+              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
             </div>
-            <button class='btn btn-default' data-role='end'>End tour</button>
+            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
           </nav>
         </div>"
         afterSetState: (key, value) ->
@@ -77,7 +77,9 @@
 
     # Get a step by its indice
     getStep: (i) ->
-      $.extend({
+      return unless @_steps[i]?
+
+      step = $.extend({
         id: "step-#{i}"
         path: ""
         placement: "right"
@@ -96,7 +98,32 @@
         onHidden: @_options.onHidden
         onNext: @_options.onNext
         onPrev: @_options.onPrev
-      }, @_steps[i]) if @_steps[i]?
+      }, @_steps[i])
+
+      options = $.extend {}, @_options
+      $template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
+      $navigation = $template.find(".popover-navigation")
+
+      if step.options
+        $.extend options, step.options
+
+      $template.addClass("tour-#{@_options.name}")
+
+      unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
+        step.element = 'body'
+        step.placement = 'top'
+        $template = $template.addClass('orphan')
+        @_debug "Show the step #{@_current + 1} centered, since the element does not exist or is not visible."
+
+      if step.prev < 0
+        $navigation.find("*[data-role=prev]").addClass("disabled")
+
+      if step.next < 0
+        $navigation.find("*[data-role=next]").addClass("disabled")
+
+      step.template = $template.clone().wrap("<div>").parent().html()
+
+      step
 
     # Start tour from current step
     start: (force = false) ->
@@ -104,24 +131,27 @@
 
       # Go to next step after click on element with attribute 'data-role=next'
       $(document)
-      .off("click.bootstrap-tour", ".popover *[data-role=next]")
-      .on "click.bootstrap-tour", ".popover *[data-role=next]:not(.disabled)", (e) =>
+      .off("click.tour.#{@_options.name}", ".popover *[data-role=next]")
+      .on("click.tour.#{@_options.name}", ".popover *[data-role=next]:not(.disabled)", (e) =>
         e.preventDefault()
         @next()
+      )
 
       # Go to previous step after click on element with attribute 'data-role=prev'
       $(document)
-      .off("click.bootstrap-tour", ".popover *[data-role=prev]")
-      .on "click.bootstrap-tour", ".popover *[data-role=prev]:not(.disabled)", (e) =>
+      .off("click.tour.#{@_options.name}", ".popover *[data-role=prev]")
+      .on("click.tour.#{@_options.name}", ".popover *[data-role=prev]:not(.disabled)", (e) =>
         e.preventDefault()
         @prev()
+      )
 
       # End tour after click on element with attribute 'data-role=end'
       $(document)
-      .off("click.bootstrap-tour",".popover *[data-role=end]")
-      .on "click.bootstrap-tour", ".popover *[data-role=end]", (e) =>
+      .off("click.tour.#{@_options.name}", ".popover *[data-role=end]")
+      .on("click.tour.#{@_options.name}", ".popover *[data-role=end]", (e) =>
         e.preventDefault()
         @end()
+      )
 
       # Reshow popover on window resize using debounced resize
       @_onResize(=> @showStep(@_current))
@@ -154,9 +184,9 @@
     # End tour
     end: ->
       endHelper = (e) =>
-        $(document).off "click.bootstrap-tour"
-        $(document).off "keyup.bootstrap-tour"
-        $(window).off "resize.bootstrap-tour"
+        $(document).off "click.tour.#{@_options.name}"
+        $(document).off "keyup.tour.#{@_options.name}"
+        $(window).off "resize.tour.#{@_options.name}"
         @setState("end", "yes")
 
         @_options.onEnd(@) if @_options.onEnd?
@@ -183,12 +213,9 @@
       promise = @_makePromise (step.onHide(@, i) if step.onHide?)
 
       hideStepHelper = (e) =>
-        unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
-          step.element = 'body'
-
         $element = $(step.element)
         $element.popover("destroy")
-        $element.css("cursor", "").off "click.bootstrap-tour" if step.reflex
+        $element.css("cursor", "").off "click.tour.#{@_options.name}" if step.reflex
         @_hideBackdrop() if step.backdrop
 
         step.onHidden(@) if step.onHidden?
@@ -216,14 +243,6 @@
         if @_isRedirect(path, current_path)
           @_redirect(step, path)
           return
-
-        unless step.element? && $(step.element).length != 0 && $(step.element).is(":visible")
-          step.element = 'body'
-          step.placement = 'top'
-          $template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
-          $template = $template.addClass('orphan')
-          step.template = $template.clone().wrap("<div>").parent().html()
-          @_debug "Show the step #{@_current + 1} centered, since the element does not exist or is not visible."
 
         @_showBackdrop(step.element) if step.backdrop
 
@@ -262,6 +281,9 @@
       promise = @_makePromise (step.onPrev(@) if step.onPrev?)
       @_callOnPromiseDone(promise, showPrevStepHelper)
 
+    # Render template
+    _renderTemplate: (step, i) ->
+
     # Print message in console
     _debug: (text) ->
       window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}" if @_options.debug
@@ -280,35 +302,16 @@
         @_debug "Redirect to #{path}"
         document.location.href = path
 
-    # Render navigation
-    _renderNavigation: (step, i, options) ->
-      $template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
-      $navigation = $template.find(".popover-navigation")
-
-      if step.prev < 0
-        $navigation.find("*[data-role=prev]").addClass("disabled")
-
-      if step.next < 0
-        $navigation.find("*[data-role=next]").addClass("disabled")
-
-      # return the outerHTML of the jQuery el
-      $template.clone().wrap("<div>").parent().html()
-
     # Show step popover
     _showPopover: (step, i) ->
-      options = $.extend {}, @_options
       $element = $(step.element)
 
-      if step.options
-        $.extend options, step.options
       if step.reflex
-        $element.css("cursor", "pointer").on "click.bootstrap-tour", (e) =>
+        $element.css("cursor", "pointer").on "click.tour.#{@_options.name}", (e) =>
           if @_current < @_steps.length - 1
             @next()
           else
             @end()
-
-      template = @_renderNavigation(step, i, options)
 
       $element.popover({
         placement: step.placement
@@ -318,7 +321,7 @@
         html: true
         animation: step.animation
         container: step.container
-        template: template
+        template: step.template
         selector: step.element
       }).popover("show")
 
@@ -367,14 +370,14 @@
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
-      $(window).on "resize.bootstrap-tour", ->
+      $(window).on "resize.tour.#{@_options.name}", ->
         clearTimeout(timeout)
         timeout = setTimeout(callback, 100)
 
     # Keyboard navigation
     _setupKeyboardNavigation: ->
       if @_options.keyboard
-        $(document).on "keyup.bootstrap-tour", (e) =>
+        $(document).on "keyup.tour.#{@_options.name}", (e) =>
           return unless e.which
           switch e.which
             when 39
