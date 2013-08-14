@@ -317,7 +317,6 @@
 
       $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
       $tip.attr("id", step.id)
-      @_scrollIntoView($element)
       @_scrollIntoView($tip)
       @_reposition($tip, step)
 
@@ -354,9 +353,9 @@
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (tip) ->
-      tipRect = tip.get(0).getBoundingClientRect()
-      unless tipRect.top >= 0 && tipRect.bottom < $(window).height() && tipRect.left >= 0 && tipRect.right < $(window).width()
-        tip.get(0).scrollIntoView(true)
+      window_half = $(window).height() / 2
+      tipOffset = Math.ceil(tip.offset().top - window_half)
+      $("html, body").stop().animate({scrollTop: tipOffset})
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
