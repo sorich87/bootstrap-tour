@@ -281,9 +281,6 @@
       promise = @_makePromise (step.onPrev(@) if step.onPrev?)
       @_callOnPromiseDone(promise, showPrevStepHelper)
 
-    # Render template
-    _renderTemplate: (step, i) ->
-
     # Print message in console
     _debug: (text) ->
       window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}" if @_options.debug

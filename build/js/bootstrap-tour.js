@@ -311,8 +311,6 @@
         return this._callOnPromiseDone(promise, showPrevStepHelper);
       };
 
-      Tour.prototype._renderTemplate = function(step, i) {};
-
       Tour.prototype._debug = function(text) {
         if (this._options.debug) {
           return window.console.log("Bootstrap Tour '" + this._options.name + "' | " + text);
