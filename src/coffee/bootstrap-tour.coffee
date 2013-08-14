@@ -353,8 +353,7 @@
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (tip) ->
-      windowHalf = $(window).height() / 2
-      tipOffset = Math.ceil(tip.offset().top - windowHalf)
+      tipOffset = Math.ceil(tip.offset().top - ($(window).height() / 2))
       $("html, body").stop().animate({scrollTop: tipOffset})
 
     # Debounced window resize
