@@ -6,8 +6,7 @@ describe "Bootstrap Tour", ->
     @tour.setState("end", null)
     $.each @tour._steps, (i, s) ->
       $element = $(tour.getStep(i).element)
-      if $element? && $element.popover?
-        $element.popover("hide").removeData("bs.popover")
+      $element.popover("destroy").removeData("bs.popover")
 
   it "should set the tour options", ->
     @tour = new Tour
@@ -310,27 +309,6 @@ describe "Bootstrap Tour", ->
     @tour.showStep(0)
     expect($(".popover").length).toBe 1
 
-  # it "'showStep' should skip step when no element is specified", ->
-  #  @tour = new Tour
-  #  @tour.addStep({})
-  #  @tour.addStep(element: $("<div></div>").appendTo("body"))
-  #  @tour.showStep(1)
-  #  expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
-
-  # it "'showStep' should skip step when element doesn't exist", ->
-  #  @tour = new Tour
-  #  @tour.addStep(element: "#tour-test")
-  #  @tour.addStep(element: $("<div></div>").appendTo("body"))
-  #  @tour.showStep(1)
-  #  expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
-
-  # it "'showStep' should skip step when element is invisible", ->
-  #  @tour = new Tour
-  #  @tour.addStep(element: $("<div></div>").appendTo("body").hide())
-  #  @tour.addStep(element: $("<div></div>").appendTo("body"))
-  #  @tour.showStep(1)
-  #  expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
-
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
     @tour.setCurrentStep(4)
@@ -422,9 +400,6 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
 
-  ###
-  # TODO fix me: the popover is already set and present in the DOM even if the deferred is not
-  # resolved yet
   it "should not start until the onStart promise is resolved", ->
     deferred = $.Deferred()
     @tour = new Tour
@@ -434,7 +409,6 @@ describe "Bootstrap Tour", ->
     expect($(".popover").length).toBe 0
     deferred.resolve()
     expect($(".popover").length).toBe 1
-  ###
 
   it "'reflex' parameter should change the element cursor to pointer when the step is shown", ->
     $element = $("<div></div>").appendTo("body")

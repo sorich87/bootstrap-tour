@@ -8,9 +8,7 @@
       return $.each(this.tour._steps, function(i, s) {
         var $element;
         $element = $(tour.getStep(i).element);
-        if (($element != null) && ($element.popover != null)) {
-          return $element.popover("hide").removeData("bs.popover");
-        }
+        return $element.popover("destroy").removeData("bs.popover");
       });
     });
     it("should set the tour options", function() {
@@ -533,20 +531,22 @@
       deferred.resolve();
       return expect(this.tour._current).toBe(1);
     });
-    /*
-    # TODO fix me: the popover is already set and present in the DOM even if the deferred is not
-    # resolved yet
-    it "should not start until the onStart promise is resolved", ->
-      deferred = $.Deferred()
-      @tour = new Tour
-        onStart: -> deferred
-      @tour.addStep(element: $("<div></div>").appendTo("body"))
-      @tour.start()
-      expect($(".popover").length).toBe 0
-      deferred.resolve()
-      expect($(".popover").length).toBe 1
-    */
-
+    it("should not start until the onStart promise is resolved", function() {
+      var deferred;
+      deferred = $.Deferred();
+      this.tour = new Tour({
+        onStart: function() {
+          return deferred;
+        }
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.start();
+      expect($(".popover").length).toBe(0);
+      deferred.resolve();
+      return expect($(".popover").length).toBe(1);
+    });
     it("'reflex' parameter should change the element cursor to pointer when the step is shown", function() {
       var $element;
       $element = $("<div></div>").appendTo("body");
