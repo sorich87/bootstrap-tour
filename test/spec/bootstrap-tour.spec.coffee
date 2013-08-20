@@ -1,5 +1,8 @@
 describe "Bootstrap Tour", ->
 
+  beforeEach ->
+    $.support.transition = false
+
   afterEach ->
     tour = @tour
     @tour.setState("current_step", null)

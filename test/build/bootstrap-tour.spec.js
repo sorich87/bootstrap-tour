@@ -1,5 +1,8 @@
 (function() {
   describe("Bootstrap Tour", function() {
+    beforeEach(function() {
+      return $.support.transition = false;
+    });
     afterEach(function() {
       var tour;
       tour = this.tour;
