@@ -1,11 +1,15 @@
 (function() {
   describe("Bootstrap Tour", function() {
     afterEach(function() {
+      var tour;
+      tour = this.tour;
       this.tour.setState("current_step", null);
       this.tour.setState("end", null);
       return $.each(this.tour._steps, function(i, s) {
-        if ((s.element != null) && (s.element.popover != null)) {
-          return s.element.popover("hide").removeData("bs.popover");
+        var $element;
+        $element = $(tour.getStep(i).element);
+        if (($element != null) && ($element.popover != null)) {
+          return $element.popover("hide").removeData("bs.popover");
         }
       });
     });

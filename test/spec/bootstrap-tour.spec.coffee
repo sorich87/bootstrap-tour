@@ -1,11 +1,13 @@
 describe "Bootstrap Tour", ->
 
   afterEach ->
+    tour = @tour
     @tour.setState("current_step", null)
     @tour.setState("end", null)
     $.each @tour._steps, (i, s) ->
-      if s.element? && s.element.popover?
-        s.element.popover("hide").removeData("bs.popover")
+      $element = $(tour.getStep(i).element)
+      if $element? && $element.popover?
+        $element.popover("hide").removeData("bs.popover")
 
   it "should set the tour options", ->
     @tour = new Tour
