@@ -242,48 +242,57 @@
       this.tour.hideStep(1);
       return expect(tour_test).toBe(2);
     });
-    /*
-    # TODO fix me: either execute the same logic contained in the method or exclude some properties
-    # from the check
-    it "'getStep' should get a step", ->
-      @tour = new Tour
-      step =
-        element: $("<div></div>").appendTo("body")
-        id: "step-0"
-        path: "test"
-        placement: "left"
-        title: "Test"
-        content: "Just a test"
-        next: 2
-        prev: -1
-        animation: false
-        container: "body"
-        backdrop: false
-        redirect: true
-        template: "<div class='popover'>
-          <div class='arrow'></div>
-          <h3 class='popover-title'></h3>
-          <div class='popover-content'></div>
-          <nav class='popover-navigation'>
-            <div class='btn-group'>
-              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
-              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
-            </div>
-            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
-          </nav>
-        </div>"
-        onShow: (tour) ->
-        onShown: (tour) ->
-        onHide: (tour) ->
-        onHidden: (tour) ->
-        onNext: (tour) ->
-        onPrev: (tour) ->
-      @tour.addStep(step)
-    
-      step.template = $(step.template).addClass("tour-#{@tour._options.name}").clone().wrap("<div>").parent().html()
-      expect(@tour.getStep(0)).toEqual step
-    */
-
+    it("'getStep' should get a step", function() {
+      var step, tourStep;
+      this.tour = new Tour;
+      step = {
+        element: $("<div></div>").appendTo("body"),
+        id: "step-0",
+        path: "test",
+        placement: "left",
+        title: "Test",
+        content: "Just a test",
+        next: 2,
+        prev: -1,
+        animation: false,
+        container: "body",
+        backdrop: false,
+        redirect: true,
+        template: "<div class='popover'>        <div class='arrow'></div>        <h3 class='popover-title'></h3>        <div class='popover-content'></div>        <nav class='popover-navigation'>          <div class='btn-group'>            <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>            <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>          </div>          <button class='btn btn-sm btn-default' data-role='end'>End tour</button>        </nav>      </div>",
+        onShow: function(tour) {},
+        onShown: function(tour) {},
+        onHide: function(tour) {},
+        onHidden: function(tour) {},
+        onNext: function(tour) {},
+        onPrev: function(tour) {}
+      };
+      this.tour.addStep(step);
+      tourStep = this.tour.getStep(0);
+      delete step.template;
+      delete tourStep.template;
+      return expect(tourStep).toEqual(step);
+    });
+    it("'getStep' should execute template if it is a function", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        template: function() {
+          return "<div class='popover'></div>";
+        }
+      });
+      return expect(typeof this.tour.getStep(0).template).toBe("string");
+    });
+    it("'getStep' should add tour-{tourName} and orphan classes to the template div", function() {
+      this.tour = new Tour;
+      this.tour.addStep({});
+      return expect($(this.tour.getStep(0).template).is(".tour-" + this.tour._options.name + ", .orphan")).toBe(true);
+    });
+    it("'getStep' should add disabled classes to the first and last popover buttons", function() {
+      this.tour = new Tour;
+      this.tour.addStep({});
+      this.tour.addStep({});
+      expect($(this.tour.getStep(0).template).find('[data-role="prev"]').is('.disabled')).toBe(true);
+      return expect($(this.tour.getStep(1).template).find('[data-role="next"]').is('.disabled')).toBe(true);
+    });
     it("'start' should start a tour", function() {
       this.tour = new Tour;
       this.tour.addStep({
@@ -526,7 +535,7 @@
     it "should not start until the onStart promise is resolved", ->
       deferred = $.Deferred()
       @tour = new Tour
-        onStart: -> return deferred
+        onStart: -> deferred
       @tour.addStep(element: $("<div></div>").appendTo("body"))
       @tour.start()
       expect($(".popover").length).toBe 0

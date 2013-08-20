@@ -165,9 +165,6 @@ describe "Bootstrap Tour", ->
     @tour.hideStep(1)
     expect(tour_test).toBe 2 # tour runs onHide when step hidden
 
-  ###
-  # TODO fix me: either execute the same logic contained in the method or exclude some properties
-  # from the check
   it "'getStep' should get a step", ->
     @tour = new Tour
     step =
@@ -202,10 +199,28 @@ describe "Bootstrap Tour", ->
       onNext: (tour) ->
       onPrev: (tour) ->
     @tour.addStep(step)
+    tourStep = @tour.getStep(0)
+    # remove properties that we don't want to check from both steps object
+    delete step.template
+    delete tourStep.template
+    expect(tourStep).toEqual step
 
-    step.template = $(step.template).addClass("tour-#{@tour._options.name}").clone().wrap("<div>").parent().html()
-    expect(@tour.getStep(0)).toEqual step
-  ###
+  it "'getStep' should execute template if it is a function", ->
+    @tour = new Tour
+    @tour.addStep(template: -> "<div class='popover'></div>")
+    expect(typeof @tour.getStep(0).template).toBe "string"
+
+  it "'getStep' should add tour-{tourName} and orphan classes to the template div", ->
+    @tour = new Tour
+    @tour.addStep({})
+    expect($(@tour.getStep(0).template).is(".tour-#{@tour._options.name}, .orphan")).toBe true
+
+  it "'getStep' should add disabled classes to the first and last popover buttons", ->
+    @tour = new Tour
+    @tour.addStep({})
+    @tour.addStep({})
+    expect($(@tour.getStep(0).template).find('[data-role="prev"]').is('.disabled')).toBe true
+    expect($(@tour.getStep(1).template).find('[data-role="next"]').is('.disabled')).toBe true
 
   it "'start' should start a tour", ->
     @tour = new Tour
@@ -411,7 +426,7 @@ describe "Bootstrap Tour", ->
   it "should not start until the onStart promise is resolved", ->
     deferred = $.Deferred()
     @tour = new Tour
-      onStart: -> return deferred
+      onStart: -> deferred
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     expect($(".popover").length).toBe 0
