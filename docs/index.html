@@ -23,7 +23,7 @@
                 <h4 class="navbar-text pull-right">
                     <a href="http://getbootstrap.com" target="_blank" class="label label-info">Bootstrap 3 ready!</a>
                 </h4>
-                <div class="nav-collapse collapse navbar-responsive-collapse">
+                <div class="collapse navbar-collapse">
                     <ul class="navbar-nav nav">
                         <li>
                             <a href="#demo">Demo</a>
@@ -578,12 +578,14 @@
                 requests</a>, we are nothing. Make this plugin better!</p>
                 <h3>Grunt Usage</h3>
                 <div id="grunt-usage" class="accordion">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#install-dependencies">Install Dependencies</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#install-dependencies">Install Dependencies</a>
+                            </h4>
                         </div>
-                        <div id="install-dependencies" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                        <div id="install-dependencies" class="panel-collapse collapse in">
+                            <div class="panel-body">
                                 <p>Files to be developed inside the project are located under
                                 <code>/src/</code> and <code>/test/spec/</code>.</p>
                                 <p>Compiled sources are then automatically put under
@@ -591,12 +593,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run predefined tasks by executing <code class="language-bash">grunt &lt;task&gt;:&lt;target&gt;</code></a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run predefined tasks by executing <code class="language-bash">grunt &lt;task&gt;:&lt;target&gt;</code></a>
+                            </h4>
                         </div>
                         <div id="run-tasks" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                            <div class="panel-body">
                                 <p><em>Check your coffeescripts style, or specify a single target</em></p>
 <pre class="language-bash"><code>coffeelint
 coffeelint:default
@@ -633,12 +637,14 @@ watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-aliases">Run aliases for multiple tasks</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-aliases">Run aliases for multiple tasks</a>
+                            </h4>
                         </div>
                         <div id="run-aliases" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                            <div class="panel-body">
 <pre class="language-javascript"><code>// watch : default
 grunt
 grunt default
@@ -654,23 +660,27 @@ grunt test</code></pre>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#live-reload">Live reload</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#live-reload">Live reload</a>
+                            </h4>
                         </div>
                         <div id="live-reload" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                            <div class="panel-body">
                                 <p>Running <code class="language-bash">grunt run</code> will start a small server on port <code class="language-bash">3000</code> and opens the browser to the webpage. It will also start watching for changes in the <code class="language-bash">index.coffee</code> which will trigger then live reloading of the page in the browser.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#test">Run the tests</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#test">Run the tests</a>
+                            </h4>
                         </div>
                         <div id="test" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                                <p>Tests are written using <a href="http://pivotal.github.io/jasmine/" target="_blank">Jasmine framework</a> and they run headlessly through PhantomJS.<br>
+                            <div class="panel-body">
+                                <p>Tests are written using <a href="http://pivotal.github.io/jasmine/" target="_blank">Jasmine</a> and they run headlessly through <a href="http://phantomjs.org/" target="_blank">PhantomJS</a>.<br>
                                 Simply run <code class="language-bash">grunt test</code> or watch them with <code class="language-bash">grunt watch:test</code> (this will execute them automatically every time you change the specs).</p>
                             </div>
                         </div>
@@ -689,10 +699,7 @@ grunt test</code></pre>
             </div>
         </section>
         <script src="assets/vendor/jquery.js"></script>
-        <script src="assets/vendor/bootstrap/tooltip.js"></script>
-        <script src="assets/vendor/bootstrap/popover.js"></script>
-        <script src="assets/vendor/bootstrap/alert.js"></script>
-        <script src="assets/vendor/bootstrap/collapse.js"></script>
+        <script src="assets/vendor/bootstrap/bootstrap.js"></script>
         <script src="assets/vendor/prism.js"></script>
         <script src="assets/vendor/jquery.smoothscroll.js"></script>
         <script src="assets/js/bootstrap-tour.js"></script>
