@@ -1,11 +1,15 @@
 describe "Bootstrap Tour", ->
 
+  beforeEach ->
+    $.support.transition = false
+
   afterEach ->
+    tour = @tour
     @tour.setState("current_step", null)
     @tour.setState("end", null)
     $.each @tour._steps, (i, s) ->
-      if s.element? && s.element.popover?
-        s.element.popover("hide").removeData("bs.popover")
+      $element = $(tour.getStep(i).element)
+      $element.popover("destroy").removeData("bs.popover")
 
   it "should set the tour options", ->
     @tour = new Tour
@@ -128,7 +132,7 @@ describe "Bootstrap Tour", ->
     @tour.hideStep(1)
     expect(tour_test).toBe 4 # tour runs onHide when next step hidden
 
-  it " with onHidden option should run the callback after hiding the step", ->
+  it "with onHidden option should run the callback after hiding the step", ->
     tour_test = 0
     @tour = new Tour
       onHidden: -> tour_test += 2
@@ -140,7 +144,7 @@ describe "Bootstrap Tour", ->
     @tour.next()
     expect(tour_test).toBe 4 # tour runs onHidden after next step hidden
 
-  it ".addStep with onShow option should run the callback before showing the step", ->
+  it "'addStep' with onShow option should run the callback before showing the step", ->
     tour_test = 0
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -152,7 +156,7 @@ describe "Bootstrap Tour", ->
     @tour.next()
     expect(tour_test).toBe 2 # tour runs onShow when step shown
 
-  it ".addStep with onHide option should run the callback before hiding the step", ->
+  it "'addStep' with onHide option should run the callback before hiding the step", ->
     tour_test = 0
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -169,30 +173,38 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     step =
       element: $("<div></div>").appendTo("body")
-      container: "body"
+      id: "step-0"
       path: "test"
       placement: "left"
       title: "Test"
       content: "Just a test"
-      id: "step-0"
-      prev: -1
       next: 2
-      end: false
+      prev: -1
       animation: false
+      container: "body"
       backdrop: false
       redirect: true
+      orphan: false
+      template: "<div class='popover'>
+        <div class='arrow'></div>
+        <h3 class='popover-title'></h3>
+        <div class='popover-content'></div>
+        <nav class='popover-navigation'>
+          <div class='btn-group'>
+            <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
+            <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
+          </div>
+          <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
+        </nav>
+      </div>"
       onShow: (tour) ->
       onShown: (tour) ->
       onHide: (tour) ->
       onHidden: (tour) ->
       onNext: (tour) ->
       onPrev: (tour) ->
-      template: "<div class='popover tour'>
-      <div class='arrow'></div>
-      <h3 class='popover-title'></h3>
-      <div class='popover-content'></div>
-      </div>"
     @tour.addStep(step)
+    # remove properties that we don't want to check from both steps object
     expect(@tour.getStep(0)).toEqual step
 
   it "'start' should start a tour", ->
@@ -275,26 +287,22 @@ describe "Bootstrap Tour", ->
     @tour.showStep(2)
     expect($(".popover").length).toBe 0
 
-  it "'showStep' should skip step when no element is specified", ->
+  it "'showStep' should execute template if it is a function", ->
     @tour = new Tour
-    @tour.addStep({})
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
+    @tour.addStep
+      element: $("<div></div>").appendTo("body")
+      template: -> "<div class='popover'></div>"
+    @tour.showStep(0)
+    expect($(".popover").length).toBe 1
 
-  it "'showStep' should skip step when element doesn't exist", ->
+  it "'getStep' should add disabled classes to the first and last popover buttons", ->
     @tour = new Tour
-    @tour.addStep(element: "#tour-test")
     @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
-
-  it "'showStep' should skip step when element is invisible", ->
-    @tour = new Tour
-    @tour.addStep(element: $("<div></div>").appendTo("body").hide())
     @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.showStep(0)
+    expect($(".popover [data-role='prev']").hasClass('disabled')).toBe true
     @tour.showStep(1)
-    expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
+    expect($(".popover [data-role='next']").hasClass('disabled')).toBe true
 
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
@@ -336,17 +344,25 @@ describe "Bootstrap Tour", ->
     @tour.next()
     expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1 # tour show the second step on the same element
 
-  it "properly verify paths", ->
+  it "should evaluate 'path' correctly", ->
     @tour = new Tour
 
-    expect(@tour._isRedirect(undefined, "/")).toBe false # don't redirect if no path
-    expect(@tour._isRedirect("", "/")).toBe false # don't redirect if path empty
-    expect(@tour._isRedirect("/somepath", "/somepath")).toBe false # don't redirect if path matches current path
-    expect(@tour._isRedirect("/somepath/", "/somepath")).toBe false # don't redirect if path with slash matches current path
-    expect(@tour._isRedirect("/somepath", "/somepath/")).toBe false # don't redirect if path matches current path with slash
-    expect(@tour._isRedirect("/somepath?search=true", "/somepath")).toBe false # don't redirect if path with query params matches current path
-    expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false # don't redirect if path with slash and query params matches current path
-    expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true # redirect if path doesn't match current path
+    # don't redirect if no path
+    expect(@tour._isRedirect(undefined, "/")).toBe false
+    # don't redirect if path empty
+    expect(@tour._isRedirect("", "/")).toBe false
+    # don't redirect if path matches current path
+    expect(@tour._isRedirect("/somepath", "/somepath")).toBe false
+    # don't redirect if path with slash matches current path
+    expect(@tour._isRedirect("/somepath/", "/somepath")).toBe false
+    # don't redirect if path matches current path with slash
+    expect(@tour._isRedirect("/somepath", "/somepath/")).toBe false
+    # don't redirect if path with query params matches current path
+    expect(@tour._isRedirect("/somepath?search=true", "/somepath")).toBe false
+    # don't redirect if path with slash and query params matches current path
+    expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false
+    # redirect if path doesn't match current path
+    expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true
 
   it "'getState' should return null after 'removeState' with null value", ->
     @tour = new Tour
@@ -361,7 +377,7 @@ describe "Bootstrap Tour", ->
     @tour.removeState("current_step")
     expect(sentinel).toBe true
 
-  it "shouldn't move to the next state until the onShow promise is resolved", ->
+  it "should not move to the next state until the onShow promise is resolved", ->
     @tour = new Tour
     deferred = $.Deferred()
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -374,9 +390,9 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
 
-  it "shouldn't hide popover until the onHide promise is resolved", ->
-    @tour = new Tour
+  it "should not hide popover until the onHide promise is resolved", ->
     deferred = $.Deferred()
+    @tour = new Tour
     @tour.addStep
       element: $("<div></div>").appendTo("body")
       onHide: -> return deferred
@@ -387,17 +403,17 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
 
-  it "shouldn't start until the onStart promise is resolved", ->
+  it "should not start until the onStart promise is resolved", ->
     deferred = $.Deferred()
     @tour = new Tour
-      onStart: -> return deferred
+      onStart: -> deferred
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     expect($(".popover").length).toBe 0
     deferred.resolve()
     expect($(".popover").length).toBe 1
 
-  it "'reflex' parameter should change the element cursor to pointer when the step is displayed", ->
+  it "'reflex' parameter should change the element cursor to pointer when the step is shown", ->
     $element = $("<div></div>").appendTo("body")
     @tour = new Tour
     @tour.addStep
@@ -532,11 +548,31 @@ describe "Bootstrap Tour", ->
     expect($._data($element[0], "events")).not.toBeDefined()
     @tour.start()
     expect($._data($element[0], "events").click.length).toBeGreaterThan 0
-    expect($._data($element[0], "events").click[0].namespace).toBe "bootstrap-tour"
+    expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
 
     $.each [0..10], =>
       @tour.next()
       expect($._data($element[0], "events")).not.toBeDefined()
       @tour.prev()
       expect($._data($element[0], "events").click.length).toBeGreaterThan 0
-      expect($._data($element[0], "events").click[0].namespace).toBe "bootstrap-tour"
+      expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
+
+  it "should add 'tour-{tourName}' class to the popover", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.showStep(0)
+    expect($(".popover").hasClass("tour-#{@tour._options.name}")).toBe true
+
+  # orphan
+  it "should show orphan steps", ->
+    @tour = new Tour
+    @tour.addStep
+      orphan: true
+    @tour.showStep(0)
+    expect($(".popover").length).toBe 1
+
+  it "should add 'orphan' class to the popover", ->
+    @tour = new Tour
+    @tour.addStep
+      orphan: true
+    expect($(".popover").hasClass("orphan")).toBe true

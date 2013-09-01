@@ -1,12 +1,17 @@
 (function() {
   describe("Bootstrap Tour", function() {
+    beforeEach(function() {
+      return $.support.transition = false;
+    });
     afterEach(function() {
+      var tour;
+      tour = this.tour;
       this.tour.setState("current_step", null);
       this.tour.setState("end", null);
       return $.each(this.tour._steps, function(i, s) {
-        if ((s.element != null) && (s.element.popover != null)) {
-          return s.element.popover("hide").removeData("bs.popover");
-        }
+        var $element;
+        $element = $(tour.getStep(i).element);
+        return $element.popover("destroy").removeData("bs.popover");
       });
     });
     it("should set the tour options", function() {
@@ -185,7 +190,7 @@
       this.tour.hideStep(1);
       return expect(tour_test).toBe(4);
     });
-    it(" with onHidden option should run the callback after hiding the step", function() {
+    it("with onHidden option should run the callback after hiding the step", function() {
       var tour_test;
       tour_test = 0;
       this.tour = new Tour({
@@ -205,7 +210,7 @@
       this.tour.next();
       return expect(tour_test).toBe(4);
     });
-    it(".addStep with onShow option should run the callback before showing the step", function() {
+    it("'addStep' with onShow option should run the callback before showing the step", function() {
       var tour_test;
       tour_test = 0;
       this.tour = new Tour;
@@ -223,7 +228,7 @@
       this.tour.next();
       return expect(tour_test).toBe(2);
     });
-    it(".addStep with onHide option should run the callback before hiding the step", function() {
+    it("'addStep' with onHide option should run the callback before hiding the step", function() {
       var tour_test;
       tour_test = 0;
       this.tour = new Tour;
@@ -247,25 +252,25 @@
       this.tour = new Tour;
       step = {
         element: $("<div></div>").appendTo("body"),
-        container: "body",
+        id: "step-0",
         path: "test",
         placement: "left",
         title: "Test",
         content: "Just a test",
-        id: "step-0",
-        prev: -1,
         next: 2,
-        end: false,
+        prev: -1,
         animation: false,
+        container: "body",
         backdrop: false,
         redirect: true,
+        orphan: false,
+        template: "<div class='popover'>        <div class='arrow'></div>        <h3 class='popover-title'></h3>        <div class='popover-content'></div>        <nav class='popover-navigation'>          <div class='btn-group'>            <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>            <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>          </div>          <button class='btn btn-sm btn-default' data-role='end'>End tour</button>        </nav>      </div>",
         onShow: function(tour) {},
         onShown: function(tour) {},
         onHide: function(tour) {},
         onHidden: function(tour) {},
         onNext: function(tour) {},
-        onPrev: function(tour) {},
-        template: "<div class='popover tour'>      <div class='arrow'></div>      <h3 class='popover-title'></h3>      <div class='popover-content'></div>      </div>"
+        onPrev: function(tour) {}
       };
       this.tour.addStep(step);
       return expect(this.tour.getStep(0)).toEqual(step);
@@ -378,36 +383,29 @@
       this.tour.showStep(2);
       return expect($(".popover").length).toBe(0);
     });
-    it("'showStep' should skip step when no element is specified", function() {
+    it("'showStep' should execute template if it is a function", function() {
       this.tour = new Tour;
-      this.tour.addStep({});
       this.tour.addStep({
-        element: $("<div></div>").appendTo("body")
+        element: $("<div></div>").appendTo("body"),
+        template: function() {
+          return "<div class='popover'></div>";
+        }
       });
-      this.tour.showStep(1);
-      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
+      this.tour.showStep(0);
+      return expect($(".popover").length).toBe(1);
     });
-    it("'showStep' should skip step when element doesn't exist", function() {
+    it("'getStep' should add disabled classes to the first and last popover buttons", function() {
       this.tour = new Tour;
       this.tour.addStep({
-        element: "#tour-test"
+        element: $("<div></div>").appendTo("body")
       });
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
       });
+      this.tour.showStep(0);
+      expect($(".popover [data-role='prev']").hasClass('disabled')).toBe(true);
       this.tour.showStep(1);
-      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
-    });
-    it("'showStep' should skip step when element is invisible", function() {
-      this.tour = new Tour;
-      this.tour.addStep({
-        element: $("<div></div>").appendTo("body").hide()
-      });
-      this.tour.addStep({
-        element: $("<div></div>").appendTo("body")
-      });
-      this.tour.showStep(1);
-      return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
+      return expect($(".popover [data-role='next']").hasClass('disabled')).toBe(true);
     });
     it("'setCurrentStep' should set the current step", function() {
       this.tour = new Tour;
@@ -465,7 +463,7 @@
       this.tour.next();
       return expect(this.tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe(1);
     });
-    it("properly verify paths", function() {
+    it("should evaluate 'path' correctly", function() {
       this.tour = new Tour;
       expect(this.tour._isRedirect(void 0, "/")).toBe(false);
       expect(this.tour._isRedirect("", "/")).toBe(false);
@@ -493,7 +491,7 @@
       this.tour.removeState("current_step");
       return expect(sentinel).toBe(true);
     });
-    it("shouldn't move to the next state until the onShow promise is resolved", function() {
+    it("should not move to the next state until the onShow promise is resolved", function() {
       var deferred;
       this.tour = new Tour;
       deferred = $.Deferred();
@@ -512,10 +510,10 @@
       deferred.resolve();
       return expect(this.tour._current).toBe(1);
     });
-    it("shouldn't hide popover until the onHide promise is resolved", function() {
+    it("should not hide popover until the onHide promise is resolved", function() {
       var deferred;
-      this.tour = new Tour;
       deferred = $.Deferred();
+      this.tour = new Tour;
       this.tour.addStep({
         element: $("<div></div>").appendTo("body"),
         onHide: function() {
@@ -531,7 +529,7 @@
       deferred.resolve();
       return expect(this.tour._current).toBe(1);
     });
-    it("shouldn't start until the onStart promise is resolved", function() {
+    it("should not start until the onStart promise is resolved", function() {
       var deferred;
       deferred = $.Deferred();
       this.tour = new Tour({
@@ -547,7 +545,7 @@
       deferred.resolve();
       return expect($(".popover").length).toBe(1);
     });
-    it("'reflex' parameter should change the element cursor to pointer when the step is displayed", function() {
+    it("'reflex' parameter should change the element cursor to pointer when the step is shown", function() {
       var $element;
       $element = $("<div></div>").appendTo("body");
       this.tour = new Tour;
@@ -706,7 +704,7 @@
       expect(template.find("*[data-role=prev]").size()).toBe(1);
       return expect(template.find("*[data-role=end]").size()).toBe(1);
     });
-    return it("should unbind click events when hiding step (in reflex mode)", function() {
+    it("should unbind click events when hiding step (in reflex mode)", function() {
       var $element,
         _this = this;
       $element = $("<div></div>").appendTo("body");
@@ -721,14 +719,37 @@
       expect($._data($element[0], "events")).not.toBeDefined();
       this.tour.start();
       expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
-      expect($._data($element[0], "events").click[0].namespace).toBe("bootstrap-tour");
+      expect($._data($element[0], "events").click[0].namespace).toBe("tour." + this.tour._options.name);
       return $.each([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function() {
         _this.tour.next();
         expect($._data($element[0], "events")).not.toBeDefined();
         _this.tour.prev();
         expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
-        return expect($._data($element[0], "events").click[0].namespace).toBe("bootstrap-tour");
+        return expect($._data($element[0], "events").click[0].namespace).toBe("tour." + _this.tour._options.name);
       });
+    });
+    it("should add 'tour-{tourName}' class to the popover", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.showStep(0);
+      return expect($(".popover").hasClass("tour-" + this.tour._options.name)).toBe(true);
+    });
+    it("should show orphan steps", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        orphan: true
+      });
+      this.tour.showStep(0);
+      return expect($(".popover").length).toBe(1);
+    });
+    return it("should add 'orphan' class to the popover", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        orphan: true
+      });
+      return expect($(".popover").hasClass("orphan")).toBe(true);
     });
   });
 

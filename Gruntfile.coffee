@@ -98,9 +98,7 @@ module.exports = (grunt)->
       # keep an eye on the order of deps import
       src: [
         "docs/assets/vendor/jquery.js"
-        "docs/assets/vendor/bootstrap/alert.js"
-        "docs/assets/vendor/bootstrap/tooltip.js"
-        "docs/assets/vendor/bootstrap/popover.js"
+        "docs/assets/vendor/bootstrap.js"
         "build/js/bootstrap-tour.js"
       ]
       options:
@@ -145,6 +143,7 @@ module.exports = (grunt)->
   grunt.loadNpmTasks "grunt-contrib-copy"
   grunt.loadNpmTasks "grunt-contrib-connect"
   grunt.loadNpmTasks "grunt-open"
+  grunt.loadNpmTasks "grunt-notify"
 
   # register tasks
   grunt.registerTask "run", ["connect", "open", "watch:doc"]

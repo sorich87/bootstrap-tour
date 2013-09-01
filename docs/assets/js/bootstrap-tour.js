@@ -23,15 +23,16 @@
     Tour = (function() {
       function Tour(options) {
         this._options = $.extend({
-          name: 'tour',
-          container: 'body',
+          name: "tour",
+          container: "body",
           keyboard: true,
           storage: window.localStorage,
           debug: false,
           backdrop: false,
           redirect: true,
-          basePath: '',
-          template: "<div class='popover tour'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <nav class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-default' data-role='next'>Next &raquo;</button>            </div>            <button class='btn btn-default' data-role='end'>End tour</button>          </nav>        </div>",
+          orphan: false,
+          basePath: "",
+          template: "<div class='popover'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <nav class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>            </div>            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>          </nav>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -48,8 +49,8 @@
         this.setCurrentStep();
         this.backdrop = {
           overlay: null,
-          step: null,
-          background: null
+          $element: null,
+          $background: null
         };
       }
 
@@ -106,6 +107,7 @@
             container: this._options.container,
             backdrop: this._options.backdrop,
             redirect: this._options.redirect,
+            orphan: this._options.orphan,
             template: this._options.template,
             onShow: this._options.onShow,
             onShown: this._options.onShown,
@@ -126,15 +128,15 @@
         if (this.ended() && !force) {
           return this._debug("Tour ended, start prevented.");
         }
-        $(document).off("click.bootstrap-tour", ".popover *[data-role=next]").on("click.bootstrap-tour", ".popover *[data-role=next]:not(.disabled)", function(e) {
+        $(document).off("click.tour." + this._options.name, ".popover *[data-role=next]").on("click.tour." + this._options.name, ".popover *[data-role=next]:not(.disabled)", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).off("click.bootstrap-tour", ".popover *[data-role=prev]").on("click.bootstrap-tour", ".popover *[data-role=prev]:not(.disabled)", function(e) {
+        $(document).off("click.tour." + this._options.name, ".popover *[data-role=prev]").on("click.tour." + this._options.name, ".popover *[data-role=prev]:not(.disabled)", function(e) {
           e.preventDefault();
           return _this.prev();
         });
-        $(document).off("click.bootstrap-tour", ".popover *[data-role=end]").on("click.bootstrap-tour", ".popover *[data-role=end]", function(e) {
+        $(document).off("click.tour." + this._options.name, ".popover *[data-role=end]").on("click.tour." + this._options.name, ".popover *[data-role=end]", function(e) {
           e.preventDefault();
           return _this.end();
         });
@@ -177,9 +179,9 @@
         var endHelper, hidePromise,
           _this = this;
         endHelper = function(e) {
-          $(document).off("click.bootstrap-tour");
-          $(document).off("keyup.bootstrap-tour");
-          $(window).off("resize.bootstrap-tour");
+          $(document).off("click.tour." + _this._options.name);
+          $(document).off("keyup.tour." + _this._options.name);
+          $(window).off("resize.tour." + _this._options.name);
           _this.setState("end", "yes");
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
@@ -204,12 +206,13 @@
         var hideStepHelper, promise, step,
           _this = this;
         step = this.getStep(i);
-        promise = this._makePromise((step.onHide != null ? step.onHide(this, i) : void 0));
+        promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
         hideStepHelper = function(e) {
           var $element;
-          $element = $(step.element).popover("destroy");
+          $element = _this._isOrphan(step) ? $("body") : $(step.element);
+          $element.popover("destroy");
           if (step.reflex) {
-            $element.css("cursor", "").off("click.bootstrap-tour");
+            $element.css("cursor", "").off("click.tour." + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -229,23 +232,26 @@
         if (!step) {
           return;
         }
-        promise = this._makePromise((step.onShow != null ? step.onShow(this, i) : void 0));
+        promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
         showStepHelper = function(e) {
           var current_path, path;
           _this.setCurrentStep(i);
           path = $.isFunction(step.path) ? step.path.call() : _this._options.basePath + step.path;
-          current_path = [document.location.pathname, document.location.hash].join('');
+          current_path = [document.location.pathname, document.location.hash].join("");
           if (_this._isRedirect(path, current_path)) {
             _this._redirect(step, path);
             return;
           }
-          if (!((step.element != null) && $(step.element).length !== 0 && $(step.element).is(":visible"))) {
-            _this._debug("Skip the step " + (_this._current + 1) + ". The element does not exist or is not visible.");
-            _this._showNextStep();
-            return;
+          if (_this._isOrphan(step)) {
+            if (!step.orphan) {
+              _this._debug("Skip the orphan step " + (_this._current + 1) + ". Orphan option is false and the element doesn't exist or is hidden.");
+              _this._showNextStep();
+              return;
+            }
+            _this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
           }
           if (step.backdrop) {
-            _this._showBackdrop(step.element);
+            _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
           _this._showPopover(step, i);
           if (step.onShown != null) {
@@ -311,28 +317,29 @@
         }
       };
 
-      Tour.prototype._renderNavigation = function(step, i, options) {
-        var navigation, template;
-        template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
-        navigation = template.find(".popover-navigation");
-        if (step.prev < 0) {
-          navigation.find("*[data-role=prev]").addClass("disabled");
-        }
-        if (step.next < 0) {
-          navigation.find("*[data-role=next]").addClass("disabled");
-        }
-        return template.clone().wrap("<div>").parent().html();
+      Tour.prototype._isOrphan = function(step) {
+        return (step.element == null) || !$(step.element).length || $(step.element).is(":hidden");
       };
 
       Tour.prototype._showPopover = function(step, i) {
-        var $element, $tip, options, rendered,
+        var $element, $navigation, $template, $tip, isOrphan, options,
           _this = this;
         options = $.extend({}, this._options);
+        $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+        $navigation = $template.find(".popover-navigation");
+        isOrphan = this._isOrphan(step);
+        if (isOrphan) {
+          step.element = "body";
+          step.placement = "top";
+          $template = $template.addClass("orphan");
+        }
+        $element = $(step.element);
+        $template.addClass("tour-" + this._options.name);
         if (step.options) {
           $.extend(options, step.options);
         }
         if (step.reflex) {
-          $(step.element).css("cursor", "pointer").on("click.bootstrap-tour", function(e) {
+          $element.css("cursor", "pointer").on("click.tour." + this._options.name, function(e) {
             if (_this._current < _this._steps.length - 1) {
               return _this.next();
             } else {
@@ -340,8 +347,13 @@
             }
           });
         }
-        rendered = this._renderNavigation(step, i, options);
-        $element = $(step.element);
+        if (step.prev < 0) {
+          $navigation.find("*[data-role=prev]").addClass("disabled");
+        }
+        if (step.next < 0) {
+          $navigation.find("*[data-role=next]").addClass("disabled");
+        }
+        step.template = $template.clone().wrap("<div>").parent().html();
         $element.popover({
           placement: step.placement,
           trigger: "manual",
@@ -350,28 +362,30 @@
           html: true,
           animation: step.animation,
           container: step.container,
-          template: rendered,
+          template: step.template,
           selector: step.element
         }).popover("show");
         $tip = $element.data("bs.popover") ? $element.data("bs.popover").tip() : $element.data("popover").tip();
         $tip.attr("id", step.id);
-        this._scrollIntoView($element);
         this._scrollIntoView($tip);
-        return this._reposition($tip, step);
+        this._reposition($tip, step);
+        if (isOrphan) {
+          return this._center($tip);
+        }
       };
 
-      Tour.prototype._reposition = function(tip, step) {
-        var offsetBottom, offsetRight, original_left, original_offsetHeight, original_offsetWidth, original_top, tipOffset;
-        original_offsetWidth = tip[0].offsetWidth;
-        original_offsetHeight = tip[0].offsetHeight;
-        tipOffset = tip.offset();
-        original_left = tipOffset.left;
-        original_top = tipOffset.top;
-        offsetBottom = $(document).outerHeight() - tipOffset.top - $(tip).outerHeight();
+      Tour.prototype._reposition = function($tip, step) {
+        var offsetBottom, offsetHeight, offsetRight, offsetWidth, originalLeft, originalTop, tipOffset;
+        offsetWidth = $tip[0].offsetWidth;
+        offsetHeight = $tip[0].offsetHeight;
+        tipOffset = $tip.offset();
+        originalLeft = tipOffset.left;
+        originalTop = tipOffset.top;
+        offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight();
         if (offsetBottom < 0) {
           tipOffset.top = tipOffset.top + offsetBottom;
         }
-        offsetRight = $("html").outerWidth() - tipOffset.left - $(tip).outerWidth();
+        offsetRight = $("html").outerWidth() - tipOffset.left - $tip.outerWidth();
         if (offsetRight < 0) {
           tipOffset.left = tipOffset.left + offsetRight;
         }
@@ -381,32 +395,34 @@
         if (tipOffset.left < 0) {
           tipOffset.left = 0;
         }
-        tip.offset(tipOffset);
-        if (step.placement === 'bottom' || step.placement === 'top') {
-          if (original_left !== tipOffset.left) {
-            return this._replaceArrow(tip, (tipOffset.left - original_left) * 2, original_offsetWidth, 'left');
+        $tip.offset(tipOffset);
+        if (step.placement === "bottom" || step.placement === "top") {
+          if (originalLeft !== tipOffset.left) {
+            return this._replaceArrow($tip, (tipOffset.left - originalLeft) * 2, offsetWidth, "left");
           }
         } else {
-          if (original_top !== tipOffset.top) {
-            return this._replaceArrow(tip, (tipOffset.top - original_top) * 2, original_offsetHeight, 'top');
+          if (originalTop !== tipOffset.top) {
+            return this._replaceArrow($tip, (tipOffset.top - originalTop) * 2, offsetHeight, "top");
           }
         }
       };
 
-      Tour.prototype._replaceArrow = function(tip, delta, dimension, position) {
-        return tip.find(".arrow").css(position, delta ? 50 * (1 - delta / dimension) + "%" : '');
+      Tour.prototype._center = function($tip) {
+        return $tip.css("top", $(window).outerHeight() / 2 - $tip.outerHeight() / 2);
+      };
+
+      Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {
+        return $tip.find(".arrow").css(position, delta ? 50 * (1 - delta / dimension) + "%" : "");
       };
 
       Tour.prototype._scrollIntoView = function(tip) {
-        var tipRect;
-        tipRect = tip.get(0).getBoundingClientRect();
-        if (!(tipRect.top >= 0 && tipRect.bottom < $(window).height() && tipRect.left >= 0 && tipRect.right < $(window).width())) {
-          return tip.get(0).scrollIntoView(true);
-        }
+        return $("html, body").stop().animate({
+          scrollTop: Math.ceil(tip.offset().top - ($(window).height() / 2))
+        });
       };
 
       Tour.prototype._onResize = function(callback, timeout) {
-        return $(window).on("resize.bootstrap-tour", function() {
+        return $(window).on("resize.tour." + this._options.name, function() {
           clearTimeout(timeout);
           return timeout = setTimeout(callback, 100);
         });
@@ -415,7 +431,7 @@
       Tour.prototype._setupKeyboardNavigation = function() {
         var _this = this;
         if (this._options.keyboard) {
-          return $(document).on("keyup.bootstrap-tour", function(e) {
+          return $(document).on("keyup.tour." + this._options.name, function(e) {
             if (!e.which) {
               return;
             }
@@ -461,27 +477,31 @@
         }
       };
 
-      Tour.prototype._showBackdrop = function(el) {
+      Tour.prototype._showBackdrop = function(element) {
         if (this.backdrop.overlay !== null) {
           return;
         }
         this._showOverlay();
-        return this._showOverlayElement(el);
+        if (element != null) {
+          return this._showOverlayElement(element);
+        }
       };
 
       Tour.prototype._hideBackdrop = function() {
         if (this.backdrop.overlay === null) {
           return;
         }
-        this._hideOverlayElement();
+        if (this.backdrop.$element) {
+          this._hideOverlayElement();
+        }
         return this._hideOverlay();
       };
 
       Tour.prototype._showOverlay = function() {
-        this.backdrop = $('<div/>');
-        this.backdrop.addClass('tour-backdrop');
+        this.backdrop = $("<div/>");
+        this.backdrop.addClass("tour-backdrop");
         this.backdrop.height($(document).innerHeight());
-        return $('body').append(this.backdrop);
+        return $("body").append(this.backdrop);
       };
 
       Tour.prototype._hideOverlay = function() {
@@ -489,25 +509,25 @@
         return this.backdrop.overlay = null;
       };
 
-      Tour.prototype._showOverlayElement = function(el) {
-        var background, offset, step;
-        step = $(el);
-        offset = step.offset();
+      Tour.prototype._showOverlayElement = function(element) {
+        var $background, $element, offset;
+        $element = $(element);
+        $background = $("<div/>");
+        offset = $element.offset();
         offset.top = offset.top;
         offset.left = offset.left;
-        background = $('<div/>');
-        background.width(step.innerWidth()).height(step.innerHeight()).addClass('tour-step-background').offset(offset);
-        step.addClass('tour-step-backdrop');
-        $('body').append(background);
-        this.backdrop.step = step;
-        return this.backdrop.background = background;
+        $background.width($element.innerWidth()).height($element.innerHeight()).addClass("tour-step-background").offset(offset);
+        $element.addClass("tour-step-backdrop");
+        $("body").append($background);
+        this.backdrop.$element = $element;
+        return this.backdrop.$background = $background;
       };
 
       Tour.prototype._hideOverlayElement = function() {
-        this.backdrop.step.removeClass('tour-step-backdrop');
-        this.backdrop.background.remove();
-        this.backdrop.step = null;
-        return this.backdrop.background = null;
+        this.backdrop.$element.removeClass("tour-step-backdrop");
+        this.backdrop.$background.remove();
+        this.backdrop.$element = null;
+        return this.backdrop.$background = null;
       };
 
       return Tour;

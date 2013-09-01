@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <title>Bootstrap Tour, easy product tours with Bootstrap from Twitter</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="assets/vendor/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="assets/vendor/bootstrap.css" rel="stylesheet">
         <link href="assets/vendor/prism.css" rel="stylesheet">
         <link href="assets/css/bootstrap-tour.css" rel="stylesheet">
         <link href="assets/css/index.css" rel="stylesheet">
@@ -14,29 +14,34 @@
         <a href="https://github.com/sorich87/bootstrap-tour" id="github"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
         <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
-                <ul class="navbar-nav nav">
-                    <li>
-                        <a href="#home">Home</a>
-                    </li>
-                    <li>
-                        <a href="#demo">Demo</a>
-                    </li>
-                    <li>
-                        <a href="#usage">Usage</a>
-                    </li>
-                    <li>
-                        <a href="#options">Options</a>
-                    </li>
-                    <li>
-                        <a href="#contribute">Contribute</a>
-                    </li>
-                    <li>
-                        <a href="#license">License</a>
-                    </li>
-                </ul>
+                <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">Bootstrap Tour</a>
                 <h4 class="navbar-text pull-right">
                     <a href="http://getbootstrap.com" target="_blank" class="label label-info">Bootstrap 3 ready!</a>
                 </h4>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav nav">
+                        <li>
+                            <a href="#demo">Demo</a>
+                        </li>
+                        <li>
+                            <a href="#usage">Usage</a>
+                        </li>
+                        <li>
+                            <a href="#options">Options</a>
+                        </li>
+                        <li>
+                            <a href="#contribute">Contribute</a>
+                        </li>
+                        <li>
+                            <a href="#license">License</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <header id="home">
@@ -68,7 +73,7 @@
                 <div class="row">
                     <div class="span9 content">
                         <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
-                        <a href="#" id="start" class="start btn-primary btn-large btn">&#9658; Start tour</a>
+                        <a href="#" id="start" class="start btn-primary btn-lg btn">&#9658; Start tour</a>
                     </div>
                 </div>
             </div>
@@ -148,6 +153,7 @@
     debug: false,
     backdrop: false,
     redirect: true,
+    orphan: false,
     basePath: "",
     template: "&lt;div class='popover tour'&gt;
         &lt;div class='arrow'&gt;&lt;/div&gt;
@@ -212,7 +218,7 @@
                             <td>storage</td>
                             <td>Object</td>
                             <td>The storage system you want to use. could be the objects window.localStorage,
-                              window.sessionStorage of your own object.
+                              window.sessionStorage of your own object.<br>
                             <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/DOM/Storage#localStorage" target="_blank">localStorage</a>.</em>
                             </td>
                             <td><code class="language-javascript">window.localStorage</code></td>
@@ -239,7 +245,15 @@
                             <code class="language-javascrip">document.location.href</code></td>
                             <td><code class="language-javascript">true</code></td>
                         </tr>
+                        <tr class="success">
+                            <td>orphan <span class="label label-success">NEW</span></td>
+                            <td>Boolean</td>
+                            <td>Allow to show the step regardless whether its element is not set, is
+                            not present in the page or is hidden. The step is fixed
+                            positioned in the middle of the page.</td>
+                            <td><code class="language-javascript">false</code></td>
                         </tr>
+                        <tr>
                             <td>basePath</td>
                             <td>String</td>
                             <td>Specify a default base path prepended to the
@@ -374,6 +388,7 @@
     backdrop: false,
     redirect: true,
     reflex: false,
+    orphan: false,
     template: "",
     onShow: function(tour) {},
     onShown: function(tour) {},
@@ -392,7 +407,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        </tr>
+                        <tr>
                             <td>path</td>
                             <td>String</td>
                             <td>Path to the page on which the step should be shown. This
@@ -403,7 +418,7 @@
                             <td>element</td>
                             <td>String (jQuery selector)</td>
                             <td>HTML element on which the step popover should be shown.<br />
-                            <em>This option is required.</em></td>
+                            <em>If orphan is false, this option is required.</em></td>
                             <td><code class="language-javascript">''</code></td>
                         </tr>
                         <tr>
@@ -487,6 +502,14 @@
                             <td>Boolean</td>
                             <td>Enable the reflex mode: you can click on the element for
                             continue the tour.</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr class="success">
+                            <td>orphan <span class="label label-success">NEW</span></td>
+                            <td>Boolean</td>
+                            <td>Allow to show the step regardless whether its element is not set, is
+                            not present in the page or is hidden. The step is fixed
+                            positioned in the middle of the page.</td>
                             <td><code class="language-javascript">false</code></td>
                         </tr>
                         <tr>
@@ -573,12 +596,14 @@
                 requests</a>, we are nothing. Make this plugin better!</p>
                 <h3>Grunt Usage</h3>
                 <div id="grunt-usage" class="accordion">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#install-dependencies">Install Dependencies</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#install-dependencies">Install Dependencies</a>
+                            </h4>
                         </div>
-                        <div id="install-dependencies" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                        <div id="install-dependencies" class="panel-collapse collapse in">
+                            <div class="panel-body">
                                 <p>Files to be developed inside the project are located under
                                 <code>/src/</code> and <code>/test/spec/</code>.</p>
                                 <p>Compiled sources are then automatically put under
@@ -586,12 +611,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run predefined tasks by executing <code class="language-bash">grunt &lt;task&gt;:&lt;target&gt;</code></a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run predefined tasks by executing <code class="language-bash">grunt &lt;task&gt;:&lt;target&gt;</code></a>
+                            </h4>
                         </div>
                         <div id="run-tasks" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                            <div class="panel-body">
                                 <p><em>Check your coffeescripts style, or specify a single target</em></p>
 <pre class="language-bash"><code>coffeelint
 coffeelint:default
@@ -614,9 +641,9 @@ less:min</code></pre>
 <pre class="language-bash"><code>uglify</code></pre>
                                 <p><em>Watch for changes of the coffeescripts (main and spec) and execute the assigned tasks, or specify a single target</em></p>
 <pre class="language-bash"><code>watch
-watch:default // tasks: clean:default, coffeelint:default, coffee:default, uglify
-watch:test // tasks: clean:test, coffeelint:test, coffee:test, jasmine
-watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
+watch:default # tasks: clean:default, coffeelint:default, coffee:default, uglify
+watch:test # tasks: clean:test, coffeelint:test, coffee:test, jasmine
+watch:doc # tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
                                 <p><em>Run the jasmine specs headlessly through 'phantomjs'</em></p>
 <pre class="language-bash"><code>jasmine</code></pre>
                                 <p><em>Copy sources into doc assets</em></p>
@@ -628,12 +655,14 @@ watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-aliases">Run aliases for multiple tasks</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-aliases">Run aliases for multiple tasks</a>
+                            </h4>
                         </div>
                         <div id="run-aliases" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                            <div class="panel-body">
 <pre class="language-javascript"><code>// watch : default
 grunt
 grunt default
@@ -649,23 +678,27 @@ grunt test</code></pre>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#live-reload">Live reload</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#live-reload">Live reload</a>
+                            </h4>
                         </div>
                         <div id="live-reload" class="accordion-body collapse">
-                            <div class="accordion-inner">
+                            <div class="panel-body">
                                 <p>Running <code class="language-bash">grunt run</code> will start a small server on port <code class="language-bash">3000</code> and opens the browser to the webpage. It will also start watching for changes in the <code class="language-bash">index.coffee</code> which will trigger then live reloading of the page in the browser.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#test">Run the tests</a>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#test">Run the tests</a>
+                            </h4>
                         </div>
                         <div id="test" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                                <p>Tests are written using <a href="http://pivotal.github.io/jasmine/" target="_blank">Jasmine framework</a> and they run headlessly through PhantomJS.<br>
+                            <div class="panel-body">
+                                <p>Tests are written using <a href="http://pivotal.github.io/jasmine/" target="_blank">Jasmine</a> and they run headlessly through <a href="http://phantomjs.org/" target="_blank">PhantomJS</a>.<br>
                                 Simply run <code class="language-bash">grunt test</code> or watch them with <code class="language-bash">grunt watch:test</code> (this will execute them automatically every time you change the specs).</p>
                             </div>
                         </div>
@@ -684,10 +717,7 @@ grunt test</code></pre>
             </div>
         </section>
         <script src="assets/vendor/jquery.js"></script>
-        <script src="assets/vendor/bootstrap/tooltip.js"></script>
-        <script src="assets/vendor/bootstrap/popover.js"></script>
-        <script src="assets/vendor/bootstrap/alert.js"></script>
-        <script src="assets/vendor/bootstrap/collapse.js"></script>
+        <script src="assets/vendor/bootstrap.js"></script>
         <script src="assets/vendor/prism.js"></script>
         <script src="assets/vendor/jquery.smoothscroll.js"></script>
         <script src="assets/js/bootstrap-tour.js"></script>

@@ -845,8 +845,21 @@ form.bs-docs-example {
   bottom: 270px;
 }
 
+/* custom */
+#github {
+  display: block;
+  position: fixed;
+  width: 150px;
+  height: 150px;
+  top: 0;
+  right: 0;
+  z-index: 1050;
+}
 
-
+code,
+pre {
+  font-size: 13px;
+}
 
 /* Responsive
 -------------------------------------------------- */
@@ -967,6 +980,10 @@ form.bs-docs-example {
   .footer p {
     margin-bottom: 9px;
   }
+
+  #github {
+    display: none;
+  }
 }
 
 /* Landscape phones
@@ -1064,6 +1081,7 @@ form.bs-docs-example {
     padding-top: 20px;
     padding-bottom: 20px;
   }
+<<<<<<< HEAD
 }
 
 /* custom */
@@ -1080,4 +1098,6 @@ form.bs-docs-example {
 code,
 pre {
   font-size: 13px;
+=======
+>>>>>>> e3efcb35536f9adce0e9c6d8da8ab56f2d456166
 }
