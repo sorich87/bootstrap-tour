@@ -153,6 +153,7 @@
     debug: false,
     backdrop: false,
     redirect: true,
+    orphan: false,
     basePath: "",
     template: "&lt;div class='popover tour'&gt;
         &lt;div class='arrow'&gt;&lt;/div&gt;
@@ -217,7 +218,7 @@
                             <td>storage</td>
                             <td>Object</td>
                             <td>The storage system you want to use. could be the objects window.localStorage,
-                              window.sessionStorage of your own object.
+                              window.sessionStorage of your own object.<br>
                             <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/DOM/Storage#localStorage" target="_blank">localStorage</a>.</em>
                             </td>
                             <td><code class="language-javascript">window.localStorage</code></td>
@@ -244,7 +245,15 @@
                             <code class="language-javascrip">document.location.href</code></td>
                             <td><code class="language-javascript">true</code></td>
                         </tr>
+                        <tr class="success">
+                            <td>orphan <span class="label label-success">NEW</span></td>
+                            <td>Boolean</td>
+                            <td>Allow to show the step regardless whether its element is not set, is
+                            not present in the page or is hidden. The step is fixed
+                            positioned in the middle of the page.</td>
+                            <td><code class="language-javascript">false</code></td>
                         </tr>
+                        <tr>
                             <td>basePath</td>
                             <td>String</td>
                             <td>Specify a default base path prepended to the
@@ -379,6 +388,7 @@
     backdrop: false,
     redirect: true,
     reflex: false,
+    orphan: false,
     template: "",
     onShow: function(tour) {},
     onShown: function(tour) {},
@@ -397,7 +407,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        </tr>
+                        <tr>
                             <td>path</td>
                             <td>String</td>
                             <td>Path to the page on which the step should be shown. This
@@ -408,7 +418,7 @@
                             <td>element</td>
                             <td>String (jQuery selector)</td>
                             <td>HTML element on which the step popover should be shown.<br />
-                            <em>This option is required.</em></td>
+                            <em>If orphan is false, this option is required.</em></td>
                             <td><code class="language-javascript">''</code></td>
                         </tr>
                         <tr>
@@ -492,6 +502,14 @@
                             <td>Boolean</td>
                             <td>Enable the reflex mode: you can click on the element for
                             continue the tour.</td>
+                            <td><code class="language-javascript">false</code></td>
+                        </tr>
+                        <tr class="success">
+                            <td>orphan <span class="label label-success">NEW</span></td>
+                            <td>Boolean</td>
+                            <td>Allow to show the step regardless whether its element is not set, is
+                            not present in the page or is hidden. The step is fixed
+                            positioned in the middle of the page.</td>
                             <td><code class="language-javascript">false</code></td>
                         </tr>
                         <tr>
@@ -623,9 +641,9 @@ less:min</code></pre>
 <pre class="language-bash"><code>uglify</code></pre>
                                 <p><em>Watch for changes of the coffeescripts (main and spec) and execute the assigned tasks, or specify a single target</em></p>
 <pre class="language-bash"><code>watch
-watch:default // tasks: clean:default, coffeelint:default, coffee:default, uglify
-watch:test // tasks: clean:test, coffeelint:test, coffee:test, jasmine
-watch:doc // tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
+watch:default # tasks: clean:default, coffeelint:default, coffee:default, uglify
+watch:test # tasks: clean:test, coffeelint:test, coffee:test, jasmine
+watch:doc # tasks: coffeelint:doc, coffee:doc (with livereload)</code></pre>
                                 <p><em>Run the jasmine specs headlessly through 'phantomjs'</em></p>
 <pre class="language-bash"><code>jasmine</code></pre>
                                 <p><em>Copy sources into doc assets</em></p>
