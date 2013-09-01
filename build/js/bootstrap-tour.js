@@ -56,22 +56,34 @@
 
       Tour.prototype.setState = function(key, value) {
         var keyName;
-        keyName = "" + this._options.name + "_" + key;
-        this._options.storage.setItem(keyName, value);
-        return this._options.afterSetState(keyName, value);
+        if (this._options.storage) {
+          keyName = "" + this._options.name + "_" + key;
+          this._options.storage.setItem(keyName, value);
+          return this._options.afterSetState(keyName, value);
+        } else {
+          return this._state = value;
+        }
       };
 
       Tour.prototype.removeState = function(key) {
         var keyName;
-        keyName = "" + this._options.name + "_" + key;
-        this._options.storage.removeItem(keyName);
-        return this._options.afterRemoveState(keyName);
+        if (this._options.storage) {
+          keyName = "" + this._options.name + "_" + key;
+          this._options.storage.removeItem(keyName);
+          return this._options.afterRemoveState(keyName);
+        } else {
+          return delete this._state;
+        }
       };
 
       Tour.prototype.getState = function(key) {
         var keyName, value;
-        keyName = "" + this._options.name + "_" + key;
-        value = this._options.storage.getItem(keyName);
+        if (this._options.storage) {
+          keyName = "" + this._options.name + "_" + key;
+          value = this._options.storage.getItem(keyName);
+        } else {
+          value = this._state;
+        }
         if (value === void 0 || value === "null") {
           value = null;
         }
