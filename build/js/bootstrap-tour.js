@@ -1,5 +1,5 @@
 /* ===========================================================
-# bootstrap-tour - v0.5.1
+# bootstrap-tour - v0.6.0
 # http://bootstraptour.com
 # ==============================================================
 # Copyright 2012-2013 Ulrich Sossou
@@ -226,12 +226,13 @@
       };
 
       Tour.prototype.showStep = function(i) {
-        var promise, showStepHelper, step,
+        var promise, showStepHelper, skipToPrevious, step,
           _this = this;
         step = this.getStep(i);
         if (!step) {
           return;
         }
+        skipToPrevious = i < this._current;
         promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
         showStepHelper = function(e) {
           var current_path, path;
@@ -245,7 +246,11 @@
           if (_this._isOrphan(step)) {
             if (!step.orphan) {
               _this._debug("Skip the orphan step " + (_this._current + 1) + ". Orphan option is false and the element doesn't exist or is hidden.");
-              _this._showNextStep();
+              if (skipToPrevious) {
+                _this._showPrevStep();
+              } else {
+                _this._showNextStep();
+              }
               return;
             }
             _this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
@@ -268,11 +273,7 @@
           return this.setState("current_step", value);
         } else {
           this._current = this.getState("current_step");
-          if (this._current === null) {
-            return this._current = 0;
-          } else {
-            return this._current = parseInt(this._current);
-          }
+          return this._current = this._current === null ? 0 : parseInt(this._current, 10);
         }
       };
 

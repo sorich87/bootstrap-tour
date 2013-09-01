@@ -183,7 +183,7 @@
     hideStep: (i) ->
       step = @getStep(i)
 
-      # If onHide returns a promise, lets wait until it's done to execute
+      # If onHide returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onHide(@, i) if step.onHide?)
 
       hideStepHelper = (e) =>
@@ -203,7 +203,9 @@
       step = @getStep(i)
       return unless step
 
-      # If onShow returns a promise, lets wait until it's done to execute
+      skipToPrevious = i < @_current
+
+      # If onShow returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onShow(@, i) if step.onShow?)
 
       showStepHelper = (e) =>
@@ -222,7 +224,7 @@
         if @_isOrphan(step)
           if ( ! step.orphan)
             @_debug "Skip the orphan step #{@_current + 1}. Orphan option is false and the element doesn't exist or is hidden."
-            @_showNextStep()
+            if skipToPrevious then @_showPrevStep() else @_showNextStep()
             return
 
           @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
@@ -243,10 +245,7 @@
         @setState("current_step", value)
       else
         @_current = @getState("current_step")
-        if @_current == null
-          @_current = 0
-        else
-          @_current = parseInt(@_current)
+        @_current = if @_current == null then 0 else parseInt(@_current, 10)
 
     # Show next step
     _showNextStep: ->

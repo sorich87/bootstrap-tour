@@ -8,12 +8,14 @@ $ ->
   )
 
   tour.addSteps [
+      element: "#download"
       placement: "bottom"
       title: "Welcome to Bootstrap Tour!"
       content: "Introduce new users to your product by walking them through it step by step. Built" +
         "on the awesome <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap " +
         "from Twitter.</a>"
     ,
+      element: "#usage"
       placement: "top"
       title: "Setup in four easy steps"
       content: "Easy is better, right? Easy like Bootstrap."
