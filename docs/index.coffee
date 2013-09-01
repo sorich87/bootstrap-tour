@@ -14,15 +14,9 @@ $ ->
         "on the awesome <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap " +
         "from Twitter.</a>"
     ,
-      element: "#usage"
       placement: "top"
       title: "Setup in four easy steps"
       content: "Easy is better, right? Easy like Bootstrap."
-      options:
-        labels:
-          prev: "Go back"
-          next: "Hey"
-          end: "Stop"
     ,
       element: "#options"
       placement: "top"
@@ -52,7 +46,8 @@ $ ->
       content: "Well, nothing to see here. Click next to go back to the index page."
     ,
       path: "/"
-      placement: "bottom"
+      element: "#license"
+      placement: "top"
       title: "Best of all, it's free!"
       content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
     ]

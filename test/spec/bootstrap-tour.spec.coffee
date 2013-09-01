@@ -144,7 +144,7 @@ describe "Bootstrap Tour", ->
     @tour.next()
     expect(tour_test).toBe 4 # tour runs onHidden after next step hidden
 
-  it ".addStep with onShow option should run the callback before showing the step", ->
+  it "'addStep' with onShow option should run the callback before showing the step", ->
     tour_test = 0
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -156,7 +156,7 @@ describe "Bootstrap Tour", ->
     @tour.next()
     expect(tour_test).toBe 2 # tour runs onShow when step shown
 
-  it ".addStep with onHide option should run the callback before hiding the step", ->
+  it "'addStep' with onHide option should run the callback before hiding the step", ->
     tour_test = 0
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -184,6 +184,7 @@ describe "Bootstrap Tour", ->
       container: "body"
       backdrop: false
       redirect: true
+      orphans: false
       template: "<div class='popover'>
         <div class='arrow'></div>
         <h3 class='popover-title'></h3>
@@ -203,28 +204,8 @@ describe "Bootstrap Tour", ->
       onNext: (tour) ->
       onPrev: (tour) ->
     @tour.addStep(step)
-    tourStep = @tour.getStep(0)
     # remove properties that we don't want to check from both steps object
-    delete step.template
-    delete tourStep.template
-    expect(tourStep).toEqual step
-
-  it "'getStep' should execute template if it is a function", ->
-    @tour = new Tour
-    @tour.addStep(template: -> "<div class='popover'></div>")
-    expect(typeof @tour.getStep(0).template).toBe "string"
-
-  it "'getStep' should add tour-{tourName} and orphan classes to the template div", ->
-    @tour = new Tour
-    @tour.addStep({})
-    expect($(@tour.getStep(0).template).is(".tour-#{@tour._options.name}, .orphan")).toBe true
-
-  it "'getStep' should add disabled classes to the first and last popover buttons", ->
-    @tour = new Tour
-    @tour.addStep({})
-    @tour.addStep({})
-    expect($(@tour.getStep(0).template).find('[data-role="prev"]').is('.disabled')).toBe true
-    expect($(@tour.getStep(1).template).find('[data-role="next"]').is('.disabled')).toBe true
+    expect(@tour.getStep(0)).toEqual step
 
   it "'start' should start a tour", ->
     @tour = new Tour
@@ -306,11 +287,22 @@ describe "Bootstrap Tour", ->
     @tour.showStep(2)
     expect($(".popover").length).toBe 0
 
-  it "'showStep' should show a step even if the element is not specified, does not exist or is invisible", ->
+  it "'showStep' should execute template if it is a function", ->
     @tour = new Tour
-    @tour.addStep({})
+    @tour.addStep
+      element: $("<div></div>").appendTo("body")
+      template: -> "<div class='popover'></div>"
     @tour.showStep(0)
     expect($(".popover").length).toBe 1
+
+  it "'getStep' should add disabled classes to the first and last popover buttons", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.showStep(0)
+    expect($(".popover [data-role='prev']").hasClass('disabled')).toBe true
+    @tour.showStep(1)
+    expect($(".popover [data-role='next']").hasClass('disabled')).toBe true
 
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
@@ -355,14 +347,22 @@ describe "Bootstrap Tour", ->
   it "should evaluate 'path' correctly", ->
     @tour = new Tour
 
-    expect(@tour._isRedirect(undefined, "/")).toBe false # don't redirect if no path
-    expect(@tour._isRedirect("", "/")).toBe false # don't redirect if path empty
-    expect(@tour._isRedirect("/somepath", "/somepath")).toBe false # don't redirect if path matches current path
-    expect(@tour._isRedirect("/somepath/", "/somepath")).toBe false # don't redirect if path with slash matches current path
-    expect(@tour._isRedirect("/somepath", "/somepath/")).toBe false # don't redirect if path matches current path with slash
-    expect(@tour._isRedirect("/somepath?search=true", "/somepath")).toBe false # don't redirect if path with query params matches current path
-    expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false # don't redirect if path with slash and query params matches current path
-    expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true # redirect if path doesn't match current path
+    # don't redirect if no path
+    expect(@tour._isRedirect(undefined, "/")).toBe false
+    # don't redirect if path empty
+    expect(@tour._isRedirect("", "/")).toBe false
+    # don't redirect if path matches current path
+    expect(@tour._isRedirect("/somepath", "/somepath")).toBe false
+    # don't redirect if path with slash matches current path
+    expect(@tour._isRedirect("/somepath/", "/somepath")).toBe false
+    # don't redirect if path matches current path with slash
+    expect(@tour._isRedirect("/somepath", "/somepath/")).toBe false
+    # don't redirect if path with query params matches current path
+    expect(@tour._isRedirect("/somepath?search=true", "/somepath")).toBe false
+    # don't redirect if path with slash and query params matches current path
+    expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false
+    # redirect if path doesn't match current path
+    expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true
 
   it "'getState' should return null after 'removeState' with null value", ->
     @tour = new Tour
@@ -556,3 +556,22 @@ describe "Bootstrap Tour", ->
       @tour.prev()
       expect($._data($element[0], "events").click.length).toBeGreaterThan 0
       expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
+
+  it "should add 'tour-{tourName}' class to the popover", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.showStep(0)
+    expect($(".popover").hasClass("tour-#{@tour._options.name}")).toBe true
+
+  # orphans
+  it "should show orphan steps", ->
+    @tour = new Tour
+    @tour.addStep
+      orphans: true
+    @tour.showStep(0)
+    expect($(".popover").length).toBe 1
+
+  it "should add 'orphan' class to the popover", ->
+    @tour = new Tour
+    @tour.addStep(orphan: true)
+    expect($(".popover").hasClass("orphan")).toBe true

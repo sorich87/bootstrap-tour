@@ -34,8 +34,8 @@
   cursor: default;
 }
 .popover[class*="tour-"].orphan {
-  position: absolute;
-  margin-top: 120px;
+  position: fixed;
+  margin-top: 0;
 }
 .popover[class*="tour-"].orphan .arrow {
   display: none;

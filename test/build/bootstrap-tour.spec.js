@@ -210,7 +210,7 @@
       this.tour.next();
       return expect(tour_test).toBe(4);
     });
-    it(".addStep with onShow option should run the callback before showing the step", function() {
+    it("'addStep' with onShow option should run the callback before showing the step", function() {
       var tour_test;
       tour_test = 0;
       this.tour = new Tour;
@@ -228,7 +228,7 @@
       this.tour.next();
       return expect(tour_test).toBe(2);
     });
-    it(".addStep with onHide option should run the callback before hiding the step", function() {
+    it("'addStep' with onHide option should run the callback before hiding the step", function() {
       var tour_test;
       tour_test = 0;
       this.tour = new Tour;
@@ -248,7 +248,7 @@
       return expect(tour_test).toBe(2);
     });
     it("'getStep' should get a step", function() {
-      var step, tourStep;
+      var step;
       this.tour = new Tour;
       step = {
         element: $("<div></div>").appendTo("body"),
@@ -263,6 +263,7 @@
         container: "body",
         backdrop: false,
         redirect: true,
+        orphans: false,
         template: "<div class='popover'>        <div class='arrow'></div>        <h3 class='popover-title'></h3>        <div class='popover-content'></div>        <nav class='popover-navigation'>          <div class='btn-group'>            <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>            <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>          </div>          <button class='btn btn-sm btn-default' data-role='end'>End tour</button>        </nav>      </div>",
         onShow: function(tour) {},
         onShown: function(tour) {},
@@ -272,31 +273,7 @@
         onPrev: function(tour) {}
       };
       this.tour.addStep(step);
-      tourStep = this.tour.getStep(0);
-      delete step.template;
-      delete tourStep.template;
-      return expect(tourStep).toEqual(step);
-    });
-    it("'getStep' should execute template if it is a function", function() {
-      this.tour = new Tour;
-      this.tour.addStep({
-        template: function() {
-          return "<div class='popover'></div>";
-        }
-      });
-      return expect(typeof this.tour.getStep(0).template).toBe("string");
-    });
-    it("'getStep' should add tour-{tourName} and orphan classes to the template div", function() {
-      this.tour = new Tour;
-      this.tour.addStep({});
-      return expect($(this.tour.getStep(0).template).is(".tour-" + this.tour._options.name + ", .orphan")).toBe(true);
-    });
-    it("'getStep' should add disabled classes to the first and last popover buttons", function() {
-      this.tour = new Tour;
-      this.tour.addStep({});
-      this.tour.addStep({});
-      expect($(this.tour.getStep(0).template).find('[data-role="prev"]').is('.disabled')).toBe(true);
-      return expect($(this.tour.getStep(1).template).find('[data-role="next"]').is('.disabled')).toBe(true);
+      return expect(this.tour.getStep(0)).toEqual(step);
     });
     it("'start' should start a tour", function() {
       this.tour = new Tour;
@@ -406,11 +383,29 @@
       this.tour.showStep(2);
       return expect($(".popover").length).toBe(0);
     });
-    it("'showStep' should show a step even if the element is not specified, does not exist or is invisible", function() {
+    it("'showStep' should execute template if it is a function", function() {
       this.tour = new Tour;
-      this.tour.addStep({});
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body"),
+        template: function() {
+          return "<div class='popover'></div>";
+        }
+      });
       this.tour.showStep(0);
       return expect($(".popover").length).toBe(1);
+    });
+    it("'getStep' should add disabled classes to the first and last popover buttons", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.showStep(0);
+      expect($(".popover [data-role='prev']").hasClass('disabled')).toBe(true);
+      this.tour.showStep(1);
+      return expect($(".popover [data-role='next']").hasClass('disabled')).toBe(true);
     });
     it("'setCurrentStep' should set the current step", function() {
       this.tour = new Tour;
@@ -709,7 +704,7 @@
       expect(template.find("*[data-role=prev]").size()).toBe(1);
       return expect(template.find("*[data-role=end]").size()).toBe(1);
     });
-    return it("should unbind click events when hiding step (in reflex mode)", function() {
+    it("should unbind click events when hiding step (in reflex mode)", function() {
       var $element,
         _this = this;
       $element = $("<div></div>").appendTo("body");
@@ -732,6 +727,29 @@
         expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
         return expect($._data($element[0], "events").click[0].namespace).toBe("tour." + _this.tour._options.name);
       });
+    });
+    it("should add 'tour-{tourName}' class to the popover", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.showStep(0);
+      return expect($(".popover").hasClass("tour-" + this.tour._options.name)).toBe(true);
+    });
+    it("should show orphan steps", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        orphans: true
+      });
+      this.tour.showStep(0);
+      return expect($(".popover").length).toBe(1);
+    });
+    return it("should add 'orphan' class to the popover", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        orphan: true
+      });
+      return expect($(".popover").hasClass("orphan")).toBe(true);
     });
   });
 
