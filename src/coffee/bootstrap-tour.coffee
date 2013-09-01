@@ -11,7 +11,7 @@
         debug: false
         backdrop: false
         redirect: true
-        orphans: false
+        orphan: false
         basePath: ""
         template: "<div class='popover'>
           <div class='arrow'></div>
@@ -40,11 +40,10 @@
 
       @_steps = []
       @setCurrentStep()
-      @backdrop = {
+      @backdrop =
         overlay: null
-        step: null
-        background: null
-      }
+        $element: null
+        $background: null
 
     # Set a state in storage
     setState: (key, value) ->
@@ -90,7 +89,7 @@
         container: @_options.container
         backdrop: @_options.backdrop
         redirect: @_options.redirect
-        orphans: @_options.orphans
+        orphan: @_options.orphan
         template: @_options.template
         onShow: @_options.onShow
         onShown: @_options.onShown
@@ -219,16 +218,16 @@
           @_redirect(step, path)
           return
 
-        # Skip if step is orphan and orphans options is false
+        # Skip if step is orphan and orphan options is false
         if @_isOrphan(step)
-          if ( ! step.orphans)
-            @_debug "Skip the orphan step #{@_current + 1}. Orphans option is false and the element doesn't exist or is hidden."
+          if ( ! step.orphan)
+            @_debug "Skip the orphan step #{@_current + 1}. Orphan option is false and the element doesn't exist or is hidden."
             @_showNextStep()
             return
 
           @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
 
-        @_showBackdrop(step.element) if step.backdrop
+        @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
 
         # Show popover
         @_showPopover(step, i)
@@ -416,55 +415,53 @@
       else
         cb.call(@, arg)
 
-    _showBackdrop: (el) ->
+    _showBackdrop: (element) ->
       return unless @backdrop.overlay == null
 
       @_showOverlay()
-      @_showOverlayElement(el)
+      @_showOverlayElement(element) if element?
 
     _hideBackdrop: ->
       return if @backdrop.overlay == null
 
-      @_hideOverlayElement()
+      @_hideOverlayElement() if @backdrop.$element
       @_hideOverlay()
 
     _showOverlay: ->
       @backdrop = $("<div/>")
       @backdrop.addClass("tour-backdrop")
-      @backdrop.height $(document).innerHeight()
-
-      $("body").append @backdrop
+      @backdrop.height($(document).innerHeight())
+      $("body").append(@backdrop)
 
     _hideOverlay: ->
       @backdrop.remove()
       @backdrop.overlay = null
 
-    _showOverlayElement: (el) ->
-      step = $(el)
+    _showOverlayElement: (element) ->
+      $element = $(element)
+      $background = $("<div/>")
 
-      offset = step.offset()
+      offset = $element.offset()
       offset.top = offset.top
       offset.left = offset.left
 
-      background = $("<div/>")
-      background
-        .width(step.innerWidth())
-        .height(step.innerHeight())
+      $background
+        .width($element.innerWidth())
+        .height($element.innerHeight())
         .addClass("tour-step-background")
         .offset(offset)
 
-      step.addClass("tour-step-backdrop")
+      $element.addClass("tour-step-backdrop")
 
-      $("body").append background
-      @backdrop.step = step
-      @backdrop.background = background
+      $("body").append($background)
+      @backdrop.$element = $element
+      @backdrop.$background = $background
 
     _hideOverlayElement: ->
-      @backdrop.step.removeClass("tour-step-backdrop")
-
-      @backdrop.background.remove()
-      @backdrop.step = null
-      @backdrop.background = null
+      @backdrop.$element.removeClass("tour-step-backdrop")
+      @backdrop.$background.remove()
+      @backdrop.$element = null
+      @backdrop.$background = null
 
   window.Tour = Tour
 

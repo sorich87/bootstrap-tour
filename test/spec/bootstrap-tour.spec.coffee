@@ -184,7 +184,7 @@ describe "Bootstrap Tour", ->
       container: "body"
       backdrop: false
       redirect: true
-      orphans: false
+      orphan: false
       template: "<div class='popover'>
         <div class='arrow'></div>
         <h3 class='popover-title'></h3>
@@ -563,15 +563,16 @@ describe "Bootstrap Tour", ->
     @tour.showStep(0)
     expect($(".popover").hasClass("tour-#{@tour._options.name}")).toBe true
 
-  # orphans
+  # orphan
   it "should show orphan steps", ->
     @tour = new Tour
     @tour.addStep
-      orphans: true
+      orphan: true
     @tour.showStep(0)
     expect($(".popover").length).toBe 1
 
   it "should add 'orphan' class to the popover", ->
     @tour = new Tour
-    @tour.addStep(orphan: true)
+    @tour.addStep
+      orphan: true
     expect($(".popover").hasClass("orphan")).toBe true

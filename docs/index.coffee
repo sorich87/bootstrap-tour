@@ -32,6 +32,11 @@ $ ->
         "and you won't lose the focus anymore!"
       backdrop: true
     ,
+      title: "And support for orphan steps"
+      content: "If you activate the orphan property, the step(s) are shown centered " +
+        "in the page, and you can forget to specify element and placement!"
+      orphan: true
+    ,
       path: "/"
       element: "#reflex"
       placement: "bottom"
@@ -54,7 +59,7 @@ $ ->
 
   tour.start()
 
-  $('<div class="alert"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
+  $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
 
   $(document).on "click", ".start", (e) ->
     e.preventDefault()

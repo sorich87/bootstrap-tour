@@ -30,7 +30,7 @@
           debug: false,
           backdrop: false,
           redirect: true,
-          orphans: false,
+          orphan: false,
           basePath: "",
           template: "<div class='popover'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <nav class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>            </div>            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>          </nav>        </div>",
           afterSetState: function(key, value) {},
@@ -49,8 +49,8 @@
         this.setCurrentStep();
         this.backdrop = {
           overlay: null,
-          step: null,
-          background: null
+          $element: null,
+          $background: null
         };
       }
 
@@ -107,7 +107,7 @@
             container: this._options.container,
             backdrop: this._options.backdrop,
             redirect: this._options.redirect,
-            orphans: this._options.orphans,
+            orphan: this._options.orphan,
             template: this._options.template,
             onShow: this._options.onShow,
             onShown: this._options.onShown,
@@ -243,15 +243,15 @@
             return;
           }
           if (_this._isOrphan(step)) {
-            if (!step.orphans) {
-              _this._debug("Skip the orphan step " + (_this._current + 1) + ". Orphans option is false and the element doesn't exist or is hidden.");
+            if (!step.orphan) {
+              _this._debug("Skip the orphan step " + (_this._current + 1) + ". Orphan option is false and the element doesn't exist or is hidden.");
               _this._showNextStep();
               return;
             }
             _this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
           }
           if (step.backdrop) {
-            _this._showBackdrop(step.element);
+            _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
           _this._showPopover(step, i);
           if (step.onShown != null) {
@@ -477,19 +477,23 @@
         }
       };
 
-      Tour.prototype._showBackdrop = function(el) {
+      Tour.prototype._showBackdrop = function(element) {
         if (this.backdrop.overlay !== null) {
           return;
         }
         this._showOverlay();
-        return this._showOverlayElement(el);
+        if (element != null) {
+          return this._showOverlayElement(element);
+        }
       };
 
       Tour.prototype._hideBackdrop = function() {
         if (this.backdrop.overlay === null) {
           return;
         }
-        this._hideOverlayElement();
+        if (this.backdrop.$element) {
+          this._hideOverlayElement();
+        }
         return this._hideOverlay();
       };
 
@@ -505,25 +509,25 @@
         return this.backdrop.overlay = null;
       };
 
-      Tour.prototype._showOverlayElement = function(el) {
-        var background, offset, step;
-        step = $(el);
-        offset = step.offset();
+      Tour.prototype._showOverlayElement = function(element) {
+        var $background, $element, offset;
+        $element = $(element);
+        $background = $("<div/>");
+        offset = $element.offset();
         offset.top = offset.top;
         offset.left = offset.left;
-        background = $("<div/>");
-        background.width(step.innerWidth()).height(step.innerHeight()).addClass("tour-step-background").offset(offset);
-        step.addClass("tour-step-backdrop");
-        $("body").append(background);
-        this.backdrop.step = step;
-        return this.backdrop.background = background;
+        $background.width($element.innerWidth()).height($element.innerHeight()).addClass("tour-step-background").offset(offset);
+        $element.addClass("tour-step-backdrop");
+        $("body").append($background);
+        this.backdrop.$element = $element;
+        return this.backdrop.$background = $background;
       };
 
       Tour.prototype._hideOverlayElement = function() {
-        this.backdrop.step.removeClass("tour-step-backdrop");
-        this.backdrop.background.remove();
-        this.backdrop.step = null;
-        return this.backdrop.background = null;
+        this.backdrop.$element.removeClass("tour-step-backdrop");
+        this.backdrop.$background.remove();
+        this.backdrop.$element = null;
+        return this.backdrop.$background = null;
       };
 
       return Tour;

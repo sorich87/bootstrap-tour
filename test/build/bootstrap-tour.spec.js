@@ -263,7 +263,7 @@
         container: "body",
         backdrop: false,
         redirect: true,
-        orphans: false,
+        orphan: false,
         template: "<div class='popover'>        <div class='arrow'></div>        <h3 class='popover-title'></h3>        <div class='popover-content'></div>        <nav class='popover-navigation'>          <div class='btn-group'>            <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>            <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>          </div>          <button class='btn btn-sm btn-default' data-role='end'>End tour</button>        </nav>      </div>",
         onShow: function(tour) {},
         onShown: function(tour) {},
@@ -739,7 +739,7 @@
     it("should show orphan steps", function() {
       this.tour = new Tour;
       this.tour.addStep({
-        orphans: true
+        orphan: true
       });
       this.tour.showStep(0);
       return expect($(".popover").length).toBe(1);
