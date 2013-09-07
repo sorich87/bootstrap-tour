@@ -719,13 +719,13 @@
       expect($._data($element[0], "events")).not.toBeDefined();
       this.tour.start();
       expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
-      expect($._data($element[0], "events").click[0].namespace).toBe("tour." + this.tour._options.name);
+      expect($._data($element[0], "events").click[0].namespace).toBe("tour-" + this.tour._options.name);
       return $.each([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function() {
         _this.tour.next();
         expect($._data($element[0], "events")).not.toBeDefined();
         _this.tour.prev();
         expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
-        return expect($._data($element[0], "events").click[0].namespace).toBe("tour." + _this.tour._options.name);
+        return expect($._data($element[0], "events").click[0].namespace).toBe("tour-" + _this.tour._options.name);
       });
     });
     it("should add 'tour-{tourName}' class to the popover", function() {

@@ -548,14 +548,14 @@ describe "Bootstrap Tour", ->
     expect($._data($element[0], "events")).not.toBeDefined()
     @tour.start()
     expect($._data($element[0], "events").click.length).toBeGreaterThan 0
-    expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
+    expect($._data($element[0], "events").click[0].namespace).toBe "tour-#{@tour._options.name}"
 
     $.each [0..10], =>
       @tour.next()
       expect($._data($element[0], "events")).not.toBeDefined()
       @tour.prev()
       expect($._data($element[0], "events").click.length).toBeGreaterThan 0
-      expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
+      expect($._data($element[0], "events").click[0].namespace).toBe "tour-#{@tour._options.name}"
 
   it "should add 'tour-{tourName}' class to the popover", ->
     @tour = new Tour
