@@ -1,13 +1,14 @@
 $ ->
   $start = $("#start")
 
-  tour = new Tour(
+  tour1 = new Tour(
+    name: 'tour1'
     onStart: -> $start.addClass "disabled", true
     onEnd: -> $start.removeClass "disabled", true
     debug: true
   )
 
-  tour.addSteps [
+  tour1.addSteps [
       element: "#download"
       placement: "bottom"
       title: "Welcome to Bootstrap Tour!"
@@ -59,7 +60,28 @@ $ ->
       content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
     ]
 
-  tour.start()
+  tour1.start()
+
+  tour2 = new Tour(
+    name: 'tour2'
+    onStart: -> $start.addClass "disabled", true
+    onEnd: -> $start.removeClass "disabled", true
+    debug: true
+  )
+
+  tour2.addSteps [
+      element: ".navbar-nav"
+      placement: "bottom"
+      title: "Tour 2 - 1"
+      content: "Tour 2 - 1"
+    ,
+      element: ".navbar-brand"
+      placement: "bottom"
+      title: "Tour 2 - 2"
+      content: "Tour 2 - 2"
+  ]
+
+  tour2.start()
 
   $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
 
