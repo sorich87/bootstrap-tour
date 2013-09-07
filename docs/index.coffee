@@ -83,12 +83,12 @@ $ ->
 
   tour2.start()
 
-  $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
+  $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert() if tour1.ended()
 
   $(document).on "click", ".start", (e) ->
     e.preventDefault()
     return false if $(this).hasClass "disabled"
-    tour.restart()
+    tour2.restart()
     $(".alert").alert "close"
 
   $("html").smoothScroll()

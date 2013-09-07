@@ -85,7 +85,7 @@
       }
     ]);
     tour2.start();
-    if (tour.ended()) {
+    if (tour1.ended()) {
       $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert();
     }
     $(document).on("click", ".start", function(e) {
@@ -93,7 +93,7 @@
       if ($(this).hasClass("disabled")) {
         return false;
       }
-      tour.restart();
+      tour2.restart();
       return $(".alert").alert("close");
     });
     return $("html").smoothScroll();
