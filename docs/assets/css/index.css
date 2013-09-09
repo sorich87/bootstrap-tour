@@ -935,7 +935,7 @@ pre {
 
   /* Widen masthead and social buttons to fill body padding */
   .jumbotron {
-    padding: 40px 20px;
+    padding: 70px 20px 20px 20px;
     margin-top:   -20px; /* Offset bottom margin on .navbar */
     margin-right: -20px;
     margin-left:  -20px;
@@ -982,7 +982,7 @@ pre {
   }
 
   #github {
-    display: none;
+    display: none !important;
   }
 }
 
