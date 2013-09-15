@@ -61,7 +61,10 @@
           this._options.storage.setItem(keyName, value);
           return this._options.afterSetState(keyName, value);
         } else {
-          return this._state = value;
+          if (this._state == null) {
+            this._state = {};
+          }
+          return this._state[key] = value;
         }
       };
 
@@ -72,7 +75,9 @@
           this._options.storage.removeItem(keyName);
           return this._options.afterRemoveState(keyName);
         } else {
-          return delete this._state;
+          if (this._state != null) {
+            return delete this._state[key];
+          }
         }
       };
 
@@ -82,7 +87,9 @@
           keyName = "" + this._options.name + "_" + key;
           value = this._options.storage.getItem(keyName);
         } else {
-          value = this._state;
+          if (this._state != null) {
+            value = this._state[key];
+          }
         }
         if (value === void 0 || value === "null") {
           value = null;

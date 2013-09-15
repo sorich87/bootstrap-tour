@@ -52,7 +52,8 @@
         @_options.storage.setItem(keyName, value)
         @_options.afterSetState(keyName, value)
       else
-        @_state = value
+        @_state ?= {}
+        @_state[key] = value
 
     # Remove the current state from the storage layer
     removeState: (key) ->
@@ -61,7 +62,7 @@
         @_options.storage.removeItem(keyName)
         @_options.afterRemoveState(keyName)
       else
-        delete @_state
+        delete @_state[key] if @_state?
 
     # Get the current state from the storage layer
     getState: (key) ->
@@ -69,7 +70,7 @@
         keyName = "#{@_options.name}_#{key}"
         value = @_options.storage.getItem(keyName)
       else
-        value = @_state
+        value = @_state[key] if @_state?
 
       value = null if value == undefined || value == "null"
 
