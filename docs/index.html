@@ -57,7 +57,7 @@
                         <a href="#demo">Demo</a>
                     </li>
                     <li>
-                        Version 0.6.0
+                        Version 0.6.1
                     </li>
                     <li>
                         Bootstrap version <= 3.0.0
@@ -210,12 +210,16 @@
                             <td>This option set the left and right arrow navigation.</td>
                             <td><code class="language-javascript">true</code></td>
                         </tr>
-                        <tr>
-                            <td>storage</td>
+                        <tr class="success">
+                            <td>storage <span class="label label-success">UPDATED</span></td>
                             <td>Object</td>
                             <td>The storage system you want to use. could be the objects window.localStorage,
-                              window.sessionStorage of your own object.<br>
-                            <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/DOM/Storage#localStorage" target="_blank">localStorage</a>.</em>
+                            window.sessionStorage or your own object.<br>
+                            You can set this option as
+                            <code class="language-javascript">false</code> to disable storage
+                            persistence (the tour starts from beginning everytime the page is
+                            loaded).<br>
+                            <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage" target="_blank">DOM Storage interfaces</a>.</em>
                             </td>
                             <td><code class="language-javascript">window.localStorage</code></td>
                         </tr>
