@@ -511,9 +511,9 @@
       };
 
       Tour.prototype._showOverlay = function() {
-        this.backdrop = $("<div/>");
-        this.backdrop.addClass("tour-backdrop");
-        this.backdrop.height($(document).innerHeight());
+        this.backdrop = $("<div/>", {
+          "class": "tour-backdrop"
+        });
         return $("body").append(this.backdrop);
       };
 

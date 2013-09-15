@@ -1,11 +1,12 @@
 .tour-backdrop {
-  position: absolute;
-  z-index: 1009;
-  background: #000;
-  opacity: 0.8;
+  position: fixed;
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
+  z-index: 1009;
+  background-color: #000;
+  opacity: 0.8;
 }
 .tour-step-backdrop {
   position: relative;

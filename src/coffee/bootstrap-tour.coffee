@@ -436,9 +436,9 @@
       @_hideOverlay()
 
     _showOverlay: ->
-      @backdrop = $("<div/>")
-      @backdrop.addClass("tour-backdrop")
-      @backdrop.height($(document).innerHeight())
+      @backdrop = $("<div/>",
+        class: "tour-backdrop"
+      )
       $("body").append(@backdrop)
 
     _hideOverlay: ->
