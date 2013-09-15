@@ -66,7 +66,7 @@ $ ->
 
   $(document).on "click", ".start", (e) ->
     e.preventDefault()
-    return false if $(this).hasClass "disabled"
+    return if $(this).hasClass "disabled"
     tour.restart()
     $(".alert").alert "close"
 

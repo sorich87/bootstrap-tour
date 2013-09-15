@@ -37,7 +37,7 @@
       expect(this.tour._steps).toEqual([]);
       return expect(this.tour._current).toBe(0);
     });
-    it("'setState' should save state localStorage item", function() {
+    it("'setState' should save state as localStorage item", function() {
       this.tour = new Tour;
       this.tour.setState("test", "yes");
       return expect(window.localStorage.getItem("tour_test")).toBe("yes");
@@ -62,17 +62,39 @@
       expect(aliasKeyName).toBe("test_save");
       return expect(aliasValue).toBe("yes");
     });
+    it("'setState' should save state internally if storage is false", function() {
+      this.tour = new Tour({
+        storage: false
+      });
+      this.tour.setState("test", "yes");
+      return expect(this.tour._state["test"]).toBe("yes");
+    });
     it("'removeState' should remove state localStorage item", function() {
       this.tour = new Tour;
       this.tour.setState("test", "yes");
       this.tour.removeState("test");
       return expect(window.localStorage.getItem("tour_test")).toBe(null);
     });
+    it("'removeState' should remove state internally if storage is false", function() {
+      this.tour = new Tour({
+        storage: false
+      });
+      this.tour.setState("test", "yes");
+      this.tour.removeState("test");
+      return expect(this.tour._state["test"]).toBeUndefined();
+    });
     it("'getState' should get state localStorage items", function() {
       this.tour = new Tour;
       this.tour.setState("test", "yes");
       expect(this.tour.getState("test")).toBe("yes");
       return window.localStorage.setItem("tour_test", null);
+    });
+    it("'getState' should get the internal state if storage is false", function() {
+      this.tour = new Tour({
+        storage: false
+      });
+      this.tour.setState("test", "yes");
+      return expect(this.tour.getState("test")).toBe("yes");
     });
     it("'addStep' should add a step", function() {
       var step;
@@ -719,13 +741,13 @@
       expect($._data($element[0], "events")).not.toBeDefined();
       this.tour.start();
       expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
-      expect($._data($element[0], "events").click[0].namespace).toBe("tour." + this.tour._options.name);
+      expect($._data($element[0], "events").click[0].namespace).toBe("tour-" + this.tour._options.name);
       return $.each([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function() {
         _this.tour.next();
         expect($._data($element[0], "events")).not.toBeDefined();
         _this.tour.prev();
         expect($._data($element[0], "events").click.length).toBeGreaterThan(0);
-        return expect($._data($element[0], "events").click[0].namespace).toBe("tour." + _this.tour._options.name);
+        return expect($._data($element[0], "events").click[0].namespace).toBe("tour-" + _this.tour._options.name);
       });
     });
     it("should add 'tour-{tourName}' class to the popover", function() {

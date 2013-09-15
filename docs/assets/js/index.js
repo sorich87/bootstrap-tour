@@ -67,7 +67,7 @@
     $(document).on("click", ".start", function(e) {
       e.preventDefault();
       if ($(this).hasClass("disabled")) {
-        return false;
+        return;
       }
       tour.restart();
       return $(".alert").alert("close");

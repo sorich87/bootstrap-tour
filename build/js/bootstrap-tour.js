@@ -61,7 +61,10 @@
           this._options.storage.setItem(keyName, value);
           return this._options.afterSetState(keyName, value);
         } else {
-          return this._state = value;
+          if (this._state == null) {
+            this._state = {};
+          }
+          return this._state[key] = value;
         }
       };
 
@@ -72,7 +75,9 @@
           this._options.storage.removeItem(keyName);
           return this._options.afterRemoveState(keyName);
         } else {
-          return delete this._state;
+          if (this._state != null) {
+            return delete this._state[key];
+          }
         }
       };
 
@@ -82,7 +87,9 @@
           keyName = "" + this._options.name + "_" + key;
           value = this._options.storage.getItem(keyName);
         } else {
-          value = this._state;
+          if (this._state != null) {
+            value = this._state[key];
+          }
         }
         if (value === void 0 || value === "null") {
           value = null;
@@ -140,15 +147,15 @@
         if (this.ended() && !force) {
           return this._debug("Tour ended, start prevented.");
         }
-        $(document).off("click.tour." + this._options.name, ".popover *[data-role=next]").on("click.tour." + this._options.name, ".popover *[data-role=next]:not(.disabled)", function(e) {
+        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)", function(e) {
           e.preventDefault();
           return _this.next();
         });
-        $(document).off("click.tour." + this._options.name, ".popover *[data-role=prev]").on("click.tour." + this._options.name, ".popover *[data-role=prev]:not(.disabled)", function(e) {
+        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)", function(e) {
           e.preventDefault();
           return _this.prev();
         });
-        $(document).off("click.tour." + this._options.name, ".popover *[data-role=end]").on("click.tour." + this._options.name, ".popover *[data-role=end]", function(e) {
+        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]", function(e) {
           e.preventDefault();
           return _this.end();
         });
@@ -191,9 +198,9 @@
         var endHelper, hidePromise,
           _this = this;
         endHelper = function(e) {
-          $(document).off("click.tour." + _this._options.name);
-          $(document).off("keyup.tour." + _this._options.name);
-          $(window).off("resize.tour." + _this._options.name);
+          $(document).off("click.tour-" + _this._options.name);
+          $(document).off("keyup.tour-" + _this._options.name);
+          $(window).off("resize.tour-" + _this._options.name);
           _this.setState("end", "yes");
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
@@ -224,7 +231,7 @@
           $element = _this._isOrphan(step) ? $("body") : $(step.element);
           $element.popover("destroy");
           if (step.reflex) {
-            $element.css("cursor", "").off("click.tour." + _this._options.name);
+            $element.css("cursor", "").off("click.tour-" + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -352,7 +359,7 @@
           $.extend(options, step.options);
         }
         if (step.reflex) {
-          $element.css("cursor", "pointer").on("click.tour." + this._options.name, function(e) {
+          $element.css("cursor", "pointer").on("click.tour-" + this._options.name, function(e) {
             if (_this._current < _this._steps.length - 1) {
               return _this.next();
             } else {
@@ -435,7 +442,7 @@
       };
 
       Tour.prototype._onResize = function(callback, timeout) {
-        return $(window).on("resize.tour." + this._options.name, function() {
+        return $(window).on("resize.tour-" + this._options.name, function() {
           clearTimeout(timeout);
           return timeout = setTimeout(callback, 100);
         });
@@ -444,7 +451,7 @@
       Tour.prototype._setupKeyboardNavigation = function() {
         var _this = this;
         if (this._options.keyboard) {
-          return $(document).on("keyup.tour." + this._options.name, function(e) {
+          return $(document).on("keyup.tour-" + this._options.name, function(e) {
             if (!e.which) {
               return;
             }

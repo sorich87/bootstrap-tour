@@ -52,7 +52,8 @@
         @_options.storage.setItem(keyName, value)
         @_options.afterSetState(keyName, value)
       else
-        @_state = value
+        @_state ?= {}
+        @_state[key] = value
 
     # Remove the current state from the storage layer
     removeState: (key) ->
@@ -61,7 +62,7 @@
         @_options.storage.removeItem(keyName)
         @_options.afterRemoveState(keyName)
       else
-        delete @_state
+        delete @_state[key] if @_state?
 
     # Get the current state from the storage layer
     getState: (key) ->
@@ -69,7 +70,7 @@
         keyName = "#{@_options.name}_#{key}"
         value = @_options.storage.getItem(keyName)
       else
-        value = @_state
+        value = @_state[key] if @_state?
 
       value = null if value == undefined || value == "null"
 
@@ -114,24 +115,24 @@
 
       # Go to next step after click on element with attribute 'data-role=next'
       $(document)
-      .off("click.tour.#{@_options.name}", ".popover *[data-role=next]")
-      .on("click.tour.#{@_options.name}", ".popover *[data-role=next]:not(.disabled)", (e) =>
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]")
+      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)", (e) =>
         e.preventDefault()
         @next()
       )
 
       # Go to previous step after click on element with attribute 'data-role=prev'
       $(document)
-      .off("click.tour.#{@_options.name}", ".popover *[data-role=prev]")
-      .on("click.tour.#{@_options.name}", ".popover *[data-role=prev]:not(.disabled)", (e) =>
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]")
+      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)", (e) =>
         e.preventDefault()
         @prev()
       )
 
       # End tour after click on element with attribute 'data-role=end'
       $(document)
-      .off("click.tour.#{@_options.name}", ".popover *[data-role=end]")
-      .on("click.tour.#{@_options.name}", ".popover *[data-role=end]", (e) =>
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]")
+      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]", (e) =>
         e.preventDefault()
         @end()
       )
@@ -167,9 +168,9 @@
     # End tour
     end: ->
       endHelper = (e) =>
-        $(document).off "click.tour.#{@_options.name}"
-        $(document).off "keyup.tour.#{@_options.name}"
-        $(window).off "resize.tour.#{@_options.name}"
+        $(document).off "click.tour-#{@_options.name}"
+        $(document).off "keyup.tour-#{@_options.name}"
+        $(window).off "resize.tour-#{@_options.name}"
         @setState("end", "yes")
 
         @_options.onEnd(@) if @_options.onEnd?
@@ -198,7 +199,7 @@
       hideStepHelper = (e) =>
         $element = if @_isOrphan(step) then $("body") else $(step.element)
         $element.popover("destroy")
-        $element.css("cursor", "").off "click.tour.#{@_options.name}" if step.reflex
+        $element.css("cursor", "").off "click.tour-#{@_options.name}" if step.reflex
         @_hideBackdrop() if step.backdrop
 
         step.onHidden(@) if step.onHidden?
@@ -313,7 +314,7 @@
         $.extend options, step.options
 
       if step.reflex
-        $element.css("cursor", "pointer").on "click.tour.#{@_options.name}", (e) =>
+        $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", (e) =>
           if @_current < @_steps.length - 1
             @next()
           else
@@ -388,14 +389,14 @@
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
-      $(window).on "resize.tour.#{@_options.name}", ->
+      $(window).on "resize.tour-#{@_options.name}", ->
         clearTimeout(timeout)
         timeout = setTimeout(callback, 100)
 
     # Keyboard navigation
     _setupKeyboardNavigation: ->
       if @_options.keyboard
-        $(document).on "keyup.tour.#{@_options.name}", (e) =>
+        $(document).on "keyup.tour-#{@_options.name}", (e) =>
           return unless e.which
           switch e.which
             when 39

@@ -29,7 +29,7 @@ describe "Bootstrap Tour", ->
     expect(@tour._steps).toEqual [] # tour accepts an array of steps
     expect(@tour._current).toBe 0 # tour initializes current step
 
-  it "'setState' should save state localStorage item", ->
+  it "'setState' should save state as localStorage item", ->
     @tour = new Tour
     @tour.setState("test", "yes")
     expect(window.localStorage.getItem("tour_test")).toBe "yes"
@@ -51,17 +51,36 @@ describe "Bootstrap Tour", ->
     expect(aliasKeyName).toBe "test_save"
     expect(aliasValue).toBe "yes"
 
+  it "'setState' should save state internally if storage is false", ->
+    @tour = new Tour
+      storage: false
+    @tour.setState("test", "yes")
+    expect(@tour._state["test"]).toBe "yes"
+
   it "'removeState' should remove state localStorage item", ->
     @tour = new Tour
     @tour.setState("test", "yes")
     @tour.removeState("test")
     expect(window.localStorage.getItem("tour_test")).toBe null
 
+  it "'removeState' should remove state internally if storage is false", ->
+    @tour = new Tour
+      storage: false
+    @tour.setState("test", "yes")
+    @tour.removeState("test")
+    expect(@tour._state["test"]).toBeUndefined()
+
   it "'getState' should get state localStorage items", ->
     @tour = new Tour
     @tour.setState("test", "yes")
     expect(@tour.getState("test")).toBe "yes"
     window.localStorage.setItem("tour_test", null)
+
+  it "'getState' should get the internal state if storage is false", ->
+    @tour = new Tour
+      storage: false
+    @tour.setState("test", "yes")
+    expect(@tour.getState("test")).toBe "yes"
 
   it "'addStep' should add a step", ->
     @tour = new Tour
@@ -548,14 +567,14 @@ describe "Bootstrap Tour", ->
     expect($._data($element[0], "events")).not.toBeDefined()
     @tour.start()
     expect($._data($element[0], "events").click.length).toBeGreaterThan 0
-    expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
+    expect($._data($element[0], "events").click[0].namespace).toBe "tour-#{@tour._options.name}"
 
     $.each [0..10], =>
       @tour.next()
       expect($._data($element[0], "events")).not.toBeDefined()
       @tour.prev()
       expect($._data($element[0], "events").click.length).toBeGreaterThan 0
-      expect($._data($element[0], "events").click[0].namespace).toBe "tour.#{@tour._options.name}"
+      expect($._data($element[0], "events").click[0].namespace).toBe "tour-#{@tour._options.name}"
 
   it "should add 'tour-{tourName}' class to the popover", ->
     @tour = new Tour
