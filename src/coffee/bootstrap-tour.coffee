@@ -320,10 +320,10 @@
           else
             @end()
 
-      if step.prev < 0
+      if step.prev < 0 || step.prevDisabled
         $navigation.find("*[data-role=prev]").addClass("disabled")
 
-      if step.next < 0
+      if step.next < 0 || step.nextDisabled
         $navigation.find("*[data-role=next]").addClass("disabled")
 
       step.template = $template.clone().wrap("<div>").parent().html()

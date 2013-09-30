@@ -429,6 +429,30 @@
       this.tour.showStep(1);
       return expect($(".popover [data-role='next']").hasClass('disabled')).toBe(true);
     });
+    it("'nextDisabled' option should add disabled classes to next button", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body"),
+        nextDisabled: true
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.showStep(0);
+      return expect($(".popover [data-role='next']").hasClass('disabled')).toBe(true);
+    });
+    it("'prevDisabled' option should add disabled classes to prev button", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body"),
+        prevDisabled: true
+      });
+      this.tour.showStep(1);
+      return expect($(".popover [data-role='prev']").hasClass('disabled')).toBe(true);
+    });
     it("'setCurrentStep' should set the current step", function() {
       this.tour = new Tour;
       this.tour.setCurrentStep(4);
