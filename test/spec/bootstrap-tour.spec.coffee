@@ -323,6 +323,25 @@ describe "Bootstrap Tour", ->
     @tour.showStep(1)
     expect($(".popover [data-role='next']").hasClass('disabled')).toBe true
 
+  it "'nextDisabled' option should add disabled classes to next button", ->
+    @tour = new Tour
+    @tour.addStep
+      element: $("<div></div>").appendTo("body")
+      nextDisabled: true
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.showStep(0)
+    expect($(".popover [data-role='next']").hasClass('disabled')).toBe true
+
+  it "'prevDisabled' option should add disabled classes to prev button", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.addStep
+      element: $("<div></div>").appendTo("body")
+      prevDisabled: true
+    @tour.showStep(1)
+    expect($(".popover [data-role='prev']").hasClass('disabled')).toBe true
+
+
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
     @tour.setCurrentStep(4)
