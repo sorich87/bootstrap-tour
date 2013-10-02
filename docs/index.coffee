@@ -4,7 +4,6 @@ $ ->
   tour = new Tour(
     onStart: -> $start.addClass "disabled", true
     onEnd: -> $start.removeClass "disabled", true
-    backdrop: true
     debug: true
   )
 
