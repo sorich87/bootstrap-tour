@@ -239,13 +239,6 @@ describe "Bootstrap Tour", ->
     @tour.start()
     expect($(".popover").length).toBe 0 # previously ended tour don't start again
 
-  it "'start'(true) should force starting a tour that ended", ->
-    @tour = new Tour
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.setState("end", "yes")
-    @tour.start(true)
-    expect($(".popover").length).toBe 1 # previously ended tour starts again if forced to
-
   it "'next' should hide current step and show next step", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -263,13 +256,20 @@ describe "Bootstrap Tour", ->
     expect(@tour.getStep(0).element.data("bs.popover")).toBeUndefined() # tour hides current step
     expect(@tour.getState("end")).toBe "yes"
 
-  it "'ended' should return true is tour ended and false if not", ->
+  it "'ended' should return true if tour ended and false if not", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     expect(@tour.ended()).toBe false
     @tour.end()
     expect(@tour.ended()).toBe true
+
+  it "'ended' should always return false if tour started by force", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.end()
+    @tour.start(true)
+    expect(@tour.ended()).toBe false
 
   it "'restart' should clear all states and start tour", ->
     @tour = new Tour

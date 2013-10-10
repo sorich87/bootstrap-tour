@@ -314,15 +314,6 @@
       this.tour.start();
       return expect($(".popover").length).toBe(0);
     });
-    it("'start'(true) should force starting a tour that ended", function() {
-      this.tour = new Tour;
-      this.tour.addStep({
-        element: $("<div></div>").appendTo("body")
-      });
-      this.tour.setState("end", "yes");
-      this.tour.start(true);
-      return expect($(".popover").length).toBe(1);
-    });
     it("'next' should hide current step and show next step", function() {
       this.tour = new Tour;
       this.tour.addStep({
@@ -346,7 +337,7 @@
       expect(this.tour.getStep(0).element.data("bs.popover")).toBeUndefined();
       return expect(this.tour.getState("end")).toBe("yes");
     });
-    it("'ended' should return true is tour ended and false if not", function() {
+    it("'ended' should return true if tour ended and false if not", function() {
       this.tour = new Tour;
       this.tour.addStep({
         element: $("<div></div>").appendTo("body")
@@ -355,6 +346,15 @@
       expect(this.tour.ended()).toBe(false);
       this.tour.end();
       return expect(this.tour.ended()).toBe(true);
+    });
+    it("'ended' should always return false if tour started by force", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.end();
+      this.tour.start(true);
+      return expect(this.tour.ended()).toBe(false);
     });
     it("'restart' should clear all states and start tour", function() {
       this.tour = new Tour;

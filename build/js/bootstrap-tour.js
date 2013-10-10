@@ -144,7 +144,8 @@
         if (force == null) {
           force = false;
         }
-        if (this.ended() && !force) {
+        this.force = force;
+        if (this.ended()) {
           return this._debug("Tour ended, start prevented.");
         }
         $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)", function(e) {
@@ -211,7 +212,7 @@
       };
 
       Tour.prototype.ended = function() {
-        return !!this.getState("end");
+        return !this.force && !!this.getState("end");
       };
 
       Tour.prototype.restart = function() {

@@ -111,7 +111,9 @@
 
     # Start tour from current step
     start: (force = false) ->
-      return @_debug "Tour ended, start prevented." if @ended() && !force
+      @force = force
+
+      return @_debug "Tour ended, start prevented." if @ended()
 
       # Go to next step after click on element with attribute 'data-role=next'
       $(document)
@@ -180,7 +182,7 @@
 
     # Verify if tour is enabled
     ended: ->
-      !!@getState("end")
+      !@force && !!@getState("end")
 
     # Restart tour
     restart: ->
