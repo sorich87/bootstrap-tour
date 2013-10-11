@@ -304,15 +304,6 @@
       this.tour.start();
       return expect($(".popover").length).toBe(1);
     });
-    it("'start' should not start a tour that ended", function() {
-      this.tour = new Tour;
-      this.tour.addStep({
-        element: $("<div></div>").appendTo("body")
-      });
-      this.tour.setState("end", "yes");
-      this.tour.start();
-      return expect($(".popover").length).toBe(0);
-    });
     it("'init' should continue a tour", function() {
       this.tour = new Tour;
       this.tour.addStep({
@@ -320,6 +311,26 @@
       });
       this.tour.setState("current_step", 0);
       this.tour.init();
+      return expect($(".popover").length).toBe(1);
+    });
+    it("'init' should not continue a tour that ended", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.setState("current_step", 0);
+      this.tour.setState("end", "yes");
+      this.tour.init();
+      return expect($(".popover").length).toBe(0);
+    });
+    it("'init'(true) should force continuing a tour that ended", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.setState("current_step", 0);
+      this.tour.setState("end", "yes");
+      this.tour.init(true);
       return expect($(".popover").length).toBe(1);
     });
     it("'next' should hide current step and show next step", function() {

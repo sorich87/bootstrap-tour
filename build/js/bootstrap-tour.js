@@ -139,8 +139,9 @@
         }
       };
 
-      Tour.prototype.init = function() {
+      Tour.prototype.init = function(force) {
         var _this = this;
+        this._force = force;
         if (this.ended()) {
           return this._debug("Tour ended, init prevented.");
         }
@@ -162,11 +163,7 @@
           force = false;
         }
         if (!this._inited) {
-          this.init();
-        }
-        this._force = force;
-        if (this.ended()) {
-          return this._debug("Tour ended, start prevented.");
+          this.init(force);
         }
         if (this._current === null) {
           promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);

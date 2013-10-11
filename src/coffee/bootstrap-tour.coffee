@@ -111,7 +111,9 @@
       }, @_steps[i]) if @_steps[i]?
 
     # Setup event bindings and continue a tour that has already started
-    init: () ->
+    init: (force) ->
+      @_force = force
+
       return @_debug "Tour ended, init prevented." if @ended()
 
       @setCurrentStep()
@@ -129,11 +131,7 @@
 
     # Start tour from current step
     start: (force = false) ->
-      @init() unless @_inited
-
-      @_force = force
-
-      return @_debug "Tour ended, start prevented." if @ended()
+      @init(force) unless @_inited # Backward compatibility
 
       if @_current == null
         promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)

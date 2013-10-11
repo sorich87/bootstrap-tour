@@ -231,13 +231,6 @@ describe "Bootstrap Tour", ->
     @tour.start()
     expect($(".popover").length).toBe 1
 
-  it "'start' should not start a tour that ended", ->
-    @tour = new Tour
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.setState("end", "yes")
-    @tour.start()
-    expect($(".popover").length).toBe 0 # previously ended tour don't start again
-
   it "'init' should continue a tour", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
@@ -245,25 +238,20 @@ describe "Bootstrap Tour", ->
     @tour.init()
     expect($(".popover").length).toBe 1
 
-  it "'start'(true) should force starting a tour that ended", ->
+  it "'init' should not continue a tour that ended", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.setState("current_step", 0)
     @tour.setState("end", "yes")
-    @tour.start(true)
-    expect($(".popover").length).toBe 1 # previously ended tour starts again if forced to
+    @tour.init()
+    expect($(".popover").length).toBe 0 # previously ended tour don't start again
 
-  it "'start'(true) should force starting a tour that ended", ->
+  it "'init'(true) should force continuing a tour that ended", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.setState("current_step", 0)
     @tour.setState("end", "yes")
-    @tour.start(true)
-    expect($(".popover").length).toBe 1 # previously ended tour starts again if forced to
-
-  it "'start'(true) should force starting a tour that ended", ->
-    @tour = new Tour
-    @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.setState("end", "yes")
-    @tour.start(true)
+    @tour.init(true)
     expect($(".popover").length).toBe 1 # previously ended tour starts again if forced to
 
   it "'next' should hide current step and show next step", ->
