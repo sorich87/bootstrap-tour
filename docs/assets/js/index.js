@@ -59,6 +59,7 @@
         content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
       }
     ]);
+    tour.init();
     tour.start();
     if (tour.ended()) {
       $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert();

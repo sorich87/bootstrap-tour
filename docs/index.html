@@ -129,7 +129,9 @@
                 displayed, pass <code class="language-javascript">true</code> to the <code class="language-javascript">start()</code>
                 method.</p>
                 <pre class="language-javascript"><code>tour.start(true);</code></pre>
-                <p>Sometimes you want to end the tour prematurely:</p>
+                <p>Sometimes you want to initialize (setup event bindings and continue a tour that had started on a previous page load) a tour without starting it:</p>
+                <pre class="language-javascript"><code>tour.init();</code></pre>
+                <p>Or end the tour prematurely:</p>
                 <pre class="language-javascript"><code>tour.end();</code></pre>
                 <p>Or skip to the next step:</p>
                 <pre class="language-javascript"><code>tour.next();</code></pre>

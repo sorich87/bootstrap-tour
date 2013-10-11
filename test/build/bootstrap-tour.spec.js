@@ -32,10 +32,9 @@
       this.tour = new Tour;
       return expect(this.tour._options.name).toBe("tour");
     });
-    it("should accept an array of steps and set the current step", function() {
+    it("should accept an array of steps", function() {
       this.tour = new Tour;
-      expect(this.tour._steps).toEqual([]);
-      return expect(this.tour._current).toBe(0);
+      return expect(this.tour._steps).toEqual([]);
     });
     it("'setState' should save state as localStorage item", function() {
       this.tour = new Tour;
@@ -313,6 +312,15 @@
       this.tour.setState("end", "yes");
       this.tour.start();
       return expect($(".popover").length).toBe(0);
+    });
+    it("'init' should continue a tour", function() {
+      this.tour = new Tour;
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.setState("current_step", 0);
+      this.tour.init();
+      return expect($(".popover").length).toBe(1);
     });
     it("'next' should hide current step and show next step", function() {
       this.tour = new Tour;

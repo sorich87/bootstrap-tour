@@ -45,8 +45,9 @@
           onNext: function(tour) {},
           onPrev: function(tour) {}
         }, options);
+        this._force = false;
+        this._inited = false;
         this._steps = [];
-        this.setCurrentStep();
         this.backdrop = {
           overlay: null,
           $element: null,
@@ -138,34 +139,39 @@
         }
       };
 
-      Tour.prototype.start = function(force) {
-        var promise,
-          _this = this;
-        if (force == null) {
-          force = false;
-        }
-        this.force = force;
+      Tour.prototype.init = function() {
+        var _this = this;
         if (this.ended()) {
-          return this._debug("Tour ended, start prevented.");
+          return this._debug("Tour ended, init prevented.");
         }
-        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)", function(e) {
-          e.preventDefault();
-          return _this.next();
-        });
-        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)", function(e) {
-          e.preventDefault();
-          return _this.prev();
-        });
-        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]", function(e) {
-          e.preventDefault();
-          return _this.end();
-        });
+        this.setCurrentStep();
+        this._setupMouseNavigation();
+        this._setupKeyboardNavigation();
         this._onResize(function() {
           return _this.showStep(_this._current);
         });
-        this._setupKeyboardNavigation();
-        promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
-        return this._callOnPromiseDone(promise, this.showStep, this._current);
+        if (this._current !== null) {
+          this.showStep(this._current);
+        }
+        return this._inited = true;
+      };
+
+      Tour.prototype.start = function(force) {
+        var promise;
+        if (force == null) {
+          force = false;
+        }
+        if (!this._inited) {
+          this.init();
+        }
+        this._force = force;
+        if (this.ended()) {
+          return this._debug("Tour ended, start prevented.");
+        }
+        if (this._current === null) {
+          promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
+          return this._callOnPromiseDone(promise, this.showStep, 0);
+        }
       };
 
       Tour.prototype.next = function() {
@@ -203,6 +209,8 @@
           $(document).off("keyup.tour-" + _this._options.name);
           $(window).off("resize.tour-" + _this._options.name);
           _this.setState("end", "yes");
+          _this._inited = false;
+          _this._force = false;
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
           }
@@ -212,7 +220,7 @@
       };
 
       Tour.prototype.ended = function() {
-        return !this.force && !!this.getState("end");
+        return !this._force && !!this.getState("end");
       };
 
       Tour.prototype.restart = function() {
@@ -226,6 +234,9 @@
         var hideStepHelper, promise, step,
           _this = this;
         step = this.getStep(i);
+        if (!step) {
+          return;
+        }
         promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
         hideStepHelper = function(e) {
           var $element;
@@ -293,7 +304,7 @@
           return this.setState("current_step", value);
         } else {
           this._current = this.getState("current_step");
-          return this._current = this._current === null ? 0 : parseInt(this._current, 10);
+          return this._current = this._current === null ? null : parseInt(this._current, 10);
         }
       };
 
@@ -446,6 +457,22 @@
         return $(window).on("resize.tour-" + this._options.name, function() {
           clearTimeout(timeout);
           return timeout = setTimeout(callback, 100);
+        });
+      };
+
+      Tour.prototype._setupMouseNavigation = function() {
+        var _this = this;
+        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)", function(e) {
+          e.preventDefault();
+          return _this.next();
+        });
+        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)", function(e) {
+          e.preventDefault();
+          return _this.prev();
+        });
+        return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]", function(e) {
+          e.preventDefault();
+          return _this.end();
         });
       };
 
