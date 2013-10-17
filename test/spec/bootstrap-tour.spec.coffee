@@ -2,6 +2,7 @@ describe "Bootstrap Tour", ->
 
   beforeEach ->
     $.support.transition = false
+    $.fx.off = true
 
   afterEach ->
     tour = @tour
@@ -138,6 +139,7 @@ describe "Bootstrap Tour", ->
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.start()
     expect(tour_test).toBe 2 # tour runs onShown after first step shown
+
 
   it "with 'onHide' option should run the callback before hiding the step", ->
     tour_test = 0
