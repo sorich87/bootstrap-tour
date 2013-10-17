@@ -214,7 +214,6 @@
 
     # Show the specified step
     showStep: (i) ->
-      console.log "show step!"
       step = @getStep(i)
       return unless step
 
