@@ -50,7 +50,9 @@
         this.backdrop = {
           overlay: null,
           $element: null,
-          $background: null
+          $background: null,
+          backgroundShown: false,
+          overlayElementShown: false
         };
       }
 
@@ -247,6 +249,7 @@
       Tour.prototype.showStep = function(i) {
         var promise, showStepHelper, skipToPrevious, step,
           _this = this;
+        console.log("show step!");
         step = this.getStep(i);
         if (!step) {
           return;
@@ -277,11 +280,16 @@
           if (step.backdrop) {
             _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
-          _this._showPopover(step, i);
-          if (step.onShown != null) {
-            step.onShown(_this);
-          }
-          return _this._debug("Step " + (_this._current + 1) + " of " + _this._steps.length);
+          return _this._scrollIntoView(step.element, function() {
+            if ((step.element != null) && step.backdrop) {
+              _this._showOverlayElement(step.element);
+            }
+            _this._showPopover(step, i);
+            if (step.onShown != null) {
+              step.onShown(_this);
+            }
+            return _this._debug("Step " + (_this._current + 1) + " of " + _this._steps.length);
+          });
         };
         return this._callOnPromiseDone(promise, showStepHelper);
       };
@@ -387,8 +395,6 @@
         }).popover("show");
         $tip = $element.data("bs.popover") ? $element.data("bs.popover").tip() : $element.data("popover").tip();
         $tip.attr("id", step.id);
-        this._scrollIntoView($tip);
-        this._reposition($tip, step);
         if (isOrphan) {
           return this._center($tip);
         }
@@ -435,10 +441,22 @@
         return $tip.find(".arrow").css(position, delta ? 50 * (1 - delta / dimension) + "%" : "");
       };
 
-      Tour.prototype._scrollIntoView = function(tip) {
-        return $("html, body").stop().animate({
-          scrollTop: Math.ceil(tip.offset().top - ($(window).height() / 2))
-        });
+      Tour.prototype._scrollIntoView = function(element, callback) {
+        var scrollTop,
+          _this = this;
+        this._debug("Scroll into view element " + element);
+        if (element) {
+          scrollTop = Math.max(0, $(element).offset().top - ($(window).height() / 2));
+          this._debug("Scroll into view: animating scrollTop: " + scrollTop + " elementOffset: " + ($(element).offset().top) + " windowHeight: " + ($(window).height()));
+          return $("body").stop().animate({
+            scrollTop: Math.ceil(scrollTop)
+          }, function() {
+            _this._debug("Scroll into view: animation end elementOffset: " + ($(element).offset().top) + " windowHeight: " + ($(window).height()));
+            return callback();
+          });
+        } else {
+          return callback();
+        }
       };
 
       Tour.prototype._onResize = function(callback, timeout) {
@@ -498,39 +516,33 @@
       };
 
       Tour.prototype._showBackdrop = function(element) {
-        if (this.backdrop.overlay !== null) {
+        if (this.backdrop.backgroundShown) {
           return;
         }
-        this._showOverlay();
-        if (element != null) {
-          return this._showOverlayElement(element);
-        }
-      };
-
-      Tour.prototype._hideBackdrop = function() {
-        if (this.backdrop.overlay === null) {
-          return;
-        }
-        if (this.backdrop.$element) {
-          this._hideOverlayElement();
-        }
-        return this._hideOverlay();
-      };
-
-      Tour.prototype._showOverlay = function() {
         this.backdrop = $("<div/>", {
           "class": "tour-backdrop"
         });
+        this.backdrop.backgroundShown = true;
         return $("body").append(this.backdrop);
       };
 
-      Tour.prototype._hideOverlay = function() {
+      Tour.prototype._hideBackdrop = function() {
+        this._hideOverlayElement();
+        return this._hideBackground();
+      };
+
+      Tour.prototype._hideBackground = function() {
         this.backdrop.remove();
-        return this.backdrop.overlay = null;
+        this.backdrop.overlay = null;
+        return this.backdrop.backgroundShown = false;
       };
 
       Tour.prototype._showOverlayElement = function(element) {
         var $background, $element, offset;
+        if (this.backdrop.overlayElementShown) {
+          return;
+        }
+        this.backdrop.overlayElementShown = true;
         $element = $(element);
         $background = $("<div/>");
         offset = $element.offset();
@@ -544,10 +556,14 @@
       };
 
       Tour.prototype._hideOverlayElement = function() {
+        if (!this.backdrop.overlayElementShown) {
+          return;
+        }
         this.backdrop.$element.removeClass("tour-step-backdrop");
         this.backdrop.$background.remove();
         this.backdrop.$element = null;
-        return this.backdrop.$background = null;
+        this.backdrop.$background = null;
+        return this.backdrop.overlayElementShown = false;
       };
 
       return Tour;
