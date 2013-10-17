@@ -250,7 +250,6 @@
       Tour.prototype.showStep = function(i) {
         var promise, showStepHelper, skipToPrevious, step,
           _this = this;
-        console.log("show step!");
         step = this.getStep(i);
         if (!step) {
           return;
