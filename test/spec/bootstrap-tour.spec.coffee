@@ -24,10 +24,9 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     expect(@tour._options.name).toBe "tour"
 
-  it "should accept an array of steps and set the current step", ->
+  it "should accept an array of steps", ->
     @tour = new Tour
     expect(@tour._steps).toEqual [] # tour accepts an array of steps
-    expect(@tour._current).toBe 0 # tour initializes current step
 
   it "'setState' should save state as localStorage item", ->
     @tour = new Tour
@@ -232,12 +231,28 @@ describe "Bootstrap Tour", ->
     @tour.start()
     expect($(".popover").length).toBe 1
 
-  it "'start' should not start a tour that ended", ->
+  it "'init' should continue a tour", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.setState("current_step", 0)
+    @tour.init()
+    expect($(".popover").length).toBe 1
+
+  it "'init' should not continue a tour that ended", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.setState("current_step", 0)
     @tour.setState("end", "yes")
-    @tour.start()
+    @tour.init()
     expect($(".popover").length).toBe 0 # previously ended tour don't start again
+
+  it "'init'(true) should force continuing a tour that ended", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.setState("current_step", 0)
+    @tour.setState("end", "yes")
+    @tour.init(true)
+    expect($(".popover").length).toBe 1 # previously ended tour starts again if forced to
 
   it "'next' should hide current step and show next step", ->
     @tour = new Tour

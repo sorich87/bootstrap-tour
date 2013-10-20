@@ -38,8 +38,9 @@
         onPrev: (tour) ->
       }, options)
 
+      @_force = false
+      @_inited = false
       @_steps = []
-      @setCurrentStep()
       @backdrop =
         overlay: null
         $element: null
@@ -109,43 +110,32 @@
         onPrev: @_options.onPrev
       }, @_steps[i]) if @_steps[i]?
 
-    # Start tour from current step
-    start: (force = false) ->
-      @force = force
+    # Setup event bindings and continue a tour that has already started
+    init: (force) ->
+      @_force = force
 
-      return @_debug "Tour ended, start prevented." if @ended()
+      return @_debug "Tour ended, init prevented." if @ended()
 
-      # Go to next step after click on element with attribute 'data-role=next'
-      $(document)
-      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)")
-      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)", (e) =>
-        e.preventDefault()
-        @next()
-      )
+      @setCurrentStep()
 
-      # Go to previous step after click on element with attribute 'data-role=prev'
-      $(document)
-      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)")
-      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)", (e) =>
-        e.preventDefault()
-        @prev()
-      )
-
-      # End tour after click on element with attribute 'data-role=end'
-      $(document)
-      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]")
-      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]", (e) =>
-        e.preventDefault()
-        @end()
-      )
+      @_setupMouseNavigation()
+      @_setupKeyboardNavigation()
 
       # Reshow popover on window resize using debounced resize
       @_onResize(=> @showStep(@_current))
 
-      @_setupKeyboardNavigation()
+      # Continue a tour that had started on a previous page load
+      @showStep(@_current) unless @_current == null
 
-      promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
-      @_callOnPromiseDone(promise, @showStep, @_current)
+      @_inited = true
+
+    # Start tour from current step
+    start: (force = false) ->
+      @init(force) unless @_inited # Backward compatibility
+
+      if @_current == null
+        promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
+        @_callOnPromiseDone(promise, @showStep, 0)
 
     # Hide current step and show next step
     next: ->
@@ -174,6 +164,8 @@
         $(document).off "keyup.tour-#{@_options.name}"
         $(window).off "resize.tour-#{@_options.name}"
         @setState("end", "yes")
+        @_inited = false
+        @_force = false
 
         @_options.onEnd(@) if @_options.onEnd?
 
@@ -182,7 +174,7 @@
 
     # Verify if tour is enabled
     ended: ->
-      !@force && !!@getState("end")
+      !@_force && !!@getState("end")
 
     # Restart tour
     restart: ->
@@ -194,6 +186,7 @@
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep(i)
+      return unless step
 
       # If onHide returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onHide(@, i) if step.onHide?)
@@ -257,7 +250,7 @@
         @setState("current_step", value)
       else
         @_current = @getState("current_step")
-        @_current = if @_current == null then 0 else parseInt(@_current, 10)
+        @_current = if @_current == null then null else parseInt(@_current, 10)
 
     # Show next step
     _showNextStep: ->
@@ -394,6 +387,32 @@
       $(window).on "resize.tour-#{@_options.name}", ->
         clearTimeout(timeout)
         timeout = setTimeout(callback, 100)
+
+    # Event bindings for mouse navigation
+    _setupMouseNavigation: ->
+      # Go to next step after click on element with attribute 'data-role=next'
+      $(document)
+        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)")
+        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)", (e) =>
+          e.preventDefault()
+          @next()
+        )
+
+      # Go to previous step after click on element with attribute 'data-role=prev'
+      $(document)
+        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)")
+        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)", (e) =>
+          e.preventDefault()
+          @prev()
+        )
+
+      # End tour after click on element with attribute 'data-role=end'
+      $(document)
+        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]")
+        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]", (e) =>
+          e.preventDefault()
+          @end()
+        )
 
     # Keyboard navigation
     _setupKeyboardNavigation: ->
