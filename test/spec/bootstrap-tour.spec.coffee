@@ -204,6 +204,7 @@ describe "Bootstrap Tour", ->
       backdrop: false
       redirect: true
       orphan: false
+      duration: false
       template: "<div class='popover'>
         <div class='arrow'></div>
         <h3 class='popover-title'></h3>

@@ -286,6 +286,7 @@
         backdrop: false,
         redirect: true,
         orphan: false,
+        duration: false,
         template: "<div class='popover'>        <div class='arrow'></div>        <h3 class='popover-title'></h3>        <div class='popover-content'></div>        <nav class='popover-navigation'>          <div class='btn-group'>            <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>            <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>          </div>          <button class='btn btn-sm btn-default' data-role='end'>End tour</button>        </nav>      </div>",
         onShow: function(tour) {},
         onShown: function(tour) {},

@@ -9,7 +9,8 @@
       onEnd: function() {
         return $start.removeClass("disabled", true);
       },
-      debug: true
+      debug: true,
+      duration: 4000
     });
     tour.addSteps([
       {

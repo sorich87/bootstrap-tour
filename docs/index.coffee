@@ -5,6 +5,7 @@ $ ->
     onStart: -> $start.addClass "disabled", true
     onEnd: -> $start.removeClass "disabled", true
     debug: true
+    duration: 4000
   )
 
   tour.addSteps [
