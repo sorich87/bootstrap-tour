@@ -22,10 +22,10 @@
             <div class='btn-group'>
               <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
               <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
-              <!--<button class='btn btn-sm btn-default' data-role='pause-resume'
+              <button class='btn btn-sm btn-default' data-role='pause-resume'
                 data-pause-text='Pause'
                 data-resume-text='Resume'
-              >Pause</button>-->
+              >Pause</button>
             </div>
             <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
           </div>
@@ -148,9 +148,6 @@
         @end()
       )
 
-      ###
-      TODO: register handler for pause / resume button
-
       # Pause/resume tour after click on element with attribute 'data-role=pause-resume'
       $(document)
       .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]")
@@ -158,14 +155,10 @@
         e.preventDefault()
 
         $this = $(@)
-        hasTimer = _this._timer
 
-        console.log(_this._timer)
-
-        $this.text(if hasTimer then $this.data("resume-text") else $this.data("pause-text"))
-        if hasTimer then _this.pause() else _this.resume()
+        $this.text(if _this._paused then $this.data("pause-text") else $this.data("resume-text"))
+        if _this._paused then _this.resume() else _this.pause()
       )
-      ###
 
       # Reshow popover on window resize using debounced resize
       @_onResize(=> @showStep(@_current))
@@ -203,10 +196,7 @@
         $(window).off "resize.tour-#{@_options.name}"
         @setState("end", "yes")
 
-        console.log(@_timer)
-
-        # Stop duration timer
-        window.clearTimeout(@_timer)
+        @_clearTimer()
 
         @_options.onEnd(@) if @_options.onEnd?
 
@@ -229,10 +219,11 @@
       step = @getStep(@_current)
       return unless step and step.duration
 
+      @_paused = true
+      @_duration -= new Date().getTime() - @_start
       window.clearTimeout(@_timer)
-      @_timerRemaining -= new Date().getTime() - @_timerStart
 
-      @_debug "Paused/Stopped step #{@_current + 1} timer (#{@_timerRemaining} remaining)."
+      @_debug "Paused/Stopped step #{@_current + 1} timer (#{@_duration} remaining)."
 
       step.onPause(@) if step.onPause?
 
@@ -241,15 +232,14 @@
       step = @getStep(@_current)
       return unless step and step.duration
 
-      @_timerStart = new Date().getTime()
-      @_timerRemaining = @_timerRemaining or step.duration
-
-      window.clearTimeout(@_timer)
+      @_paused = false
+      @_start = new Date().getTime()
+      @_duration = @_duration or step.duration
       @_timer = window.setTimeout( =>
         if @_isLast() then @next() else @end()
-      , @_timerRemaining)
+      , @_duration)
 
-      @_debug "Started step #{@_current + 1} timer."
+      @_debug "Started step #{@_current + 1} timer with duration #{@_duration}"
 
       step.onResume(@) if step.onResume?
 
@@ -257,8 +247,7 @@
     hideStep: (i) ->
       step = @getStep(i)
 
-      # Stop duration timer
-      window.clearTimeout(@_timer) if @_timer
+      @_clearTimer()
 
       # If onHide returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onHide(@, i) if step.onHide?)
@@ -394,7 +383,7 @@
 
       $navigation.find("*[data-role=prev]").addClass("disabled") if step.prev < 0
       $navigation.find("*[data-role=next]").addClass("disabled") if step.next < 0
-      # $navigation.find("*[data-role='pause-resume']").remove() if not step.duration
+      $navigation.find("*[data-role='pause-resume']").remove() unless step.duration
 
       step.template = $template.clone().wrap("<div>").parent().html()
 
@@ -415,8 +404,7 @@
       @_scrollIntoView($tip)
       @_reposition($tip, step)
 
-      if isOrphan
-        @_center($tip)
+      @_center($tip) if isOrphan
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -538,6 +526,11 @@
       @backdrop.$background.remove()
       @backdrop.$element = null
       @backdrop.$background = null
+
+    _clearTimer: ->
+      window.clearTimeout(@_timer)
+      @_timer = null
+      @_duration = null
 
   window.Tour = Tour
 

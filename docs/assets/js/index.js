@@ -1,8 +1,8 @@
 (function() {
   $(function() {
-    var $start, tour;
+    var $start;
     $start = $("#start");
-    tour = new Tour({
+    window.tour = new Tour({
       onStart: function() {
         return $start.addClass("disabled", true);
       },
@@ -10,9 +10,9 @@
         return $start.removeClass("disabled", true);
       },
       debug: true,
-      duration: 4000
+      duration: 5000
     });
-    tour.addSteps([
+    window.tour.addSteps([
       {
         element: "#download",
         placement: "bottom",
@@ -60,8 +60,8 @@
         content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
       }
     ]);
-    tour.start();
-    if (tour.ended()) {
+    window.tour.start();
+    if (window.tour.ended()) {
       $('<div class="alert alert-warning"><button class="close" data-dismiss="alert">&times;</button>You ended the demo tour. <a href="#" class="start">Restart the demo tour.</a></div>').prependTo(".content").alert();
     }
     $(document).on("click", ".start", function(e) {
@@ -69,7 +69,7 @@
       if ($(this).hasClass("disabled")) {
         return;
       }
-      tour.restart();
+      window.tour.restart();
       return $(".alert").alert("close");
     });
     return $("html").smoothScroll();

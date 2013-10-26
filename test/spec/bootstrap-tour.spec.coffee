@@ -20,7 +20,7 @@ describe "Bootstrap Tour", ->
     expect(@tour._options.afterGetState).toBeTruthy
     expect(@tour._options.afterSetState).toBeTruthy
 
-  it "should have default name of 'tour'", ->
+  it "should have 'tour' as default name", ->
     @tour = new Tour
     expect(@tour._options.name).toBe "tour"
 
@@ -596,3 +596,42 @@ describe "Bootstrap Tour", ->
     @tour.addStep
       orphan: true
     expect($(".popover").hasClass("orphan")).toBe true
+
+  # duration
+  it "should start the timer", ->
+    @tour = new Tour
+      duration: 5000
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.start()
+    expect(@tour._timer).toBeDefined()
+    expect(@tour._duration).toBeDefined()
+    window.clearTimeout(@tour._timer)
+
+  it "should pause the timer on pause", ->
+    @tour = new Tour
+      duration: 5000
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.start()
+    window.setTimeout( =>
+      @tour.pause()
+      expect(@tour._timer).toBe null
+      expect(@tour._duration).toBeGreaterThan(0).toBeLessThan(5000)
+    , 1000)
+
+  it "should stop the timer on hideStep", ->
+    @tour = new Tour
+      duration: 5000
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.start()
+    @tour.hideStep(0)
+    expect(@tour._timer).toBe null
+    expect(@tour._duration).toBe null
+
+  it "should stop the timer on end", ->
+    @tour = new Tour
+      duration: 5000
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.start()
+    @tour.end()
+    expect(@tour._timer).toBe null
+    expect(@tour._duration).toBe null

@@ -28,7 +28,7 @@
       expect(this.tour._options.afterGetState).toBeTruthy;
       return expect(this.tour._options.afterSetState).toBeTruthy;
     });
-    it("should have default name of 'tour'", function() {
+    it("should have 'tour' as default name", function() {
       this.tour = new Tour;
       return expect(this.tour._options.name).toBe("tour");
     });
@@ -767,12 +767,63 @@
       this.tour.showStep(0);
       return expect($(".popover").length).toBe(1);
     });
-    return it("should add 'orphan' class to the popover", function() {
+    it("should add 'orphan' class to the popover", function() {
       this.tour = new Tour;
       this.tour.addStep({
         orphan: true
       });
       return expect($(".popover").hasClass("orphan")).toBe(true);
+    });
+    it("should start the timer", function() {
+      this.tour = new Tour({
+        duration: 5000
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.start();
+      expect(this.tour._timer).toBeDefined();
+      expect(this.tour._duration).toBeDefined();
+      return window.clearTimeout(this.tour._timer);
+    });
+    it("should pause the timer on pause", function() {
+      var _this = this;
+      this.tour = new Tour({
+        duration: 5000
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.start();
+      return window.setTimeout(function() {
+        _this.tour.pause();
+        expect(_this.tour._timer).toBe(null);
+        return expect(_this.tour._duration).toBeGreaterThan(0).toBeLessThan(5000);
+      }, 1000);
+    });
+    it("should stop the timer on hideStep", function() {
+      this.tour = new Tour({
+        duration: 5000
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.start();
+      this.tour.hideStep(0);
+      expect(this.tour._timer).toBe(null);
+      return expect(this.tour._duration).toBe(null);
+    });
+    return it("should stop the timer on end", function() {
+      this.tour = new Tour({
+        duration: 5000
+      });
+      this.tour.addStep({
+        element: $("<div></div>").appendTo("body")
+      });
+      this.tour.start();
+      this.tour.end();
+      expect(this.tour._timer).toBe(null);
+      return expect(this.tour._duration).toBe(null);
     });
   });
 

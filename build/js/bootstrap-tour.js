@@ -33,7 +33,7 @@
           orphan: false,
           duration: false,
           basePath: "",
-          template: "<div class='popover'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>              <!--<button class='btn btn-sm btn-default' data-role='pause-resume'                data-pause-text='Pause'                data-resume-text='Resume'              >Pause</button>-->            </div>            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>          </div>        </div>",
+          template: "<div class='popover'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>              <button class='btn btn-sm btn-default' data-role='pause-resume'                data-pause-text='Pause'                data-resume-text='Resume'              >Pause</button>            </div>            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>          </div>        </div>",
           afterSetState: function(key, value) {},
           afterGetState: function(key, value) {},
           afterRemoveState: function(key) {},
@@ -165,25 +165,17 @@
           e.preventDefault();
           return _this.end();
         });
-        /*
-        TODO: register handler for pause / resume button
-        
-        # Pause/resume tour after click on element with attribute 'data-role=pause-resume'
-        $(document)
-        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]")
-        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]", (e) ->
-          e.preventDefault()
-        
-          $this = $(@)
-          hasTimer = _this._timer
-        
-          console.log(_this._timer)
-        
-          $this.text(if hasTimer then $this.data("resume-text") else $this.data("pause-text"))
-          if hasTimer then _this.pause() else _this.resume()
-        )
-        */
-
+        $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=pause-resume]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=pause-resume]", function(e) {
+          var $this;
+          e.preventDefault();
+          $this = $(this);
+          $this.text(_this._paused ? $this.data("pause-text") : $this.data("resume-text"));
+          if (_this._paused) {
+            return _this.resume();
+          } else {
+            return _this.pause();
+          }
+        });
         this._onResize(function() {
           return _this.showStep(_this._current);
         });
@@ -227,8 +219,7 @@
           $(document).off("keyup.tour-" + _this._options.name);
           $(window).off("resize.tour-" + _this._options.name);
           _this.setState("end", "yes");
-          console.log(_this._timer);
-          window.clearTimeout(_this._timer);
+          _this._clearTimer();
           if (_this._options.onEnd != null) {
             return _this._options.onEnd(_this);
           }
@@ -254,9 +245,10 @@
         if (!(step && step.duration)) {
           return;
         }
+        this._paused = true;
+        this._duration -= new Date().getTime() - this._start;
         window.clearTimeout(this._timer);
-        this._timerRemaining -= new Date().getTime() - this._timerStart;
-        this._debug("Paused/Stopped step " + (this._current + 1) + " timer (" + this._timerRemaining + " remaining).");
+        this._debug("Paused/Stopped step " + (this._current + 1) + " timer (" + this._duration + " remaining).");
         if (step.onPause != null) {
           return step.onPause(this);
         }
@@ -269,17 +261,17 @@
         if (!(step && step.duration)) {
           return;
         }
-        this._timerStart = new Date().getTime();
-        this._timerRemaining = this._timerRemaining || step.duration;
-        window.clearTimeout(this._timer);
+        this._paused = false;
+        this._start = new Date().getTime();
+        this._duration = this._duration || step.duration;
         this._timer = window.setTimeout(function() {
           if (_this._isLast()) {
             return _this.next();
           } else {
             return _this.end();
           }
-        }, this._timerRemaining);
-        this._debug("Started step " + (this._current + 1) + " timer.");
+        }, this._duration);
+        this._debug("Started step " + (this._current + 1) + " timer with duration " + this._duration);
         if (step.onResume != null) {
           return step.onResume(this);
         }
@@ -289,9 +281,7 @@
         var hideStepHelper, promise, step,
           _this = this;
         step = this.getStep(i);
-        if (this._timer) {
-          window.clearTimeout(this._timer);
-        }
+        this._clearTimer();
         promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
         hideStepHelper = function(e) {
           var $element;
@@ -446,6 +436,9 @@
         }
         if (step.next < 0) {
           $navigation.find("*[data-role=next]").addClass("disabled");
+        }
+        if (!step.duration) {
+          $navigation.find("*[data-role='pause-resume']").remove();
         }
         step.template = $template.clone().wrap("<div>").parent().html();
         $element.popover({
@@ -622,6 +615,12 @@
         this.backdrop.$background.remove();
         this.backdrop.$element = null;
         return this.backdrop.$background = null;
+      };
+
+      Tour.prototype._clearTimer = function() {
+        window.clearTimeout(this._timer);
+        this._timer = null;
+        return this._duration = null;
       };
 
       return Tour;
