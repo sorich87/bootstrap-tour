@@ -122,12 +122,13 @@
       @_setupKeyboardNavigation()
 
       # Reshow popover on window resize using debounced resize
-      @_onResize(=> @showStep(@_current))
+      @_onResize( => @showStep(@_current))
 
       # Continue a tour that had started on a previous page load
       @showStep(@_current) unless @_current == null
 
       @_inited = true
+      @
 
     # Start tour from current step
     start: (force = false) ->
@@ -169,8 +170,8 @@
 
         @_options.onEnd(@) if @_options.onEnd?
 
-      hidePromise = @hideStep(@_current)
-      @_callOnPromiseDone(hidePromise, endHelper)
+      promise = @hideStep(@_current)
+      @_callOnPromiseDone(promise, endHelper)
 
     # Verify if tour is enabled
     ended: ->
@@ -243,6 +244,8 @@
 
       @_callOnPromiseDone(promise, showStepHelper)
 
+      promise
+
     # Setup current step variable
     setCurrentStep: (value) ->
       if value?
@@ -251,6 +254,7 @@
       else
         @_current = @getState("current_step")
         @_current = if @_current == null then null else parseInt(@_current, 10)
+      @
 
     # Show next step
     _showNextStep: ->

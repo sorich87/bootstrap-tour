@@ -154,7 +154,8 @@
         if (this._current !== null) {
           this.showStep(this._current);
         }
-        return this._inited = true;
+        this._inited = true;
+        return this;
       };
 
       Tour.prototype.start = function(force) {
@@ -199,7 +200,7 @@
       };
 
       Tour.prototype.end = function() {
-        var endHelper, hidePromise,
+        var endHelper, promise,
           _this = this;
         endHelper = function(e) {
           $(document).off("click.tour-" + _this._options.name);
@@ -212,8 +213,8 @@
             return _this._options.onEnd(_this);
           }
         };
-        hidePromise = this.hideStep(this._current);
-        return this._callOnPromiseDone(hidePromise, endHelper);
+        promise = this.hideStep(this._current);
+        return this._callOnPromiseDone(promise, endHelper);
       };
 
       Tour.prototype.ended = function() {
@@ -292,17 +293,19 @@
           }
           return _this._debug("Step " + (_this._current + 1) + " of " + _this._steps.length);
         };
-        return this._callOnPromiseDone(promise, showStepHelper);
+        this._callOnPromiseDone(promise, showStepHelper);
+        return promise;
       };
 
       Tour.prototype.setCurrentStep = function(value) {
         if (value != null) {
           this._current = value;
-          return this.setState("current_step", value);
+          this.setState("current_step", value);
         } else {
           this._current = this.getState("current_step");
-          return this._current = this._current === null ? null : parseInt(this._current, 10);
+          this._current = this._current === null ? null : parseInt(this._current, 10);
         }
+        return this;
       };
 
       Tour.prototype._showNextStep = function() {
