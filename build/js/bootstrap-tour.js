@@ -478,32 +478,33 @@
 
       Tour.prototype._setupKeyboardNavigation = function() {
         var _this = this;
-        if (this._options.keyboard) {
-          return $(document).on("keyup.tour-" + this._options.name, function(e) {
-            if (!e.which) {
-              return;
-            }
-            switch (e.which) {
-              case 39:
-                e.preventDefault();
-                if (_this._current < _this._steps.length - 1) {
-                  return _this.next();
-                } else {
-                  return _this.end();
-                }
-                break;
-              case 37:
-                e.preventDefault();
-                if (_this._current > 0) {
-                  return _this.prev();
-                }
-                break;
-              case 27:
-                e.preventDefault();
-                return _this.end();
-            }
-          });
+        if (!this._options.keyboard) {
+          return;
         }
+        return $(document).on("keyup.tour-" + this._options.name, function(e) {
+          if (!e.which) {
+            return;
+          }
+          switch (e.which) {
+            case 39:
+              e.preventDefault();
+              if (_this._current < _this._steps.length - 1) {
+                return _this.next();
+              } else {
+                return _this.end();
+              }
+              break;
+            case 37:
+              e.preventDefault();
+              if (_this._current > 0) {
+                return _this.prev();
+              }
+              break;
+            case 27:
+              e.preventDefault();
+              return _this.end();
+          }
+        });
       };
 
       Tour.prototype._makePromise = function(result) {

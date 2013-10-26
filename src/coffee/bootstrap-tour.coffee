@@ -420,23 +420,24 @@
 
     # Keyboard navigation
     _setupKeyboardNavigation: ->
-      if @_options.keyboard
-        $(document).on "keyup.tour-#{@_options.name}", (e) =>
-          return unless e.which
-          switch e.which
-            when 39
-              e.preventDefault()
-              if @_current < @_steps.length - 1
-                @next()
-              else
-                @end()
-            when 37
-              e.preventDefault()
-              if @_current > 0
-                @prev()
-            when 27
-              e.preventDefault()
+      return unless @_options.keyboard
+
+      $(document).on "keyup.tour-#{@_options.name}", (e) =>
+        return unless e.which
+        switch e.which
+          when 39
+            e.preventDefault()
+            if @_current < @_steps.length - 1
+              @next()
+            else
               @end()
+          when 37
+            e.preventDefault()
+            if @_current > 0
+              @prev()
+          when 27
+            e.preventDefault()
+            @end()
 
     # Checks if the result of a callback is a promise
     _makePromise: (result) ->
