@@ -4,6 +4,6 @@
   "main": ["./build/js/bootstrap-tour.js", "./build/css/bootstrap-tour.css"],
   "dependencies": {
     "bootstrap": ">=2.3.2",
-    "jquery": "~1.8.0"
+    "jquery": ">=1.9.0"
   }
 }
