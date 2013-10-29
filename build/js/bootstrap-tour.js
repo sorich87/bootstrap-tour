@@ -45,8 +45,8 @@
           onHidden: function(tour) {},
           onNext: function(tour) {},
           onPrev: function(tour) {},
-          onPause: function(tour) {},
-          onResume: function(tour) {}
+          onPause: function(tour, duration) {},
+          onResume: function(tour, duration) {}
         }, options);
         this._steps = [];
         this.setCurrentStep();
@@ -137,7 +137,9 @@
             onHide: this._options.onHide,
             onHidden: this._options.onHidden,
             onNext: this._options.onNext,
-            onPrev: this._options.onPrev
+            onPrev: this._options.onPrev,
+            onPause: this._options.onPause,
+            onResume: this._options.onResume
           }, this._steps[i]);
         }
       };
@@ -250,7 +252,7 @@
         window.clearTimeout(this._timer);
         this._debug("Paused/Stopped step " + (this._current + 1) + " timer (" + this._duration + " remaining).");
         if (step.onPause != null) {
-          return step.onPause(this);
+          return step.onPause(this, this._duration);
         }
       };
 
@@ -272,8 +274,8 @@
           }
         }, this._duration);
         this._debug("Started step " + (this._current + 1) + " timer with duration " + this._duration);
-        if (step.onResume != null) {
-          return step.onResume(this);
+        if ((step.onResume != null) && this._duration !== step.duration) {
+          return step.onResume(this, this._duration);
         }
       };
 

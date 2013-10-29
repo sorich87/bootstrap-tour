@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <title>Bootstrap Tour, easy product tours with Bootstrap from Twitter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="assets/vendor/bootstrap.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="assets/vendor/bootstrap-theme.min.css" rel="stylesheet"> -->
     <link href="assets/vendor/prism.css" rel="stylesheet">
     <link href="assets/css/bootstrap-tour.css" rel="stylesheet">
     <link href="assets/css/index.css" rel="stylesheet">
@@ -26,13 +27,13 @@
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav nav">
             <li>
-              <a href="#demo">Demo</a>
-            </li>
-            <li>
               <a href="#usage">Usage</a>
             </li>
             <li>
               <a href="#options">Options</a>
+            </li>
+            <li>
+              <a href="#methods">Methods</a>
             </li>
             <li>
               <a href="#contribute">Contribute</a>
@@ -48,13 +49,13 @@
       <div class="jumbotron masthead">
         <h1 id="reflex">Bootstrap Tour</h1>
         <p>Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
-        <p><a href="https://github.com/sorich87/bootstrap-tour/archive/master.zip" id="download" class="btn-primary btn-large btn">Download Bootstrap Tour</a></p>
+        <p>
+          <a href="https://github.com/sorich87/bootstrap-tour/archive/master.zip" id="download" class="btn-primary btn-large btn"><span class="glyphicon glyphicon-download"></span> Download</a>
+          <button type="button" id="demo" class="btn btn-default" data-demo><span class="glyphicon glyphicon-play"></span> Demo</button>
+        </p>
         <ul class="masthead-links">
           <li>
             <a href="http://github.com/sorich87/bootstrap-tour">GitHub project</a>
-          </li>
-          <li>
-            <a href="#demo">Demo</a>
           </li>
           <li>
             Version 0.6.1
@@ -65,21 +66,12 @@
         </ul>
       </div>
     </header>
-    <section id="demo">
-      <div class="container">
-        <div class="page-header">
-          <h2>Demo <small>Try it now!</small></h2>
-        </div>
-        <p>Note: This library does not depend on the full Bootstrap package. The only dependencies are the tooltip and popover files.</p>
-        <a href="#" id="start" class="start btn-primary btn-lg btn">&#9658; Start tour</a>
-      </div>
-    </section>
     <section id="usage">
       <div class="container">
         <div class="page-header">
           <h2>Usage <small>Oh wait, is it so simple?</small></h2>
         </div>
-        <h3>1. Add the dependencies</h3>
+        <h3>Add the dependencies</h3>
 <pre class="language-markup"><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
@@ -95,25 +87,29 @@
   &lt;script src="bootstrap-tour.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-        <h3>2. Initialize the tour</h3>
-        <pre class="language-javascript"><code>var tour = new Tour();</code></pre>
-        <h3>3. Add steps</h3>
-<pre class="language-javascript"><code>tour.addSteps([
+        <h3>Setup your tour</h3>
+<pre class="language-javascript"><code>// Instance the tour
+var tour = new Tour();
+
+// Add your steps. Not too many, you don't really want to get your users sleepy
+tour.addSteps([
   {
     element: "#my-element", // string (jQuery selector) - html element next to which the step popover should be shown
-    title: "Title of my popover", // string - title of the popover
-    content: "Content of my popover" // string - content of the popover
+    title: "Title of my step", // string - title of the popover
+    content: "Content of my step" // string - content of the popover
   },
   {
     element: "#my-other-element",
-    title: "Title of my popover",
-    content: "Content of my popover"
+    title: "Title of my step",
+    content: "Content of my step"
   }
-]);</code></pre>
-        <p>You can add as many steps as you want, but not too much or your
-        users will fall asleep!</p>
-        <h3>4. Start the tour</h3>
-        <pre class="language-javascript"><code>tour.start();</code></pre>
+]);
+
+// Initialize the tour
+tour.init();
+
+// Start the tour
+tour.start();</code></pre>
       </div>
     </section>
     <section id="options">
@@ -121,26 +117,7 @@
         <div class="page-header">
           <h2>Options <small>Well, let's go deeper</small></h2>
         </div>
-        <h3>Useful Methods</h3>
-        <p>Bootstrap Tour saves the current step and will not
-        display the tour again to users who have already completed it.</p>
-        <p>If, for some reasons, you want to force the tour to be
-        displayed, pass <code class="language-javascript">true</code> to the <code class="language-javascript">start()</code>
-        method.</p>
-        <pre class="language-javascript"><code>tour.start(true);</code></pre>
-        <p>Sometimes you want to end the tour prematurely:</p>
-        <pre class="language-javascript"><code>tour.end();</code></pre>
-        <p>Or skip to the next step:</p>
-        <pre class="language-javascript"><code>tour.next();</code></pre>
-        <p>Or go back to the previous step:</p>
-        <pre class="language-javascript"><code>tour.prev();</code></pre>
-        <p>Or skip to a specific step. Pass <code class="language-javascript">i</code> as the position of the step in the tour, starting from 0 for the first step:</p>
-        <pre class="language-javascript"><code>tour.goto(i);</code></pre>
-        <p>Or restart the tour after it ended:</p>
-        <pre class="language-javascript"><code>tour.restart();</code></pre>
-        <p>Or verify if the tour ended:</p>
-        <pre class="language-javascript"><code>tour.ended();</code></pre>
-        <h3>Tour Options</h3>
+        <h3>Tour options</h3>
 <pre class="language-javascript"><code>var tour = new Tour({
   name: "tour",
   container: "body",
@@ -150,6 +127,7 @@
   backdrop: false,
   redirect: true,
   orphan: false,
+  duration: false,
   basePath: "",
   template: "&lt;div class='popover tour'&gt;
     &lt;div class='arrow'&gt;&lt;/div&gt;
@@ -173,7 +151,9 @@
   onHide: function(tour) {},
   onHidden: function(tour) {},
   onNext: function(tour) {},
-  onPrev: function(tour) {}
+  onPrev: function(tour) {},
+  onPause: function(tour, duration) {},
+  onResume: function(tour, duration) {}
 });</code></pre>
         <table class="table  table-bordered table-striped">
           <thead>
@@ -210,8 +190,8 @@
               <td>This option set the left and right arrow navigation.</td>
               <td><code class="language-javascript">true</code></td>
             </tr>
-            <tr class="success">
-              <td>storage <span class="label label-success">UPDATED</span></td>
+            <tr>
+              <td>storage</td>
               <td>Object</td>
               <td>The storage system you want to use. could be the objects window.localStorage,
               window.sessionStorage or your own object.<br>
@@ -245,12 +225,20 @@
               <code class="language-javascrip">document.location.href</code></td>
               <td><code class="language-javascript">true</code></td>
             </tr>
-            <tr class="success">
-              <td>orphan <span class="label label-success">NEW</span></td>
+            <tr>
+              <td>orphan</td>
               <td>Boolean</td>
               <td>Allow to show the step regardless whether its element is not set, is
               not present in the page or is hidden. The step is fixed
               positioned in the middle of the page.</td>
+              <td><code class="language-javascript">false</code></td>
+            </tr>
+            <tr id="duration" class="success">
+              <td>duration <span class="label label-success">NEW</span></td>
+              <td>Boolean|String</td>
+              <td>Set a expiration time for the steps. When the current step expires,
+              the next step is automatically shown. See it as a sort of guided, automatized tour
+              functionality. The value is specified in milliseconds</td>
               <td><code class="language-javascript">false</code></td>
             </tr>
             <tr>
@@ -372,6 +360,20 @@
               <td>Function to execute when prev step is called.</td>
               <td><code class="language-javascript">function(tour) { }</code></td>
             </tr>
+            <tr class="success">
+              <td>onPause <span class="label label-success">NEW</span></td>
+              <td>Function</td>
+              <td>Function to execute when pause is called. The second argument refers to the
+              remaining duration.</td>
+              <td><code class="language-javascript">function(tour, duration) { }</code></td>
+            </tr>
+            <tr class="success">
+              <td>onResume <span class="label label-success">NEW</span></td>
+              <td>Function</td>
+              <td>Function to execute when resume is called. The second argument refers to the
+              remaining duration.</td>
+              <td><code class="language-javascript">function(tour, duration) { }</code></td>
+            </tr>
           </tbody>
         </table>
         <h3>Step Options</h3>
@@ -395,7 +397,9 @@
   onHide: function(tour) {},
   onHidden: function(tour) {},
   onNext: function(tour) {},
-  onPrev: function(tour) {}
+  onPrev: function(tour) {},
+  onPause: function(tour) {},
+  onResume: function(tour) {}
 });</code></pre>
         <table class="table  table-bordered table-striped">
           <thead>
@@ -504,12 +508,20 @@
               continue the tour.</td>
               <td><code class="language-javascript">false</code></td>
             </tr>
-            <tr class="success">
-              <td>orphan <span class="label label-success">NEW</span></td>
+            <tr>
+              <td>orphan</td>
               <td>Boolean</td>
               <td>Allow to show the step regardless whether its element is not set, is
               not present in the page or is hidden. The step is fixed
               positioned in the middle of the page.</td>
+              <td><code class="language-javascript">false</code></td>
+            </tr>
+            <tr class="success">
+              <td>duration <span class="label label-success">NEW</span></td>
+              <td>Boolean|String</td>
+              <td>Set a expiration time for the stes. When the step expires,
+              the next step is automatically shown. See it as a sort of guided, automatized tour
+              functionality. The value is specified in milliseconds</td>
               <td><code class="language-javascript">false</code></td>
             </tr>
             <tr>
@@ -578,9 +590,85 @@
             <tr>
               <td>onPrev</td>
               <td>Function</td>
-              <td>Function to execute when prev step is called. It overrides the
-              global <code class="language-javascript">onPrev</code> option.</td>
+              <td>Function to execute when prev step is called. It overrides the global
+              <code class="language-javascript">onPrev</code> option.</td>
               <td><code class="language-javascript">function(tour) { }</code></td>
+            </tr>
+            <tr class="success">
+              <td>onPause <span class="label label-success">NEW</span></td>
+              <td>Function</td>
+              <td>Function to execute when pause is called. The second argument refers to the
+              remaining duration. It overrides the global the
+              <code class="language-javascript">onPause</code> option</td>
+              <td><code class="language-javascript">function(tour, duration) { }</code></td>
+            </tr>
+            <tr class="success">
+              <td>onResume <span class="label label-success">NEW</span></td>
+              <td>Function</td>
+              <td>Function to execute when resume is called. The second argument refers to the
+              remaining duration. It overrides the global
+              <code class="language-javascript">onResume</code> option</td>
+              <td><code class="language-javascript">function(tour, duration) { }</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id="methods">
+      <div class="container">
+        <div class="page-header">
+          <h2>Methods</h2>
+        </div>
+        <!--<p>If, for some reasons, you want to force the tour to be
+        displayed, pass <code class="language-javascript">true</code> to the <code class="language-javascript">start()</code>
+        method.</p>-->
+        <table class="table  table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>init()</td>
+              <td>Initialize the tour. You must do it before calling start.</td>
+            </tr>
+            <tr>
+              <td>start(<code class="language-javascript">true</code>)</td>
+              <td>Start the tour. Pass <code class="language-javascript">true</code> to force the start.</td>
+            </tr>
+            <tr>
+              <td>restart()</td>
+              <td>Restart the tour after it ended.</td>
+            </tr>
+            <tr>
+              <td>end()</td>
+              <td>End the tour prematurely.</td>
+            </tr>
+            <tr>
+              <td>next()</td>
+              <td>Skip to the next step.</td>
+            </tr>
+            <tr>
+              <td>prev()</td>
+              <td>Go back to the previous step.</td>
+            </tr>
+            <tr>
+              <td>goto(<code class="language-javascript">i</code>)</td>
+              <td>Or skip to a specific step. Pass <code class="language-javascript">i</code> as the position of the step in the tour, starting from 0 for the first step.</td>
+            </tr>
+            <tr>
+              <td>pause()</td>
+              <td>Pause the duration timer. It works only if tour or current stap has duration.</td>
+            </tr>
+            <tr>
+              <td>resume()</td>
+              <td>Resume the duration timer. It works only if tour or current stap has duration.</td>
+            </tr>
+            <tr>
+              <td>ended()</td>
+              <td>Verify if the tour ended. Returns boolean.</td>
             </tr>
           </tbody>
         </table>

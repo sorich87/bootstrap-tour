@@ -41,8 +41,8 @@
         onHidden: (tour) ->
         onNext: (tour) ->
         onPrev: (tour) ->
-        onPause: (tour) ->
-        onResume: (tour) ->
+        onPause: (tour, duration) ->
+        onResume: (tour, duration) ->
       }, options)
 
       @_steps = []
@@ -115,6 +115,8 @@
         onHidden: @_options.onHidden
         onNext: @_options.onNext
         onPrev: @_options.onPrev
+        onPause: @_options.onPause
+        onResume: @_options.onResume
       }, @_steps[i]) if @_steps[i]?
 
     # Start tour from current step
@@ -225,7 +227,7 @@
 
       @_debug "Paused/Stopped step #{@_current + 1} timer (#{@_duration} remaining)."
 
-      step.onPause(@) if step.onPause?
+      step.onPause(@, @_duration) if step.onPause?
 
     # Resume step timer
     resume: ->
@@ -241,7 +243,7 @@
 
       @_debug "Started step #{@_current + 1} timer with duration #{@_duration}"
 
-      step.onResume(@) if step.onResume?
+      step.onResume(@, @_duration) if step.onResume? and @_duration isnt step.duration
 
     # Hide the specified step
     hideStep: (i) ->
