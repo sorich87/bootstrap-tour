@@ -291,7 +291,8 @@
         document.location.href = path
 
     _isOrphan: (step) ->
-      ! step.element? || ! $(step.element).length || $(step.element).is(":hidden")
+      # Do not check for is(":hidden") on svg elements. jQuery does not work properly on svg.
+      ! step.element? || ! $(step.element).length || $(step.element).is(":hidden") && ($(step.element)[0].namespaceURI != "http://www.w3.org/2000/svg")
 
     # Show step popover
     _showPopover: (step, i) ->
