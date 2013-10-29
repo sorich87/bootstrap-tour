@@ -44,6 +44,8 @@
         overlay: null
         $element: null
         $background: null
+        backgroundShown: false
+        overlayElementShown: false
 
     # Set a state in storage
     setState: (key, value) ->
@@ -219,6 +221,7 @@
       promise = @_makePromise(step.onShow(@, i) if step.onShow?)
 
       showStepHelper = (e) =>
+
         @setCurrentStep(i)
 
         # Support string or function for path
@@ -241,10 +244,14 @@
 
         @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
 
-        # Show popover
-        @_showPopover(step, i)
-        step.onShown(@) if step.onShown?
-        @_debug "Step #{@_current + 1} of #{@_steps.length}"
+        @_scrollIntoView(step.element, =>
+          @_showOverlayElement(step.element) if (step.element? and step.backdrop)
+          # Show popover
+          @_showPopover(step, i)
+          step.onShown(@) if step.onShown?
+          @_debug "Step #{@_current + 1} of #{@_steps.length}"
+        )
+
 
       @_callOnPromiseDone(promise, showStepHelper)
 
@@ -342,8 +349,7 @@
 
       $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
       $tip.attr("id", step.id)
-      @_scrollIntoView($tip)
-      @_reposition($tip, step)
+#      @_reposition($tip, step)
 
       if isOrphan
         @_center($tip)
@@ -383,9 +389,18 @@
         .css(position, if delta then 50 * (1 - delta / dimension) + "%" else "")
 
     # Scroll to the popup if it is not in the viewport
-    _scrollIntoView: (tip) ->
-      $("html, body").stop().animate
-        scrollTop: Math.ceil(tip.offset().top - ($(window).height() / 2))
+    _scrollIntoView: (element, callback) ->
+      @_debug "Scroll into view element #{element}"
+      if element
+        scrollTop = Math.max(0, $(element).offset().top - ($(window).height() / 2))
+        @_debug "Scroll into view: animating scrollTop: #{scrollTop} elementOffset: #{$(element).offset().top} windowHeight: #{$(window).height()}"
+        $("body").stop().animate
+          scrollTop: Math.ceil(scrollTop),
+          =>
+            @_debug "Scroll into view: animation end elementOffset: #{$(element).offset().top} windowHeight: #{$(window).height()}"
+            callback()
+      else
+        callback()
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
@@ -425,28 +440,26 @@
         cb.call(@, arg)
 
     _showBackdrop: (element) ->
-      return unless @backdrop.overlay == null
-
-      @_showOverlay()
-      @_showOverlayElement(element) if element?
-
-    _hideBackdrop: ->
-      return if @backdrop.overlay == null
-
-      @_hideOverlayElement() if @backdrop.$element
-      @_hideOverlay()
-
-    _showOverlay: ->
+      return if @backdrop.backgroundShown
       @backdrop = $("<div/>",
         class: "tour-backdrop"
       )
+      @backdrop.backgroundShown = true
       $("body").append(@backdrop)
 
-    _hideOverlay: ->
+    _hideBackdrop: ->
+      @_hideOverlayElement()
+      @_hideBackground()
+
+
+    _hideBackground: ->
       @backdrop.remove()
       @backdrop.overlay = null
+      @backdrop.backgroundShown = false
 
     _showOverlayElement: (element) ->
+      return if @backdrop.overlayElementShown
+      @backdrop.overlayElementShown = true
       $element = $(element)
       $background = $("<div/>")
 
@@ -467,10 +480,12 @@
       @backdrop.$background = $background
 
     _hideOverlayElement: ->
+      return unless @backdrop.overlayElementShown
       @backdrop.$element.removeClass("tour-step-backdrop")
       @backdrop.$background.remove()
       @backdrop.$element = null
       @backdrop.$background = null
+      @backdrop.overlayElementShown = false
 
   window.Tour = Tour
 
