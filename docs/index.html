@@ -29,8 +29,16 @@
             <li>
               <a href="#usage">Usage</a>
             </li>
-            <li>
-              <a href="#options">Options</a>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#options">Tour options</a>
+                </li>
+                <li>
+                  <a href="#step-options">Step options</a>
+                </li>
+              </ul>
             </li>
             <li>
               <a href="#methods">Methods</a>
@@ -117,7 +125,7 @@ tour.start();</code></pre>
         <div class="page-header">
           <h2>Options <small>Well, let's go deeper</small></h2>
         </div>
-        <h3>Tour options</h3>
+        <h3 id="tour-options">Tour options</h3>
 <pre class="language-javascript"><code>var tour = new Tour({
   name: "tour",
   container: "body",
@@ -376,6 +384,7 @@ tour.start();</code></pre>
             </tr>
           </tbody>
         </table>
+        <a id="step-options"></a>
         <h3>Step Options</h3>
 <pre class="language-javascript"><code>tour.addStep({
   path: "",
@@ -617,7 +626,7 @@ tour.start();</code></pre>
     <section id="methods">
       <div class="container">
         <div class="page-header">
-          <h2>Methods</h2>
+          <h2>Methods <small>Always in control</small></h2>
         </div>
         <!--<p>If, for some reasons, you want to force the tour to be
         displayed, pass <code class="language-javascript">true</code> to the <code class="language-javascript">start()</code>
@@ -792,6 +801,9 @@ grunt test</code></pre>
             </div>
           </div>
         </div>
+        <h3>Team</h3>
+        <p><img src="#"> Ulrich Sossou</p>
+        <p><img src="#"> Emanuele Marchi</p>
       </div>
     </section>
     <section id="license">
