@@ -1,0 +1,205 @@
+body {
+  position: relative;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+a {
+  -webkit-transition: all .2s ease-in-out;
+     -moz-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+
+section {
+  padding-top: 20px;
+}
+
+/* Base class
+------------------------- */
+.banner {
+  position: relative;
+  padding: 60px 0 80px;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+  background: #020031; /* Old browsers */
+  background: -moz-linear-gradient(45deg,  #020031 0%, #6d3353 100%);
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#020031), color-stop(100%,#6d3353));
+  background: -webkit-linear-gradient(45deg,  #020031 0%,#6d3353 100%);
+  background: -o-linear-gradient(45deg,  #020031 0%,#6d3353 100%);
+  background: -ms-linear-gradient(45deg,  #020031 0%,#6d3353 100%);
+  background: linear-gradient(45deg,  #020031 0%,#6d3353 100%);
+  -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+     -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+          box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  h1 {
+    font-size: 82px;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+
+  p {
+    font-size: 26px;
+    font-weight: 200;
+    margin-bottom: 30px;
+  }
+
+  a {
+    color: #fff;
+    color: rgba(255,255,255,.5);
+
+    &:hover {
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255,255,255,.25);
+    }
+  }
+
+  .btn {
+    padding: 19px 24px;
+    font-size: 24px;
+    font-weight: 200;
+    color: #fff; /* redeclare to override the `.banner a` */
+    border: 0;
+    -webkit-border-radius: 6px;
+       -moz-border-radius: 6px;
+            border-radius: 6px;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+       -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+    -webkit-transition: none;
+       -moz-transition: none;
+            transition: none;
+
+    &:hover {
+      -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+         -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+              box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+    }
+
+    &:active {
+      -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+         -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+              box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+    }
+  }
+
+  .links {
+    margin: 0;
+    list-style: none;
+
+    li {
+      display: inline;
+      padding: 0 10px;
+      color: rgba(255,255,255,.25);
+    }
+  }
+}
+
+#github {
+  display: block;
+  position: fixed;
+  width: 150px;
+  height: 150px;
+  top: 0;
+  right: 0;
+  z-index: 1050;
+}
+
+code,
+pre {
+  font-size: 13px;
+}
+
+@media (min-width: 1200px) {
+  .banner {
+
+    h1 {
+      font-size: 90px;
+    }
+
+    p {
+      font-size: 30px;
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+  .banner {
+    padding: 10px 0 30px;
+
+    h1 {
+      font-size: 76px;
+    }
+
+    p,
+    .btn {
+      font-size: 20px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-top: 0;
+  }
+
+  .banner {
+    padding: 70px 20px 20px 20px;
+    margin-top:   -20px; /* Offset bottom margin on .navbar */
+    margin-right: -20px;
+    margin-left:  -20px;
+
+    h1 {
+      font-size: 60px;
+    }
+
+    p,
+    .btn {
+      font-size: 20px;
+    }
+  }
+
+  #github {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 0;
+  }
+
+  h2 small {
+    display: block;
+  }
+
+  .banner {
+
+    h1 {
+      font-size: 45px;
+    }
+
+    p,
+    .btn {
+      font-size: 18px;
+    }
+
+    .btn {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+
+  table code {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+}

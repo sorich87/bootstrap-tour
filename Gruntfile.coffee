@@ -72,6 +72,9 @@ module.exports = (grunt)->
         dest: "build/css/bootstrap-tour.min.css"
         options:
           yuicompress: true
+      doc:
+        src: "docs/index.less"
+        dest: "docs/assets/css/index.css"
 
     uglify:
       options:
@@ -91,6 +94,9 @@ module.exports = (grunt)->
       doc:
         files: ["docs/*.coffee"]
         tasks: ["coffeelint:doc", "coffee:doc"]
+      docstyle:
+        files: ["docs/*.less"]
+        tasks: ["less:doc"]
         options:
           livereload: true
 
@@ -146,7 +152,7 @@ module.exports = (grunt)->
   grunt.loadNpmTasks "grunt-notify"
 
   # register tasks
-  grunt.registerTask "run", ["connect", "open", "watch:doc"]
+  grunt.registerTask "run", ["connect", "open", "watch"]
   grunt.registerTask "build", ["clean:default", "coffeelint", "coffee:default", "coffee:doc", "concat", "less", "uglify", "copy"]
   grunt.registerTask "test", ["build", "clean:test", "coffeelint:test", "coffee:test", "jasmine"]
   grunt.registerTask "default", ["watch:default"]
