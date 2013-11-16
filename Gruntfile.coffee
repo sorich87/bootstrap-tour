@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = (grunt)->
   # project configuration
   grunt.initConfig
@@ -36,32 +38,43 @@ module.exports = (grunt)->
         max_line_length:
           level: "ignore"
       default: ["Gruntfile.coffee", "src/**/*.coffee"]
-      test: ["Gruntfile.coffee", "test/**/*.coffee"]
       doc: ["Gruntfile.coffee", "docs/*.coffee"]
 
     clean:
       default: "build"
-      test: "test/build"
+      test: "test"
+
+    coffee:
+      options:
+        bare: true
+      default:
+        expand: true
+        flatten: true
+        cwd: "src/coffee"
+        src: ["*.coffee"]
+        dest: "build/js"
+        ext: ".js"
+      test:
+        expand: true
+        flatten: true
+        cwd: "src/spec"
+        src: ["*.spec.coffee"]
+        dest: "test"
+        ext: ".spec.js"
+      doc:
+        src: "docs/index.coffee"
+        dest: "docs/assets/js/index.js"
 
     concat:
       options:
         banner: "<%= meta.banner %>"
       default:
-        src: "build/js/bootstrap-tour.js"
-        dest: "build/js/bootstrap-tour.js"
-
-    coffee:
-      options:
-        banner: "<%= meta.banner %>"
-      default:
-        src: "src/coffee/bootstrap-tour.coffee"
-        dest: "build/js/bootstrap-tour.js"
-      test:
-        src: "test/spec/bootstrap-tour.spec.coffee"
-        dest: "test/build/bootstrap-tour.spec.js"
-      doc:
-        src: "docs/index.coffee"
-        dest: "docs/assets/js/index.js"
+        expand: true
+        flatten: true
+        cwd: "build/js"
+        src: ["*.js"]
+        dest: "build/js"
+        ext: ".js"
 
     less:
       default:
@@ -77,10 +90,13 @@ module.exports = (grunt)->
       options:
         banner: "<%= meta.banner %>"
       default:
-        src: "build/js/bootstrap-tour.js"
-        dest: "build/js/bootstrap-tour.min.js"
+        expand: true
+        flatten: true
+        cwd: "build/js"
+        src: ["*.js"]
+        dest: "build/js"
+        ext: ".min.js"
 
-    # watching for changes
     watch:
       default:
         files: ["src/coffee/*.coffee"]
@@ -95,14 +111,14 @@ module.exports = (grunt)->
           livereload: true
 
     jasmine:
-      # keep an eye on the order of deps import
-      src: [
-        "docs/assets/vendor/jquery.js"
-        "docs/assets/vendor/bootstrap.js"
-        "build/js/bootstrap-tour.js"
-      ]
       options:
-        specs: "test/build/bootstrap-tour.spec.js"
+        keepRunner: true
+        vendor: [
+          "docs/assets/vendor/jquery.js"
+          "docs/assets/vendor/bootstrap.js"
+        ]
+        specs: "test/*.spec.js"
+      src: "build/js/<%= pkg.name %>.js"
 
     copy:
       default:
@@ -128,25 +144,40 @@ module.exports = (grunt)->
       default:
         path: "http://localhost:<%= connect.default.options.port %>"
 
-    # TODO:
-    # - browser sample page reloads on watch when developing
+    bump:
+      options:
+        files: ["package.json"]
+        updateConfigs: ["pkg"]
+        commit: true
+        commitMessage: "Bump version to %VERSION%"
+        commitFiles: ["-a"]
+        createTag: true
+        tagName: "v%VERSION%"
+        tagMessage: "Version %VERSION%"
+        push: true
+        pushTo: "origin"
+        gitDescribeOptions: "--tags --always --abbrev=1 --dirty=-d"
 
   # load plugins that provide the tasks defined in the config
+  grunt.loadNpmTasks "grunt-bump"
   grunt.loadNpmTasks "grunt-coffeelint"
   grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-contrib-concat"
   grunt.loadNpmTasks "grunt-contrib-coffee"
+  grunt.loadNpmTasks "grunt-contrib-concat"
+  grunt.loadNpmTasks "grunt-contrib-connect"
+  grunt.loadNpmTasks "grunt-contrib-copy"
+  grunt.loadNpmTasks "grunt-contrib-jasmine"
   grunt.loadNpmTasks "grunt-contrib-less"
   grunt.loadNpmTasks "grunt-contrib-uglify"
   grunt.loadNpmTasks "grunt-contrib-watch"
-  grunt.loadNpmTasks "grunt-contrib-jasmine"
-  grunt.loadNpmTasks "grunt-contrib-copy"
-  grunt.loadNpmTasks "grunt-contrib-connect"
-  grunt.loadNpmTasks "grunt-open"
   grunt.loadNpmTasks "grunt-notify"
+  grunt.loadNpmTasks "grunt-open"
 
   # register tasks
+  grunt.registerTask "default", ["run"]
   grunt.registerTask "run", ["connect", "open", "watch:doc"]
-  grunt.registerTask "build", ["clean:default", "coffeelint", "coffee:default", "coffee:doc", "concat", "less", "uglify", "copy"]
-  grunt.registerTask "test", ["build", "clean:test", "coffeelint:test", "coffee:test", "jasmine"]
-  grunt.registerTask "default", ["watch:default"]
+  grunt.registerTask "build", ["clean", "coffeelint", "coffee", "concat", "less", "uglify", "copy"]
+  grunt.registerTask "test", ["build", "jasmine"]
+  grunt.registerTask "release", "Release a new version, push it and publish it", (target)->
+    target = "patch" unless target
+    grunt.task.run "bump-only:#{target}", "test", "bump-commit"
