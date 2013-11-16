@@ -146,7 +146,7 @@ module.exports = (grunt)->
 
     bump:
       options:
-        files: ["package.json"]
+        files: ["package.json", "component.json"]
         updateConfigs: ["pkg"]
         commit: true
         commitMessage: "Bump version to %VERSION%"
