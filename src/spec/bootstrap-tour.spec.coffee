@@ -11,6 +11,7 @@ describe "Bootstrap Tour", ->
     $.each @tour._steps, (i, s) ->
       $element = $(tour.getStep(i).element)
       $element.popover("destroy").removeData("bs.popover")
+      $element.remove()
 
   it "should set the tour options", ->
     @tour = new Tour
@@ -606,9 +607,12 @@ describe "Bootstrap Tour", ->
       orphan: true
     @tour.showStep(0)
     expect($(".popover").length).toBe 1
+    $(".popover").remove()
 
   it "should add 'orphan' class to the popover", ->
     @tour = new Tour
     @tour.addStep
       orphan: true
+    @tour.showStep(0)
     expect($(".popover").hasClass("orphan")).toBe true
+    $(".popover").remove()
