@@ -43,7 +43,6 @@
     }
   ],
   "dependencies": {
-    "bootstrap": ">=2.3.2",
     "jquery": "~1.8.0"
   },
   "devDependencies": {
