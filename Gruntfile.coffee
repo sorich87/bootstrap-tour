@@ -100,10 +100,10 @@ module.exports = (grunt)->
     watch:
       default:
         files: ["src/coffee/*.coffee"]
-        tasks: ["clean:default", "coffeelint:default", "coffee:default", "concat", "uglify"]
+        tasks: ["build"]
       test:
-        files: ["test/spec/*.coffee"]
-        tasks: ["clean:test", "coffeelint:test", "coffee:test", "jasmine"]
+        files: ["src/spec/*.coffee"]
+        tasks: ["test"]
       doc:
         files: ["docs/*.coffee"]
         tasks: ["coffeelint:doc", "coffee:doc"]
@@ -175,7 +175,7 @@ module.exports = (grunt)->
 
   # register tasks
   grunt.registerTask "default", ["run"]
-  grunt.registerTask "run", ["connect", "open", "watch:doc"]
+  grunt.registerTask "run", ["build", "connect", "open", "watch:doc"]
   grunt.registerTask "build", ["clean", "coffeelint", "coffee", "concat", "less", "uglify", "copy"]
   grunt.registerTask "test", ["build", "jasmine"]
   grunt.registerTask "release", "Release a new version, push it and publish it", (target)->
