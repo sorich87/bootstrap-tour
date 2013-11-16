@@ -57,6 +57,11 @@ $ ->
       placement: "top"
       title: "Best of all, it's free!"
       content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
+    ,
+      element: ".navbar-nav > li:last"
+      placement: "bottom"
+      title: "Fixed position"
+      content: "Works well for fixed positioned elements! :)"
     ]
 
   tour.init()
