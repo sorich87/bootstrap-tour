@@ -42,6 +42,10 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   ],
+  "dependencies": {
+    "bootstrap": ">=2.3.2",
+    "jquery": "~1.8.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.x",
     "grunt-bump": "~0.0.11",
