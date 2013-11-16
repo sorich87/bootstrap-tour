@@ -52,7 +52,10 @@
     setState: (key, value) ->
       if @_options.storage
         keyName = "#{@_options.name}_#{key}"
-        @_options.storage.setItem(keyName, value)
+        try @_options.storage.setItem(keyName, value)
+        catch e
+          if e is QUOTA_EXCEEDED_ERR
+            @debug "LocalStorage quota exceeded. setState failed."
         @_options.afterSetState(keyName, value)
       else
         @_state ?= {}

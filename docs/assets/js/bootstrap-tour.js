@@ -58,10 +58,17 @@
       }
 
       Tour.prototype.setState = function(key, value) {
-        var keyName;
+        var e, keyName;
         if (this._options.storage) {
           keyName = "" + this._options.name + "_" + key;
-          this._options.storage.setItem(keyName, value);
+          try {
+            this._options.storage.setItem(keyName, value);
+          } catch (_error) {
+            e = _error;
+            if (e === QUOTA_EXCEEDED_ERR) {
+              this.debug("LocalStorage quota exceeded. setState failed.");
+            }
+          }
           return this._options.afterSetState(keyName, value);
         } else {
           if (this._state == null) {
