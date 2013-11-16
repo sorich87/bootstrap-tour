@@ -217,7 +217,6 @@
       promise = @_makePromise(step.onShow(@, i) if step.onShow?)
 
       showStepHelper = (e) =>
-
         @setCurrentStep(i)
 
         # Support string or function for path
@@ -241,13 +240,13 @@
         @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
 
         @_scrollIntoView(step.element, =>
-          @_showOverlayElement(step.element) if (step.element? and step.backdrop)
+          @_showOverlayElement(step.element) if step.element? and step.backdrop
+
           # Show popover
           @_showPopover(step, i)
           step.onShown(@) if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_steps.length}"
         )
-
 
       @_callOnPromiseDone(promise, showStepHelper)
 
@@ -348,7 +347,7 @@
 
       $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
       $tip.attr("id", step.id)
-#      @_reposition($tip, step)
+      # @_reposition($tip, step)
 
       if isOrphan
         @_center($tip)
@@ -389,17 +388,20 @@
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->
-      @_debug "Scroll into view element #{element}"
-      if element
-        scrollTop = Math.max(0, $(element).offset().top - ($(window).height() / 2))
-        @_debug "Scroll into view: animating scrollTop: #{scrollTop} elementOffset: #{$(element).offset().top} windowHeight: #{$(window).height()}"
-        $("body").stop().animate
-          scrollTop: Math.ceil(scrollTop),
-          =>
-            @_debug "Scroll into view: animation end elementOffset: #{$(element).offset().top} windowHeight: #{$(window).height()}"
-            callback()
-      else
-        callback()
+      return callback() unless element
+
+      $element = $(element)
+      $window = $(window)
+      offsetTop = $element.offset().top
+      windowHeight = $window.height()
+      scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
+
+      @_debug "Scroll into view. ScrollTop: #{scrollTop}. Element offset: #{offsetTop}. Window height: #{windowHeight}."
+      $("body").stop().animate
+        scrollTop: Math.ceil(scrollTop),
+        =>
+          callback()
+          @_debug "Scroll into view. Animation end element offset: #{$element.offset().top}. Window height: #{$window.height()}."
 
     # Debounced window resize
     _onResize: (callback, timeout) ->

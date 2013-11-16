@@ -453,21 +453,23 @@
       };
 
       Tour.prototype._scrollIntoView = function(element, callback) {
-        var scrollTop,
+        var $element, $window, offsetTop, scrollTop, windowHeight,
           _this = this;
-        this._debug("Scroll into view element " + element);
-        if (element) {
-          scrollTop = Math.max(0, $(element).offset().top - ($(window).height() / 2));
-          this._debug("Scroll into view: animating scrollTop: " + scrollTop + " elementOffset: " + ($(element).offset().top) + " windowHeight: " + ($(window).height()));
-          return $("body").stop().animate({
-            scrollTop: Math.ceil(scrollTop)
-          }, function() {
-            _this._debug("Scroll into view: animation end elementOffset: " + ($(element).offset().top) + " windowHeight: " + ($(window).height()));
-            return callback();
-          });
-        } else {
+        if (!element) {
           return callback();
         }
+        $element = $(element);
+        $window = $(window);
+        offsetTop = $element.offset().top;
+        windowHeight = $window.height();
+        scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
+        this._debug("Scroll into view. ScrollTop: " + scrollTop + ". Element offset: " + offsetTop + ". Window height: " + windowHeight + ".");
+        return $("body").stop().animate({
+          scrollTop: Math.ceil(scrollTop)
+        }, function() {
+          callback();
+          return _this._debug("Scroll into view. Animation end element offset: " + ($element.offset().top) + ". Window height: " + ($window.height()) + ".");
+        });
       };
 
       Tour.prototype._onResize = function(callback, timeout) {
