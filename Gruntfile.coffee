@@ -87,12 +87,6 @@ module.exports = (grunt)->
       default:
         src: "src/less/bootstrap-tour.less"
         dest: "build/css/bootstrap-tour.css"
-      min:
-        options:
-          compress: true
-          cleancss: true
-        src: "src/less/bootstrap-tour.less"
-        dest: "build/css/bootstrap-tour.min.css"
 
     uglify:
       options:
