@@ -77,6 +77,25 @@ hr.soften {
   border: 0;
 }
 
+.bs-callout {
+  margin: 20px 0;
+  padding: 20px;
+  border-left: 3px solid #eee;
+}
+.bs-callout-warning {
+  background-color: #faf8f0;
+  border-color: #faebcc;
+}
+.bs-callout-warning h4 {
+  color: #c09853;
+}
+.bs-callout h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.bs-callout p:last-child {
+  margin-bottom: 0;
+}
 
 
 /* Jumbotrons
@@ -1081,7 +1100,6 @@ pre {
     padding-top: 20px;
     padding-bottom: 20px;
   }
-<<<<<<< HEAD
 }
 
 /* custom */
@@ -1098,6 +1116,4 @@ pre {
 code,
 pre {
   font-size: 13px;
-=======
->>>>>>> e3efcb35536f9adce0e9c6d8da8ab56f2d456166
 }
