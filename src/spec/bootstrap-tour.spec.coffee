@@ -616,3 +616,11 @@ describe "Bootstrap Tour", ->
     @tour.showStep(0)
     expect($(".popover").hasClass("orphan")).toBe true
     $(".popover").remove()
+
+  it "handles quota_exceeded exceptions", ->
+    @tour = new Tour
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    spyOn(@tour._options.storage, "setItem").andCallFake -> throw new Error("QUOTA_EXCEEDED_ERR", "QUOTA_EXCEEDED_ERR: DOM Exception 22")
+    spyOn(@tour, "setState")
+    @tour.setState("test", "1")
+    expect(=> @tour.setState).not.toThrow()

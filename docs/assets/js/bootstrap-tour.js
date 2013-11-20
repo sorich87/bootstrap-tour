@@ -64,7 +64,7 @@
           this._options.storage.setItem(keyName, value);
         } catch (_error) {
           e = _error;
-          if (e === QUOTA_EXCEEDED_ERR) {
+          if (e.code === DOMException.QUOTA_EXCEEDED_ERR) {
             this.debug("LocalStorage quota exceeded. setState failed.");
           }
         }

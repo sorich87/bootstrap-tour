@@ -54,7 +54,7 @@
         keyName = "#{@_options.name}_#{key}"
         try @_options.storage.setItem(keyName, value)
         catch e
-          if e is QUOTA_EXCEEDED_ERR
+          if e.code is DOMException.QUOTA_EXCEEDED_ERR
             @debug "LocalStorage quota exceeded. setState failed."
         @_options.afterSetState(keyName, value)
       else
