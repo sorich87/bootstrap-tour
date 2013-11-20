@@ -198,10 +198,10 @@
       return this._callOnPromiseDone(promise, this._showPrevStep);
     };
 
-    Tour.prototype.goto = function(i) {
+    Tour.prototype.goTo = function(i) {
       var promise;
       if (this.ended()) {
-        return this._debug("Tour ended, goto prevented.");
+        return this._debug("Tour ended, goTo prevented.");
       }
       promise = this.hideStep(this._current);
       return this._callOnPromiseDone(promise, this.showStep, i);

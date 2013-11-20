@@ -75,19 +75,24 @@ module.exports = (grunt)->
         src: ["*.js"]
         dest: "build/js"
         ext: ".js"
+      style:
+        expand: true
+        flatten: true
+        cwd: "build/css"
+        src: ["*.css"]
+        dest: "build/css"
+        ext: ".css"
 
     less:
       default:
         src: "src/less/bootstrap-tour.less"
         dest: "build/css/bootstrap-tour.css"
       min:
+        options:
+          compress: true
+          cleancss: true
         src: "src/less/bootstrap-tour.less"
         dest: "build/css/bootstrap-tour.min.css"
-        options:
-          yuicompress: true
-      doc:
-        src: "docs/index.less"
-        dest: "docs/assets/css/index.css"
 
     uglify:
       options:
@@ -110,9 +115,6 @@ module.exports = (grunt)->
       doc:
         files: ["docs/*.coffee"]
         tasks: ["coffeelint:doc", "coffee:doc"]
-      docstyle:
-        files: ["docs/*.less"]
-        tasks: ["less:doc"]
         options:
           livereload: true
 
@@ -182,7 +184,7 @@ module.exports = (grunt)->
   # register tasks
   grunt.registerTask "default", ["run"]
   grunt.registerTask "run", ["build", "connect", "open", "watch:doc"]
-  grunt.registerTask "build", ["clean", "coffeelint", "coffee", "concat", "less", "uglify", "copy"]
+  grunt.registerTask "build", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy"]
   grunt.registerTask "test", ["build", "jasmine"]
   grunt.registerTask "release", "Release a new version, push it and publish it", (target)->
     target = "patch" unless target
