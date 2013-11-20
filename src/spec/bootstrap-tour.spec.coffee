@@ -332,11 +332,11 @@ describe "Bootstrap Tour", ->
     @tour.setCurrentStep()
     expect(@tour._current).toBe 2 # tour reads current step state if not passed a value
 
-  it "'goto' should show the specified step", ->
+  it "'goTo' should show the specified step", ->
     @tour = new Tour
     @tour.addStep({element: $("<div></div>").appendTo("body")})
     @tour.addStep({element: $("<div></div>").appendTo("body")})
-    @tour.goto(1)
+    @tour.goTo(1)
     expect(@tour.getStep(1).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
   it "'next' should show the next step", ->
@@ -351,7 +351,7 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     @tour.addStep({element: $("<div></div>").appendTo("body")})
     @tour.addStep({element: $("<div></div>").appendTo("body")})
-    @tour.goto(1)
+    @tour.goTo(1)
     @tour.prev()
     expect(@tour.getStep(0).element.data("bs.popover").tip().filter(":visible").length).toBe 1
 
