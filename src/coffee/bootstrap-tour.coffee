@@ -28,14 +28,14 @@
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
-        onStart: (tour) ->
-        onEnd: (tour) ->
-        onShow: (tour) ->
-        onShown: (tour) ->
-        onHide: (tour) ->
-        onHidden: (tour) ->
-        onNext: (tour) ->
-        onPrev: (tour) ->
+        onStart: (tour, i) ->
+        onEnd: (tour, i) ->
+        onShow: (tour, i) ->
+        onShown: (tour, i) ->
+        onHide: (tour, i) ->
+        onHidden: (tour, i) ->
+        onNext: (tour, i) ->
+        onPrev: (tour, i) ->
       }, options)
 
       @_force = false
@@ -93,7 +93,7 @@
 
     # Get a step by its indice
     getStep: (i) ->
-      $.extend({
+      step = $.extend({
         id: "step-#{i}"
         path: ""
         placement: "right"
@@ -114,6 +114,17 @@
         onNext: @_options.onNext
         onPrev: @_options.onPrev
       }, @_steps[i]) if @_steps[i]?
+
+      # attach event handlers to step element
+      $element = $(step.element)
+      $element.off("next.bs.popover").on "next.bs.popover", => step.onNext(@, i) if step.onNext?
+      $element.off("prev.bs.popover").on "prev.bs.popover", => step.onPrev(@, i) if step.onPrev?
+      $element.off("show.bs.popover").on "show.bs.popover", => step.onShow(@, i) if step.onShow?
+      $element.off("shown.bs.popover").on "shown.bs.popover", => step.onShown(@, i) if step.onShown?
+      $element.off("hide.bs.popover").on "hide.bs.popover", => step.onHide(@, i) if step.onHide?
+      $element.off("hidden.bs.popover").on "hidden.bs.popover", => step.onHidden(@, i) if step.onHidden?
+
+      step
 
     # Setup event bindings and continue a tour that has already started
     init: (force) ->
@@ -138,45 +149,46 @@
     # Start tour from current step
     start: (force = false) ->
       @init(force) unless @_inited # Backward compatibility
-
       if @_current == null
-        promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
-        @_callOnPromiseDone(promise, @showStep, 0)
+        @_options.onStart(@, 0) if @_options.onStart?
+        @showStep(0)
 
     # Hide current step and show next step
     next: ->
       return @_debug "Tour ended, next prevented." if @ended()
-
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @_showNextStep)
+      step = @getStep(@_current)
+      return unless step
+      $element = if @_isOrphan(step) then $("body") else $(step.element)
+      $element.trigger "next.bs.popover"
+      @hideStep(@_current)
+      @showStep(step.next)
 
     # Hide current step and show prev step
     prev: ->
       return @_debug "Tour ended, prev prevented." if @ended()
-
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @_showPrevStep)
+      step = @getStep(@_current)
+      return unless step
+      $element = if @_isOrphan(step) then $("body") else $(step.element)
+      $element.trigger "prev.bs.popover"
+      @hideStep(@_current)
+      @showStep(step.prev)
 
     goTo: (i) ->
       return @_debug "Tour ended, goTo prevented." if @ended()
-
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @showStep, i)
+      @hideStep(@_current)
+      @showStep(i)
 
     # End tour
     end: ->
-      endHelper = (e) =>
-        $(document).off "click.tour-#{@_options.name}"
-        $(document).off "keyup.tour-#{@_options.name}"
-        $(window).off "resize.tour-#{@_options.name}"
-        @setState("end", "yes")
-        @_inited = false
-        @_force = false
+      $(document).off "click.tour-#{@_options.name}"
+      $(document).off "keyup.tour-#{@_options.name}"
+      $(window).off "resize.tour-#{@_options.name}"
+      @setState("end", "yes")
+      @_inited = false
+      @_force = false
 
-        @_options.onEnd(@) if @_options.onEnd?
-
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, endHelper)
+      @hideStep(@_current)
+      @_options.onEnd(@, @_current) if @_options.onEnd?
 
     # Verify if tour is enabled
     ended: ->
@@ -194,20 +206,19 @@
       step = @getStep(i)
       return unless step
 
-      # If onHide returns a promise, let's wait until it's done to execute
-      promise = @_makePromise(step.onHide(@, i) if step.onHide?)
+      $element = if @_isOrphan(step) then $("body") else $(step.element)
 
-      hideStepHelper = (e) =>
-        $element = if @_isOrphan(step) then $("body") else $(step.element)
-        $element.popover("destroy")
-        $element.css("cursor", "").off "click.tour-#{@_options.name}" if step.reflex
-        @_hideBackdrop() if step.backdrop
+      # manually trigger event only if bootstrap version is < 3 (in bootstrap 2.x the events are not namespaced)
+      $element.trigger "hide.bs.popover" unless $element.data("bs.popover")
+      $element.popover("hide")
+      $element.trigger "hidden.bs.popover" unless $element.data("bs.popover")
 
-        step.onHidden(@) if step.onHidden?
+      # destroy the element after triggering the events
+      $element.css("cursor", "").off "click.tour-#{@_options.name}" if step.reflex
+      $element.popover("destroy")
 
-      @_callOnPromiseDone(promise, hideStepHelper)
+      @_hideBackdrop() if step.backdrop
 
-      promise
 
     # Show the specified step
     showStep: (i) ->
@@ -216,44 +227,36 @@
 
       skipToPrevious = i < @_current
 
-      # If onShow returns a promise, let's wait until it's done to execute
-      promise = @_makePromise(step.onShow(@, i) if step.onShow?)
+      @setCurrentStep(i)
 
-      showStepHelper = (e) =>
-        @setCurrentStep(i)
+      # Support string or function for path
+      path = if $.isFunction(step.path) then step.path.call() else @_options.basePath + step.path
 
-        # Support string or function for path
-        path = if $.isFunction(step.path) then step.path.call() else @_options.basePath + step.path
+      # Redirect to step path if not already there
+      current_path = [document.location.pathname, document.location.hash].join("")
+      if @_isRedirect(path, current_path)
+        @_redirect(step, path)
+        return
 
-        # Redirect to step path if not already there
-        current_path = [document.location.pathname, document.location.hash].join("")
-        if @_isRedirect(path, current_path)
-          @_redirect(step, path)
+      # Skip if step is orphan and orphan options is false
+      if @_isOrphan(step)
+        if ( ! step.orphan)
+          @_debug "Skip the orphan step #{@_current + 1}. Orphan option is false and the element doesn't exist or is hidden."
+          if skipToPrevious then @_showPrevStep() else @_showNextStep()
           return
 
-        # Skip if step is orphan and orphan options is false
-        if @_isOrphan(step)
-          if ( ! step.orphan)
-            @_debug "Skip the orphan step #{@_current + 1}. Orphan option is false and the element doesn't exist or is hidden."
-            if skipToPrevious then @_showPrevStep() else @_showNextStep()
-            return
+        @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
 
-          @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
+      @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
 
-        @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
+      @_scrollIntoView(step.element, =>
+        @_showOverlayElement(step.element) if step.element? and step.backdrop
 
-        @_scrollIntoView(step.element, =>
-          @_showOverlayElement(step.element) if step.element? and step.backdrop
+        # Show popover
+        @_showPopover(step, i)
 
-          # Show popover
-          @_showPopover(step, i)
-          step.onShown(@) if step.onShown?
-          @_debug "Step #{@_current + 1} of #{@_steps.length}"
-        )
-
-      @_callOnPromiseDone(promise, showStepHelper)
-
-      promise
+        @_debug "Step #{@_current + 1} of #{@_steps.length}"
+      )
 
     # Setup current step variable
     setCurrentStep: (value) ->
@@ -264,22 +267,6 @@
         @_current = @getState("current_step")
         @_current = if @_current == null then null else parseInt(@_current, 10)
       @
-
-    # Show next step
-    _showNextStep: ->
-      step = @getStep(@_current)
-      showNextStepHelper = (e) => @showStep(step.next)
-
-      promise = @_makePromise (step.onNext(@) if step.onNext?)
-      @_callOnPromiseDone(promise, showNextStepHelper)
-
-    # Show prev step
-    _showPrevStep: ->
-      step = @getStep(@_current)
-      showPrevStepHelper = (e) => @showStep(step.prev)
-
-      promise = @_makePromise (step.onPrev(@) if step.onPrev?)
-      @_callOnPromiseDone(promise, showPrevStepHelper)
 
     # Print message in console
     _debug: (text) ->
@@ -347,7 +334,12 @@
         container: step.container
         template: step.template
         selector: step.element
-      }).popover("show")
+      })
+
+      # manually trigger event only if bootstrap version is < 3 (in bootstrap 2.x the events are not namespaced)
+      $element.trigger "show.bs.popover" unless $element.data("bs.popover")
+      $element.popover("show")
+      $element.trigger "shown.bs.popover" unless $element.data("bs.popover")
 
       $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
       $tip.attr("id", step.id)
@@ -459,17 +451,6 @@
           when 27
             e.preventDefault()
             @end()
-
-    # Checks if the result of a callback is a promise
-    _makePromise: (result) ->
-      if result && $.isFunction(result.then) then result else null
-
-    _callOnPromiseDone: (promise, cb, arg) ->
-      if promise
-        promise.then (e) =>
-          cb.call(@, arg)
-      else
-        cb.call(@, arg)
 
     _showBackdrop: (element) ->
       return if @backdrop.backgroundShown
