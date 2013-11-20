@@ -351,7 +351,7 @@
 
       $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
       $tip.attr("id", step.id)
-      # @_reposition($tip, step)
+      @_reposition($tip, step)
 
       if isOrphan
         @_center($tip)

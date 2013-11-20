@@ -412,6 +412,7 @@
       }).popover("show");
       $tip = $element.data("bs.popover") ? $element.data("bs.popover").tip() : $element.data("popover").tip();
       $tip.attr("id", step.id);
+      this._reposition($tip, step);
       if (isOrphan) {
         return this._center($tip);
       }
