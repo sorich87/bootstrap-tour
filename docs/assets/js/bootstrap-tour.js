@@ -148,12 +148,12 @@
         }, this._steps[i]);
       }
       $element = $(step.element);
-      $element.off("next.bs.popover").on("next.bs.popover", function() {
+      $element.off("next.tour-" + this._options.name).on("next.tour-" + this._options.name, function() {
         if (step.onNext != null) {
           return step.onNext(_this, i);
         }
       });
-      $element.off("prev.bs.popover").on("prev.bs.popover", function() {
+      $element.off("prev.tour-" + this._options.name).on("prev.tour-" + this._options.name, function() {
         if (step.onPrev != null) {
           return step.onPrev(_this, i);
         }

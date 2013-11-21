@@ -117,8 +117,8 @@
 
       # attach event handlers to step element
       $element = $(step.element)
-      $element.off("next.bs.popover").on "next.bs.popover", => step.onNext(@, i) if step.onNext?
-      $element.off("prev.bs.popover").on "prev.bs.popover", => step.onPrev(@, i) if step.onPrev?
+      $element.off("next.tour-#{@_options.name}").on "next.tour-#{@_options.name}", => step.onNext(@, i) if step.onNext?
+      $element.off("prev.tour-#{@_options.name}").on "prev.tour-#{@_options.name}", => step.onPrev(@, i) if step.onPrev?
       $element.off("show.bs.popover").on "show.bs.popover", => step.onShow(@, i) if step.onShow?
       $element.off("shown.bs.popover").on "shown.bs.popover", => step.onShown(@, i) if step.onShown?
       $element.off("hide.bs.popover").on "hide.bs.popover", => step.onHide(@, i) if step.onHide?
