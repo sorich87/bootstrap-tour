@@ -147,6 +147,9 @@
           onPrev: this._options.onPrev
         }, this._steps[i]);
       }
+      if (!step) {
+        return;
+      }
       $element = $(step.element);
       $element.off("next.tour-" + this._options.name).on("next.tour-" + this._options.name, function() {
         if (step.onNext != null) {
@@ -225,7 +228,7 @@
         return;
       }
       $element = this._isOrphan(step) ? $("body") : $(step.element);
-      $element.trigger("next.bs.popover");
+      $element.trigger("next.tour-" + this._options.name);
       this.hideStep(this._current);
       return this.showStep(step.next);
     };
@@ -240,7 +243,7 @@
         return;
       }
       $element = this._isOrphan(step) ? $("body") : $(step.element);
-      $element.trigger("prev.bs.popover");
+      $element.trigger("prev.tour-" + this._options.name);
       this.hideStep(this._current);
       return this.showStep(step.prev);
     };

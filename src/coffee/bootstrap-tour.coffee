@@ -115,6 +115,8 @@
         onPrev: @_options.onPrev
       }, @_steps[i]) if @_steps[i]?
 
+      return unless step
+
       # attach event handlers to step element
       $element = $(step.element)
       $element.off("next.tour-#{@_options.name}").on "next.tour-#{@_options.name}", => step.onNext(@, i) if step.onNext?
@@ -159,7 +161,7 @@
       step = @getStep(@_current)
       return unless step
       $element = if @_isOrphan(step) then $("body") else $(step.element)
-      $element.trigger "next.bs.popover"
+      $element.trigger "next.tour-#{@_options.name}"
       @hideStep(@_current)
       @showStep(step.next)
 
@@ -169,7 +171,7 @@
       step = @getStep(@_current)
       return unless step
       $element = if @_isOrphan(step) then $("body") else $(step.element)
-      $element.trigger "prev.bs.popover"
+      $element.trigger "prev.tour-#{@_options.name}"
       @hideStep(@_current)
       @showStep(step.prev)
 
