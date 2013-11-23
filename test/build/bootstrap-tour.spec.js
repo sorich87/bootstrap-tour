@@ -293,7 +293,9 @@
         onHide: function(tour) {},
         onHidden: function(tour) {},
         onNext: function(tour) {},
-        onPrev: function(tour) {}
+        onPrev: function(tour) {},
+        onPause: function(tour) {},
+        onResume: function(tour) {}
       };
       this.tour.addStep(step);
       return expect(this.tour.getStep(0)).toEqual(step);
