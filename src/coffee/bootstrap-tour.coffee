@@ -12,6 +12,7 @@
         backdrop: false
         redirect: true
         orphan: false
+        duration: false
         basePath: ""
         template: "<div class='popover'>
           <div class='arrow'></div>
@@ -21,6 +22,10 @@
             <div class='btn-group'>
               <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
               <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
+              <button class='btn btn-sm btn-default' data-role='pause-resume'
+                data-pause-text='Pause'
+                data-resume-text='Resume'
+              >Pause</button>
             </div>
             <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
           </div>
@@ -36,6 +41,8 @@
         onHidden: (tour) ->
         onNext: (tour) ->
         onPrev: (tour) ->
+        onPause: (tour, duration) ->
+        onResume: (tour, duration) ->
       }, options)
 
       @_force = false
@@ -78,7 +85,7 @@
       else
         value = @_state[key] if @_state?
 
-      value = null if value == undefined || value == "null"
+      value = null if value is undefined or value == "null"
 
       @_options.afterGetState(key, value)
       return value
@@ -106,6 +113,7 @@
         backdrop: @_options.backdrop
         redirect: @_options.redirect
         orphan: @_options.orphan
+        duration: @_options.duration
         template: @_options.template
         onShow: @_options.onShow
         onShown: @_options.onShown
@@ -113,6 +121,8 @@
         onHidden: @_options.onHidden
         onNext: @_options.onNext
         onPrev: @_options.onPrev
+        onPause: @_options.onPause
+        onResume: @_options.onResume
       }, @_steps[i]) if @_steps[i]?
 
     # Setup event bindings and continue a tour that has already started
@@ -173,6 +183,8 @@
         @_inited = false
         @_force = false
 
+        @_clearTimer()
+
         @_options.onEnd(@) if @_options.onEnd?
 
       promise = @hideStep(@_current)
@@ -180,7 +192,7 @@
 
     # Verify if tour is enabled
     ended: ->
-      !@_force && !!@getState("end")
+      ! @force and !! @getState("end")
 
     # Restart tour
     restart: ->
@@ -189,10 +201,41 @@
       @setCurrentStep(0)
       @start()
 
+    # Pause step timer
+    pause: ->
+      step = @getStep(@_current)
+      return unless step and step.duration
+
+      @_paused = true
+      @_duration -= new Date().getTime() - @_start
+      window.clearTimeout(@_timer)
+
+      @_debug "Paused/Stopped step #{@_current + 1} timer (#{@_duration} remaining)."
+
+      step.onPause(@, @_duration) if step.onPause?
+
+    # Resume step timer
+    resume: ->
+      step = @getStep(@_current)
+      return unless step and step.duration
+
+      @_paused = false
+      @_start = new Date().getTime()
+      @_duration = @_duration or step.duration
+      @_timer = window.setTimeout( =>
+        if @_isLast() then @next() else @end()
+      , @_duration)
+
+      @_debug "Started step #{@_current + 1} timer with duration #{@_duration}"
+
+      step.onResume(@, @_duration) if step.onResume? and @_duration isnt step.duration
+
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep(i)
       return unless step
+
+      @_clearTimer()
 
       # If onHide returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onHide(@, i) if step.onHide?)
@@ -201,6 +244,8 @@
         $element = if @_isOrphan(step) then $("body") else $(step.element)
         $element.popover("destroy")
         $element.css("cursor", "").off "click.tour-#{@_options.name}" if step.reflex
+
+        # Hide backdrop
         @_hideBackdrop() if step.backdrop
 
         step.onHidden(@) if step.onHidden?
@@ -240,6 +285,7 @@
 
           @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
 
+        # Show backdrop
         @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
 
         @_scrollIntoView(step.element, =>
@@ -250,6 +296,9 @@
           step.onShown(@) if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_steps.length}"
         )
+
+        # Play step timer
+        @resume() if step.duration
 
       @_callOnPromiseDone(promise, showStepHelper)
 
@@ -303,6 +352,9 @@
       # Do not check for is(":hidden") on svg elements. jQuery does not work properly on svg.
       ! step.element? || ! $(step.element).length || $(step.element).is(":hidden") && ($(step.element)[0].namespaceURI != "http://www.w3.org/2000/svg")
 
+    _isLast: ->
+      @_current < @_steps.length - 1
+
     # Show step popover
     _showPopover: (step, i) ->
       options = $.extend {}, @_options
@@ -319,21 +371,15 @@
 
       $template.addClass("tour-#{@_options.name}")
 
-      if step.options
-        $.extend options, step.options
+      $.extend options, step.options if step.options
 
       if step.reflex
-        $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", (e) =>
-          if @_current < @_steps.length - 1
-            @next()
-          else
-            @end()
+        $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", =>
+          if @_isLast() then @next() else @end()
 
-      if step.prev < 0
-        $navigation.find("*[data-role=prev]").addClass("disabled")
-
-      if step.next < 0
-        $navigation.find("*[data-role=next]").addClass("disabled")
+      $navigation.find("*[data-role=prev]").addClass("disabled") if step.prev < 0
+      $navigation.find("*[data-role=next]").addClass("disabled") if step.next < 0
+      $navigation.find("*[data-role='pause-resume']").remove() unless step.duration
 
       step.template = $template.clone().wrap("<div>").parent().html()
 
@@ -353,8 +399,7 @@
       $tip.attr("id", step.id)
       @_reposition($tip, step)
 
-      if isOrphan
-        @_center($tip)
+      @_center($tip) if isOrphan
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -415,6 +460,8 @@
 
     # Event bindings for mouse navigation
     _setupMouseNavigation: ->
+      _this = @
+
       # Go to next step after click on element with attribute 'data-role=next'
       $(document)
         .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)")
@@ -439,6 +486,18 @@
           @end()
         )
 
+      # Pause/resume tour after click on element with attribute 'data-role=pause-resume'
+      $(document)
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]")
+      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]", (e) ->
+        e.preventDefault()
+
+        $this = $(@)
+
+        $this.text(if _this._paused then $this.data("pause-text") else $this.data("resume-text"))
+        if _this._paused then _this.resume() else _this.pause()
+      )
+
     # Keyboard navigation
     _setupKeyboardNavigation: ->
       return unless @_options.keyboard
@@ -448,21 +507,17 @@
         switch e.which
           when 39
             e.preventDefault()
-            if @_current < @_steps.length - 1
-              @next()
-            else
-              @end()
+            if @_isLast() then @next() else @end()
           when 37
             e.preventDefault()
-            if @_current > 0
-              @prev()
+            @prev() if @_current > 0
           when 27
             e.preventDefault()
             @end()
 
     # Checks if the result of a callback is a promise
     _makePromise: (result) ->
-      if result && $.isFunction(result.then) then result else null
+      if result and $.isFunction(result.then) then result else null
 
     _callOnPromiseDone: (promise, cb, arg) ->
       if promise
@@ -518,6 +573,11 @@
       @backdrop.$element = null
       @backdrop.$background = null
       @backdrop.overlayElementShown = false
+
+    _clearTimer: ->
+      window.clearTimeout(@_timer)
+      @_timer = null
+      @_duration = null
 
   window.Tour = Tour
 
