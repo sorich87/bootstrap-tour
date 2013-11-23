@@ -84,5 +84,11 @@ $(function() {
     tour.restart();
     return $(".alert").alert("close");
   });
-  return $("html").smoothScroll();
+  $("html").smoothScroll();
+  return $(".gravatar").each(function() {
+    var $this, email;
+    $this = $(this);
+    email = md5($this.data("email"));
+    return $(this).attr("src", "http://www.gravatar.com/avatar/" + email + "?s=60");
+  });
 });

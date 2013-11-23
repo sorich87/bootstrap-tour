@@ -97,3 +97,10 @@ $ ->
     $(".alert").alert "close"
 
   $("html").smoothScroll()
+
+  $(".gravatar").each( ->
+    $this = $(@)
+    email = md5 $this.data "email"
+
+    $(@).attr "src", "http://www.gravatar.com/avatar/#{email}?s=60"
+  )

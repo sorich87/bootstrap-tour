@@ -44,7 +44,7 @@
               <a href="#methods">Methods</a>
             </li>
             <li>
-              <a href="#contribute">Contribute</a>
+              <a href="#contributing">Contributing</a>
             </li>
             <li>
               <a href="#license">License</a>
@@ -66,10 +66,10 @@
             <a href="http://github.com/sorich87/bootstrap-tour">GitHub project</a>
           </li>
           <li>
-            Version 0.6.1
+            Version 0.7.1
           </li>
           <li>
-            Bootstrap version <= 3.0.0
+            Bootstrap version &lt;= 3.0.0
           </li>
         </ul>
       </div>
@@ -284,6 +284,39 @@ tour.start();</code></pre>
     &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;"</code></pre>
+              </td>
+              </p>
+            <tr>
+            <tr>
+              <td>afterGetState, afterSetState, afterRemoveState</td>
+              <td>Function</td>
+              <td>You may want to do something right after Bootstrap Tour read, write or remove
+              the state. Just pass functions to these.<br />
+              Your functions can have two parameters:
+              <ul class="unstyled">
+                <li>
+                  <strong>key</strong>
+                  Contains the name of the state being saved. It can be
+                  <code class="language-javascript">current_step</code> (for the state where the
+                  latest step the visitor viewed is saved) or
+                  <code class="language-javascript">end</code> (for the state which is saved when
+                  the user complete the tour). Note that Bootstrap Tour prepends the key with
+                  <code class="language-javascript">tour_</code> when saving the state.
+                </li>
+                <li>
+                  <strong>value</strong>
+                  The value of the state been saved. Can be the index of the
+                  current step if the key is <code class="language-javascript">current_step</code>, or
+                  <code class="language-javascript">yes</code> if the key is <code class="language-javascript">end</code>.
+                </li>
+              </ul>
+              <p>A simple example if to send a post request to your server each
+              time there is a change:</p>
+<pre class="language-javascript"><code>var tour = new Tour({
+  afterSetState: function(key, value) {
+    $.post("/some/path", value);
+  }
+});</code></pre>
               </td>
               <td><code class="language-javascript">function(key, value) { }</code></td>
             </tr>
@@ -630,9 +663,15 @@ tour.start();</code></pre>
               <td>prev()</td>
               <td>Go back to the previous step.</td>
             </tr>
-            <tr>
-              <td>goto(<code class="language-javascript">i</code>)</td>
-              <td>Or skip to a specific step. Pass <code class="language-javascript">i</code> as the position of the step in the tour, starting from 0 for the first step.</td>
+            <tr class="warning">
+              <td>goTo(<code class="language-javascript">i</code>)
+              <span class="label label-warning">UPDATED</span></td>
+              <td>Skip to a specific step. Pass <code class="language-javascript">i</code> as the
+              position of the step in the tour, starting from 0 for the first step.<br>
+              <em>From version 0.7.0, the method has been renamed since some Javascript compilers
+              are confused by the property name <strong>goto</strong>, which is a reserved word)
+              </em>
+              </td>
             </tr>
             <tr>
               <td>pause()</td>
@@ -650,7 +689,7 @@ tour.start();</code></pre>
         </table>
       </div>
     </section>
-    <section id="contribute">
+    <section id="contributing">
       <div class="container">
         <div class="page-header">
           <h2>Contributing <small>Do you think we need help? You are totally right</small></h2>
@@ -666,32 +705,88 @@ tour.start();</code></pre>
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#install-dependencies">Install Dependencies</a>
               </h4>
             </div>
-            <div id="install-dependencies" class="panel-collapse collapse in">
-              <div class="panel-body">
-                <p>Files to be developed inside the project are located under
-                <code>/src/</code> and <code>/test/spec/</code>.</p>
-                <p>Compiled sources are then automatically put under
-                <code>/build/</code> and <code>/test/build/</code>.</p>
+              <div id="install-dependencies" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  <p>Files to be developed inside the project are located under
+                  <code>/src/</code>.</p>
+                  <p>Compiled sources are then automatically put under
+                  <code>/build/</code> (and <code>/test/</code>).</p>
               </div>
             </div>
           </div>
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run predefined tasks by executing <code class="language-bash">grunt &lt;task&gt;:&lt;target&gt;</code></a>
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#run-tasks">Run main tasks (check <code>Gruntfile.coffee</code> for more infos)</a>
+              </h4>
+            </div>
+            <div id="run-tasks" class="accordion-body collapse">
+              <div class="panel-body">
+<pre class="language-javascript"><code>// Start a server and run the demo page
+grunt
+grunt run
+// Compile all sources
+grunt build
+// Compile all sources and run the tests
+grunt test
+// Automatically release a new version (see below for more details)
+grunt release</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#releasing">Automatically releasing</a>
+              </h4>
+            </div>
+            <div id="releasing" class="accordion-body collapse">
+              <div class="panel-body">
+                <p>Releasing a new version is completely automated using the Grunt task <code class="language-bash">grunt release</code>.</p>
+<pre class="language-javascript"><code>grunt release // patch release
+grunt release:minor // minor release
+grunt release:major // major release</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#live-reload">Live reload</a>
+                </h4>
+              </div>
+              <div id="live-reload" class="accordion-body collapse">
+                <div class="panel-body">
+                  <p>Running <code class="language-bash">grunt run</code> will start a small server on port <code class="language-bash">3000</code> and opens the browser to the webpage. It will also start watching for changes in the <code class="language-bash">index.coffee</code> which will trigger then live reloading of the page in the browser.</p>
+                </div>
+              </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#grunt-usage" href="#test">Run the tests</a>
               </h4>
             </div>
             <div id="test" class="accordion-body collapse">
               <div class="panel-body">
                 <p>Tests are written using <a href="http://pivotal.github.io/jasmine/" target="_blank">Jasmine</a> and they run headlessly through <a href="http://phantomjs.org/" target="_blank">PhantomJS</a>.<br>
                 Simply run <code class="language-bash">grunt test</code> or watch them with <code class="language-bash">grunt watch:test</code> (this will execute them automatically every time you change the specs).</p>
+                <p>You can also open the <code>_SpecRunner.html</code> (generated after you run <code class="language-bash">grunt test</code>) to run the tests in the browser.</p>
               </div>
             </div>
           </div>
         </div>
         <h3>Team</h3>
-        <p><img src="#"> Ulrich Sossou</p>
-        <p><img src="#"> Emanuele Marchi</p>
+        <div class="row">
+          <div class="col-sm-4">
+            <img src="" class="gravatar img-circle" data-email="sorich87@gmail.com"> Ulrich Sossou
+          </div>
+          <div class="col-sm-4">
+            <img src="" class="gravatar img-circle" data-email="emanuele@lostcrew.it"> Emanuele Marchi
+          </div>
+          <div class="col-sm-4">
+            <img src="" class="gravatar img-circle" data-email="emmenko@gmail.com"> Luca Molinari
+          </div>
       </div>
     </section>
     <section id="license">
@@ -708,6 +803,7 @@ tour.start();</code></pre>
     <script src="assets/vendor/bootstrap.js"></script>
     <script src="assets/vendor/prism.js"></script>
     <script src="assets/vendor/jquery.smoothscroll.js"></script>
+    <script src="assets/vendor/md5.js"></script>
     <script src="assets/js/bootstrap-tour.js"></script>
     <script src="assets/js/index.js"></script>
   </body>
