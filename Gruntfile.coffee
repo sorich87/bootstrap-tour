@@ -79,14 +79,27 @@ module.exports = (grunt)->
         expand: true
         flatten: true
         cwd: "build/css"
-        src: ["*.css"]
+        src: ["*.css", "!*.min.css"]
         dest: "build/css"
         ext: ".css"
+      style_min:
+        expand: true
+        flatten: true
+        cwd: "build/css"
+        src: ["*.min.css"]
+        dest: "build/css"
+        ext: ".min.css"
 
     less:
       default:
-        src: "src/less/bootstrap-tour.less"
-        dest: "build/css/bootstrap-tour.css"
+        src: "src/less/<%= pkg.name %>.less"
+        dest: "build/css/<%= pkg.name %>.css"
+      min:
+        options:
+          compress: true
+          cleancss: true
+        src: "src/less/<%= pkg.name %>.less"
+        dest: "build/css/<%= pkg.name %>.min.css"
 
     uglify:
       options:
