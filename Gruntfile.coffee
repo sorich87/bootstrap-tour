@@ -138,14 +138,14 @@ module.exports = (grunt)->
     copy:
       default:
         files: [
-            expand: true,
-            cwd: "build/js",
-            dest: "docs/assets/js",
+            expand: true
+            cwd: "build/js"
+            dest: "docs/assets/js"
             src: ["*.js"]
           ,
-            expand: true,
-            cwd: "build/css",
-            dest: "docs/assets/css",
+            expand: true
+            cwd: "build/css"
+            dest: "docs/assets/css"
             src: ["*.css"]
         ]
 
@@ -173,6 +173,25 @@ module.exports = (grunt)->
         pushTo: "origin"
         gitDescribeOptions: "--tags --always --abbrev=1 --dirty=-d"
 
+    replace:
+      options:
+        patterns: [
+          {
+            match: "/Version \\d+\\.\\d+\\.\\d+/g"
+            replacement: "Version <%= pkg.version %>"
+            expression: true
+          }
+        ]
+      default:
+        files: [
+          {
+            expand: true
+            flatten: true
+            src: ["docs/index.html"]
+            dest: "docs/"
+          }
+        ]
+
   # load plugins that provide the tasks defined in the config
   grunt.loadNpmTasks "grunt-bump"
   grunt.loadNpmTasks "grunt-coffeelint"
@@ -187,6 +206,7 @@ module.exports = (grunt)->
   grunt.loadNpmTasks "grunt-contrib-watch"
   grunt.loadNpmTasks "grunt-notify"
   grunt.loadNpmTasks "grunt-open"
+  grunt.loadNpmTasks "grunt-replace"
 
   # register tasks
   grunt.registerTask "default", ["run"]
@@ -195,4 +215,4 @@ module.exports = (grunt)->
   grunt.registerTask "test", ["build", "jasmine"]
   grunt.registerTask "release", "Release a new version, push it and publish it", (target)->
     target = "patch" unless target
-    grunt.task.run "bump-only:#{target}", "test", "bump-commit"
+    grunt.task.run "bump-only:#{target}", "test", "replace", "bump-commit"
