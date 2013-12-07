@@ -241,7 +241,8 @@
       promise = @_makePromise(step.onHide(@, i) if step.onHide?)
 
       hideStepHelper = (e) =>
-        $element = if @_isOrphan(step) then $("body") else $(step.element)
+        $element = $(step.element)
+        $element = $("body") unless $element.data("bs.popover") or $element.data("popover")
         $element.popover("destroy")
         $element.css("cursor", "").off "click.tour-#{@_options.name}" if step.reflex
 

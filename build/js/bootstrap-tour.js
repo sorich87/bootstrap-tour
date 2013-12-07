@@ -1,5 +1,5 @@
 /* ===========================================================
-# bootstrap-tour - v0.7.1
+# bootstrap-tour - v0.7.3
 # http://bootstraptour.com
 # ==============================================================
 # Copyright 2012-2013 Ulrich Sossou
@@ -292,7 +292,10 @@
       promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
       hideStepHelper = function(e) {
         var $element;
-        $element = _this._isOrphan(step) ? $("body") : $(step.element);
+        $element = $(step.element);
+        if (!($element.data("bs.popover") || $element.data("popover"))) {
+          $element = $("body");
+        }
         $element.popover("destroy");
         if (step.reflex) {
           $element.css("cursor", "").off("click.tour-" + _this._options.name);
