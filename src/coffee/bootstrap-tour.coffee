@@ -192,7 +192,7 @@
 
     # Verify if tour is enabled
     ended: ->
-      ! @force and !! @getState("end")
+      ! @_force and !! @getState("end")
 
     # Restart tour
     restart: ->
