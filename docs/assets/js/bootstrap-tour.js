@@ -233,7 +233,7 @@
     };
 
     Tour.prototype.ended = function() {
-      return !this.force && !!this.getState("end");
+      return !this._force && !!this.getState("end");
     };
 
     Tour.prototype.restart = function() {
