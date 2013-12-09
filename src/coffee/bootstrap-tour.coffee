@@ -437,9 +437,9 @@
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->
-      return callback() unless element
-
       $element = $(element)
+      return callback() unless $element.length
+
       $window = $(window)
       offsetTop = $element.offset().top
       windowHeight = $window.height()
