@@ -627,6 +627,14 @@ describe "Bootstrap Tour", ->
     spyOn(@tour, "setState")
     @tour.setState("test", "1")
     expect(=> @tour.setState).not.toThrow()
+  
+  it 'should not try to scroll to non-existing element', ->
+    @tour = new Tour
+      orphan: true
+    @tour.addStep
+      element: '#nonExistingElement'
+    @tour.showStep 0
+    expect($(".popover").length).toBe 1
 
   # duration
   it "should start the timer", ->
