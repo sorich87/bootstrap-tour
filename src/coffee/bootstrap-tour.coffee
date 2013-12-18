@@ -447,11 +447,13 @@
       scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
 
       @_debug "Scroll into view. ScrollTop: #{scrollTop}. Element offset: #{offsetTop}. Window height: #{windowHeight}."
-      $("body").stop().animate
+      counter = 0
+      $("body,html").stop(true,true).animate
         scrollTop: Math.ceil(scrollTop),
         =>
-          callback()
-          @_debug "Scroll into view. Animation end element offset: #{$element.offset().top}. Window height: #{$window.height()}."
+          if ++counter == 2
+            callback()
+            @_debug "Scroll into view. Animation end element offset: #{$element.offset().top}. Window height: #{$window.height()}."
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
