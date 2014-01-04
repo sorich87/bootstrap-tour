@@ -128,7 +128,7 @@
       return unless step
 
       # attach event handlers to step element
-      $element = @_getStepElement()
+      $element = $(step.element)
       $element.off("next.tour-#{@_options.name}").on "next.tour-#{@_options.name}", => step.onNext(@, i) if step.onNext?
       $element.off("prev.tour-#{@_options.name}").on "prev.tour-#{@_options.name}", => step.onPrev(@, i) if step.onPrev?
       $element.off("show.bs.popover").on "show.bs.popover", => step.onShow(@, i) if step.onShow?
@@ -307,8 +307,7 @@
         @setState("current_step", value)
       else
         @_current = @getState("current_step")
-        @_current = parseInt(@_current, 10) unless @_current
-      @
+      @_current = parseInt(@_current, 10)
 
     # Get element
     _getStepElement: (step)->
@@ -353,7 +352,7 @@
         step.placement = "top"
         $template = $template.addClass("orphan")
 
-      $element = @_getStepElement()
+      $element = $(step.element)
 
       $template.addClass("tour-#{@_options.name}")
 
