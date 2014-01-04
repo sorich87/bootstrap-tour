@@ -12,6 +12,7 @@
         backdrop: false
         redirect: true
         orphan: false
+        duration: false
         basePath: ""
         template: "<div class='popover'>
           <div class='arrow'></div>
@@ -21,6 +22,10 @@
             <div class='btn-group'>
               <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
               <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
+              <button class='btn btn-sm btn-default' data-role='pause-resume'
+                data-pause-text='Pause'
+                data-resume-text='Resume'
+              >Pause</button>
             </div>
             <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
           </div>
@@ -36,6 +41,8 @@
         onHidden: (tour, i) ->
         onNext: (tour, i) ->
         onPrev: (tour, i) ->
+        onPause: (tour, duration, i) ->
+        onResume: (tour, duration, i) ->
       }, options)
 
       @_force = false
@@ -78,7 +85,7 @@
       else
         value = @_state[key] if @_state?
 
-      value = null if value == undefined || value == "null"
+      value = null if value is undefined or value == "null"
 
       @_options.afterGetState(key, value)
       return value
@@ -106,6 +113,7 @@
         backdrop: @_options.backdrop
         redirect: @_options.redirect
         orphan: @_options.orphan
+        duration: @_options.duration
         template: @_options.template
         onShow: @_options.onShow
         onShown: @_options.onShown
@@ -113,12 +121,14 @@
         onHidden: @_options.onHidden
         onNext: @_options.onNext
         onPrev: @_options.onPrev
+        onPause: @_options.onPause
+        onResume: @_options.onResume
       }, @_steps[i]) if @_steps[i]?
 
       return unless step
 
       # attach event handlers to step element
-      $element = $(step.element)
+      $element = @_getStepElement()
       $element.off("next.tour-#{@_options.name}").on "next.tour-#{@_options.name}", => step.onNext(@, i) if step.onNext?
       $element.off("prev.tour-#{@_options.name}").on "prev.tour-#{@_options.name}", => step.onPrev(@, i) if step.onPrev?
       $element.off("show.bs.popover").on "show.bs.popover", => step.onShow(@, i) if step.onShow?
@@ -160,7 +170,7 @@
       return @_debug "Tour ended, next prevented." if @ended()
       step = @getStep(@_current)
       return unless step
-      $element = if @_isOrphan(step) then $("body") else $(step.element)
+      $element = @_getStepElement(step)
       $element.trigger "next.tour-#{@_options.name}"
       @hideStep(@_current)
       @showStep(step.next)
@@ -170,7 +180,7 @@
       return @_debug "Tour ended, prev prevented." if @ended()
       step = @getStep(@_current)
       return unless step
-      $element = if @_isOrphan(step) then $("body") else $(step.element)
+      $element = @_getStepElement(step)
       $element.trigger "prev.tour-#{@_options.name}"
       @hideStep(@_current)
       @showStep(step.prev)
@@ -188,13 +198,14 @@
       @setState("end", "yes")
       @_inited = false
       @_force = false
+      @_clearTimer()
 
       @hideStep(@_current)
       @_options.onEnd(@, @_current) if @_options.onEnd?
 
     # Verify if tour is enabled
     ended: ->
-      !@_force && !!@getState("end")
+      ! @_force and !! @getState("end")
 
     # Restart tour
     restart: ->
@@ -203,12 +214,42 @@
       @setCurrentStep(0)
       @start()
 
+    # Pause step timer
+    pause: ->
+      step = @getStep(@_current)
+      return unless step and step.duration
+
+      @_paused = true
+      @_start = 0 unless @_start
+      @_duration -= new Date().getTime() - @_start
+      window.clearTimeout(@_timer)
+
+      @_debug "Paused/Stopped step #{@_current + 1} timer (#{@_duration} remaining)."
+      step.onPause(@, @_duration, @_current) if step.onPause?
+
+    # Resume step timer
+    resume: ->
+      step = @getStep(@_current)
+      return unless step and step.duration
+
+      @_paused = false
+      @_start = new Date().getTime()
+      @_duration = @_duration or step.duration
+      @_timer = window.setTimeout( =>
+        if @_isLast() then @next() else @end()
+      , @_duration)
+
+      @_debug "Started step #{@_current + 1} timer with duration #{@_duration}"
+      step.onResume(@, @_duration, @_current) if step.onResume? and @_duration isnt step.duration
+
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep(i)
       return unless step
 
-      $element = if @_isOrphan(step) then $("body") else $(step.element)
+      @_clearTimer()
+
+      $element = @_getStepElement(step)
 
       # manually trigger event only if bootstrap version is < 3 (in bootstrap 2.x the events are not namespaced)
       $element.trigger "hide.bs.popover" unless $element.data("bs.popover")
@@ -220,7 +261,6 @@
       $element.popover("destroy")
 
       @_hideBackdrop() if step.backdrop
-
 
     # Show the specified step
     showStep: (i) ->
@@ -235,30 +275,30 @@
       path = if $.isFunction(step.path) then step.path.call() else @_options.basePath + step.path
 
       # Redirect to step path if not already there
-      current_path = [document.location.pathname, document.location.hash].join("")
+      current_path = document.location.pathname + document.location.hash
       if @_isRedirect(path, current_path)
         @_redirect(step, path)
         return
 
       # Skip if step is orphan and orphan options is false
       if @_isOrphan(step)
-        if ( ! step.orphan)
+        unless step.orphan
           @_debug "Skip the orphan step #{@_current + 1}. Orphan option is false and the element doesn't exist or is hidden."
-          if skipToPrevious then @_showPrevStep() else @_showNextStep()
+          if skipToPrevious then @prev() else @next()
           return
 
         @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
 
       @_showBackdrop(step.element unless @_isOrphan(step)) if step.backdrop
 
-      @_scrollIntoView(step.element, =>
+      @_scrollIntoView step.element, =>
         @_showOverlayElement(step.element) if step.element? and step.backdrop
-
         # Show popover
         @_showPopover(step, i)
-
         @_debug "Step #{@_current + 1} of #{@_steps.length}"
-      )
+
+      # Play step timer
+      @resume() if step.duration
 
     # Setup current step variable
     setCurrentStep: (value) ->
@@ -267,8 +307,14 @@
         @setState("current_step", value)
       else
         @_current = @getState("current_step")
-        @_current = if @_current == null then null else parseInt(@_current, 10)
+        @_current = parseInt(@_current, 10) unless @_current
       @
+
+    # Get element
+    _getStepElement: (step)->
+      e = $(step.element)
+      e = $("body") unless e.data("bs.popover") or e.data("popover")
+      e
 
     # Print message in console
     _debug: (text) ->
@@ -292,6 +338,9 @@
       # Do not check for is(":hidden") on svg elements. jQuery does not work properly on svg.
       ! step.element? || ! $(step.element).length || $(step.element).is(":hidden") && ($(step.element)[0].namespaceURI != "http://www.w3.org/2000/svg")
 
+    _isLast: ->
+      @_current < @_steps.length - 1
+
     # Show step popover
     _showPopover: (step, i) ->
       options = $.extend {}, @_options
@@ -304,25 +353,19 @@
         step.placement = "top"
         $template = $template.addClass("orphan")
 
-      $element = $(step.element)
+      $element = @_getStepElement()
 
       $template.addClass("tour-#{@_options.name}")
 
-      if step.options
-        $.extend options, step.options
+      $.extend options, step.options if step.options
 
       if step.reflex
-        $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", (e) =>
-          if @_current < @_steps.length - 1
-            @next()
-          else
-            @end()
+        $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", =>
+          if @_isLast() then @next() else @end()
 
-      if step.prev < 0
-        $navigation.find("*[data-role=prev]").addClass("disabled")
-
-      if step.next < 0
-        $navigation.find("*[data-role=next]").addClass("disabled")
+      $navigation.find("*[data-role=prev]").addClass("disabled") if step.prev < 0
+      $navigation.find("*[data-role=next]").addClass("disabled") if step.next < 0
+      $navigation.find("*[data-role='pause-resume']").remove() unless step.duration
 
       step.template = $template.clone().wrap("<div>").parent().html()
 
@@ -347,8 +390,7 @@
       $tip.attr("id", step.id)
       @_reposition($tip, step)
 
-      if isOrphan
-        @_center($tip)
+      @_center($tip) if isOrphan
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -409,6 +451,8 @@
 
     # Event bindings for mouse navigation
     _setupMouseNavigation: ->
+      _this = @
+
       # Go to next step after click on element with attribute 'data-role=next'
       $(document)
         .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)")
@@ -433,6 +477,18 @@
           @end()
         )
 
+      # Pause/resume tour after click on element with attribute 'data-role=pause-resume'
+      $(document)
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]")
+      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]", (e) ->
+        e.preventDefault()
+
+        $this = $(@)
+
+        $this.text(if _this._paused then $this.data("pause-text") else $this.data("resume-text"))
+        if _this._paused then _this.resume() else _this.pause()
+      )
+
     # Keyboard navigation
     _setupKeyboardNavigation: ->
       return unless @_options.keyboard
@@ -442,14 +498,10 @@
         switch e.which
           when 39
             e.preventDefault()
-            if @_current < @_steps.length - 1
-              @next()
-            else
-              @end()
+            if @_isLast() then @next() else @end()
           when 37
             e.preventDefault()
-            if @_current > 0
-              @prev()
+            @prev() if @_current > 0
           when 27
             e.preventDefault()
             @end()
@@ -501,6 +553,11 @@
       @backdrop.$element = null
       @backdrop.$background = null
       @backdrop.overlayElementShown = false
+
+    _clearTimer: ->
+      window.clearTimeout(@_timer)
+      @_timer = null
+      @_duration = null
 
   window.Tour = Tour
 
