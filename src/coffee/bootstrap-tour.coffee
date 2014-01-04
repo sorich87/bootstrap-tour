@@ -305,6 +305,9 @@
 
       promise
 
+    getCurrentStep: ->
+      @_current
+
     # Setup current step variable
     setCurrentStep: (value) ->
       if value?
@@ -507,6 +510,7 @@
 
       $(document).on "keyup.tour-#{@_options.name}", (e) =>
         return unless e.which
+
         switch e.which
           when 39
             e.preventDefault()
@@ -531,6 +535,7 @@
 
     _showBackdrop: (element) ->
       return if @backdrop.backgroundShown
+
       @backdrop = $("<div/>",
         class: "tour-backdrop"
       )
@@ -549,6 +554,7 @@
 
     _showOverlayElement: (element) ->
       return if @backdrop.overlayElementShown
+
       @backdrop.overlayElementShown = true
       $element = $(element)
       $background = $("<div/>")
@@ -571,6 +577,7 @@
 
     _hideOverlayElement: ->
       return unless @backdrop.overlayElementShown
+
       @backdrop.$element.removeClass("tour-step-backdrop")
       @backdrop.$background.remove()
       @backdrop.$element = null

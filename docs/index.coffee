@@ -1,11 +1,10 @@
 $ ->
   $demo = $("#demo")
 
-  tour = new Tour(
+  tour = new Tour
     onStart: -> $demo.addClass "disabled", true
     onEnd: -> $demo.removeClass "disabled", true
     debug: true
-  )
 
   duration = 5000
   remaining = duration
@@ -98,9 +97,8 @@ $ ->
 
   $("html").smoothScroll()
 
-  $(".gravatar").each( ->
+  $(".gravatar").each ->
     $this = $(@)
     email = md5 $this.data "email"
 
     $(@).attr "src", "http://www.gravatar.com/avatar/#{email}?s=60"
-  )

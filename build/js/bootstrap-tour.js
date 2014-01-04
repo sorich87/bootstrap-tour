@@ -362,6 +362,10 @@
       return promise;
     };
 
+    Tour.prototype.getCurrentStep = function() {
+      return this._current;
+    };
+
     Tour.prototype.setCurrentStep = function(value) {
       if (value != null) {
         this._current = value;
