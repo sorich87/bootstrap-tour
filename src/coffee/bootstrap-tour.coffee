@@ -305,6 +305,9 @@
 
       promise
 
+    getCurrentStep: ->
+      @_current
+
     # Setup current step variable
     setCurrentStep: (value) ->
       if value?
@@ -438,20 +441,22 @@
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->
-      return callback() unless element
-
       $element = $(element)
+      return callback() unless $element.length
+
       $window = $(window)
       offsetTop = $element.offset().top
       windowHeight = $window.height()
       scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
 
       @_debug "Scroll into view. ScrollTop: #{scrollTop}. Element offset: #{offsetTop}. Window height: #{windowHeight}."
-      $("body").stop().animate
+      counter = 0
+      $("body,html").stop(true,true).animate
         scrollTop: Math.ceil(scrollTop),
         =>
-          callback()
-          @_debug "Scroll into view. Animation end element offset: #{$element.offset().top}. Window height: #{$window.height()}."
+          if ++counter == 2
+            callback()
+            @_debug "Scroll into view. Animation end element offset: #{$element.offset().top}. Window height: #{$window.height()}."
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
@@ -505,6 +510,7 @@
 
       $(document).on "keyup.tour-#{@_options.name}", (e) =>
         return unless e.which
+
         switch e.which
           when 39
             e.preventDefault()
@@ -529,6 +535,7 @@
 
     _showBackdrop: (element) ->
       return if @backdrop.backgroundShown
+
       @backdrop = $("<div/>",
         class: "tour-backdrop"
       )
@@ -547,6 +554,7 @@
 
     _showOverlayElement: (element) ->
       return if @backdrop.overlayElementShown
+
       @backdrop.overlayElementShown = true
       $element = $(element)
       $background = $("<div/>")
@@ -569,6 +577,7 @@
 
     _hideOverlayElement: ->
       return unless @backdrop.overlayElementShown
+
       @backdrop.$element.removeClass("tour-step-backdrop")
       @backdrop.$background.remove()
       @backdrop.$element = null

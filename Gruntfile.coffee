@@ -1,9 +1,12 @@
-'use strict'
+"use strict"
 
-module.exports = (grunt)->
-  # project configuration
+module.exports = (grunt) ->
+
+  # load all grunt tasks
+  require("matchdep").filterDev("grunt-*").forEach grunt.loadNpmTasks
+
   grunt.initConfig
-    # load package information
+
     pkg: grunt.file.readJSON 'package.json'
 
     meta:
@@ -192,27 +195,10 @@ module.exports = (grunt)->
           }
         ]
 
-  # load plugins that provide the tasks defined in the config
-  grunt.loadNpmTasks "grunt-bump"
-  grunt.loadNpmTasks "grunt-coffeelint"
-  grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-contrib-coffee"
-  grunt.loadNpmTasks "grunt-contrib-concat"
-  grunt.loadNpmTasks "grunt-contrib-connect"
-  grunt.loadNpmTasks "grunt-contrib-copy"
-  grunt.loadNpmTasks "grunt-contrib-jasmine"
-  grunt.loadNpmTasks "grunt-contrib-less"
-  grunt.loadNpmTasks "grunt-contrib-uglify"
-  grunt.loadNpmTasks "grunt-contrib-watch"
-  grunt.loadNpmTasks "grunt-notify"
-  grunt.loadNpmTasks "grunt-open"
-  grunt.loadNpmTasks "grunt-replace"
-
-  # register tasks
   grunt.registerTask "default", ["run"]
   grunt.registerTask "run", ["build", "connect", "open", "watch:doc"]
   grunt.registerTask "build", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy"]
   grunt.registerTask "test", ["build", "jasmine"]
-  grunt.registerTask "release", "Release a new version, push it and publish it", (target)->
+  grunt.registerTask "release", "Release a new version, push it and publish it", (target) ->
     target = "patch" unless target
     grunt.task.run "bump-only:#{target}", "test", "replace", "bump-commit"

@@ -362,6 +362,10 @@
       return promise;
     };
 
+    Tour.prototype.getCurrentStep = function() {
+      return this._current;
+    };
+
     Tour.prototype.setCurrentStep = function(value) {
       if (value != null) {
         this._current = value;
@@ -519,22 +523,25 @@
     };
 
     Tour.prototype._scrollIntoView = function(element, callback) {
-      var $element, $window, offsetTop, scrollTop, windowHeight,
+      var $element, $window, counter, offsetTop, scrollTop, windowHeight,
         _this = this;
-      if (!element) {
+      $element = $(element);
+      if (!$element.length) {
         return callback();
       }
-      $element = $(element);
       $window = $(window);
       offsetTop = $element.offset().top;
       windowHeight = $window.height();
       scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
       this._debug("Scroll into view. ScrollTop: " + scrollTop + ". Element offset: " + offsetTop + ". Window height: " + windowHeight + ".");
-      return $("body").stop().animate({
+      counter = 0;
+      return $("body,html").stop(true, true).animate({
         scrollTop: Math.ceil(scrollTop)
       }, function() {
-        callback();
-        return _this._debug("Scroll into view. Animation end element offset: " + ($element.offset().top) + ". Window height: " + ($window.height()) + ".");
+        if (++counter === 2) {
+          callback();
+          return _this._debug("Scroll into view. Animation end element offset: " + ($element.offset().top) + ". Window height: " + ($window.height()) + ".");
+        }
       });
     };
 

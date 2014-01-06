@@ -640,6 +640,14 @@ tour.start();</code></pre>
           </thead>
           <tbody>
             <tr>
+              <td>addSteps(<code class="language-javascript">[]</code>)</td>
+              <td>Add multiple steps to the tour. Pass an array of objects.</td>
+            </tr>
+            <tr>
+              <td>addStep(<code class="language-javascript">{}</code>)</td>
+              <td>Add single step to the tour. Pass an object.</td>
+            </tr>
+            <tr>
               <td>init()</td>
               <td>Initialize the tour. You must do it before calling start.</td>
             </tr>
@@ -667,10 +675,10 @@ tour.start();</code></pre>
               <td>goTo(<code class="language-javascript">i</code>)
               <span class="label label-warning">UPDATED</span></td>
               <td>Skip to a specific step. Pass <code class="language-javascript">i</code> as the
-              position of the step in the tour, starting from 0 for the first step.<br>
+              index of the step in the tour (0-based).<br>
               <em>From version 0.7.0, the method has been renamed since some Javascript compilers
               are confused by the property name <strong>goto</strong>, which is a reserved word)
-              </em>
+              </em>.
               </td>
             </tr>
             <tr>
@@ -684,6 +692,20 @@ tour.start();</code></pre>
             <tr>
               <td>ended()</td>
               <td>Verify if the tour ended. Returns boolean.</td>
+            </tr>
+            <tr>
+              <td>getStep(<code class="language-javascript">i</code>)</td>
+              <td>Get the step object. Pass <code class="language-javascript">i</code> as the index
+              of the step in the tour (0-based).</td>
+            </tr>
+            <tr>
+              <td>getCurrentStep()</td>
+              <td>Get the index of the current step.</td>
+            </tr>
+            <tr>
+              <td>setCurrentStep(<code class="language-javascript">i</code>)</td>
+              <td>Override the current step. Pass <code class="language-javascript">i</code>
+              as the index of the step in the tour (0-based).</td>
             </tr>
           </tbody>
         </table>
