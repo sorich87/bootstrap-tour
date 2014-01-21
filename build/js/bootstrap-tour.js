@@ -1,5 +1,5 @@
 /* ===========================================================
-# bootstrap-tour - v0.8.0
+# bootstrap-tour - v0.8.1
 # http://bootstraptour.com
 # ==============================================================
 # Copyright 2012-2013 Ulrich Sossou
@@ -654,11 +654,14 @@
 
     Tour.prototype._showOverlayElement = function(element) {
       var $background, $element, offset;
+      $element = $(element);
+      if (!$element || $element.length === 0) {
+        return;
+      }
       if (this.backdrop.overlayElementShown) {
         return;
       }
       this.backdrop.overlayElementShown = true;
-      $element = $(element);
       $background = $("<div/>");
       offset = $element.offset();
       offset.top = offset.top;

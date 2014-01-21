@@ -553,10 +553,11 @@
       @backdrop.backgroundShown = false
 
     _showOverlayElement: (element) ->
-      return if @backdrop.overlayElementShown
-
-      @backdrop.overlayElementShown = true
       $element = $(element)
+      return if not $element or $element.length is 0
+
+      return if @backdrop.overlayElementShown
+      @backdrop.overlayElementShown = true
       $background = $("<div/>")
 
       offset = $element.offset()

@@ -495,7 +495,12 @@ describe "Bootstrap Tour", ->
     expect($(".tour-backdrop").length).toBe 0 # disable backdrop
     expect($(".tour-step-backdrop").length).toBe 0 # disable backdrop
     expect($(".tour-step-background").length).toBe 0 # disable backdrop
-
+  
+  it "step with backdrop and invalid selector should not attempt to create an overlay element", ->
+    @tour = new Tour
+    @tour._showOverlayElement '#nonExistingElement'
+    expect(@tour.backdrop.overlayElementShown).toBe false
+  
   it "'basePath' should prepend the path to the steps", ->
     @tour = new Tour
       basePath: 'test/'
