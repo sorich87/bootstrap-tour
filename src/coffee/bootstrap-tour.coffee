@@ -257,7 +257,7 @@
 
     # Show the specified step
     showStep: (i) ->
-      return if @.ended()
+      return if @ended()
       
       step = @getStep(i)
       return unless step
