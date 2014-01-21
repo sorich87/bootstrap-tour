@@ -314,6 +314,9 @@
     Tour.prototype.showStep = function(i) {
       var promise, showStepHelper, skipToPrevious, step,
         _this = this;
+      if (this.ended()) {
+        return;
+      }
       step = this.getStep(i);
       if (!step) {
         return;

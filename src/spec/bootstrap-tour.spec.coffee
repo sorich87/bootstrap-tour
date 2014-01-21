@@ -518,7 +518,16 @@ describe "Bootstrap Tour", ->
     @tour.start()
     @tour.next()
     expect(tour_test).toBe 2
-
+  
+  it "'showStep' should not show step if tour ended", ->
+    @tour = new Tour
+      onNext: (t) -> t.end()
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.addStep(element: $("<div></div>").appendTo("body"))
+    @tour.start()
+    @tour.next()
+    expect($('.popover').length).toBe 0
+  
   it "'addStep' with onNext option should run the callback before showing the next step", ->
     tour_test = 0
     @tour = new Tour
