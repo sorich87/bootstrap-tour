@@ -188,27 +188,18 @@
 
     Tour.prototype.next = function() {
       var promise;
-      if (this.ended()) {
-        return this._debug("Tour ended, next prevented.");
-      }
       promise = this.hideStep(this._current);
       return this._callOnPromiseDone(promise, this._showNextStep);
     };
 
     Tour.prototype.prev = function() {
       var promise;
-      if (this.ended()) {
-        return this._debug("Tour ended, prev prevented.");
-      }
       promise = this.hideStep(this._current);
       return this._callOnPromiseDone(promise, this._showPrevStep);
     };
 
     Tour.prototype.goTo = function(i) {
       var promise;
-      if (this.ended()) {
-        return this._debug("Tour ended, goTo prevented.");
-      }
       promise = this.hideStep(this._current);
       return this._callOnPromiseDone(promise, this.showStep, i);
     };
@@ -315,7 +306,7 @@
       var promise, showStepHelper, skipToPrevious, step,
         _this = this;
       if (this.ended()) {
-        return;
+        return this._debug("Tour ended, showStep prevented.");
       }
       step = this.getStep(i);
       if (!step) {
