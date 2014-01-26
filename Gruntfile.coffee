@@ -204,8 +204,10 @@ module.exports = (grunt) ->
 
   grunt.registerTask "default", ["run"]
   grunt.registerTask "run", ["build", "connect", "open", "watch"]
-  grunt.registerTask "build", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy", "jekyll"]
-  grunt.registerTask "test", ["build", "jasmine"]
+  grunt.registerTask "build-code", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy"]
+  grunt.registerTask "build-docs", ["jekyll"]
+  grunt.registerTask "build", ["build-code", "build-docs"]
+  grunt.registerTask "test", ["build-code", "jasmine"]
   grunt.registerTask "release", "Release a new version, push it and publish it", (target) ->
     target = "patch" unless target
     grunt.task.run "bump-only:#{target}", "test", "replace", "bump-commit"
