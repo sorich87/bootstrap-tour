@@ -156,7 +156,6 @@ module.exports = (grunt) ->
       default:
         options:
           port: 3000
-          base: "docs"
 
     open:
       default:
