@@ -1,0 +1,5 @@
+markdown:         rdiscount
+permalink:        pretty
+source:           ./docs
+destination:      ./docs-build
+encoding:         UTF-8

@@ -10,6 +10,7 @@ $ ->
   remaining = duration
 
   tour.addSteps [
+      path: "/"
       element: "#demo"
       placement: "bottom"
       title: "Welcome to Bootstrap Tour!"
@@ -19,12 +20,20 @@ $ ->
       <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap from Twitter.</a>
       """
     ,
+      path: "/"
       element: "#usage"
       placement: "top"
       title: "A super simple setup"
       content: "Easy is better, right? Easy like Bootstrap. The tour is up and running with just a
       few options and steps."
     ,
+      path: "/"
+      element: "#license"
+      placement: "top"
+      title: "Best of all, it's free!"
+      content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
+    ,
+      path: "/api"
       element: "#options"
       placement: "top"
       title: "Flexibilty and expressiveness"
@@ -34,6 +43,7 @@ $ ->
       """
       reflex: true
     ,
+      path: "/api"
       element: "#duration"
       placement: "top"
       title: "Automagically expiring step",
@@ -43,6 +53,7 @@ $ ->
       """
       duration: 5000
     ,
+      path: "/api"
       element: "#methods"
       placement: "top"
       title: "A new shiny Backdrop option"
@@ -52,37 +63,23 @@ $ ->
       """
       backdrop: true
     ,
+      path: "/api"
+      element: "#reflex"
+      placement: "bottom"
+      title: "Reflex mode"
+      content: "Reflex mode is enabled, click on the text in the cell to continue!"
+      reflex: true
+    ,
+      path: "/api"
       title: "And support for orphan steps"
       content: """
       If you activate the orphan property, the step(s) are shown centered in the page, and you can
       forget to specify element and placement!
       """
       orphan: true
-    ,
-      path: "/"
-      element: "#reflex"
-      placement: "bottom"
-      title: "Reflex mode"
-      content: "Reflex mode is enabled, click on the page heading to continue!"
-      reflex: true
-    ,
-      path: "/page.html"
-      element: "h1"
-      placement: "bottom"
-      title: "See, you are not restricted to only one page"
-      content: "Well, nothing to see here. Click next to go back to the index page."
-    ,
-      path: "/"
-      element: "#license"
-      placement: "top"
-      title: "Best of all, it's free!"
-      content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
-    ,
-      element: ".navbar-nav > li:last"
-      placement: "bottom"
-      title: "Fixed position"
-      content: "Works well for fixed positioned elements! :)"
-    ]
+      onHidden: ->
+        window.location.assign "/"
+  ]
 
   tour.init()
   tour.start()

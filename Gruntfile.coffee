@@ -40,8 +40,8 @@ module.exports = (grunt) ->
           level: "error"
         max_line_length:
           level: "ignore"
-      default: ["Gruntfile.coffee", "src/**/*.coffee"]
-      doc: ["Gruntfile.coffee", "docs/*.coffee"]
+      default: ["Gruntfile.coffee", "src/{,*/}*.coffee"]
+      doc: ["Gruntfile.coffee", "docs/assets/coffee/*.coffee"]
 
     clean:
       default: "build"
@@ -65,8 +65,8 @@ module.exports = (grunt) ->
         dest: "test"
         ext: ".spec.js"
       doc:
-        src: "docs/index.coffee"
-        dest: "docs/assets/js/index.js"
+        src: "docs/assets/coffee/docs.coffee"
+        dest: "docs/assets/js/docs.js"
 
     concat:
       options:
@@ -115,7 +115,12 @@ module.exports = (grunt) ->
         dest: "build/js"
         ext: ".min.js"
 
+    jekyll:
+      build: {}
+
     watch:
+      options:
+        livereload: true
       default:
         files: ["src/coffee/*.coffee"]
         tasks: ["build"]
@@ -123,10 +128,11 @@ module.exports = (grunt) ->
         files: ["src/spec/*.coffee"]
         tasks: ["test"]
       doc:
-        files: ["docs/*.coffee"]
+        files: ["docs/assets/coffee/*.coffee"]
         tasks: ["coffeelint:doc", "coffee:doc"]
-        options:
-          livereload: true
+      jekyll:
+        files: ["docs/{,*/}*.html"]
+        tasks: ["jekyll"]
 
     jasmine:
       options:
@@ -155,8 +161,9 @@ module.exports = (grunt) ->
     connect:
       default:
         options:
+          livereload: true
           port: 3000
-          base: "docs"
+          base: "docs-build"
 
     open:
       default:
@@ -196,8 +203,8 @@ module.exports = (grunt) ->
         ]
 
   grunt.registerTask "default", ["run"]
-  grunt.registerTask "run", ["build", "connect", "open", "watch:doc"]
-  grunt.registerTask "build", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy"]
+  grunt.registerTask "run", ["build", "connect", "open", "watch"]
+  grunt.registerTask "build", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy", "jekyll"]
   grunt.registerTask "test", ["build", "jasmine"]
   grunt.registerTask "release", "Release a new version, push it and publish it", (target) ->
     target = "patch" unless target
