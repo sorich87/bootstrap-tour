@@ -495,12 +495,12 @@ describe "Bootstrap Tour", ->
     expect($(".tour-backdrop").length).toBe 0 # disable backdrop
     expect($(".tour-step-backdrop").length).toBe 0 # disable backdrop
     expect($(".tour-step-background").length).toBe 0 # disable backdrop
-  
+
   it "step with backdrop and invalid selector should not attempt to create an overlay element", ->
     @tour = new Tour
     @tour._showOverlayElement '#nonExistingElement'
     expect(@tour.backdrop.overlayElementShown).toBe false
-  
+
   it "'basePath' should prepend the path to the steps", ->
     @tour = new Tour
       basePath: 'test/'
@@ -518,7 +518,7 @@ describe "Bootstrap Tour", ->
     @tour.start()
     @tour.next()
     expect(tour_test).toBe 2
-  
+
   it "'showStep' should not show step if tour ended", ->
     @tour = new Tour
       onNext: (t) -> t.end()
@@ -527,7 +527,7 @@ describe "Bootstrap Tour", ->
     @tour.start()
     @tour.next()
     expect($('.popover').length).toBe 0
-  
+
   it "'addStep' with onNext option should run the callback before showing the next step", ->
     tour_test = 0
     @tour = new Tour
@@ -611,11 +611,12 @@ describe "Bootstrap Tour", ->
       expect($._data($element[0], "events").click.length).toBeGreaterThan 0
       expect($._data($element[0], "events").click[0].namespace).toBe "tour-#{@tour._options.name}"
 
-  it "should add 'tour-{tourName}' class to the popover", ->
+  it "should add 'tour-{tourName}' and tour-{tourName}-{stepId} class to the popover", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(0)
     expect($(".popover").hasClass("tour-#{@tour._options.name}")).toBe true
+    expect($(".popover").hasClass("tour-#{@tour._options.name}-0")).toBe true
 
   # orphan
   it "should show orphan steps", ->
@@ -641,7 +642,7 @@ describe "Bootstrap Tour", ->
     spyOn(@tour, "setState")
     @tour.setState("test", "1")
     expect(=> @tour.setState).not.toThrow()
-  
+
   it 'should not try to scroll to non-existing element', ->
     @tour = new Tour
       orphan: true

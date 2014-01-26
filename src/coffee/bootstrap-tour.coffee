@@ -155,17 +155,17 @@
 
     # Hide current step and show next step
     next: ->
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @_showNextStep)
+      promise = @hideStep @_current
+      @_callOnPromiseDone promise, @_showNextStep
 
     # Hide current step and show prev step
     prev: ->
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @_showPrevStep)
+      promise = @hideStep @_current
+      @_callOnPromiseDone promise, @_showPrevStep
 
     goTo: (i) ->
-      promise = @hideStep(@_current)
-      @_callOnPromiseDone(promise, @showStep, i)
+      promise = @hideStep @_current
+      @_callOnPromiseDone promise, @showStep, i
 
     # End tour
     end: ->
@@ -252,7 +252,7 @@
     # Show the specified step
     showStep: (i) ->
       return @_debug "Tour ended, showStep prevented." if @ended()
-      
+
       step = @getStep(i)
       return unless step
 
@@ -269,13 +269,13 @@
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join("")
-        if @_isRedirect(path, current_path)
-          @_redirect(step, path)
+        if @_isRedirect path, current_path
+          @_redirect step, path
           return
 
         # Skip if step is orphan and orphan options is false
-        if @_isOrphan(step)
-          if ( ! step.orphan)
+        if @_isOrphan step
+          if not step.orphan
             @_debug "Skip the orphan step #{@_current + 1}. Orphan option is false and the element doesn't exist or is hidden."
             if skipToPrevious then @_showPrevStep() else @_showNextStep()
             return
@@ -350,7 +350,7 @@
 
     _isOrphan: (step) ->
       # Do not check for is(":hidden") on svg elements. jQuery does not work properly on svg.
-      ! step.element? || ! $(step.element).length || $(step.element).is(":hidden") && ($(step.element)[0].namespaceURI != "http://www.w3.org/2000/svg")
+      not step.element? or not $(step.element).length or $(step.element).is(":hidden") and ($(step.element)[0].namespaceURI isnt "http://www.w3.org/2000/svg")
 
     _isLast: ->
       @_current < @_steps.length - 1
@@ -358,18 +358,18 @@
     # Show step popover
     _showPopover: (step, i) ->
       options = $.extend {}, @_options
-      $template = if $.isFunction(step.template) then $(step.template(i, step)) else $(step.template)
-      $navigation = $template.find(".popover-navigation")
-      isOrphan = @_isOrphan(step)
+      $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
+      $navigation = $template.find ".popover-navigation"
+      isOrphan = @_isOrphan step
 
       if isOrphan
         step.element = "body"
         step.placement = "top"
-        $template = $template.addClass("orphan")
+        $template = $template.addClass "orphan"
 
-      $element = $(step.element)
+      $element = $ step.element
 
-      $template.addClass("tour-#{@_options.name}")
+      $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
 
       $.extend options, step.options if step.options
 
@@ -377,9 +377,9 @@
         $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
-      $navigation.find("*[data-role=prev]").addClass("disabled") if step.prev < 0
-      $navigation.find("*[data-role=next]").addClass("disabled") if step.next < 0
-      $navigation.find("*[data-role='pause-resume']").remove() unless step.duration
+      $navigation.find("[data-role='prev']").addClass "disabled" if step.prev < 0
+      $navigation.find("[data-role='next']").addClass "disabled" if step.next < 0
+      $navigation.find("[data-role='pause-resume']").remove() unless step.duration
 
       step.template = $template.clone().wrap("<div>").parent().html()
 
@@ -395,11 +395,11 @@
         selector: step.element
       }).popover("show")
 
-      $tip = if $element.data("bs.popover") then $element.data("bs.popover").tip() else $element.data("popover").tip()
-      $tip.attr("id", step.id)
-      @_reposition($tip, step)
+      $tip = if $element.data "bs.popover" then $element.data("bs.popover").tip() else $element.data("popover").tip()
+      $tip.attr "id", step.id
+      @_reposition $tip, step
 
-      @_center($tip) if isOrphan
+      @_center $tip if isOrphan
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -465,40 +465,29 @@
       _this = @
 
       # Go to next step after click on element with attribute 'data-role=next'
-      $(document)
-        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)")
-        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=next]:not(.disabled)", (e) =>
-          e.preventDefault()
-          @next()
-        )
-
       # Go to previous step after click on element with attribute 'data-role=prev'
-      $(document)
-        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)")
-        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=prev]:not(.disabled)", (e) =>
-          e.preventDefault()
-          @prev()
-        )
-
       # End tour after click on element with attribute 'data-role=end'
-      $(document)
-        .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]")
-        .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=end]", (e) =>
-          e.preventDefault()
-          @end()
-        )
-
       # Pause/resume tour after click on element with attribute 'data-role=pause-resume'
       $(document)
-      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]")
-      .on("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role=pause-resume]", (e) ->
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']:not(.disabled)")
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']:not(.disabled)")
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']")
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='pause-resume']")
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']:not(.disabled)", (e) =>
         e.preventDefault()
-
+        @next()
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']:not(.disabled)", (e) =>
+        e.preventDefault()
+        @prev()
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']", (e) =>
+        e.preventDefault()
+        @end()
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='pause-resume']", (e) ->
+        e.preventDefault()
         $this = $(@)
 
-        $this.text(if _this._paused then $this.data("pause-text") else $this.data("resume-text"))
+        $this.text if _this._paused then $this.data "pause-text" else $this.data "resume-text"
         if _this._paused then _this.resume() else _this.pause()
-      )
 
     # Keyboard navigation
     _setupKeyboardNavigation: ->

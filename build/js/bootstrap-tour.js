@@ -433,7 +433,7 @@
         $template = $template.addClass("orphan");
       }
       $element = $(step.element);
-      $template.addClass("tour-" + this._options.name);
+      $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
       if (step.options) {
         $.extend(options, step.options);
       }
@@ -447,13 +447,13 @@
         });
       }
       if (step.prev < 0) {
-        $navigation.find("*[data-role=prev]").addClass("disabled");
+        $navigation.find("[data-role='prev']").addClass("disabled");
       }
       if (step.next < 0) {
-        $navigation.find("*[data-role=next]").addClass("disabled");
+        $navigation.find("[data-role='next']").addClass("disabled");
       }
       if (!step.duration) {
-        $navigation.find("*[data-role='pause-resume']").remove();
+        $navigation.find("[data-role='pause-resume']").remove();
       }
       step.template = $template.clone().wrap("<div>").parent().html();
       $element.popover({
@@ -549,19 +549,16 @@
     Tour.prototype._setupMouseNavigation = function() {
       var _this = this;
       _this = this;
-      $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=next]:not(.disabled)", function(e) {
+      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)", function(e) {
         e.preventDefault();
         return _this.next();
-      });
-      $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=prev]:not(.disabled)", function(e) {
+      }).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)", function(e) {
         e.preventDefault();
         return _this.prev();
-      });
-      $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=end]", function(e) {
+      }).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']", function(e) {
         e.preventDefault();
         return _this.end();
-      });
-      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=pause-resume]").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role=pause-resume]", function(e) {
+      }).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']", function(e) {
         var $this;
         e.preventDefault();
         $this = $(this);
