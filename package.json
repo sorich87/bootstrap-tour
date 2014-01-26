@@ -59,7 +59,8 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-notify": "~0.2.16",
     "grunt-open": "~0.2.2",
-    "grunt-replace": "~0.5.1"
+    "grunt-replace": "~0.5.1",
+    "grunt-processhtml": "~0.2.7"
   },
   "engines": {
     "node": ">= 0.8.0"

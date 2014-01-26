@@ -187,15 +187,12 @@ module.exports = (grunt) ->
       default:
         files: [
           {
-            expand: true
-            flatten: true
-            src: ["docs/index.html"]
-            dest: "docs/"
+            src: ["index.html"], dest: "index.html"
           }
         ]
 
   grunt.registerTask "default", ["run"]
-  grunt.registerTask "run", ["build", "connect", "open", "watch:doc"]
+  grunt.registerTask "run", ["build", "connect", "open", "watch"]
   grunt.registerTask "build", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy"]
   grunt.registerTask "test", ["build", "jasmine"]
   grunt.registerTask "release", "Release a new version, push it and publish it", (target) ->
