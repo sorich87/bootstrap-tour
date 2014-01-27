@@ -131,7 +131,10 @@ module.exports = (grunt) ->
         files: ["docs/assets/coffee/*.coffee"]
         tasks: ["coffeelint:doc", "coffee:doc"]
       jekyll:
-        files: ["docs/{,*/}*.html"]
+        files: [
+          "docs/{,*/}*.html",
+          "docs/assets/{,*/}*"
+        ]
         tasks: ["jekyll"]
 
     jasmine:
