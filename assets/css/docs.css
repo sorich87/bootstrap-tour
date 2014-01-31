@@ -1122,3 +1122,7 @@ code,
 pre {
   font-size: 13px;
 }
+
+pre code {
+  white-space: pre;
+}

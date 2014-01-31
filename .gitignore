@@ -1,8 +1,0 @@
-.grunt
-node_modules
-components
-bootstrap-tour.sublime-project
-bootstrap-tour.sublime-workspace
-npm-debug.log
-test
-_SpecRunner.html

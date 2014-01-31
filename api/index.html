@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Quick and easy way to build your product tours with Twitter Bootstrap Popovers.">
+
+<title>
+  
+    API Documentation &middot; Bootstrap Tour
+  
+</title>
+
+<link href="/assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css" rel="stylesheet">
+<link href="/assets/css/docs.css" rel="stylesheet">
+<!--[if lt IE 9]><script src="/assets/vendor/html5shiv.js"></script><![endif]-->
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-47485647-1', 'bootstraptour.com');
+  ga('send', 'pageview');
+</script>
+
+  </head>
+  <body>
+    <a href="https://github.com/sorich87/bootstrap-tour" id="github"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a href="/" class="navbar-brand">Bootstrap Tour</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav nav">
+        <li >
+          <a href="/">Getting started</a>
+        </li>
+        <li  class="active">
+          <a href="/api">API documentation</a>
+        </li>
+        <li>
+          <a href="https://github.com/sorich87/bootstrap-tour/issues">Bug reports</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+    <section id="options">
+  <div class="container">
+    <div class="page-header">
+      <h2>Options <small>Well, let's go deeper</small></h2>
+    </div>
+    <h3 id="tour-options">Global options</h3>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;tour&quot;</span><span class="p">,</span>
+  <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
+  <span class="nx">keyboard</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">storage</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">,</span>
+  <span class="nx">debug</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">duration</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">basePath</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">template</span><span class="o">:</span> <span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
+<span class="s2">    &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
+<span class="s2">    &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
+<span class="s2">    &lt;div class=&#39;popover-navigation&#39;&gt;</span>
+<span class="s2">        &lt;button class=&#39;btn btn-default&#39; data-role=&#39;prev&#39;&gt;« Prev&lt;/button&gt;</span>
+<span class="s2">        &lt;span data-role=&#39;separator&#39;&gt;|&lt;/span&gt;</span>
+<span class="s2">        &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
+<span class="s2">    &lt;/div&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
+<span class="s2">    &lt;/nav&gt;</span>
+<span class="s2">  &lt;/div&gt;&quot;</span><span class="p">,</span>
+  <span class="nx">afterGetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">afterSetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">afterRemoveState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onStart</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onEnd</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onShow</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onShown</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="nx">onHide</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onHidden</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">});</span>
+</code></pre></div>
+    <table class="table  table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>name</td>
+          <td>String</td>
+          <td>This option is used to build the name of the
+          storage item where the tour state is stored. You can
+          initialize several tours with different names in the same page and
+          application.</td>
+          <td><code>'tour'</code></td>
+        </tr>
+        <tr>
+          <td>container</td>
+          <td>String</td>
+          <td>Appends the step popover to a specific element.<br>
+          <em>See Usage section of
+          <a href="http://twitter.github.io/bootstrap/javascript.html#popovers" target="_blank">Popover</a>.
+          </em>
+          </td>
+          <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>keyboard</td>
+          <td>Boolean</td>
+          <td>This option set the left and right arrow navigation.</td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td>storage</td>
+          <td>Object</td>
+          <td>The storage system you want to use. could be the objects window.localStorage,
+          window.sessionStorage or your own object.<br>
+          You can set this option as
+          <code>false</code> to disable storage
+          persistence (the tour starts from beginning everytime the page is
+          loaded).<br>
+          <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage" target="_blank">DOM Storage interfaces</a>.</em>
+          </td>
+          <td><code>window.localStorage</code></td>
+        </tr>
+        <tr>
+          <td>debug</td>
+          <td>Boolean</td>
+          <td>Set this option to true to have some useful informations printed in the
+          console.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td>backdrop</td>
+          <td>Boolean</td>
+          <td>Show a dark backdrop behind the popover and its element,
+          highlighting the current step.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td>redirect</td>
+          <td>Boolean|Function</td>
+          <td>Set a custom function to execute as redirect function.
+          The default redirect relies on the traditional
+          <code class="language-javascrip">document.location.href</code></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td>orphan</td>
+          <td>Boolean</td>
+          <td>Allow to show the step regardless whether its element is not set, is
+          not present in the page or is hidden. The step is fixed
+          positioned in the middle of the page.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr id="duration" class="success">
+          <td>duration <span class="label label-success">NEW</span></td>
+          <td>Boolean|String</td>
+          <td>Set a expiration time for the steps. When the current step expires,
+          the next step is automatically shown. See it as a sort of guided, automatized tour
+          functionality. The value is specified in milliseconds</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td>basePath</td>
+          <td>String</td>
+          <td>Specify a default base path prepended to the
+          <code>path</code> option of every single
+          step. Very useful if you need to reuse the same tour on different
+          environments or sub-projects.</td>
+          <td><code>''</code></td>
+        </tr>
+        <tr>
+          <td>template</td>
+          <td>String|Function</td>
+          <td>String or function that returns a string of the HTML template for
+          the popovers. If you pass a Function, two parameters are available:
+          <strong>i</strong> is the position of step in the tour and
+          <strong>step</strong> is the an object that contains all the other step
+          options.<br>
+          From version 0.5, the navigation template is included inside the
+          template so you can easily rewrite it. However, Bootstrap Tour maps the
+          <em>previous</em>, <em>next</em> and <em>end</em> logics to the elements
+          which have the related <code class="language-markup">data-role</code>
+          attribute. Therefore, you can also have multiple elements with the same
+          <code class="language-markup">data-role</code> attribute.
+          </td>
+          <td>
+<div class="highlight"><pre><code class="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
+<span class="s2">  &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
+<span class="s2">  &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class=&#39;popover-navigation&#39;&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;prev&#39;&gt;« Prev&lt;/button&gt;</span>
+<span class="s2">    &lt;span data-role=&#39;separator&#39;&gt;|&lt;/span&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&quot;</span>
+</code></pre></div>
+          </td>
+          </p>
+        <tr>
+        <tr>
+          <td>afterGetState, afterSetState, afterRemoveState</td>
+          <td>Function</td>
+          <td>You may want to do something right after Bootstrap Tour read, write or remove
+          the state. Just pass functions to these.<br />
+          Your functions can have two parameters:
+          <ul class="unstyled">
+            <li>
+              <strong>key</strong>
+              Contains the name of the state being saved. It can be
+              <code>current_step</code> (for the state where the
+              latest step the visitor viewed is saved) or
+              <code>end</code> (for the state which is saved when
+              the user complete the tour). Note that Bootstrap Tour prepends the key with
+              <code>tour_</code> when saving the state.
+            </li>
+            <li>
+              <strong>value</strong>
+              The value of the state been saved. Can be the index of the
+              current step if the key is <code>current_step</code>, or
+              <code>yes</code> if the key is <code>end</code>.
+            </li>
+          </ul>
+          <p>A simple example if to send a post request to your server each
+          time there is a change:</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">afterSetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/some/path&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div>
+          </td>
+          <td><code>function (key, value) { }</code></td>
+        </tr>
+        <tr>
+          <td>onStart</td>
+          <td>Function</td>
+          <td>Function to execute when the tour starts.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onEnd</td>
+          <td>Function</td>
+          <td>Function to execute when the tour ends.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onShow</td>
+          <td>Function</td>
+          <td>Function to execute right before each step is shown.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onShown</td>
+          <td>Function</td>
+          <td>Function to execute right after each step is shown.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onHide</td>
+          <td>Function</td>
+          <td>Function to execute right before each step is hidden.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onHidden</td>
+          <td>Function</td>
+          <td>Function to execute right after each step is hidden.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onNext</td>
+          <td>Function</td>
+          <td>Function to execute when next step is called.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onPrev</td>
+          <td>Function</td>
+          <td>Function to execute when prev step is called.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr class="success">
+          <td>onPause <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when pause is called. The second argument refers to the
+          remaining duration.</td>
+          <td><code>function (tour, duration) { }</code></td>
+        </tr>
+        <tr class="success">
+          <td>onResume <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when resume is called. The second argument refers to the
+          remaining duration.</td>
+          <td><code>function (tour, duration) { }</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <a id="step-options"></a>
+    <h3>Step Options</h3>
+<div class="highlight"><pre><code class="javascript"><span class="nx">tour</span><span class="p">.</span><span class="nx">addStep</span><span class="p">({</span>
+  <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">placement</span><span class="o">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span>
+  <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">next</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nx">prev</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nx">animation</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
+  <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">reflex</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">template</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">onShow</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onShown</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onHide</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onHidden</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">});</span>
+</code></pre></div>
+    <table class="table  table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>path</td>
+          <td>String</td>
+          <td>Path to the page on which the step should be shown. This
+          allows you to build tours that span several pages!</td>
+          <td><code>''</code></td>
+        </tr>
+        <tr>
+          <td>element</td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the step popover should be shown.<br />
+          <em>If orphan is false, this option is required.</em></td>
+          <td><code>''</code></td>
+        </tr>
+        <tr>
+          <td>placement</td>
+          <td>String|Function</td>
+          <td>How to position the popover. Possible choices:
+          <code>'top'</code>,
+          <code>'bottom'</code>,
+          <code>'left'</code>,
+          <code>'right'</code>.
+          </td>
+          <td><code>'right'</code></td>
+        </tr>
+        <tr>
+          <td>title</td>
+          <td>String|Function</td>
+          <td>Step title</td>
+          <td><code>''</code></td>
+        </tr>
+        <tr>
+          <td>content</td>
+          <td>String|Function</td>
+          <td>Step content</td>
+          <td><code>''</code></td>
+        </tr>
+        <tr>
+          <td>next</td>
+          <td>Integer</td>
+          <td>Index of the step to show after this one, starting from
+          <code>0</code> for the first step of the
+          tour. <code>-1</code> to not show the link
+          to next step. By default, the next step (in the order you added
+          them) will be shown.<br />
+          <em>This option should be used in conjunction with
+          <code>prev</code>.</em></td>
+          <td><code>0</code></td>
+        </tr>
+        <tr>
+          <td>prev</td>
+          <td>Integer</td>
+          <td>Index of the step to show before this one, starting from
+          <code>0</code> for the first step of the
+          tour. <code>-1</code> to not show the link
+          to previous step. By default, the previous step (in the order you added
+          them) will be shown.<br />
+          <em>This option should be used in conjunction with
+          <code>next</code>.</em></td>
+          <td><code>0</code></td>
+        </tr>
+        <tr>
+          <td>animation</td>
+          <td>Boolean</td>
+          <td>Apply a css fade transition to the tooltip.</td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td>container</td>
+          <td>String (jQuery selector)</td>
+          <td>Attachment of popover. Pass an element to append the popover
+          to. By default the popover is appended after the 'element' above.
+          This option is particularly helpful for Internet Explorer.</td>
+          <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>backdrop</td>
+          <td>Boolean</td>
+          <td>Show a dark backdrop behind the popover and its element,
+          highlighting the current step.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td>redirect</td>
+          <td>Boolean|Function</td>
+          <td>Set a custom function to execute as redirect function.
+          The default redirect relies on the traditional
+          <code class="language-javascrip">document.location.href</code></td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
+          <td id="reflex">reflex</td>
+          <td>Boolean</td>
+          <td>Enable the reflex mode: you can click on the element for
+          continue the tour.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td>orphan</td>
+          <td>Boolean</td>
+          <td>Allow to show the step regardless whether its element is not set, is
+          not present in the page or is hidden. The step is fixed
+          positioned in the middle of the page.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr class="success">
+          <td>duration <span class="label label-success">NEW</span></td>
+          <td>Boolean|String</td>
+          <td>Set a expiration time for the stes. When the step expires,
+          the next step is automatically shown. See it as a sort of guided, automatized tour
+          functionality. The value is specified in milliseconds</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr>
+          <td>template</td>
+          <td>String|Function</td>
+          <td>String or function that returns a string of the HTML template for
+          the popovers. If you pass a Function, two parameters are available:
+          <strong>i</strong> is the position of step in the tour and
+          <strong>step</strong> is the an object that contains all the other step
+          options.<br>
+          From version 0.5, the navigation template is included inside the
+          template so you can easily rewrite it. However, Bootstrap Tour maps the
+          <em>previous</em>, <em>next</em> and <em>end</em> logics to the elements
+          which have the related <code class="language-markup">data-role</code>
+          attribute. Therefore, you can also have multiple elements with the same
+          <code class="language-markup">data-role</code> attribute.
+          </td>
+          <td>
+<div class="highlight"><pre><code class="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
+<span class="s2">  &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
+<span class="s2">  &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
+<span class="s2">  &lt;div class=&#39;popover-navigation&#39;&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;prev&#39;&gt;« Prev&lt;/button&gt;</span>
+<span class="s2">    &lt;span data-role=&#39;separator&#39;&gt;|&lt;/span&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
+<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
+<span class="s2">  &lt;/div&gt;</span>
+<span class="s2">&lt;/div&gt;&quot;</span>
+</code></pre></div>
+          </td>
+        </tr>
+        <tr>
+          <td>onShow</td>
+          <td>Function</td>
+          <td>Function to execute right before the step is shown. It overrides the
+          global <code>onShow</code> option.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onShown</td>
+          <td>Function</td>
+          <td>Function to execute right after the step is shown. It overrides the
+          global <code>onShown</code> option.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onHide</td>
+          <td>Function</td>
+          <td>Function to execute right before the step is hidden. It overrides
+          the global <code>onHide</code> option.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onHidden</td>
+          <td>Function</td>
+          <td>Function to execute right after the step is hidden. It overrides the
+          global <code>onHidden</code> option.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onNext</td>
+          <td>Function</td>
+          <td>Function to execute when next step is called. It overrides the
+          global <code>onNext</code> option.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr>
+          <td>onPrev</td>
+          <td>Function</td>
+          <td>Function to execute when prev step is called. It overrides the global
+          <code>onPrev</code> option.</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
+        <tr class="success">
+          <td>onPause <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when pause is called. The second argument refers to the
+          remaining duration. It overrides the global the
+          <code>onPause</code> option</td>
+          <td><code>function (tour, duration) { }</code></td>
+        </tr>
+        <tr class="success">
+          <td>onResume <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when resume is called. The second argument refers to the
+          remaining duration. It overrides the global
+          <code>onResume</code> option</td>
+          <td><code>function (tour, duration) { }</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section id="methods">
+  <div class="container">
+    <div class="page-header">
+      <h2>Methods <small>Always in control</small></h2>
+    </div>
+    <!--<p>If, for some reasons, you want to force the tour to be
+    displayed, pass <code>true</code> to the <code>start()</code>
+    method.</p>-->
+    <table class="table  table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>addSteps(<code>[]</code>)</td>
+          <td>Add multiple steps to the tour. Pass an array of objects.</td>
+        </tr>
+        <tr>
+          <td>addStep(<code>{}</code>)</td>
+          <td>Add single step to the tour. Pass an object.</td>
+        </tr>
+        <tr>
+          <td>init()</td>
+          <td>Initialize the tour. You must do it before calling start.</td>
+        </tr>
+        <tr>
+          <td>start(<code>true</code>)</td>
+          <td>Start the tour. Pass <code>true</code> to force the start.</td>
+        </tr>
+        <tr>
+          <td>restart()</td>
+          <td>Restart the tour after it ended.</td>
+        </tr>
+        <tr>
+          <td>end()</td>
+          <td>End the tour prematurely.</td>
+        </tr>
+        <tr>
+          <td>next()</td>
+          <td>Skip to the next step.</td>
+        </tr>
+        <tr>
+          <td>prev()</td>
+          <td>Go back to the previous step.</td>
+        </tr>
+        <tr class="warning">
+          <td>goTo(<code>i</code>)
+          <span class="label label-warning">UPDATED</span></td>
+          <td>Skip to a specific step. Pass <code>i</code> as the
+          index of the step in the tour (0-based).<br>
+          <em>From version 0.7.0, the method has been renamed since some Javascript compilers
+          are confused by the property name <strong>goto</strong>, which is a reserved word)
+          </em>.
+          </td>
+        </tr>
+        <tr>
+          <td>pause()</td>
+          <td>Pause the duration timer. It works only if tour or current stap has duration.</td>
+        </tr>
+        <tr>
+          <td>resume()</td>
+          <td>Resume the duration timer. It works only if tour or current stap has duration.</td>
+        </tr>
+        <tr>
+          <td>ended()</td>
+          <td>Verify if the tour ended. Returns boolean.</td>
+        </tr>
+        <tr>
+          <td>getStep(<code>i</code>)</td>
+          <td>Get the step object. Pass <code>i</code> as the index
+          of the step in the tour (0-based).</td>
+        </tr>
+        <tr>
+          <td>getCurrentStep()</td>
+          <td>Get the index of the current step.</td>
+        </tr>
+        <tr>
+          <td>setCurrentStep(<code>i</code>)</td>
+          <td>Override the current step. Pass <code>i</code>
+          as the index of the step in the tour (0-based).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+    <script src="/assets/vendor/jquery.js"></script>
+<script src="/assets/vendor/bootstrap.js"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js"></script>
+<script src="/assets/vendor/md5.js"></script>
+<script src="/assets/js/bootstrap-tour.js"></script>
+<script src="/assets/js/docs.js"></script>
+
+  </body>
+</html>
