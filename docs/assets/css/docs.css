@@ -1,17 +1,19 @@
 body {
-  position: relative;
-  padding-top: 50px;
   padding-bottom: 50px;
 }
 
 #github {
   display: block;
-  position: fixed;
+  position: absolute;
   width: 150px;
   height: 150px;
   top: 0;
   right: 0;
   z-index: 1050;
+}
+
+.navbar {
+  margin-bottom: 0;
 }
 
 .masthead {
