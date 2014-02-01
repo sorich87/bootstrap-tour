@@ -7,23 +7,25 @@ slug: home
 <header id="home">
   <div class="jumbotron masthead">
     <h1>Bootstrap Tour</h1>
-    <p>Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
-    <p>
-      <a href="https://github.com/sorich87/bootstrap-tour/archive/master.zip" id="download" class="btn-primary btn-large btn">
-        <span class="glyphicon glyphicon-download"></span>
-        Download
-      </a>
-      <button type="button" id="demo" class="btn btn-default" data-demo><span class="glyphicon glyphicon-play"></span> Demo</button>
+    <p class="lead">
+      The easiest way to educate people on how to use your app or site features
+      <br><small>Works with or without Twitter Bootstrap.</small>
     </p>
-    <ul class="masthead-links">
+    <p>
+      <button type="button" id="demo" class="btn btn-default btn-lg" data-demo>
+        <span class="glyphicon glyphicon-play"></span>
+        Start the demo
+      </button>
+    </p>
+    <ul class="social">
       <li>
-        <a href="http://github.com/sorich87/bootstrap-tour">GitHub project</a>
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=sorich87&amp;repo=bootstrap-tour&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
       </li>
       <li>
-        Version 0.8.1
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=sorich87&amp;repo=bootstrap-tour&amp;type=fork&amp;count=true" width="102" height="20" title="Fork on GitHub"></iframe>
       </li>
-      <li>
-        Bootstrap version &lt;= 3.0.0
+      <li class="tweet-btn">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://bootstraptour.com/" data-count="horizontal">Tweet</a>
       </li>
     </ul>
   </div>
@@ -33,21 +35,20 @@ slug: home
     <div class="page-header">
       <h2>The How-to <small>It's simple!</small></h2>
     </div>
-    <p>Add the dependencies to your webpage:</p>
+    <p>Download and add the dependencies to your webpage:</p>
 {% highlight html %}
 <!DOCTYPE html>
 <html>
 <head>
   ...
-  <link href="bootstrap-tour.css" rel="stylesheet">
-  <!--[if lt IE 9]><script src="html5shiv.js"><![endif]-->
+  <!-- If you're using Twitter Bootstrap in your project, include bootstrap-tour.min.css instead -->
+  <link href="bootstrap-tour-standalone.min.css" rel="stylesheet">
 </head>
 <body>
   ...
-  <script src="jquery.js"></script>
-  <script src="bootstrap.tooltip.js"></script>
-  <script src="bootstrap.popover.js"></script>
-  <script src="bootstrap-tour.js"></script>
+  <script src="https://code.jquery.com/jquery.min.js"></script>
+  <!-- If you're using Twitter Bootstrap in your project, include bootstrap-tour.min.js instead -->
+  <script src="bootstrap-tour-standalone.min.js"></script>
 </body>
 </html>
 {% endhighlight %}
