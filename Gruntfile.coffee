@@ -45,6 +45,7 @@ module.exports = (grunt) ->
 
     clean:
       default: "build"
+      docs: "docs-build"
       test: "test"
 
     coffee:
@@ -71,7 +72,16 @@ module.exports = (grunt) ->
     concat:
       options:
         banner: "<%= meta.banner %>"
-      default:
+      standalone:
+        options:
+          banner: ""
+        src: [
+          "src/js/standalone/tooltip.js",
+          "src/js/standalone/popover.js",
+          "build/js/<%= pkg.name %>.js"
+        ]
+        dest: "build/js/<%= pkg.name %>-standalone.js"
+      script:
         expand: true
         flatten: true
         cwd: "build/js"
@@ -95,14 +105,22 @@ module.exports = (grunt) ->
 
     less:
       default:
-        src: "src/less/<%= pkg.name %>.less"
-        dest: "build/css/<%= pkg.name %>.css"
+        files:
+          "build/css/<%= pkg.name %>.css": "src/less/<%= pkg.name %>.less"
+          "build/css/<%= pkg.name %>-standalone.css": [
+            "src/less/standalone/bootstrap.less",
+            "src/less/<%= pkg.name %>.less"
+          ]
       min:
         options:
           compress: true
           cleancss: true
-        src: "src/less/<%= pkg.name %>.less"
-        dest: "build/css/<%= pkg.name %>.min.css"
+        files:
+          "build/css/<%= pkg.name %>.min.css": "src/less/<%= pkg.name %>.less"
+          "build/css/<%= pkg.name %>-standalone.min.css": [
+            "src/less/standalone/bootstrap.less",
+            "src/less/<%= pkg.name %>.less"
+          ]
 
     uglify:
       options:
@@ -150,15 +168,8 @@ module.exports = (grunt) ->
     copy:
       default:
         files: [
-            expand: true
-            cwd: "build/js"
-            dest: "docs/assets/js"
-            src: ["*.js"]
-          ,
-            expand: true
-            cwd: "build/css"
-            dest: "docs/assets/css"
-            src: ["*.css"]
+          "docs/assets/js/bootstrap-tour.min.js": "build/js/bootstrap-tour.min.js"
+          "docs/assets/css/bootstrap-tour.min.css": "build/css/bootstrap-tour.min.css"
         ]
       docs:
         src: "CNAME"
