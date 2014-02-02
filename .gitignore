@@ -5,5 +5,5 @@ components
 bootstrap-tour.sublime-project
 bootstrap-tour.sublime-workspace
 npm-debug.log
-test
+test/spec
 _SpecRunner.html

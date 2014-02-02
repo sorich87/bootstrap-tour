@@ -46,7 +46,7 @@ module.exports = (grunt) ->
     clean:
       default: "build"
       docs: "docs-build"
-      test: "test"
+      test: "test/spec"
 
     coffee:
       options:
@@ -63,7 +63,7 @@ module.exports = (grunt) ->
         flatten: true
         cwd: "src/spec"
         src: ["*.spec.coffee"]
-        dest: "test"
+        dest: "test/spec"
         ext: ".spec.js"
       doc:
         src: "docs/assets/coffee/docs.coffee"
@@ -162,7 +162,7 @@ module.exports = (grunt) ->
           "docs/assets/vendor/jquery.js"
           "docs/assets/vendor/bootstrap.js"
         ]
-        specs: "test/*.spec.js"
+        specs: "test/spec/*.spec.js"
       src: "build/js/<%= pkg.name %>.js"
 
     copy:
