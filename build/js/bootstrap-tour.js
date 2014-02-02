@@ -59,57 +59,6 @@
       };
     }
 
-    Tour.prototype.setState = function(key, value) {
-      var e, keyName;
-      if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
-        try {
-          this._options.storage.setItem(keyName, value);
-        } catch (_error) {
-          e = _error;
-          if (e.code === DOMException.QUOTA_EXCEEDED_ERR) {
-            this.debug("LocalStorage quota exceeded. setState failed.");
-          }
-        }
-        return this._options.afterSetState(keyName, value);
-      } else {
-        if (this._state == null) {
-          this._state = {};
-        }
-        return this._state[key] = value;
-      }
-    };
-
-    Tour.prototype.removeState = function(key) {
-      var keyName;
-      if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
-        this._options.storage.removeItem(keyName);
-        return this._options.afterRemoveState(keyName);
-      } else {
-        if (this._state != null) {
-          return delete this._state[key];
-        }
-      }
-    };
-
-    Tour.prototype.getState = function(key) {
-      var keyName, value;
-      if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
-        value = this._options.storage.getItem(keyName);
-      } else {
-        if (this._state != null) {
-          value = this._state[key];
-        }
-      }
-      if (value === void 0 || value === "null") {
-        value = null;
-      }
-      this._options.afterGetState(key, value);
-      return value;
-    };
-
     Tour.prototype.addSteps = function(steps) {
       var step, _i, _len, _results;
       _results = [];
@@ -211,7 +160,7 @@
         $(document).off("click.tour-" + _this._options.name);
         $(document).off("keyup.tour-" + _this._options.name);
         $(window).off("resize.tour-" + _this._options.name);
-        _this.setState("end", "yes");
+        _this._setState("end", "yes");
         _this._inited = false;
         _this._force = false;
         _this._clearTimer();
@@ -224,12 +173,12 @@
     };
 
     Tour.prototype.ended = function() {
-      return !this._force && !!this.getState("end");
+      return !this._force && !!this._getState("end");
     };
 
     Tour.prototype.restart = function() {
-      this.removeState("current_step");
-      this.removeState("end");
+      this._removeState("current_step");
+      this._removeState("end");
       this.setCurrentStep(0);
       return this.start();
     };
@@ -363,12 +312,63 @@
     Tour.prototype.setCurrentStep = function(value) {
       if (value != null) {
         this._current = value;
-        this.setState("current_step", value);
+        this._setState("current_step", value);
       } else {
-        this._current = this.getState("current_step");
+        this._current = this._getState("current_step");
         this._current = this._current === null ? null : parseInt(this._current, 10);
       }
       return this;
+    };
+
+    Tour.prototype._setState = function(key, value) {
+      var e, keyName;
+      if (this._options.storage) {
+        keyName = "" + this._options.name + "_" + key;
+        try {
+          this._options.storage.setItem(keyName, value);
+        } catch (_error) {
+          e = _error;
+          if (e.code === DOMException.QUOTA_EXCEEDED_ERR) {
+            this.debug("LocalStorage quota exceeded. State storage failed.");
+          }
+        }
+        return this._options.afterSetState(keyName, value);
+      } else {
+        if (this._state == null) {
+          this._state = {};
+        }
+        return this._state[key] = value;
+      }
+    };
+
+    Tour.prototype._removeState = function(key) {
+      var keyName;
+      if (this._options.storage) {
+        keyName = "" + this._options.name + "_" + key;
+        this._options.storage.removeItem(keyName);
+        return this._options.afterRemoveState(keyName);
+      } else {
+        if (this._state != null) {
+          return delete this._state[key];
+        }
+      }
+    };
+
+    Tour.prototype._getState = function(key) {
+      var keyName, value;
+      if (this._options.storage) {
+        keyName = "" + this._options.name + "_" + key;
+        value = this._options.storage.getItem(keyName);
+      } else {
+        if (this._state != null) {
+          value = this._state[key];
+        }
+      }
+      if (value === void 0 || value === "null") {
+        value = null;
+      }
+      this._options.afterGetState(key, value);
+      return value;
     };
 
     Tour.prototype._showNextStep = function() {

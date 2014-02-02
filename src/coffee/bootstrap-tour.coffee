@@ -55,41 +55,6 @@
         backgroundShown: false
         overlayElementShown: false
 
-    # Set a state in storage
-    setState: (key, value) ->
-      if @_options.storage
-        keyName = "#{@_options.name}_#{key}"
-        try @_options.storage.setItem(keyName, value)
-        catch e
-          if e.code is DOMException.QUOTA_EXCEEDED_ERR
-            @debug "LocalStorage quota exceeded. setState failed."
-        @_options.afterSetState(keyName, value)
-      else
-        @_state ?= {}
-        @_state[key] = value
-
-    # Remove the current state from the storage layer
-    removeState: (key) ->
-      if @_options.storage
-        keyName = "#{@_options.name}_#{key}"
-        @_options.storage.removeItem(keyName)
-        @_options.afterRemoveState(keyName)
-      else
-        delete @_state[key] if @_state?
-
-    # Get the current state from the storage layer
-    getState: (key) ->
-      if @_options.storage
-        keyName = "#{@_options.name}_#{key}"
-        value = @_options.storage.getItem(keyName)
-      else
-        value = @_state[key] if @_state?
-
-      value = null if value is undefined or value == "null"
-
-      @_options.afterGetState(key, value)
-      return value
-
     # Add multiple steps
     addSteps: (steps) ->
       @addStep step for step in steps
@@ -173,7 +138,7 @@
         $(document).off "click.tour-#{@_options.name}"
         $(document).off "keyup.tour-#{@_options.name}"
         $(window).off "resize.tour-#{@_options.name}"
-        @setState("end", "yes")
+        @_setState("end", "yes")
         @_inited = false
         @_force = false
 
@@ -186,12 +151,12 @@
 
     # Verify if tour is enabled
     ended: ->
-      ! @_force and !! @getState("end")
+      ! @_force and !! @_getState("end")
 
     # Restart tour
     restart: ->
-      @removeState("current_step")
-      @removeState("end")
+      @_removeState("current_step")
+      @_removeState("end")
       @setCurrentStep(0)
       @start()
 
@@ -308,11 +273,46 @@
     setCurrentStep: (value) ->
       if value?
         @_current = value
-        @setState("current_step", value)
+        @_setState("current_step", value)
       else
-        @_current = @getState("current_step")
+        @_current = @_getState("current_step")
         @_current = if @_current == null then null else parseInt(@_current, 10)
       @
+
+    # Set a state in storage
+    _setState: (key, value) ->
+      if @_options.storage
+        keyName = "#{@_options.name}_#{key}"
+        try @_options.storage.setItem(keyName, value)
+        catch e
+          if e.code is DOMException.QUOTA_EXCEEDED_ERR
+            @debug "LocalStorage quota exceeded. State storage failed."
+        @_options.afterSetState(keyName, value)
+      else
+        @_state ?= {}
+        @_state[key] = value
+
+    # Remove the current state from the storage layer
+    _removeState: (key) ->
+      if @_options.storage
+        keyName = "#{@_options.name}_#{key}"
+        @_options.storage.removeItem(keyName)
+        @_options.afterRemoveState(keyName)
+      else
+        delete @_state[key] if @_state?
+
+    # Get the current state from the storage layer
+    _getState: (key) ->
+      if @_options.storage
+        keyName = "#{@_options.name}_#{key}"
+        value = @_options.storage.getItem(keyName)
+      else
+        value = @_state[key] if @_state?
+
+      value = null if value is undefined or value == "null"
+
+      @_options.afterGetState(key, value)
+      return value
 
     # Show next step
     _showNextStep: ->

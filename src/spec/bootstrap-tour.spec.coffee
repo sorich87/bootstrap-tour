@@ -6,8 +6,8 @@ describe "Bootstrap Tour", ->
 
   afterEach ->
     tour = @tour
-    @tour.setState("current_step", null)
-    @tour.setState("end", null)
+    @tour._setState("current_step", null)
+    @tour._setState("end", null)
     $.each @tour._steps, (i, s) ->
       $element = $(tour.getStep(i).element)
       $element.popover("destroy").removeData("bs.popover")
@@ -30,12 +30,12 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     expect(@tour._steps).toEqual [] # tour accepts an array of steps
 
-  it "'setState' should save state as localStorage item", ->
+  it "'_setState' should save state as localStorage item", ->
     @tour = new Tour
-    @tour.setState("test", "yes")
+    @tour._setState("test", "yes")
     expect(window.localStorage.getItem("tour_test")).toBe "yes"
 
-  it "'setState' should execute storage.setItem function if provided", ->
+  it "'_setState' should execute storage.setItem function if provided", ->
     aliasKeyName = undefined
     aliasValue = undefined
 
@@ -48,40 +48,40 @@ describe "Bootstrap Tour", ->
         getItem: (value) ->
           return aliasValue
 
-    @tour.setState("save", "yes")
+    @tour._setState("save", "yes")
     expect(aliasKeyName).toBe "test_save"
     expect(aliasValue).toBe "yes"
 
-  it "'setState' should save state internally if storage is false", ->
+  it "'_setState' should save state internally if storage is false", ->
     @tour = new Tour
       storage: false
-    @tour.setState("test", "yes")
+    @tour._setState("test", "yes")
     expect(@tour._state["test"]).toBe "yes"
 
-  it "'removeState' should remove state localStorage item", ->
+  it "'_removeState' should remove state localStorage item", ->
     @tour = new Tour
-    @tour.setState("test", "yes")
-    @tour.removeState("test")
+    @tour._setState("test", "yes")
+    @tour._removeState("test")
     expect(window.localStorage.getItem("tour_test")).toBe null
 
-  it "'removeState' should remove state internally if storage is false", ->
+  it "'_removeState' should remove state internally if storage is false", ->
     @tour = new Tour
       storage: false
-    @tour.setState("test", "yes")
-    @tour.removeState("test")
+    @tour._setState("test", "yes")
+    @tour._removeState("test")
     expect(@tour._state["test"]).toBeUndefined()
 
-  it "'getState' should get state localStorage items", ->
+  it "'_getState' should get state localStorage items", ->
     @tour = new Tour
-    @tour.setState("test", "yes")
-    expect(@tour.getState("test")).toBe "yes"
+    @tour._setState("test", "yes")
+    expect(@tour._getState("test")).toBe "yes"
     window.localStorage.setItem("tour_test", null)
 
-  it "'getState' should get the internal state if storage is false", ->
+  it "'_getState' should get the internal state if storage is false", ->
     @tour = new Tour
       storage: false
-    @tour.setState("test", "yes")
-    expect(@tour.getState("test")).toBe "yes"
+    @tour._setState("test", "yes")
+    expect(@tour._getState("test")).toBe "yes"
 
   it "'addStep' should add a step", ->
     @tour = new Tour
@@ -240,23 +240,23 @@ describe "Bootstrap Tour", ->
   it "'init' should continue a tour", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.setState("current_step", 0)
+    @tour._setState("current_step", 0)
     @tour.init()
     expect($(".popover").length).toBe 1
 
   it "'init' should not continue a tour that ended", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.setState("current_step", 0)
-    @tour.setState("end", "yes")
+    @tour._setState("current_step", 0)
+    @tour._setState("end", "yes")
     @tour.init()
     expect($(".popover").length).toBe 0 # previously ended tour don't start again
 
   it "'init'(true) should force continuing a tour that ended", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
-    @tour.setState("current_step", 0)
-    @tour.setState("end", "yes")
+    @tour._setState("current_step", 0)
+    @tour._setState("end", "yes")
     @tour.init(true)
     expect($(".popover").length).toBe 1 # previously ended tour starts again if forced to
 
@@ -275,7 +275,7 @@ describe "Bootstrap Tour", ->
     @tour.start()
     @tour.end()
     expect(@tour.getStep(0).element.data("bs.popover")).toBeUndefined() # tour hides current step
-    expect(@tour.getState("end")).toBe "yes"
+    expect(@tour._getState("end")).toBe "yes"
 
   it "'ended' should return true if tour ended and false if not", ->
     @tour = new Tour
@@ -300,7 +300,7 @@ describe "Bootstrap Tour", ->
     @tour.next()
     @tour.end()
     @tour.restart()
-    expect(@tour.getState("end")).toBe null
+    expect(@tour._getState("end")).toBe null
     expect(@tour._current).toBe 0
     expect($(".popover").length).toBe 1 # tour starts
 
@@ -348,7 +348,7 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     @tour.setCurrentStep(4)
     expect(@tour._current).toBe 4 # tour sets current step if passed a value
-    @tour.setState("current_step", 2)
+    @tour._setState("current_step", 2)
     @tour.setCurrentStep()
     expect(@tour._current).toBe 2 # tour reads current step state if not passed a value
 
@@ -404,17 +404,17 @@ describe "Bootstrap Tour", ->
     # redirect if path doesn't match current path
     expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true
 
-  it "'getState' should return null after 'removeState' with null value", ->
+  it "'_getState' should return null after '_removeState' with null value", ->
     @tour = new Tour
-    @tour.setState("test", "test")
-    @tour.removeState("test")
-    expect(@tour.getState("test")).toBe null
+    @tour._setState("test", "test")
+    @tour._removeState("test")
+    expect(@tour._getState("test")).toBe null
 
-  it "'removeState' should call 'afterRemoveState' callback", ->
+  it "'_removeState' should call 'afterRemoveState' callback", ->
     sentinel = false
     @tour = new Tour
       afterRemoveState: -> sentinel = true
-    @tour.removeState("current_step")
+    @tour._removeState("current_step")
     expect(sentinel).toBe true
 
   it "should not move to the next state until the onShow promise is resolved", ->
@@ -639,9 +639,9 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     spyOn(@tour._options.storage, "setItem").andCallFake -> throw new Error("QUOTA_EXCEEDED_ERR", "QUOTA_EXCEEDED_ERR: DOM Exception 22")
-    spyOn(@tour, "setState")
-    @tour.setState("test", "1")
-    expect(=> @tour.setState).not.toThrow()
+    spyOn(@tour, "_setState")
+    @tour._setState("test", "1")
+    expect(=> @tour._setState).not.toThrow()
 
   it 'should not try to scroll to non-existing element', ->
     @tour = new Tour
