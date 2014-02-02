@@ -387,6 +387,8 @@ describe "Bootstrap Tour", ->
   it "should evaluate 'path' correctly", ->
     @tour = new Tour
 
+    # redirect if path doesn't match current path
+    expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true
     # don't redirect if no path
     expect(@tour._isRedirect(undefined, "/")).toBe false
     # don't redirect if path empty
@@ -401,8 +403,8 @@ describe "Bootstrap Tour", ->
     expect(@tour._isRedirect("/somepath?search=true", "/somepath")).toBe false
     # don't redirect if path with slash and query params matches current path
     expect(@tour._isRedirect("/somepath/?search=true", "/somepath")).toBe false
-    # redirect if path doesn't match current path
-    expect(@tour._isRedirect("/anotherpath", "/somepath")).toBe true
+    # don't redirect if current path matches path regex
+    expect(@tour._isRedirect /some*/, "/somepath").toBe false
 
   it "'_getState' should return null after '_removeState' with null value", ->
     @tour = new Tour

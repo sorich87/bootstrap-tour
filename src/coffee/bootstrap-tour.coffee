@@ -230,7 +230,10 @@
         @setCurrentStep(i)
 
         # Support string or function for path
-        path = if $.isFunction(step.path) then step.path.call() else @_options.basePath + step.path
+        path = switch toString.call step.path
+          when "[object Function]" then step.path()
+          when "[object String]" then @_options.basePath + step.path
+          else step.path
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join("")
@@ -336,8 +339,11 @@
 
     # Check if step path equals current document path
     _isRedirect: (path, currentPath) ->
-      path? and path isnt "" and
-        path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, "")
+      path? and path isnt "" and (
+        (toString.call(path) is "[object RegExp]" and not path.test currentPath) or
+        (toString.call(path) is "[object String]" and
+          path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, ""))
+      )
 
     # Execute the redirect
     _redirect: (step, path) ->

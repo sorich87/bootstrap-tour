@@ -266,7 +266,16 @@
       showStepHelper = function(e) {
         var current_path, path;
         _this.setCurrentStep(i);
-        path = $.isFunction(step.path) ? step.path.call() : _this._options.basePath + step.path;
+        path = (function() {
+          switch (toString.call(step.path)) {
+            case "[object Function]":
+              return step.path();
+            case "[object String]":
+              return this._options.basePath + step.path;
+            default:
+              return step.path;
+          }
+        }).call(_this);
         current_path = [document.location.pathname, document.location.hash].join("");
         if (_this._isRedirect(path, current_path)) {
           _this._redirect(step, path);
@@ -400,7 +409,7 @@
     };
 
     Tour.prototype._isRedirect = function(path, currentPath) {
-      return (path != null) && path !== "" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "");
+      return (path != null) && path !== "" && ((toString.call(path) === "[object RegExp]" && !path.test(currentPath)) || (toString.call(path) === "[object String]" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "")));
     };
 
     Tour.prototype._redirect = function(step, path) {
