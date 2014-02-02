@@ -387,7 +387,7 @@
       showNextStepHelper = function(e) {
         return _this.showStep(step.next);
       };
-      promise = this._makePromise((step.onNext != null ? step.onNext(this) : void 0));
+      promise = this._makePromise(step.onNext != null ? step.onNext(this) : void 0);
       return this._callOnPromiseDone(promise, showNextStepHelper);
     };
 
@@ -398,7 +398,7 @@
       showPrevStepHelper = function(e) {
         return _this.showStep(step.prev);
       };
-      promise = this._makePromise((step.onPrev != null ? step.onPrev(this) : void 0));
+      promise = this._makePromise(step.onPrev != null ? step.onPrev(this) : void 0);
       return this._callOnPromiseDone(promise, showPrevStepHelper);
     };
 
@@ -655,10 +655,7 @@
     Tour.prototype._showOverlayElement = function(element) {
       var $background, $element, offset;
       $element = $(element);
-      if (!$element || $element.length === 0) {
-        return;
-      }
-      if (this.backdrop.overlayElementShown) {
+      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
         return;
       }
       this.backdrop.overlayElementShown = true;
