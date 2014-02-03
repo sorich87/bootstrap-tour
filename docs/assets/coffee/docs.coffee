@@ -16,15 +16,13 @@ $ ->
       title: "Welcome to Bootstrap Tour!"
       content: """
       Introduce new users to your product by walking them through it step by step.
-      Built on the awesome
-      <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap from Twitter.</a>
       """
     ,
       path: "/"
       element: "#usage"
       placement: "top"
       title: "A super simple setup"
-      content: "Easy is better, right? Easy like Bootstrap. The tour is up and running with just a
+      content: "Easy is better, right? The tour is up and running with just a
       few options and steps."
     ,
       path: "/"

@@ -18,13 +18,13 @@ $(function() {
       element: "#demo",
       placement: "bottom",
       title: "Welcome to Bootstrap Tour!",
-      content: "Introduce new users to your product by walking them through it step by step.\nBuilt on the awesome\n<a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap from Twitter.</a>"
+      content: "Introduce new users to your product by walking them through it step by step."
     }, {
       path: "/",
       element: "#usage",
       placement: "top",
       title: "A super simple setup",
-      content: "Easy is better, right? Easy like Bootstrap. The tour is up and running with just a      few options and steps."
+      content: "Easy is better, right? The tour is up and running with just a      few options and steps."
     }, {
       path: "/",
       element: "#license",
