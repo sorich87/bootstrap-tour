@@ -1,30 +1,25 @@
 $ ->
   $demo = $("#demo")
-
-  tour = new Tour
-    onStart: -> $demo.addClass "disabled", true
-    onEnd: -> $demo.removeClass "disabled", true
-    debug: true
-
   duration = 5000
   remaining = duration
-
-  tour.addSteps [
+  tour = new Tour(
+    onStart: -> $demo.addClass "disabled", true
+    onEnd: -> $demo.removeClass "disabled", true
+    debug: true,
+    steps: [
       path: "/"
       element: "#demo"
       placement: "bottom"
       title: "Welcome to Bootstrap Tour!"
       content: """
       Introduce new users to your product by walking them through it step by step.
-      Built on the awesome
-      <a href='http://twitter.github.com/bootstrap' target='_blank'>Bootstrap from Twitter.</a>
       """
     ,
       path: "/"
       element: "#usage"
       placement: "top"
       title: "A super simple setup"
-      content: "Easy is better, right? Easy like Bootstrap. The tour is up and running with just a
+      content: "Easy is better, right? The tour is up and running with just a
       few options and steps."
     ,
       path: "/"
@@ -77,12 +72,11 @@ $ ->
       forget to specify element and placement!
       """
       orphan: true
-      onHidden: ->
-        window.location.assign "/"
-  ]
-
-  tour.init()
-  tour.start()
+      onHidden: -> window.location.assign "/"
+    ]
+  )
+  .init()
+  .start()
 
   $('<div class="alert alert-info alert-dismissable"><button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>You ended the demo tour. <a href="#" data-demo>Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
 

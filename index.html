@@ -31,7 +31,7 @@
   </head>
   <body>
     <a href="https://github.com/sorich87/bootstrap-tour" id="github"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
-    <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+    <div id="navbar" class="navbar navbar-static-top">
   <div class="container">
     <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-collapse">
       <span class="icon-bar"></span>
@@ -44,8 +44,11 @@
         <li  class="active">
           <a href="/">Getting started</a>
         </li>
+        <li>
+          <a href="https://github.com/sorich87/bootstrap-tour/releases">Download</a>
+        </li>
         <li >
-          <a href="/api">API documentation</a>
+          <a href="/api">API Documentation</a>
         </li>
         <li>
           <a href="https://github.com/sorich87/bootstrap-tour/issues">Bug reports</a>
@@ -58,23 +61,25 @@
     <header id="home">
   <div class="jumbotron masthead">
     <h1>Bootstrap Tour</h1>
-    <p>Quick and easy way to build your product tours with Twitter Bootstrap Popovers.</p>
-    <p>
-      <a href="https://github.com/sorich87/bootstrap-tour/archive/master.zip" id="download" class="btn-primary btn-large btn">
-        <span class="glyphicon glyphicon-download"></span>
-        Download
-      </a>
-      <button type="button" id="demo" class="btn btn-default" data-demo><span class="glyphicon glyphicon-play"></span> Demo</button>
+    <p class="lead">
+      The easiest way to show people how to use your website.
+      <br><small>Not using Bootstrap? It works anyway!</small>
     </p>
-    <ul class="masthead-links">
+    <p>
+      <button type="button" id="demo" class="btn btn-default btn-lg" data-demo>
+        <span class="glyphicon glyphicon-play"></span>
+        Start the demo
+      </button>
+    </p>
+    <ul class="social">
       <li>
-        <a href="http://github.com/sorich87/bootstrap-tour">GitHub project</a>
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=sorich87&amp;repo=bootstrap-tour&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
       </li>
       <li>
-        Version 0.8.1
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=sorich87&amp;repo=bootstrap-tour&amp;type=fork&amp;count=true" width="102" height="20" title="Fork on GitHub"></iframe>
       </li>
-      <li>
-        Bootstrap version &lt;= 3.0.0
+      <li class="tweet-btn">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://bootstraptour.com/" data-count="horizontal">Tweet</a>
       </li>
     </ul>
   </div>
@@ -84,33 +89,29 @@
     <div class="page-header">
       <h2>The How-to <small>It's simple!</small></h2>
     </div>
-    <p>Add the dependencies to your webpage:</p>
-<div class="highlight"><pre><code class="html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="nt">&lt;html&gt;</span>
-<span class="nt">&lt;head&gt;</span>
-  ...
-  <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
-  <span class="c">&lt;!--[if lt IE 9]&gt;&lt;script src=&quot;html5shiv.js&quot;&gt;&lt;![endif]--&gt;</span>
-<span class="nt">&lt;/head&gt;</span>
-<span class="nt">&lt;body&gt;</span>
-  ...
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap.tooltip.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap.popover.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;/body&gt;</span>
-<span class="nt">&lt;/html&gt;</span>
+    <h3>Add the dependencies</h3>
+    <p>If you are using Bootstrap, include <code>bootstrap-tour.min.css</code> and <code>bootstrap-tour.min.js</code>:</p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+...
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
 </code></pre></div>
-    <p>Setup your tour:</p>
+    <p>Otherwise, just include <code>bootstrap-tour-standalone.min.css</code> and <code>bootstrap-tour-standalone.min.js</code>:</p>
+<div class="highlight"><pre><code class="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour-standalone.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+...
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour-standalone.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</code></pre></div>
+    <h3>Setup your tour:</h3>
 <div class="highlight"><pre><code class="javascript"><span class="c1">// Instance the tour</span>
-<span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">();</span>
-
-<span class="c1">// Add your steps. Not too many, you don&#39;t really want to get your users sleepy</span>
-<span class="nx">tour</span><span class="p">.</span><span class="nx">addSteps</span><span class="p">([</span>
+<span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">(</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
   <span class="p">{</span>
-    <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span> <span class="c1">// string (jQuery selector) - html element next to which the step popover should be shown</span>
-    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span> <span class="c1">// string - title of the popover</span>
-    <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span> <span class="c1">// string - content of the popover</span>
+    <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+    <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
   <span class="p">},</span>
   <span class="p">{</span>
     <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
@@ -135,16 +136,13 @@
     </div>
     <div class="row">
       <div class="col-sm-4">
-        <img src="" class="gravatar img-circle" data-email="sorich87@gmail.com">
-        <a href="https://github.com/sorich87">Ulrich Sossou</a>
+        <a href="https://github.com/sorich87"><img src="" class="gravatar img-circle" data-email="sorich87@gmail.com"> Ulrich Sossou</a>
       </div>
       <div class="col-sm-4">
-        <img src="" class="gravatar img-circle" data-email="emanuele@lostcrew.it">
-        <a href="https://github.com/LostCrew">Emanuele Marchi</a>
+        <a href="https://github.com/LostCrew"><img src="" class="gravatar img-circle" data-email="emanuele@lostcrew.it"> Emanuele Marchi</a>
       </div>
       <div class="col-sm-4">
-        <img src="" class="gravatar img-circle" data-email="emmenko@gmail.com">
-        <a href="https://github.com/emmenko">Nicola Molinari</a>
+        <a href="https://github.com/emmenko"><img src="" class="gravatar img-circle" data-email="emmenko@gmail.com"> Nicola Molinari</a>
       </div>
     </div>
   </div>
@@ -165,6 +163,14 @@
 <script src="/assets/vendor/md5.js"></script>
 <script src="/assets/js/bootstrap-tour.js"></script>
 <script src="/assets/js/docs.js"></script>
+<script>
+  window.twttr = (function (d,s,id) {
+    var t, js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return; js=d.createElement(s); js.id=id; js.async=1;
+    js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
+    return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
+  }(document, "script", "twitter-wjs"));
+</script>
 
   </body>
 </html>
