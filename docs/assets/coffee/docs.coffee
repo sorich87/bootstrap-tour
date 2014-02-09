@@ -1,15 +1,12 @@
 $ ->
   $demo = $("#demo")
-
-  tour = new Tour
+  duration = 5000
+  remaining = duration
+  tour = new Tour(
     onStart: -> $demo.addClass "disabled", true
     onEnd: -> $demo.removeClass "disabled", true
     debug: true
-
-  duration = 5000
-  remaining = duration
-
-  tour.addSteps [
+  ).addSteps([
       path: "/"
       element: "#demo"
       placement: "bottom"
@@ -77,10 +74,7 @@ $ ->
       orphan: true
       onHidden: ->
         window.location.assign "/"
-  ]
-
-  tour.init()
-  tour.start()
+  ]).init().start()
 
   $('<div class="alert alert-info alert-dismissable"><button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>You ended the demo tour. <a href="#" data-demo>Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
 

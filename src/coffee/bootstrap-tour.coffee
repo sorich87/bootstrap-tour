@@ -54,14 +54,17 @@
         $background: null
         backgroundShown: false
         overlayElementShown: false
+      @
 
     # Add multiple steps
     addSteps: (steps) ->
       @addStep step for step in steps
+      @
 
     # Add a new step
     addStep: (step) ->
       @_steps.push step
+      @
 
     # Get a step by its indice
     getStep: (i) ->
@@ -95,7 +98,9 @@
     init: (force) ->
       @_force = force
 
-      return @_debug "Tour ended, init prevented." if @ended()
+      if @ended()
+        @_debug "Tour ended, init prevented."
+        return @
 
       @setCurrentStep()
 
@@ -118,20 +123,24 @@
       if @_current is null
         promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
         @_callOnPromiseDone(promise, @showStep, 0)
+      @
 
     # Hide current step and show next step
     next: ->
       promise = @hideStep @_current
       @_callOnPromiseDone promise, @_showNextStep
+      @
 
     # Hide current step and show prev step
     prev: ->
       promise = @hideStep @_current
       @_callOnPromiseDone promise, @_showPrevStep
+      @
 
     goTo: (i) ->
       promise = @hideStep @_current
       @_callOnPromiseDone promise, @showStep, i
+      @
 
     # End tour
     end: ->
@@ -149,6 +158,7 @@
 
       promise = @hideStep(@_current)
       @_callOnPromiseDone(promise, endHelper)
+      @
 
     # Verify if tour is enabled
     ended: ->
@@ -156,15 +166,15 @@
 
     # Restart tour
     restart: ->
-      @_removeState("current_step")
-      @_removeState("end")
-      @setCurrentStep(0)
+      @_removeState "current_step"
+      @_removeState "end"
+      @setCurrentStep 0
       @start()
 
     # Pause step timer
     pause: ->
       step = @getStep @_current
-      return unless step and step.duration
+      return @ unless step and step.duration
 
       @_paused = true
       @_duration -= new Date().getTime() - @_start
@@ -177,7 +187,7 @@
     # Resume step timer
     resume: ->
       step = @getStep @_current
-      return unless step and step.duration
+      return @ unless step and step.duration
 
       @_paused = false
       @_start = new Date().getTime()
@@ -193,7 +203,7 @@
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep i
-      return unless step
+      return @ unless step
 
       @_clearTimer()
 
@@ -216,10 +226,12 @@
 
     # Show the specified step
     showStep: (i) ->
-      return @_debug "Tour ended, showStep prevented." if @ended()
+      if @ended()
+        @_debug "Tour ended, showStep prevented."
+        return @
 
-      step = @getStep(i)
-      return unless step
+      step = @getStep i
+      return @ unless step
 
       skipToPrevious = i < @_current
 

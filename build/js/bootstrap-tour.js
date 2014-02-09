@@ -57,20 +57,21 @@
         backgroundShown: false,
         overlayElementShown: false
       };
+      this;
     }
 
     Tour.prototype.addSteps = function(steps) {
-      var step, _i, _len, _results;
-      _results = [];
+      var step, _i, _len;
       for (_i = 0, _len = steps.length; _i < _len; _i++) {
         step = steps[_i];
-        _results.push(this.addStep(step));
+        this.addStep(step);
       }
-      return _results;
+      return this;
     };
 
     Tour.prototype.addStep = function(step) {
-      return this._steps.push(step);
+      this._steps.push(step);
+      return this;
     };
 
     Tour.prototype.getStep = function(i) {
@@ -106,7 +107,8 @@
       var _this = this;
       this._force = force;
       if (this.ended()) {
-        return this._debug("Tour ended, init prevented.");
+        this._debug("Tour ended, init prevented.");
+        return this;
       }
       this.setCurrentStep();
       this._setupMouseNavigation();
@@ -131,26 +133,30 @@
       }
       if (this._current === null) {
         promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
-        return this._callOnPromiseDone(promise, this.showStep, 0);
+        this._callOnPromiseDone(promise, this.showStep, 0);
       }
+      return this;
     };
 
     Tour.prototype.next = function() {
       var promise;
       promise = this.hideStep(this._current);
-      return this._callOnPromiseDone(promise, this._showNextStep);
+      this._callOnPromiseDone(promise, this._showNextStep);
+      return this;
     };
 
     Tour.prototype.prev = function() {
       var promise;
       promise = this.hideStep(this._current);
-      return this._callOnPromiseDone(promise, this._showPrevStep);
+      this._callOnPromiseDone(promise, this._showPrevStep);
+      return this;
     };
 
     Tour.prototype.goTo = function(i) {
       var promise;
       promise = this.hideStep(this._current);
-      return this._callOnPromiseDone(promise, this.showStep, i);
+      this._callOnPromiseDone(promise, this.showStep, i);
+      return this;
     };
 
     Tour.prototype.end = function() {
@@ -169,7 +175,8 @@
         }
       };
       promise = this.hideStep(this._current);
-      return this._callOnPromiseDone(promise, endHelper);
+      this._callOnPromiseDone(promise, endHelper);
+      return this;
     };
 
     Tour.prototype.ended = function() {
@@ -187,7 +194,7 @@
       var step;
       step = this.getStep(this._current);
       if (!(step && step.duration)) {
-        return;
+        return this;
       }
       this._paused = true;
       this._duration -= new Date().getTime() - this._start;
@@ -203,7 +210,7 @@
         _this = this;
       step = this.getStep(this._current);
       if (!(step && step.duration)) {
-        return;
+        return this;
       }
       this._paused = false;
       this._start = new Date().getTime();
@@ -226,7 +233,7 @@
         _this = this;
       step = this.getStep(i);
       if (!step) {
-        return;
+        return this;
       }
       this._clearTimer();
       promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
@@ -255,11 +262,12 @@
       var promise, showStepHelper, skipToPrevious, step,
         _this = this;
       if (this.ended()) {
-        return this._debug("Tour ended, showStep prevented.");
+        this._debug("Tour ended, showStep prevented.");
+        return this;
       }
       step = this.getStep(i);
       if (!step) {
-        return;
+        return this;
       }
       skipToPrevious = i < this._current;
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);

@@ -219,8 +219,8 @@ module.exports = (grunt) ->
           }
         ]
 
-  grunt.registerTask "default", ["run"]
-  grunt.registerTask "run", ["build", "connect", "open", "watch"]
+  grunt.registerTask "default", ["go"]
+  grunt.registerTask "go", ["build", "connect", "open", "watch"]
   grunt.registerTask "build-code", ["clean", "coffeelint", "coffee", "less", "concat", "uglify", "copy:default"]
   grunt.registerTask "build-docs", ["jekyll", "copy:docs"]
   grunt.registerTask "build", ["build-code", "build-docs"]

@@ -1,6 +1,8 @@
 $(function() {
   var $demo, duration, remaining, tour;
   $demo = $("#demo");
+  duration = 5000;
+  remaining = duration;
   tour = new Tour({
     onStart: function() {
       return $demo.addClass("disabled", true);
@@ -9,10 +11,7 @@ $(function() {
       return $demo.removeClass("disabled", true);
     },
     debug: true
-  });
-  duration = 5000;
-  remaining = duration;
-  tour.addSteps([
+  }).addSteps([
     {
       path: "/",
       element: "#demo",
@@ -68,9 +67,7 @@ $(function() {
         return window.location.assign("/");
       }
     }
-  ]);
-  tour.init();
-  tour.start();
+  ]).init().start();
   if (tour.ended()) {
     $('<div class="alert alert-info alert-dismissable"><button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>You ended the demo tour. <a href="#" data-demo>Restart the demo tour.</a></div>').prependTo(".content").alert();
   }
