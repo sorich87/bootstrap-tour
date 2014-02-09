@@ -104,8 +104,8 @@
 
       @setCurrentStep()
 
-      @_setupMouseNavigation()
-      @_setupKeyboardNavigation()
+      @_initMouseNavigation()
+      @_initKeyboardNavigation()
 
       # Reshow popover on window resize using debounced resize
       @_onResize => @showStep @_current
@@ -129,18 +129,15 @@
     next: ->
       promise = @hideStep @_current
       @_callOnPromiseDone promise, @_showNextStep
-      @
 
     # Hide current step and show prev step
     prev: ->
       promise = @hideStep @_current
       @_callOnPromiseDone promise, @_showPrevStep
-      @
 
     goTo: (i) ->
       promise = @hideStep @_current
       @_callOnPromiseDone promise, @showStep, i
-      @
 
     # End tour
     end: ->
@@ -158,7 +155,6 @@
 
       promise = @hideStep(@_current)
       @_callOnPromiseDone(promise, endHelper)
-      @
 
     # Verify if tour is enabled
     ended: ->
@@ -203,7 +199,7 @@
     # Hide the specified step
     hideStep: (i) ->
       step = @getStep i
-      return @ unless step
+      return unless step
 
       @_clearTimer()
 
@@ -221,7 +217,6 @@
         step.onHidden(@) if step.onHidden?
 
       @_callOnPromiseDone promise, hideStepHelper
-
       promise
 
     # Show the specified step
@@ -231,7 +226,7 @@
         return @
 
       step = @getStep i
-      return @ unless step
+      return unless step
 
       skipToPrevious = i < @_current
 
@@ -274,8 +269,7 @@
         # Play step timer
         @resume() if step.duration
 
-      @_callOnPromiseDone(promise, showStepHelper)
-
+      @_callOnPromiseDone promise, showStepHelper
       promise
 
     getCurrentStep: ->
@@ -475,7 +469,7 @@
         timeout = setTimeout(callback, 100)
 
     # Event bindings for mouse navigation
-    _setupMouseNavigation: ->
+    _initMouseNavigation: ->
       _this = @
 
       # Go to next step after click on element with attribute 'data-role=next'
@@ -498,13 +492,13 @@
         @end()
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='pause-resume']", (e) ->
         e.preventDefault()
-        $this = $(@)
+        $this = $ @
 
         $this.text if _this._paused then $this.data "pause-text" else $this.data "resume-text"
         if _this._paused then _this.resume() else _this.pause()
 
     # Keyboard navigation
-    _setupKeyboardNavigation: ->
+    _initKeyboardNavigation: ->
       return unless @_options.keyboard
 
       $(document).on "keyup.tour-#{@_options.name}", (e) =>

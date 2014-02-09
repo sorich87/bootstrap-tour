@@ -111,8 +111,8 @@
         return this;
       }
       this.setCurrentStep();
-      this._setupMouseNavigation();
-      this._setupKeyboardNavigation();
+      this._initMouseNavigation();
+      this._initKeyboardNavigation();
       this._onResize(function() {
         return _this.showStep(_this._current);
       });
@@ -141,22 +141,19 @@
     Tour.prototype.next = function() {
       var promise;
       promise = this.hideStep(this._current);
-      this._callOnPromiseDone(promise, this._showNextStep);
-      return this;
+      return this._callOnPromiseDone(promise, this._showNextStep);
     };
 
     Tour.prototype.prev = function() {
       var promise;
       promise = this.hideStep(this._current);
-      this._callOnPromiseDone(promise, this._showPrevStep);
-      return this;
+      return this._callOnPromiseDone(promise, this._showPrevStep);
     };
 
     Tour.prototype.goTo = function(i) {
       var promise;
       promise = this.hideStep(this._current);
-      this._callOnPromiseDone(promise, this.showStep, i);
-      return this;
+      return this._callOnPromiseDone(promise, this.showStep, i);
     };
 
     Tour.prototype.end = function() {
@@ -175,8 +172,7 @@
         }
       };
       promise = this.hideStep(this._current);
-      this._callOnPromiseDone(promise, endHelper);
-      return this;
+      return this._callOnPromiseDone(promise, endHelper);
     };
 
     Tour.prototype.ended = function() {
@@ -233,7 +229,7 @@
         _this = this;
       step = this.getStep(i);
       if (!step) {
-        return this;
+        return;
       }
       this._clearTimer();
       promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
@@ -267,7 +263,7 @@
       }
       step = this.getStep(i);
       if (!step) {
-        return this;
+        return;
       }
       skipToPrevious = i < this._current;
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
@@ -563,7 +559,7 @@
       });
     };
 
-    Tour.prototype._setupMouseNavigation = function() {
+    Tour.prototype._initMouseNavigation = function() {
       var _this = this;
       _this = this;
       return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)", function(e) {
@@ -588,7 +584,7 @@
       });
     };
 
-    Tour.prototype._setupKeyboardNavigation = function() {
+    Tour.prototype._initKeyboardNavigation = function() {
       var _this = this;
       if (!this._options.keyboard) {
         return;
