@@ -1,0 +1,26 @@
+<div id="navbar" class="navbar navbar-static-top">
+  <div class="container">
+    <button type="button" class="navbar-toggle pull-right" data-toggle="collapse" data-target=".navbar-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a href="/" class="navbar-brand">Bootstrap Tour</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav nav">
+        <li {% if page.slug == "home" %} class="active"{% endif %}>
+          <a href="/">Getting started</a>
+        </li>
+        <li>
+          <a href="https://github.com/sorich87/bootstrap-tour/releases">Download</a>
+        </li>
+        <li {% if page.slug == "api" %} class="active"{% endif %}>
+          <a href="/api">API Documentation</a>
+        </li>
+        <li>
+          <a href="https://github.com/sorich87/bootstrap-tour/issues">Bug reports</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
