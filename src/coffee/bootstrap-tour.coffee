@@ -5,6 +5,7 @@
     constructor: (options) ->
       @_options = $.extend
         name: "tour"
+        steps: []
         container: "body"
         keyboard: true
         storage: window.localStorage
@@ -22,10 +23,7 @@
             <div class='btn-group'>
               <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>
               <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>
-              <button class='btn btn-sm btn-default' data-role='pause-resume'
-                data-pause-text='Pause'
-                data-resume-text='Resume'
-              >Pause</button>
+              <button class='btn btn-sm btn-default' data-role='pause-resume' data-pause-text='Pause' data-resume-text='Resume'>Pause</button>
             </div>
             <button class='btn btn-sm btn-default' data-role='end'>End tour</button>
           </div>
@@ -47,7 +45,6 @@
 
       @_force = false
       @_inited = false
-      @_steps = []
       @backdrop =
         overlay: null
         $element: null
@@ -63,19 +60,19 @@
 
     # Add a new step
     addStep: (step) ->
-      @_steps.push step
+      @_options.steps.push step
       @
 
     # Get a step by its indice
     getStep: (i) ->
-      if @_steps[i]?
+      if @_options.steps[i]?
         $.extend
           id: "step-#{i}"
           path: ""
           placement: "right"
           title: ""
           content: "<p></p>" # no empty as default, otherwise popover won't show up
-          next: if i is @_steps.length - 1 then -1 else i + 1
+          next: if i is @_options.steps.length - 1 then -1 else i + 1
           prev: i - 1
           animation: true
           container: @_options.container
@@ -92,7 +89,7 @@
           onPrev: @_options.onPrev
           onPause: @_options.onPause
           onResume: @_options.onResume
-        , @_steps[i]
+        , @_options.steps[i]
 
     # Setup event bindings and continue a tour that has already started
     init: (force) ->
@@ -264,7 +261,7 @@
           @_showOverlayElement step.element if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
-          @_debug "Step #{@_current + 1} of #{@_steps.length}"
+          @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
 
         # Play step timer
         @resume() if step.duration
@@ -361,7 +358,7 @@
       not step.element? or not $(step.element).length or $(step.element).is(":hidden") and ($(step.element)[0].namespaceURI isnt "http://www.w3.org/2000/svg")
 
     _isLast: ->
-      @_current < @_steps.length - 1
+      @_current < @_options.steps.length - 1
 
     # Show step popover
     _showPopover: (step, i) ->

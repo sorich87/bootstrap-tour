@@ -13,6 +13,7 @@ slug: api
 {% highlight javascript %}
 var tour = new Tour({
   name: "tour",
+  steps: [],
   container: "body",
   keyboard: true,
   storage: window.localStorage,
@@ -67,6 +68,13 @@ var tour = new Tour({
           initialize several tours with different names in the same page and
           application.</td>
           <td><code>'tour'</code></td>
+        </tr>
+        <tr>
+          <td>steps</td>
+          <td>Array</td>
+          <td>A list of object representing the steps to be included in the tour. Jump to
+          <a href="#step-options">Step options</a> for the single step API.</td>
+          <td><code>[]</code></td>
         </tr>
         <tr>
           <td>container</td>

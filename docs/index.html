@@ -9,7 +9,7 @@ slug: home
     <h1>Bootstrap Tour</h1>
     <p class="lead">
       The easiest way to show people how to use your website.
-      <br><small>Works with or without Twitter Bootstrap.</small>
+      <br><small>Not using Bootstrap? It works anyway!</small>
     </p>
     <p>
       <button type="button" id="demo" class="btn btn-default btn-lg" data-demo>
@@ -35,34 +35,32 @@ slug: home
     <div class="page-header">
       <h2>The How-to <small>It's simple!</small></h2>
     </div>
-    <p>Download and add the dependencies to your webpage:</p>
+    <h3>Add the dependencies</h3>
+    <p>If you are using Bootstrap, include <code>bootstrap-tour.min.css</code> and <code>bootstrap-tour.min.js</code>:</p>
 {% highlight html %}
-<!DOCTYPE html>
-<html>
-<head>
-  ...
-  <!-- If you're using Twitter Bootstrap in your project, include bootstrap-tour.min.css instead -->
-  <link href="bootstrap-tour-standalone.min.css" rel="stylesheet">
-</head>
-<body>
-  ...
-  <script src="https://code.jquery.com/jquery.min.js"></script>
-  <!-- If you're using Twitter Bootstrap in your project, include bootstrap-tour.min.js instead -->
-  <script src="bootstrap-tour-standalone.min.js"></script>
-</body>
-</html>
+<link href="bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap-tour.min.css" rel="stylesheet">
+...
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="bootstrap-tour.min.js"></script>
 {% endhighlight %}
-    <p>Setup your tour:</p>
+    <p>Otherwise, just include <code>bootstrap-tour-standalone.min.css</code> and <code>bootstrap-tour-standalone.min.js</code>:</p>
+{% highlight html %}
+<link href="bootstrap-tour-standalone.min.css" rel="stylesheet">
+...
+<script src="jquery.min.js"></script>
+<script src="bootstrap-tour-standalone.min.js"></script>
+{% endhighlight %}
+    <h3>Setup your tour:</h3>
 {% highlight javascript %}
 // Instance the tour
-var tour = new Tour();
-
-// Add your steps. Not too many, you don't really want to get your users sleepy
-tour.addSteps([
+var tour = new Tour(
+  steps: [
   {
-    element: "#my-element", // string (jQuery selector) - html element next to which the step popover should be shown
-    title: "Title of my step", // string - title of the popover
-    content: "Content of my step" // string - content of the popover
+    element: "#my-element",
+    title: "Title of my step",
+    content: "Content of my step"
   },
   {
     element: "#my-other-element",
@@ -87,16 +85,13 @@ tour.start();
     </div>
     <div class="row">
       <div class="col-sm-4">
-        <img src="" class="gravatar img-circle" data-email="sorich87@gmail.com">
-        <a href="https://github.com/sorich87">Ulrich Sossou</a>
+        <a href="https://github.com/sorich87"><img src="" class="gravatar img-circle" data-email="sorich87@gmail.com"> Ulrich Sossou</a>
       </div>
       <div class="col-sm-4">
-        <img src="" class="gravatar img-circle" data-email="emanuele@lostcrew.it">
-        <a href="https://github.com/LostCrew">Emanuele Marchi</a>
+        <a href="https://github.com/LostCrew"><img src="" class="gravatar img-circle" data-email="emanuele@lostcrew.it"> Emanuele Marchi</a>
       </div>
       <div class="col-sm-4">
-        <img src="" class="gravatar img-circle" data-email="emmenko@gmail.com">
-        <a href="https://github.com/emmenko">Nicola Molinari</a>
+        <a href="https://github.com/emmenko"><img src="" class="gravatar img-circle" data-email="emmenko@gmail.com"> Nicola Molinari</a>
       </div>
     </div>
   </div>

@@ -534,6 +534,7 @@
     function Tour(options) {
       this._options = $.extend({
         name: "tour",
+        steps: [],
         container: "body",
         keyboard: true,
         storage: window.localStorage,
@@ -543,7 +544,7 @@
         orphan: false,
         duration: false,
         basePath: "",
-        template: "<div class='popover'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>              <button class='btn btn-sm btn-default' data-role='pause-resume'                data-pause-text='Pause'                data-resume-text='Resume'              >Pause</button>            </div>            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>          </div>        </div>",
+        template: "<div class='popover'>          <div class='arrow'></div>          <h3 class='popover-title'></h3>          <div class='popover-content'></div>          <div class='popover-navigation'>            <div class='btn-group'>              <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button>              <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button>              <button class='btn btn-sm btn-default' data-role='pause-resume' data-pause-text='Pause' data-resume-text='Resume'>Pause</button>            </div>            <button class='btn btn-sm btn-default' data-role='end'>End tour</button>          </div>        </div>",
         afterSetState: function(key, value) {},
         afterGetState: function(key, value) {},
         afterRemoveState: function(key) {},
@@ -560,7 +561,6 @@
       }, options);
       this._force = false;
       this._inited = false;
-      this._steps = [];
       this.backdrop = {
         overlay: null,
         $element: null,
@@ -581,19 +581,19 @@
     };
 
     Tour.prototype.addStep = function(step) {
-      this._steps.push(step);
+      this._options.steps.push(step);
       return this;
     };
 
     Tour.prototype.getStep = function(i) {
-      if (this._steps[i] != null) {
+      if (this._options.steps[i] != null) {
         return $.extend({
           id: "step-" + i,
           path: "",
           placement: "right",
           title: "",
           content: "<p></p>",
-          next: i === this._steps.length - 1 ? -1 : i + 1,
+          next: i === this._options.steps.length - 1 ? -1 : i + 1,
           prev: i - 1,
           animation: true,
           container: this._options.container,
@@ -610,7 +610,7 @@
           onPrev: this._options.onPrev,
           onPause: this._options.onPause,
           onResume: this._options.onResume
-        }, this._steps[i]);
+        }, this._options.steps[i]);
       }
     };
 
@@ -819,7 +819,7 @@
           if (step.onShown != null) {
             step.onShown(_this);
           }
-          return _this._debug("Step " + (_this._current + 1) + " of " + _this._steps.length);
+          return _this._debug("Step " + (_this._current + 1) + " of " + _this._options.steps.length);
         });
         if (step.duration) {
           return _this.resume();
@@ -941,7 +941,7 @@
     };
 
     Tour.prototype._isLast = function() {
-      return this._current < this._steps.length - 1;
+      return this._current < this._options.steps.length - 1;
     };
 
     Tour.prototype._showPopover = function(step, i) {

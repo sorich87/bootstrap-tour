@@ -168,8 +168,8 @@ module.exports = (grunt) ->
     copy:
       default:
         files: [
-          "docs/assets/js/bootstrap-tour.min.js": "build/js/bootstrap-tour.min.js"
-          "docs/assets/css/bootstrap-tour.min.css": "build/css/bootstrap-tour.min.css"
+          "docs/assets/js/bootstrap-tour.js": "build/js/bootstrap-tour.js"
+          "docs/assets/css/bootstrap-tour.css": "build/css/bootstrap-tour.css"
         ]
       docs:
         src: "CNAME"

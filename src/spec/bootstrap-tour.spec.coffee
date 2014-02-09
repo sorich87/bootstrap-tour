@@ -8,7 +8,7 @@ describe "Bootstrap Tour", ->
     tour = @tour
     @tour._setState("current_step", null)
     @tour._setState("end", null)
-    $.each @tour._steps, (i, s) ->
+    $.each @tour._options.steps, (i, s) ->
       $element = $(tour.getStep(i).element)
       $element.popover("destroy").removeData("bs.popover")
       $element.remove()
@@ -28,7 +28,7 @@ describe "Bootstrap Tour", ->
 
   it "should accept an array of steps", ->
     @tour = new Tour
-    expect(@tour._steps).toEqual [] # tour accepts an array of steps
+    expect(@tour._options.steps).toEqual [] # tour accepts an array of steps
 
   it "'_setState' should save state as localStorage item", ->
     @tour = new Tour
@@ -87,14 +87,14 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     step = element: $("<div></div>").appendTo("body")
     @tour.addStep(step)
-    expect(@tour._steps).toEqual [step]
+    expect(@tour._options.steps).toEqual [step]
 
   it "'addSteps' should add multiple step", ->
     @tour = new Tour
     firstStep = element: $("<div></div>").appendTo("body")
     secondStep = element: $("<div></div>").appendTo("body")
     @tour.addSteps([firstStep, secondStep])
-    expect(@tour._steps).toEqual [firstStep, secondStep]
+    expect(@tour._options.steps).toEqual [firstStep, secondStep]
 
   it "step should have an id", ->
     @tour = new Tour
