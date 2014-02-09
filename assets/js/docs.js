@@ -23,7 +23,7 @@ $(function() {
         element: "#usage",
         placement: "top",
         title: "A super simple setup",
-        content: "Easy is better, right? The tour is up and running with just a      few options and steps."
+        content: "Easy is better, right? The tour is up and running with just a few options and steps."
       }, {
         path: "/",
         element: "#license",
