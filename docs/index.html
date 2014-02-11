@@ -55,7 +55,7 @@ slug: home
     <h3>Setup your tour:</h3>
 {% highlight javascript %}
 // Instance the tour
-var tour = new Tour(
+var tour = new Tour({
   steps: [
   {
     element: "#my-element",
@@ -67,7 +67,7 @@ var tour = new Tour(
     title: "Title of my step",
     content: "Content of my step"
   }
-]);
+]});
 
 // Initialize the tour
 tour.init();
