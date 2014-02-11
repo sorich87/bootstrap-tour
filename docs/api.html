@@ -414,7 +414,7 @@ tour.addStep({
         <tr>
           <td id="reflex">reflex</td>
           <td>Boolean</td>
-          <td>Enable the reflex mode: you can click on the element for
+          <td>Enable the reflex mode: you can click on the element to
           continue the tour.</td>
           <td><code>false</code></td>
         </tr>
@@ -429,7 +429,7 @@ tour.addStep({
         <tr class="success">
           <td>duration <span class="label label-success">NEW</span></td>
           <td>Boolean|String</td>
-          <td>Set a expiration time for the stes. When the step expires,
+          <td>Set a expiration time for the steps. When the step expires,
           the next step is automatically shown. See it as a sort of guided, automatized tour
           functionality. The value is specified in milliseconds</td>
           <td><code>false</code></td>
@@ -440,7 +440,7 @@ tour.addStep({
           <td>String or function that returns a string of the HTML template for
           the popovers. If you pass a Function, two parameters are available:
           <strong>i</strong> is the position of step in the tour and
-          <strong>step</strong> is the an object that contains all the other step
+          <strong>step</strong> is the object that contains all the other step
           options.<br>
           From version 0.5, the navigation template is included inside the
           template so you can easily rewrite it. However, Bootstrap Tour maps the
@@ -587,11 +587,11 @@ tour.addStep({
         </tr>
         <tr>
           <td>pause()</td>
-          <td>Pause the duration timer. It works only if tour or current stap has duration.</td>
+          <td>Pause the duration timer. It works only if tour or current step has duration.</td>
         </tr>
         <tr>
           <td>resume()</td>
-          <td>Resume the duration timer. It works only if tour or current stap has duration.</td>
+          <td>Resume the duration timer. It works only if tour or current step has duration.</td>
         </tr>
         <tr>
           <td>ended()</td>
