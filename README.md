@@ -1,4 +1,8 @@
-# Bootstrap Tour [![Build Status](https://travis-ci.org/sorich87/bootstrap-tour.png?branch=master)](https://travis-ci.org/sorich87/bootstrap-tour)
+# Bootstrap Tour 
+[![Build Status](http://img.shields.io/travis/sorich87/bootstrap-tour.svg)](https://travis-ci.org/sorich87/bootstrap-tour)
+[![Dependency Status](https://david-dm.org/sorich87/bootstrap-tour.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour)
+[![devDependency Status](https://david-dm.org/sorich87/bootstrap-tour/dev-status.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour#info=devDependencies)
+[![NPM Version](http://img.shields.io/npm/v/bootstrap-tour.svg)](https://www.npmjs.org/)
 
 Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
@@ -6,10 +10,6 @@ Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
 
 ## Demo and Documentation
 [http://bootstraptour.com](http://bootstraptour.com)
-
-## TODO
-- Add the smooth scrolling when the popover is outside the viewport
-- Define an appropriate tag + milestone system
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
@@ -35,7 +35,7 @@ gem install jekyll
 ```javascript
 // Start a server and run the demo page
 grunt
-grunt run
+grunt go
 // Compile all sources
 grunt build
 // Compile all sources and run the tests
