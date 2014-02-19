@@ -242,7 +242,7 @@
           if (!($element.data("bs.popover") || $element.data("popover"))) {
             $element = $("body");
           }
-          $element.popover("destroy");
+          $element.popover("destroy").removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
           if (step.reflex) {
             $element.css("cursor", "").off("click.tour-" + _this._options.name);
           }
@@ -453,6 +453,7 @@
       }
       $element = $(step.element);
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
+      $element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
       if (step.options) {
         $.extend(options, step.options);
       }
