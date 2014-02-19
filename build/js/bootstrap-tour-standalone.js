@@ -782,7 +782,7 @@
         var current_path, path;
         _this.setCurrentStep(i);
         path = (function() {
-          switch (toString.call(step.path)) {
+          switch ({}.toString.call(step.path)) {
             case "[object Function]":
               return step.path();
             case "[object String]":

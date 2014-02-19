@@ -234,7 +234,7 @@
         @setCurrentStep i
 
         # Support string or function for path
-        path = switch toString.call step.path
+        path = switch ({}).toString.call step.path
           when "[object Function]" then step.path()
           when "[object String]" then @_options.basePath + step.path
           else step.path
