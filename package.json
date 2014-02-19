@@ -1,14 +1,13 @@
 {
-  "name": "bootstrap-tour",
-  "description": "Quick and easy way to build your product tours with Twitter Bootstrap Popovers.",
+  "name": "tour",
+  "description": "Build your product tours with JavaScript",
   "version": "0.9.0",
   "keywords": [
     "tour",
-    "bootstrap",
     "js",
-    "tour",
     "intro",
-    "twitter"
+    "guide",
+    "javascript"
   ],
   "homepage": "http://bootstraptour.com",
   "author": {
@@ -70,7 +69,7 @@
     "./build/css/bootstrap-tour.css"
   ],
   "scripts": {
-    "run": "grunt run",
+    "go": "grunt go",
     "build": "grunt build",
     "test": "grunt test"
   }

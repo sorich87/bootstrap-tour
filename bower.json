@@ -1,9 +1,32 @@
 {
-  "name": "bootstrap-tour",
+  "name": "tour",
   "version": "0.9.0",
-  "main": ["./build/js/bootstrap-tour.js", "./build/css/bootstrap-tour.css"],
+  "main": [
+    "./build/js/bootstrap-tour.js",
+    "./build/css/bootstrap-tour.css"
+  ],
   "dependencies": {
     "bootstrap": ">=2.3.2",
     "jquery": ">=1.9.0"
-  }
+  },
+  "homepage": "http://bootstraptour.com",
+  "authors": [
+    "Ulrich Sossou <sorich87@gmail.com>"
+  ],
+  "description": "Build your product tours with JavaScript",
+  "keywords": [
+    "tour",
+    "js",
+    "intro",
+    "guide",
+    "javascript"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
 }
