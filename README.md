@@ -4,7 +4,7 @@
 [![devDependency Status](https://david-dm.org/sorich87/bootstrap-tour/dev-status.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour#info=devDependencies)
 [![NPM Version](http://img.shields.io/npm/v/bootstrap-tour.svg)](https://www.npmjs.org/)
 
-Quick and easy way to build your product tours with Twitter Bootstrap Popovers.
+Quick and easy way to build your product tours with Bootstrap Popovers.
 
 *Compatible with Bootstrap >= 2.3.0*
 
