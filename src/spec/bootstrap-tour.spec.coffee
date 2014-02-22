@@ -613,12 +613,20 @@ describe "Bootstrap Tour", ->
       expect($._data($element[0], "events").click.length).toBeGreaterThan 0
       expect($._data($element[0], "events").click[0].namespace).toBe "tour-#{@tour._options.name}"
 
-  it "should add 'tour-{tourName}' and tour-{tourName}-{stepId} class to the popover", ->
+  it "should add 'tour-{tourName}' and tour-{tourName}-{stepId} classses to the popover", ->
     @tour = new Tour
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(0)
     expect($(".popover").hasClass("tour-#{@tour._options.name}")).toBe true
     expect($(".popover").hasClass("tour-#{@tour._options.name}-0")).toBe true
+
+  it "should add 'tour-{tourName}-element' and 'tour-{tourName}-{stepId}-element' classses to the popover element", ->
+    @tour = new Tour
+    $element = $ "<div></div>"
+    @tour.addStep element: $element.appendTo "body"
+    @tour.showStep 0
+    expect($element.hasClass "tour-#{@tour._options.name}-element").toBe true
+    expect($element.hasClass "tour-#{@tour._options.name}-0-element").toBe true
 
   # orphan
   it "should show orphan steps", ->

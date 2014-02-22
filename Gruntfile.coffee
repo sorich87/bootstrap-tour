@@ -45,7 +45,6 @@ module.exports = (grunt) ->
 
     clean:
       default: "build"
-      docs: "docs-build"
       test: "test/spec"
 
     coffee:

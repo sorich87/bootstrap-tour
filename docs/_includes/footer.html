@@ -1,9 +1,9 @@
-<script src="/assets/vendor/jquery.js"></script>
-<script src="/assets/vendor/bootstrap.js"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js"></script>
-<script src="/assets/vendor/md5.js"></script>
-<script src="/assets/js/bootstrap-tour.js"></script>
-<script src="/assets/js/docs.js"></script>
+<script src="/assets/vendor/jquery.js?{{ site.time | date_to_xmlschema | cgi_escape }}"></script>
+<script src="/assets/vendor/bootstrap.js?{{ site.time | date_to_xmlschema | cgi_escape }}"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?{{ site.time | date_to_xmlschema | cgi_escape }}"></script>
+<script src="/assets/vendor/md5.js?{{ site.time | date_to_xmlschema | cgi_escape }}"></script>
+<script src="/assets/js/bootstrap-tour.js?{{ site.time | date_to_xmlschema | cgi_escape }}"></script>
+<script src="/assets/js/docs.js?{{ site.time | date_to_xmlschema | cgi_escape }}"></script>
 <script>
   window.twttr = (function (d,s,id) {
     var t, js, fjs = d.getElementsByTagName(s)[0];

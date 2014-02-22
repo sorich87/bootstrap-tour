@@ -206,7 +206,9 @@
       hideStepHelper = (e) =>
         $element = $ step.element
         $element = $("body") unless $element.data("bs.popover") or $element.data("popover")
-        $element.popover "destroy"
+        $element
+        .popover("destroy")
+        .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
         $element.css("cursor", "").off "click.tour-#{@_options.name}" if step.reflex
 
         @_hideBackdrop() if step.backdrop
@@ -375,6 +377,7 @@
       $element = $ step.element
 
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
+      $element.addClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
 
       $.extend options, step.options if step.options
 
