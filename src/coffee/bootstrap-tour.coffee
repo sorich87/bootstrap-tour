@@ -342,8 +342,8 @@
     # Check if step path equals current document path
     _isRedirect: (path, currentPath) ->
       path? and path isnt "" and (
-        (toString.call(path) is "[object RegExp]" and not path.test currentPath) or
-        (toString.call(path) is "[object String]" and
+        (({}).toString.call(path) is "[object RegExp]" and not path.test currentPath) or
+        (({}).toString.call(path) is "[object String]" and
           path.replace(/\?.*$/, "").replace(/\/?$/, "") isnt currentPath.replace(/\/?$/, ""))
       )
 
