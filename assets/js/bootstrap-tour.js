@@ -1,5 +1,5 @@
 /* ===========================================================
-# bootstrap-tour - v0.9.0
+# bootstrap-tour - v0.9.2
 # http://bootstraptour.com
 # ==============================================================
 # Copyright 2012-2013 Ulrich Sossou
@@ -420,7 +420,7 @@
     };
 
     Tour.prototype._isRedirect = function(path, currentPath) {
-      return (path != null) && path !== "" && ((toString.call(path) === "[object RegExp]" && !path.test(currentPath)) || (toString.call(path) === "[object String]" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "")));
+      return (path != null) && path !== "" && (({}.toString.call(path) === "[object RegExp]" && !path.test(currentPath)) || ({}.toString.call(path) === "[object String]" && path.replace(/\?.*$/, "").replace(/\/?$/, "") !== currentPath.replace(/\/?$/, "")));
     };
 
     Tour.prototype._redirect = function(step, path) {
