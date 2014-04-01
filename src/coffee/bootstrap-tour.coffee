@@ -442,7 +442,7 @@
     _replaceArrow: ($tip, delta, dimension, position)->
       $tip
         .find(".arrow")
-        .css(position, if delta then Math.min(0, Math.max(50, 50 * (1 - delta / dimension))) + "%" else "")
+        .css(position, if delta then Math.max(0, Math.min(50, 50 * (1 - delta / dimension))) + "%" else "")
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->
