@@ -417,8 +417,9 @@
       tipOffset = $tip.offset()
       originalLeft = tipOffset.left
       originalTop = tipOffset.top
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight()
-      tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
+      offsetBottom = $(window).innerHeight() - tipOffset.top - $tip.outerHeight()
+      # if the tip has been pushed vertically offscreen, recenter it vertically in the viewport
+      tipOffset.top =  $(window).innerHeight() / 2 - offsetHeight / 2 if offsetBottom < 0
       offsetRight = $("html").outerWidth() - tipOffset.left - $tip.outerWidth()
       tipOffset.left = tipOffset.left + offsetRight if offsetRight < 0
 
@@ -441,7 +442,7 @@
     _replaceArrow: ($tip, delta, dimension, position)->
       $tip
         .find(".arrow")
-        .css(position, if delta then 50 * (1 - delta / dimension) + "%" else "")
+        .css(position, if delta then Math.max(0, Math.min(50, 50 * (1 - delta / dimension))) + "%" else "")
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->
