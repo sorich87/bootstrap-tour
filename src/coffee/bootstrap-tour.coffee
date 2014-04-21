@@ -364,6 +364,11 @@
 
     # Show step popover
     _showPopover: (step, i) ->
+
+      # Remove previously existing tour popovers. This prevents displaying of
+      # multiple inactive popovers when user navigates the tour too quickly.
+      $(".tour-#{@_options.name}").remove()
+
       options = $.extend {}, @_options
       $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
       $navigation = $template.find ".popover-navigation"

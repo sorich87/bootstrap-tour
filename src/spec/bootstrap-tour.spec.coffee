@@ -707,3 +707,40 @@ describe "Bootstrap Tour", ->
       reflex: true
     @tour.showStep(0)
     expect($('body').css("cursor")).not.toBe "pointer"
+
+  it "should not display inactive popover upon rapid navigation", ->
+
+    # Flag that gives signal to the async test that it should evaluate.
+    step_displayed = false
+
+    # Cleanup all leftover popovers from previous tests.
+    $('.popover').remove()
+
+    # Turn the jQuery effects on.
+    $.support.transition = true
+    $.fx.off = false
+
+    # Setup two-step tour. The problem should occur when switching from first
+    # step to the second while the transition effect of the first one is still
+    # active.
+    @tour = new Tour
+
+    @tour.addStep
+      element: $("<div></div>").appendTo("body")
+
+    @tour.addStep
+      element: $("<div></div>").appendTo("body")
+      onShown: (t) ->
+        step_displayed = true
+
+    # Request the first step and immediately the second one. This way the first
+    # step won't be displayed when the second step is requested, so the request
+    # for second step can not cleanup existing popovers yet.
+    runs ->
+      @tour.goTo(0)
+      @tour.goTo(1)
+
+    waitsFor (-> step_displayed), 'The second step should be displayed.', 1000
+
+    runs ->
+      expect($('.popover').length).toBe 1
