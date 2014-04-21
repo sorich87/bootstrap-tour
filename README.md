@@ -1,4 +1,4 @@
-# Bootstrap Tour 
+# Bootstrap Tour
 [![Build Status](http://img.shields.io/travis/sorich87/bootstrap-tour.svg)](https://travis-ci.org/sorich87/bootstrap-tour)
 [![Dependency Status](https://david-dm.org/sorich87/bootstrap-tour.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour)
 [![devDependency Status](https://david-dm.org/sorich87/bootstrap-tour/dev-status.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour#info=devDependencies)
@@ -29,6 +29,8 @@ Compiled sources are then automatically put under `./build/` (and `./test/`)
 npm install
 gem install jekyll
 ```
+
+Note for Mac OS X Mavericks (10.9) users: You will need to [jump through all these hoops](http://dean.io/setting-up-a-ruby-on-rails-development-environment-on-mavericks/) before you can install Jekyll.
 
 #### Running Grunt tasks
 
