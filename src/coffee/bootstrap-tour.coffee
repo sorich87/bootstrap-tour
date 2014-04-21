@@ -381,7 +381,7 @@
 
       $.extend options, step.options if step.options
 
-      if step.reflex
+      if step.reflex and not isOrphan
         $element.css("cursor", "pointer").on "click.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 

@@ -699,3 +699,11 @@ describe "Bootstrap Tour", ->
     @tour.end()
     expect(@tour._timer).toBe null
     expect(@tour._duration).toBe null
+
+  it "should ignore `reflex` attribute on orphan steps", ->
+    @tour = new Tour
+    @tour.addStep
+      orphan: true
+      reflex: true
+    @tour.showStep(0)
+    expect($('body').css("cursor")).not.toBe "pointer"
