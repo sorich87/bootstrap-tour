@@ -695,7 +695,7 @@
     Tour.prototype.restart = function() {
       this._removeState("current_step");
       this._removeState("end");
-      this.setCurrentStep(0);
+      this.setCurrentStep(NULL);
       return this.start();
     };
 
