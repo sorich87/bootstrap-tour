@@ -1,0 +1,107 @@
+---
+layout: default
+title: Bootstrap Tour
+slug: home
+---
+
+<header id="home">
+  <div class="jumbotron masthead">
+    <h1>Bootstrap Tour</h1>
+    <p class="lead">
+      The easiest way to show people how to use your website.
+      <br><small>Not using Bootstrap? It works anyway!</small>
+    </p>
+    <p>
+      <button type="button" id="demo" class="btn btn-default btn-lg" data-demo>
+        <span class="glyphicon glyphicon-play"></span>
+        Start the demo
+      </button>
+    </p>
+    <ul class="social">
+      <li>
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=sorich87&amp;repo=bootstrap-tour&amp;type=watch&amp;count=true" width="100" height="20" title="Star on GitHub"></iframe>
+      </li>
+      <li>
+        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=sorich87&amp;repo=bootstrap-tour&amp;type=fork&amp;count=true" width="102" height="20" title="Fork on GitHub"></iframe>
+      </li>
+      <li class="tweet-btn">
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://bootstraptour.com/" data-count="horizontal">Tweet</a>
+      </li>
+    </ul>
+  </div>
+</header>
+<section id="usage">
+  <div class="container">
+    <div class="page-header">
+      <h2>The How-to <small>It's simple!</small></h2>
+    </div>
+    <h3>Add the dependencies</h3>
+    <p>If you are using Bootstrap, include <code>bootstrap-tour.min.css</code> and <code>bootstrap-tour.min.js</code>:</p>
+{% highlight html %}
+<link href="bootstrap.min.css" rel="stylesheet">
+<link href="bootstrap-tour.min.css" rel="stylesheet">
+...
+<script src="jquery.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="bootstrap-tour.min.js"></script>
+{% endhighlight %}
+    <p>Otherwise, just include <code>bootstrap-tour-standalone.min.css</code> and <code>bootstrap-tour-standalone.min.js</code>:</p>
+{% highlight html %}
+<link href="bootstrap-tour-standalone.min.css" rel="stylesheet">
+...
+<script src="jquery.min.js"></script>
+<script src="bootstrap-tour-standalone.min.js"></script>
+{% endhighlight %}
+    <h3>Setup your tour:</h3>
+{% highlight javascript %}
+// Instance the tour
+var tour = new Tour(
+  steps: [
+  {
+    element: "#my-element",
+    title: "Title of my step",
+    content: "Content of my step"
+  },
+  {
+    element: "#my-other-element",
+    title: "Title of my step",
+    content: "Content of my step"
+  }
+]);
+
+// Initialize the tour
+tour.init();
+
+// Start the tour
+tour.start();
+{% endhighlight %}
+    <p>Do you want to do more? <a href="api">Read the full documentation.</a></p>
+  </div>
+</section>
+<section id="contributing">
+  <div class="container">
+    <div class="page-header">
+      <h2>The Team <small>It's handmade!</small></h2>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <a href="https://github.com/sorich87"><img src="" class="gravatar img-circle" data-email="sorich87@gmail.com"> Ulrich Sossou</a>
+      </div>
+      <div class="col-sm-4">
+        <a href="https://github.com/LostCrew"><img src="" class="gravatar img-circle" data-email="emanuele@lostcrew.it"> Emanuele Marchi</a>
+      </div>
+      <div class="col-sm-4">
+        <a href="https://github.com/emmenko"><img src="" class="gravatar img-circle" data-email="emmenko@gmail.com"> Nicola Molinari</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="license">
+  <div class="container">
+    <div class="page-header">
+      <h2>The License <small>It's free!</small></h2>
+    </div>
+    <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.<br>
+    Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+  </div>
+</section>
