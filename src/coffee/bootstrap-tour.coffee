@@ -259,6 +259,7 @@
         @_showBackdrop(step.element unless @_isOrphan step) if step.backdrop
 
         @_scrollIntoView step.element, =>
+          return if @getCurrentStep() isnt i
           @_showOverlayElement step.element if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?

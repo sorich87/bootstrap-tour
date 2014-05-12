@@ -815,6 +815,9 @@
             _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
           _this._scrollIntoView(step.element, function() {
+            if (_this.getCurrentStep() !== i) {
+              return;
+            }
             if ((step.element != null) && step.backdrop) {
               _this._showOverlayElement(step.element);
             }
