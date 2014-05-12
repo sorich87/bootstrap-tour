@@ -67,7 +67,9 @@
   },
   "main": [
     "./build/js/bootstrap-tour.js",
-    "./build/css/bootstrap-tour.css"
+    "./build/js/bootstrap-tour-standalone.js",
+    "./build/css/bootstrap-tour.css",
+    "./build/css/bootstrap-tour-standalone.css"
   ],
   "scripts": {
     "run": "grunt run",

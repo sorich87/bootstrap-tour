@@ -1,7 +1,12 @@
 {
   "name": "bootstrap-tour",
   "version": "0.9.2",
-  "main": ["./build/js/bootstrap-tour.js", "./build/css/bootstrap-tour.css"],
+  "main": [
+    "./build/js/bootstrap-tour.js",
+    "./build/js/bootstrap-tour-standalone.js",
+    "./build/css/bootstrap-tour.css",
+    "./build/css/bootstrap-tour-standalone.css"
+  ],
   "dependencies": {
     "bootstrap": ">=2.3.2",
     "jquery": ">=1.9.0"
