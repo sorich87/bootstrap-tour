@@ -161,7 +161,6 @@
     restart: ->
       @_removeState "current_step"
       @_removeState "end"
-      @setCurrentStep 0
       @start()
 
     # Pause step timer

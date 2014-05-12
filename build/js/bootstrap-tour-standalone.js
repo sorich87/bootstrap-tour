@@ -695,7 +695,6 @@
     Tour.prototype.restart = function() {
       this._removeState("current_step");
       this._removeState("end");
-      this.setCurrentStep(0);
       return this.start();
     };
 
@@ -953,6 +952,7 @@
 
     Tour.prototype._showPopover = function(step, i) {
       var $element, $navigation, $template, $tip, isOrphan, options;
+      $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
       $navigation = $template.find(".popover-navigation");
@@ -968,7 +968,7 @@
       if (step.options) {
         $.extend(options, step.options);
       }
-      if (step.reflex) {
+      if (step.reflex && !isOrphan) {
         $element.css("cursor", "pointer").on("click.tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
@@ -1015,9 +1015,9 @@
       tipOffset = $tip.offset();
       originalLeft = tipOffset.left;
       originalTop = tipOffset.top;
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight();
+      offsetBottom = $(window).innerHeight() - tipOffset.top - $tip.outerHeight();
       if (offsetBottom < 0) {
-        tipOffset.top = tipOffset.top + offsetBottom;
+        tipOffset.top = $(window).innerHeight() / 2 - offsetHeight / 2;
       }
       offsetRight = $("html").outerWidth() - tipOffset.left - $tip.outerWidth();
       if (offsetRight < 0) {
@@ -1046,7 +1046,7 @@
     };
 
     Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {
-      return $tip.find(".arrow").css(position, delta ? 50 * (1 - delta / dimension) + "%" : "");
+      return $tip.find(".arrow").css(position, delta ? Math.max(0, Math.min(50, 50 * (1 - delta / dimension))) + "%" : "");
     };
 
     Tour.prototype._scrollIntoView = function(element, callback) {
