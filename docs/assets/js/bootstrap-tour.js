@@ -513,9 +513,9 @@
       tipOffset = $tip.offset();
       originalLeft = tipOffset.left;
       originalTop = tipOffset.top;
-      offsetBottom = $(window).innerHeight() - tipOffset.top - $tip.outerHeight();
+      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight();
       if (offsetBottom < 0) {
-        tipOffset.top = $(window).innerHeight() / 2 - offsetHeight / 2;
+        tipOffset.top = tipOffset.top + offsetBottom;
       }
       offsetRight = $("html").outerWidth() - tipOffset.left - $tip.outerWidth();
       if (offsetRight < 0) {
@@ -544,7 +544,7 @@
     };
 
     Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {
-      return $tip.find(".arrow").css(position, delta ? Math.max(0, Math.min(50, 50 * (1 - delta / dimension))) + "%" : "");
+      return $tip.find(".arrow").css(position, delta ? 50 * (1 - delta / dimension) + "%" : "");
     };
 
     Tour.prototype._scrollIntoView = function(element, callback) {
