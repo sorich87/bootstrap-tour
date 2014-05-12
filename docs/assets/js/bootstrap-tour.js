@@ -21,12 +21,18 @@
   document = window.document;
   Tour = (function() {
     function Tour(options) {
+      var storage;
+      try {
+        storage = window.localStorage;
+      } catch (_error) {
+        storage = false;
+      }
       this._options = $.extend({
         name: "tour",
         steps: [],
         container: "body",
         keyboard: true,
-        storage: window.localStorage,
+        storage: storage,
         debug: false,
         backdrop: false,
         redirect: true,
