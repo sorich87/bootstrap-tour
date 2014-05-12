@@ -46,7 +46,7 @@ $(function() {
         duration: 5000
       }, {
         path: "/api",
-        element: "#methods",
+        element: "#methods table",
         placement: "top",
         title: "A new shiny Backdrop option",
         content: "If you need to highlight the current step's element, activate the backdrop and you won't lose\nthe focus anymore!",
