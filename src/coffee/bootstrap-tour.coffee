@@ -549,9 +549,10 @@
       @_hideBackground()
 
     _hideBackground: ->
-      @backdrop.remove()
-      @backdrop.overlay = null
-      @backdrop.backgroundShown = false
+      if @backdrop
+        @backdrop.remove()
+        @backdrop.overlay = null
+        @backdrop.backgroundShown = false
 
     _showOverlayElement: (element) ->
       $element = $ element

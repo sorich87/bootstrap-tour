@@ -678,9 +678,11 @@
     };
 
     Tour.prototype._hideBackground = function() {
-      this.backdrop.remove();
-      this.backdrop.overlay = null;
-      return this.backdrop.backgroundShown = false;
+      if (this.backdrop) {
+        this.backdrop.remove();
+        this.backdrop.overlay = null;
+        return this.backdrop.backgroundShown = false;
+      }
     };
 
     Tour.prototype._showOverlayElement = function(element) {
