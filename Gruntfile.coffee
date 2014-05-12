@@ -75,6 +75,7 @@ module.exports = (grunt) ->
         options:
           banner: ""
         src: [
+          "bower_components/bootstrap/js/transition.js",
           "bower_components/bootstrap/js/tooltip.js",
           "bower_components/bootstrap/js/popover.js",
           "build/js/<%= pkg.name %>.js"
