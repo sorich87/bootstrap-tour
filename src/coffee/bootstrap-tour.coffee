@@ -3,12 +3,17 @@
 
   class Tour
     constructor: (options) ->
+      try
+        storage = window.localStorage
+      catch
+        # localStorage may be unavailable due to security settings
+        storage = false
       @_options = $.extend
         name: "tour"
         steps: []
         container: "body"
         keyboard: true
-        storage: window.localStorage
+        storage: storage
         debug: false
         backdrop: false
         redirect: true
