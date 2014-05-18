@@ -1,5 +1,5 @@
 /* ===========================================================
-# bootstrap-tour - v0.9.2
+# bootstrap-tour - v0.9.3
 # http://bootstraptour.com
 # ==============================================================
 # Copyright 2012-2013 Ulrich Sossou
@@ -21,12 +21,18 @@
   document = window.document;
   Tour = (function() {
     function Tour(options) {
+      var storage;
+      try {
+        storage = window.localStorage;
+      } catch (_error) {
+        storage = false;
+      }
       this._options = $.extend({
         name: "tour",
         steps: [],
         container: "body",
         keyboard: true,
-        storage: window.localStorage,
+        storage: storage,
         debug: false,
         backdrop: false,
         redirect: true,
@@ -184,7 +190,6 @@
     Tour.prototype.restart = function() {
       this._removeState("current_step");
       this._removeState("end");
-      this.setCurrentStep(0);
       return this.start();
     };
 
@@ -305,6 +310,9 @@
             _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
           _this._scrollIntoView(step.element, function() {
+            if (_this.getCurrentStep() !== i) {
+              return;
+            }
             if ((step.element != null) && step.backdrop) {
               _this._showOverlayElement(step.element);
             }
@@ -442,6 +450,7 @@
 
     Tour.prototype._showPopover = function(step, i) {
       var $element, $navigation, $template, $tip, isOrphan, options;
+      $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
       $navigation = $template.find(".popover-navigation");
@@ -457,7 +466,7 @@
       if (step.options) {
         $.extend(options, step.options);
       }
-      if (step.reflex) {
+      if (step.reflex && !isOrphan) {
         $element.css("cursor", "pointer").on("click.tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
@@ -669,9 +678,11 @@
     };
 
     Tour.prototype._hideBackground = function() {
-      this.backdrop.remove();
-      this.backdrop.overlay = null;
-      return this.backdrop.backgroundShown = false;
+      if (this.backdrop) {
+        this.backdrop.remove();
+        this.backdrop.overlay = null;
+        return this.backdrop.backgroundShown = false;
+      }
     };
 
     Tour.prototype._showOverlayElement = function(element) {

@@ -49,7 +49,7 @@ $ ->
       duration: 5000
     ,
       path: "/api"
-      element: "#methods"
+      element: "#methods table"
       placement: "top"
       title: "A new shiny Backdrop option"
       content: """
