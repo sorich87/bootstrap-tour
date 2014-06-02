@@ -25,12 +25,24 @@ Compiled sources are then automatically put under `./build/` (and `./test/`)
 
 #### Installing the dependencies
 
+To begin, you need a few standard dependencies installed. These commands will install ruby, gem, node, npm, and grunt's command line runner:
+
+```bash
+sudo apt-get install ruby
+sudo apt-get install ruby-dev
+sudo apt-get install npm
+sudo apt-get install nodejs-legacy
+sudo npm install -g grunt-cli
+```
+
+Once those are installed, you can run (note these don't need to be run with sudo):
+
 ```bash
 npm install
 gem install jekyll
 ```
 
-Note for Mac OS X Mavericks (10.9) users: You will need to [jump through all these hoops](http://dean.io/setting-up-a-ruby-on-rails-development-environment-on-mavericks/) before you can install Jekyll.
+For Mac OS X Mavericks (10.9) users: You will need to [jump through all these hoops](http://dean.io/setting-up-a-ruby-on-rails-development-environment-on-mavericks/) before you can install Jekyll.
 
 #### Running Grunt tasks
 
