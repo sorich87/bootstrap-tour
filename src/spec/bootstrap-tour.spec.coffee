@@ -18,7 +18,6 @@ describe "Bootstrap Tour", ->
       name: "test"
       afterSetState: -> true
       afterGetState: -> true
-    console.log @tour._options.steps
     expect(@tour._options.name).toBe "test"
     expect(@tour._options.afterGetState).toBeTruthy
     expect(@tour._options.afterSetState).toBeTruthy
