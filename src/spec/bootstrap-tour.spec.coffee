@@ -190,6 +190,13 @@ describe "Bootstrap Tour", ->
     @tour.hideStep(1)
     expect(tour_test).toBe 2 # tour runs onHide when step hidden
 
+  it "'getStep' should be able to evaluate element at runtime", ->
+    @tour = new Tour
+    $newElement = $("<div></div>")
+    @tour.addStep(element: ->
+      $newElement.appendTo("body"))
+    expect($(@tour.getStep(0).element)).toEqual($newElement)
+
   it "'getStep' should get a step", ->
     @tour = new Tour
     step =

@@ -8,6 +8,13 @@
       catch
         # localStorage may be unavailable due to security settings
         storage = false
+
+      if options is not undefined
+        steps = options.steps
+        delete options.steps
+      else
+        steps = []
+
       @_options = $.extend
         name: "tour"
         steps: []
@@ -48,6 +55,8 @@
         onResume: (tour, duration) ->
       , options
 
+      @addSteps steps
+
       @_force = false
       @_inited = false
       @backdrop =
@@ -65,6 +74,7 @@
 
     # Add a new step
     addStep: (step) ->
+      step.element = step.element() if $.isFunction step.element
       @_options.steps.push step
       @
 
@@ -75,6 +85,7 @@
           id: "step-#{i}"
           path: ""
           placement: "right"
+          element: @_options.steps[i].element
           title: ""
           content: "<p></p>" # no empty as default, otherwise popover won't show up
           next: if i is @_options.steps.length - 1 then -1 else i + 1

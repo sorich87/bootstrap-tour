@@ -581,11 +581,17 @@
   document = window.document;
   Tour = (function() {
     function Tour(options) {
-      var storage;
+      var steps, storage;
       try {
         storage = window.localStorage;
       } catch (_error) {
         storage = false;
+      }
+      if (options === !void 0) {
+        steps = options.steps;
+        delete options.steps;
+      } else {
+        steps = [];
       }
       this._options = $.extend({
         name: "tour",
@@ -614,6 +620,7 @@
         onPause: function(tour, duration) {},
         onResume: function(tour, duration) {}
       }, options);
+      this.addSteps(steps);
       this._force = false;
       this._inited = false;
       this.backdrop = {
@@ -636,6 +643,9 @@
     };
 
     Tour.prototype.addStep = function(step) {
+      if ($.isFunction(step.element)) {
+        step.element = step.element();
+      }
       this._options.steps.push(step);
       return this;
     };
@@ -646,6 +656,7 @@
           id: "step-" + i,
           path: "",
           placement: "right",
+          element: this._options.steps[i].element,
           title: "",
           content: "<p></p>",
           next: i === this._options.steps.length - 1 ? -1 : i + 1,
