@@ -85,7 +85,7 @@
           id: "step-#{i}"
           path: ""
           placement: "right"
-          element: if $.isFunction(@_options.steps[i].element) then @_options.steps[i].element() else @_options.steps[i].element
+          element: @_options.steps[i].element
           title: ""
           content: "<p></p>" # no empty as default, otherwise popover won't show up
           next: if i is @_options.steps.length - 1 then -1 else i + 1

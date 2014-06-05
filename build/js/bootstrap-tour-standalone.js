@@ -656,7 +656,7 @@
           id: "step-" + i,
           path: "",
           placement: "right",
-          element: $.isFunction(this._options.steps[i].element) ? this._options.steps[i].element() : this._options.steps[i].element,
+          element: this._options.steps[i].element,
           title: "",
           content: "<p></p>",
           next: i === this._options.steps.length - 1 ? -1 : i + 1,
