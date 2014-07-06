@@ -449,19 +449,15 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $navigation, $template, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, options;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
-      $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
-      $navigation = $template.find(".popover-navigation");
       isOrphan = this._isOrphan(step);
       if (isOrphan) {
         step.element = "body";
         step.placement = "top";
-        $template = $template.addClass("orphan");
       }
       $element = $(step.element);
-      $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
       $element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
       if (step.options) {
         $.extend(options, step.options);
@@ -477,16 +473,7 @@
           };
         })(this));
       }
-      if (step.prev < 0) {
-        $navigation.find("[data-role='prev']").addClass("disabled");
-      }
-      if (step.next < 0) {
-        $navigation.find("[data-role='next']").addClass("disabled");
-      }
-      if (!step.duration) {
-        $navigation.find("[data-role='pause-resume']").remove();
-      }
-      step.template = $template.clone().wrap("<div>").parent().html();
+      step.template = this._getTemplate(step, i);
       $element.popover({
         placement: step.placement,
         trigger: "manual",
@@ -501,9 +488,31 @@
       $tip = $element.data("bs.popover") ? $element.data("bs.popover").tip() : $element.data("popover").tip();
       $tip.attr("id", step.id);
       this._reposition($tip, step);
-      if (isOrphan) {
+      if (this._isOrphan(step)) {
         return this._center($tip);
       }
+    };
+
+    Tour.prototype._getTemplate = function(step, i) {
+      var $navigation, $next, $prev, $template;
+      $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+      $navigation = $template.find(".popover-navigation");
+      $prev = $navigation.find("[data-role='prev']");
+      $next = $navigation.find("[data-role='next']");
+      if (this._isOrphan(step)) {
+        $template.addClass("orphan");
+      }
+      $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
+      if (step.prev < 0) {
+        $navigation.find("[data-role='prev']").remove();
+      }
+      if (step.next < 0) {
+        $navigation.find("[data-role='next']").remove();
+      }
+      if (!step.duration) {
+        $navigation.find("[data-role='pause-resume']").remove();
+      }
+      return $template.clone().wrap("<div>").parent().html();
     };
 
     Tour.prototype._reposition = function($tip, step) {
@@ -581,12 +590,12 @@
     Tour.prototype._initMouseNavigation = function() {
       var _this;
       _this = this;
-      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)", (function(_this) {
+      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']", (function(_this) {
         return function(e) {
           e.preventDefault();
           return _this.next();
         };
-      })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)", (function(_this) {
+      })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']", (function(_this) {
         return function(e) {
           e.preventDefault();
           return _this.prev();
