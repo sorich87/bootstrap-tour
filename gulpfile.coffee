@@ -1,17 +1,19 @@
 gulp = require 'gulp'
-plugins = require('gulp-load-plugins')()
+$ = require('gulp-load-plugins') lazy: false
 streamqueue = require 'streamqueue'
 spawn = require('child_process').spawn
 pkg = require './package.json'
 name = pkg.name
 
-SOURCE_PATH = './src'
-DIST_PATH = './build'
-TEST_PATH = './test'
-DOCS_PATH = './docs'
-SERVER_HOST = 'localhost'
-SERVER_PORT = 3000
-BANNER = """
+paths =
+  src: './src'
+  dist: './build'
+  test: './test'
+  docs: './docs'
+server =
+  host: 'localhost'
+  port: 3000
+banner = '''
   /* ========================================================================
    * <%= pkg.name %> - v<%= pkg.version %>
    * <%= pkg.homepage %>
@@ -34,89 +36,89 @@ BANNER = """
    */
 
 
-  """
+  '''
 
 gulp.task 'coffee', ->
   gulp
-  .src "#{SOURCE_PATH}/coffee/#{name}.coffee"
-  .pipe plugins.changed "#{DIST_PATH}/js"
-  .pipe plugins.coffeelint './coffeelint.json'
-  .pipe plugins.coffeelint.reporter()
-    .on 'error', plugins.util.log
-  .pipe plugins.coffee bare: true
-    .on 'error', plugins.util.log
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe gulp.dest "#{DIST_PATH}/js"
-  .pipe gulp.dest "#{SOURCE_PATH}/docs/assets/js"
-  .pipe plugins.uglify()
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe plugins.rename suffix: '.min'
-  .pipe gulp.dest "#{DIST_PATH}/js"
+  .src "#{paths.src}/coffee/#{name}.coffee"
+  .pipe $.changed "#{paths.dist}/js"
+  .pipe $.coffeelint './coffeelint.json'
+  .pipe $.coffeelint.reporter()
+    .on 'error', $.util.log
+  .pipe $.coffee bare: true
+    .on 'error', $.util.log
+  .pipe $.header banner, pkg: pkg
+  .pipe gulp.dest "#{paths.dist}/js"
+  .pipe gulp.dest "#{paths.src}/docs/assets/js"
+  .pipe $.uglify()
+  .pipe $.header banner, pkg: pkg
+  .pipe $.rename suffix: '.min'
+  .pipe gulp.dest "#{paths.dist}/js"
 
 gulp.task 'coffee-standalone', ->
   streamqueue objectMode: true,
     gulp
     .src [
-      "#{SOURCE_PATH}/js/standalone/tooltip.js"
-      "#{SOURCE_PATH}/js/standalone/popover.js"
+      "#{paths.src}/js/standalone/tooltip.js"
+      "#{paths.src}/js/standalone/popover.js"
     ]
   ,
     gulp
-    .src "#{SOURCE_PATH}/coffee/#{name}.coffee"
-    .pipe plugins.changed "#{DIST_PATH}/js"
-    .pipe plugins.coffeelint './coffeelint.json'
-    .pipe plugins.coffeelint.reporter()
-      .on 'error', plugins.util.log
-    .pipe plugins.coffee bare: true
-      .on 'error', plugins.util.log
-  .pipe plugins.concat "#{name}-standalone.js"
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe gulp.dest "#{DIST_PATH}/js"
-  .pipe plugins.uglify()
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe plugins.rename suffix: '.min'
-  .pipe gulp.dest "#{DIST_PATH}/js"
+    .src "#{paths.src}/coffee/#{name}.coffee"
+    .pipe $.changed "#{paths.dist}/js"
+    .pipe $.coffeelint './coffeelint.json'
+    .pipe $.coffeelint.reporter()
+      .on 'error', $.util.log
+    .pipe $.coffee bare: true
+      .on 'error', $.util.log
+  .pipe $.concat "#{name}-standalone.js"
+  .pipe $.header banner, pkg: pkg
+  .pipe gulp.dest "#{paths.dist}/js"
+  .pipe $.uglify()
+  .pipe $.header banner, pkg: pkg
+  .pipe $.rename suffix: '.min'
+  .pipe gulp.dest "#{paths.dist}/js"
 
 gulp.task 'coffee-test', ['coffee'], ->
   gulp
-  .src "#{SOURCE_PATH}/coffee/#{name}.spec.coffee"
-  .pipe plugins.changed "#{TEST_PATH}"
-  .pipe plugins.coffeelint.reporter()
-    .on 'error', plugins.util.log
-  .pipe plugins.coffee()
-    .on 'error', plugins.util.log
-  .pipe gulp.dest "#{TEST_PATH}"
+  .src "#{paths.src}/coffee/#{name}.spec.coffee"
+  .pipe $.changed "#{paths.test}"
+  .pipe $.coffeelint.reporter()
+    .on 'error', $.util.log
+  .pipe $.coffee()
+    .on 'error', $.util.log
+  .pipe gulp.dest "#{paths.test}"
 
 gulp.task 'less', ->
   gulp
-  .src "#{SOURCE_PATH}/less/#{name}.less"
-  .pipe plugins.changed "#{DIST_PATH}/css"
-  .pipe plugins.less()
-    .on 'error', plugins.util.log
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe gulp.dest "#{DIST_PATH}/css"
-  .pipe plugins.less compress: true, cleancss: true
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe plugins.rename suffix: '.min'
-  .pipe gulp.dest "#{DIST_PATH}/css"
+  .src "#{paths.src}/less/#{name}.less"
+  .pipe $.changed "#{paths.dist}/css"
+  .pipe $.less()
+    .on 'error', $.util.log
+  .pipe $.header banner, pkg: pkg
+  .pipe gulp.dest "#{paths.dist}/css"
+  .pipe $.less compress: true, cleancss: true
+  .pipe $.header banner, pkg: pkg
+  .pipe $.rename suffix: '.min'
+  .pipe gulp.dest "#{paths.dist}/css"
 
 gulp.task 'less-standalone', ->
   gulp
-  .src "#{SOURCE_PATH}/less/#{name}-standalone.less"
-  .pipe plugins.changed "#{DIST_PATH}/css"
-  .pipe plugins.less()
-    .on 'error', plugins.util.log
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe gulp.dest "#{DIST_PATH}/css"
-  .pipe plugins.less compress: true, cleancss: true
-  .pipe plugins.header BANNER, pkg: pkg
-  .pipe plugins.rename suffix: '.min'
-  .pipe gulp.dest "#{DIST_PATH}/css"
+  .src "#{paths.src}/less/#{name}-standalone.less"
+  .pipe $.changed "#{paths.dist}/css"
+  .pipe $.less()
+    .on 'error', $.util.log
+  .pipe $.header banner, pkg: pkg
+  .pipe gulp.dest "#{paths.dist}/css"
+  .pipe $.less compress: true, cleancss: true
+  .pipe $.header banner, pkg: pkg
+  .pipe $.rename suffix: '.min'
+  .pipe gulp.dest "#{paths.dist}/css"
 
 gulp.task 'karma', ['coffee-test'], ->
   gulp
-  .src "#{TEST_PATH}/#{name}.spec.js"
-  .pipe plugins.karma()
+  .src "#{paths.test}/#{name}.spec.js"
+  .pipe $.karma()
     .on 'error', (error) -> throw error
 
 gulp.task 'jekyll', (done) ->
@@ -126,52 +128,52 @@ gulp.task 'jekyll', (done) ->
 gulp.task 'docs', ['jekyll'], ->
   gulp
   .src './CNAME'
-  .pipe gulp.dest DOCS_PATH
+  .pipe gulp.dest paths.docs
 
 gulp.task 'clean-dist', ->
   gulp
-  .src DIST_PATH
-  .pipe plugins.clean()
+  .src paths.dist
+  .pipe $.clean()
 
 # gulp.task 'clean-test', ->
 #   gulp
-#   .src TEST_PATH
-#   .pipe plugins.clean()
+#   .src paths.test
+#   .pipe $.clean()
 
 gulp.task 'clean-docs', ->
   gulp
-  .src DOCS_PATH
-  .pipe plugins.clean()
+  .src paths.docs
+  .pipe $.clean()
 
 gulp.task 'connect', ['docs'], ->
-  plugins.connect.server
-    root: [DOCS_PATH]
-    host: SERVER_HOST
-    port: SERVER_PORT
+  $.connect.server
+    root: [paths.docs]
+    host: server.host
+    port: server.port
     livereload: true
 
 gulp.task 'open', ['connect'], ->
   gulp
-  .src "#{DOCS_PATH}/index.html"
-  .pipe plugins.open '', url: "http://#{SERVER_HOST}:#{SERVER_PORT}"
+  .src "#{paths.docs}/index.html"
+  .pipe $.open '', url: "http://#{server.host}:#{server.port}"
 
 gulp.task 'watch', ['connect'], ->
-  gulp.watch "#{SOURCE_PATH}/coffee/#{name}.coffee", ['coffee']
-  gulp.watch "#{SOURCE_PATH}/less/#{name}.less", ['less']
+  gulp.watch "#{paths.src}/coffee/#{name}.coffee", ['coffee']
+  gulp.watch "#{paths.src}/less/#{name}.less", ['less']
   gulp.watch [
-    "#{SOURCE_PATH}/less/#{name}-standalone.less"
-    "#{SOURCE_PATH}/less/standalone/**/*.less"
+    "#{paths.src}/less/#{name}-standalone.less"
+    "#{paths.src}/less/standalone/**/*.less"
   ], ['less-standalone']
-  gulp.watch "#{SOURCE_PATH}/coffee/#{name}.spec.coffee", ['test']
-  gulp.watch "#{SOURCE_PATH}/docs/**/*", ['docs']
+  gulp.watch "#{paths.src}/coffee/#{name}.spec.coffee", ['test']
+  gulp.watch "#{paths.src}/docs/**/*", ['docs']
   gulp.watch [
-    "#{DIST_PATH}/js/**/*.js"
-    "#{DIST_PATH}/css/**/*.css"
-    "#{DOCS_PATH}/index.html"
+    "#{paths.dist}/js/**/*.js"
+    "#{paths.dist}/css/**/*.css"
+    "#{paths.docs}/index.html"
   ]
   .on 'change', (event) ->
     gulp.src event.path
-    .pipe plugins.connect.reload()
+    .pipe $.connect.reload()
 
 gulp.task 'clean', ['clean-dist', 'clean-test', 'clean-docs']
 gulp.task 'server', ['connect', 'open', 'watch']
