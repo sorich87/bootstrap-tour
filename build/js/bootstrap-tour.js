@@ -38,8 +38,9 @@
         redirect: true,
         orphan: false,
         duration: false,
+        delay: false,
         basePath: "",
-        template: "<div class='popover'> <div class='arrow'></div> <h3 class='popover-title'></h3> <div class='popover-content'></div> <div class='popover-navigation'> <div class='btn-group'> <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button> <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button> <button class='btn btn-sm btn-default' data-role='pause-resume' data-pause-text='Pause' data-resume-text='Resume'>Pause</button> </div> <button class='btn btn-sm btn-default' data-role='end'>End tour</button> </div> </div>",
+        template: "<div class='popover' role='tooltip'> <div class='arrow'></div> <h3 class='popover-title'></h3> <div class='popover-content'></div> <div class='popover-navigation'> <div class='btn-group'> <button class='btn btn-sm btn-default' data-role='prev'>&laquo; Prev</button> <button class='btn btn-sm btn-default' data-role='next'>Next &raquo;</button> <button class='btn btn-sm btn-default' data-role='pause-resume' data-pause-text='Pause' data-resume-text='Resume'>Pause</button> </div> <button class='btn btn-sm btn-default' data-role='end'>End tour</button> </div> </div>",
         afterSetState: function(key, value) {},
         afterGetState: function(key, value) {},
         afterRemoveState: function(key) {},
@@ -96,6 +97,7 @@
           redirect: this._options.redirect,
           orphan: this._options.orphan,
           duration: this._options.duration,
+          delay: this._options.delay,
           template: this._options.template,
           onShow: this._options.onShow,
           onShown: this._options.onShown,
@@ -327,7 +329,16 @@
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, showStepHelper);
+      if (step.delay) {
+        this._debug("Wait " + step.delay + " milliseconds to show the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, showStepHelper);
+          };
+        })(this), step.delay);
+      } else {
+        this._callOnPromiseDone(promise, showStepHelper);
+      }
       return promise;
     };
 
@@ -453,6 +464,7 @@
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
+      step.template = this._getTemplate(step, i);
       if (isOrphan) {
         step.element = "body";
         step.placement = "top";
@@ -473,7 +485,6 @@
           };
         })(this));
       }
-      step.template = this._getTemplate(step, i);
       $element.popover({
         placement: step.placement,
         trigger: "manual",

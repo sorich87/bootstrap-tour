@@ -19,8 +19,9 @@
         redirect: true
         orphan: false
         duration: false
+        delay: false
         basePath: ""
-        template: "<div class='popover'>
+        template: "<div class='popover' role='tooltip'>
           <div class='arrow'></div>
           <h3 class='popover-title'></h3>
           <div class='popover-content'></div>
@@ -85,6 +86,7 @@
           redirect: @_options.redirect
           orphan: @_options.orphan
           duration: @_options.duration
+          delay: @_options.delay
           template: @_options.template
           onShow: @_options.onShow
           onShown: @_options.onShown
@@ -265,6 +267,7 @@
 
         @_scrollIntoView step.element, =>
           return if @getCurrentStep() isnt i
+
           @_showOverlayElement step.element if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
@@ -273,7 +276,14 @@
         # Play step timer
         @resume() if step.duration
 
-      @_callOnPromiseDone promise, showStepHelper
+      if step.delay
+        @_debug "Wait #{step.delay} milliseconds to show the step #{@_current + 1}"
+        window.setTimeout =>
+          @_callOnPromiseDone promise, showStepHelper
+        , step.delay
+      else
+        @_callOnPromiseDone promise, showStepHelper
+
       promise
 
     getCurrentStep: ->
@@ -376,6 +386,8 @@
       options = $.extend {}, @_options
       isOrphan = @_isOrphan step
 
+      step.template = @_getTemplate step, i
+
       if isOrphan
         step.element = "body"
         step.placement = "top"
@@ -390,7 +402,6 @@
         .on "click.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
-      step.template = @_getTemplate step, i
 
       $element
       .popover({

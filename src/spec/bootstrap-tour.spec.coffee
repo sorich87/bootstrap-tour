@@ -10,7 +10,10 @@ describe "Bootstrap Tour", ->
     @tour._setState("end", null)
     $.each @tour._options.steps, (i, s) ->
       $element = $(tour.getStep(i).element)
-      $element.popover("destroy").removeData("bs.popover")
+
+      $element
+      .popover("destroy")
+      .removeData("bs.popover")
       $element.remove()
 
   it "should set the tour options", ->
@@ -207,6 +210,7 @@ describe "Bootstrap Tour", ->
       redirect: true
       orphan: false
       duration: false
+      delay: false
       template: "<div class='popover'>
         <div class='arrow'></div>
         <h3 class='popover-title'></h3>
@@ -340,9 +344,9 @@ describe "Bootstrap Tour", ->
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(0)
-    expect($(".popover [data-role='prev']").hasClass('disabled')).toBe true
+    expect($(".popover [data-role='prev']").length).toBe 0
     @tour.showStep(1)
-    expect($(".popover [data-role='next']").hasClass('disabled')).toBe true
+    expect($(".popover [data-role='next']").length).toBe 0
 
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
@@ -709,29 +713,23 @@ describe "Bootstrap Tour", ->
     expect($('body').css("cursor")).not.toBe "pointer"
 
   it "should not display inactive popover upon rapid navigation", ->
-
     # Flag that gives signal to the async test that it should evaluate.
-    step_displayed = false
+    $.support.transition = true
+    $.fx.off = false
+    isStepShown = false
 
     # Cleanup all leftover popovers from previous tests.
     $('.popover').remove()
-
-    # Turn the jQuery effects on.
-    $.support.transition = true
-    $.fx.off = false
 
     # Setup two-step tour. The problem should occur when switching from first
     # step to the second while the transition effect of the first one is still
     # active.
     @tour = new Tour
-
+    @tour.addStep element: $("<div></div>").appendTo("body")
     @tour.addStep
       element: $("<div></div>").appendTo("body")
-
-    @tour.addStep
-      element: $("<div></div>").appendTo("body")
-      onShown: (t) ->
-        step_displayed = true
+      onShown: ->
+        isStepShown = true
 
     # Request the first step and immediately the second one. This way the first
     # step won't be displayed when the second step is requested, so the request
@@ -739,8 +737,7 @@ describe "Bootstrap Tour", ->
     runs ->
       @tour.goTo(0)
       @tour.goTo(1)
-
-    waitsFor (-> step_displayed), 'The second step should be displayed.', 1000
-
-    runs ->
-      expect($('.popover').length).toBe 1
+    waitsFor ->
+      isStepShown
+    , "The second step should be displayed.", 1000
+    runs -> expect($('.popover').length).toBe 1

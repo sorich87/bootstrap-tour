@@ -5,7 +5,7 @@ $ ->
   tour = new Tour(
     onStart: -> $demo.addClass "disabled", true
     onEnd: -> $demo.removeClass "disabled", true
-    debug: true,
+    debug: true
     steps: [
       path: "/"
       element: "#demo"
