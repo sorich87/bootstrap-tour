@@ -8,3 +8,4 @@ npm-debug.log
 test/spec
 _SpecRunner.html
 *.DS_Store
+smart.lock
