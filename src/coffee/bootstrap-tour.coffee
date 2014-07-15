@@ -289,6 +289,10 @@
         @_current = if @_current is null then null else parseInt @_current, 10
       @
 
+    # Manually trigger a resize on the overlay element
+    resizeOverlay: ->
+      @_showOverlayElement(@getStep(@getCurrentStep()).element, true)
+
     # Set a state in storage
     _setState: (key, value) ->
       if @_options.storage
@@ -553,10 +557,10 @@
         @backdrop.overlay = null
         @backdrop.backgroundShown = false
 
-    _showOverlayElement: (element) ->
+    _showOverlayElement: (element, force) ->
       $element = $ element
 
-      return if not $element or $element.length is 0 or @backdrop.overlayElementShown
+      return if not $element or $element.length is 0 or @backdrop.overlayElementShown and not force
 
       @backdrop.overlayElementShown = true
       $background = $ "<div/>"

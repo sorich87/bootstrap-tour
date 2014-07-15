@@ -346,6 +346,10 @@
       return this;
     };
 
+    Tour.prototype.resizeOverlay = function() {
+      return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
+    };
+
     Tour.prototype._setState = function(key, value) {
       var e, keyName;
       if (this._options.storage) {
@@ -685,10 +689,10 @@
       }
     };
 
-    Tour.prototype._showOverlayElement = function(element) {
+    Tour.prototype._showOverlayElement = function(element, force) {
       var $background, $element, offset;
       $element = $(element);
-      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
+      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
         return;
       }
       this.backdrop.overlayElementShown = true;
