@@ -27,17 +27,28 @@ Compiled sources are then automatically put under `./build/` (and `./test/`)
 
 To begin, you need a few standard dependencies installed. These commands will install ruby, gem, node, npm, and grunt's command line runner:
 
+- On Linux
+
 ```bash
 sudo apt-get install ruby
 sudo apt-get install ruby-dev
 sudo apt-get install npm
 sudo apt-get install nodejs-legacy
-sudo npm install -g grunt-cli
 ```
 
-Once those are installed, you can run (note these don't need to be run with sudo):
+- On Mac OS X
 
 ```bash
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+\curl -L https://get.rvm.io | bash
+rvm install ruby-2.1.1
+brew install node
+```
+
+- Once the above are installed, you can run:
+
+```bash
+sudo npm install -g grunt-cli
 npm install
 gem install jekyll
 ```
