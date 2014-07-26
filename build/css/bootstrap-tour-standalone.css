@@ -299,6 +299,7 @@ fieldset[disabled] .btn-default.active {
   z-index: 1100;
   background-color: #000;
   opacity: 0.8;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
 }
 .tour-step-backdrop {
   position: relative;
@@ -306,7 +307,7 @@ fieldset[disabled] .btn-default.active {
   background: inherit;
 }
 .tour-step-background {
-  position: absolute;
+  position: absolute !important;
   z-index: 1100;
   background: inherit;
   border-radius: 6px;
