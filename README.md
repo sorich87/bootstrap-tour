@@ -48,7 +48,7 @@ brew install node
 - Once the above are installed, you can run:
 
 ```bash
-sudo npm install -g grunt-cli
+npm install -g grunt-cli
 npm install
 gem install jekyll
 ```
