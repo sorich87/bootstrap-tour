@@ -1,7 +1,10 @@
 gulp = require 'gulp'
 $ = require('gulp-load-plugins') lazy: false
+extend = require('util')._extend
 streamqueue = require 'streamqueue'
 spawn = require('child_process').spawn
+karma = require('karma').server
+karmaConfig = require './karma.json'
 pkg = require './package.json'
 name = pkg.name
 
@@ -38,6 +41,7 @@ banner = '''
 
   '''
 
+# coffee
 gulp.task 'coffee', ->
   gulp
   .src "#{paths.src}/coffee/#{name}.coffee"
@@ -50,6 +54,7 @@ gulp.task 'coffee', ->
   .pipe $.header banner, pkg: pkg
   .pipe gulp.dest "#{paths.dist}/js"
   .pipe gulp.dest "#{paths.src}/docs/assets/js"
+  .pipe gulp.dest "#{paths.test}"
   .pipe $.uglify()
   .pipe $.header banner, pkg: pkg
   .pipe $.rename suffix: '.min'
@@ -59,8 +64,8 @@ gulp.task 'coffee-standalone', ->
   streamqueue objectMode: true,
     gulp
     .src [
-      "#{paths.src}/js/standalone/tooltip.js"
-      "#{paths.src}/js/standalone/popover.js"
+      "./node_modules/bootstrap/js/tooltip.js"
+      "./node_modules/bootstrap/js/popover.js"
     ]
   ,
     gulp
@@ -79,24 +84,18 @@ gulp.task 'coffee-standalone', ->
   .pipe $.rename suffix: '.min'
   .pipe gulp.dest "#{paths.dist}/js"
 
-gulp.task 'coffee-test', ['coffee'], ->
-  gulp
-  .src "#{paths.src}/coffee/#{name}.spec.coffee"
-  .pipe $.changed "#{paths.test}"
-  .pipe $.coffeelint.reporter()
-    .on 'error', $.util.log
-  .pipe $.coffee()
-    .on 'error', $.util.log
-  .pipe gulp.dest "#{paths.test}"
-
+# less
 gulp.task 'less', ->
   gulp
-  .src "#{paths.src}/less/#{name}.less"
+  .src [
+    "#{paths.src}/less/#{name}.less"
+  ]
   .pipe $.changed "#{paths.dist}/css"
   .pipe $.less()
     .on 'error', $.util.log
   .pipe $.header banner, pkg: pkg
   .pipe gulp.dest "#{paths.dist}/css"
+  .pipe gulp.dest "#{paths.src}/docs/assets/css"
   .pipe $.less compress: true, cleancss: true
   .pipe $.header banner, pkg: pkg
   .pipe $.rename suffix: '.min'
@@ -115,36 +114,52 @@ gulp.task 'less-standalone', ->
   .pipe $.rename suffix: '.min'
   .pipe gulp.dest "#{paths.dist}/css"
 
-gulp.task 'karma', ['coffee-test'], ->
+# test
+gulp.task 'test-coffee', ['coffee'], ->
   gulp
-  .src "#{paths.test}/#{name}.spec.js"
-  .pipe $.karma()
-    .on 'error', (error) -> throw error
+  .src "#{paths.src}/coffee/#{name}.spec.coffee"
+  .pipe $.changed paths.test
+  .pipe $.coffeelint.reporter()
+    .on 'error', $.util.log
+  .pipe $.coffee()
+    .on 'error', $.util.log
+  .pipe gulp.dest paths.test
 
-gulp.task 'jekyll', (done) ->
+gulp.task 'test-go', ['coffee-test'], (done) ->
+  karma.start extend(karmaConfig, singleRun: true), done
+
+# docs
+gulp.task 'docs-build', ['coffee', 'less'], (done) ->
   spawn 'jekyll', ['build']
-  .on 'close', done
+    .on 'close', done
 
-gulp.task 'docs', ['jekyll'], ->
+gulp.task 'docs-coffee', ['docs-build'], ->
   gulp
-  .src './CNAME'
-  .pipe gulp.dest paths.docs
+  .src "#{paths.src}/coffee/#{name}.docs.coffee"
+  .pipe $.changed "#{paths.docs}/assets/js"
+  .pipe $.coffeelint.reporter()
+    .on 'error', $.util.log
+  .pipe $.coffee()
+    .on 'error', $.util.log
+  .pipe gulp.dest "#{paths.docs}/assets/js"
 
+# clean
 gulp.task 'clean-dist', ->
   gulp
   .src paths.dist
   .pipe $.clean()
 
-# gulp.task 'clean-test', ->
-#   gulp
-#   .src paths.test
-#   .pipe $.clean()
+gulp.task 'clean-test', ->
+  gulp
+  .src paths.test
+  .pipe $.clean()
 
 gulp.task 'clean-docs', ->
   gulp
   .src paths.docs
   .pipe $.clean()
 
+# connect
 gulp.task 'connect', ['docs'], ->
   $.connect.server
     root: [paths.docs]
@@ -152,20 +167,24 @@ gulp.task 'connect', ['docs'], ->
     port: server.port
     livereload: true
 
+# open
 gulp.task 'open', ['connect'], ->
   gulp
   .src "#{paths.docs}/index.html"
   .pipe $.open '', url: "http://#{server.host}:#{server.port}"
 
 gulp.task 'watch', ['connect'], ->
-  gulp.watch "#{paths.src}/coffee/#{name}.coffee", ['coffee']
-  gulp.watch "#{paths.src}/less/#{name}.less", ['less']
+  gulp.watch "#{paths.src}/coffee/#{name}.coffee", ['coffee', 'coffee-standalone']
+  gulp.watch "#{paths.src}/less/#{name}.less", ["less"]
   gulp.watch [
     "#{paths.src}/less/#{name}-standalone.less"
     "#{paths.src}/less/standalone/**/*.less"
   ], ['less-standalone']
   gulp.watch "#{paths.src}/coffee/#{name}.spec.coffee", ['test']
-  gulp.watch "#{paths.src}/docs/**/*", ['docs']
+  gulp.watch [
+    "#{paths.src}/coffee/#{name}.docs.coffee"
+    "#{paths.src}/docs/**/*"
+  ], ['docs']
   gulp.watch [
     "#{paths.dist}/js/**/*.js"
     "#{paths.dist}/css/**/*.css"
@@ -175,8 +194,10 @@ gulp.task 'watch', ['connect'], ->
     gulp.src event.path
     .pipe $.connect.reload()
 
+# tasks
 gulp.task 'clean', ['clean-dist', 'clean-test', 'clean-docs']
 gulp.task 'server', ['connect', 'open', 'watch']
 gulp.task 'dist', ['coffee', 'coffee-standalone', 'less', 'less-standalone']
-gulp.task 'test', ['coffee', 'coffee-test', 'karma']
+gulp.task 'test', ['coffee', 'test-coffee', 'test-go']
+gulp.task 'docs', ['coffee', 'less', 'docs-build', 'docs-coffee']
 gulp.task 'default', ['dist', 'docs', 'server']

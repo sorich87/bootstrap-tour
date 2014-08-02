@@ -41,10 +41,11 @@
     }
   ],
   "dependencies": {
-    "jquery": "~1.8.0"
+    "bootstrap": "~3",
+    "jquery": ">=1.8"
   },
   "devDependencies": {
-    "jquery": "~1.8.3",
+    "jquery": "~2.1.1",
     "gulp": "~3.8.6",
     "gulp-load-plugins": "~0.5.3",
     "coffee-script": "~1.7.1",
@@ -65,7 +66,8 @@
     "karma": "~0.12.19",
     "gulp-karma": "0.0.4",
     "karma-jasmine": "~0.1.5",
-    "karma-chrome-launcher": "~0.1.4"
+    "karma-chrome-launcher": "~0.1.4",
+    "bootstrap": "~3.2.0"
   },
   "engines": {
     "node": ">= 0.8.0"

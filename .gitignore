@@ -1,5 +1,4 @@
 .grunt
-docs-build
 node_modules
 components
 bootstrap-tour.sublime-project
