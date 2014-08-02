@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Quick and easy way to build your product tours with Twitter Bootstrap Popovers.">
+<meta name="description" content="Quick and easy way to build your product tours with Bootstrap Popovers.">
 
 <title>
   
@@ -12,11 +12,19 @@
   
 </title>
 
-<link href="/assets/vendor/bootstrap.min.css?2014-08-02T21%3A50%3A01%2B02%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2014-08-02T21%3A50%3A01%2B02%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2014-08-02T21%3A50%3A01%2B02%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.docs.css?2014-08-02T21%3A50%3A01%2B02%3A00" rel="stylesheet">
+<link href="http://boostraptour.com/api/" rel="canonical">
+
+<link href="/assets/vendor/bootstrap.min.css?2014-08-02T22%3A24%3A57%2B02%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2014-08-02T22%3A24%3A57%2B02%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2014-08-02T22%3A24%3A57%2B02%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2014-08-02T22%3A24%3A57%2B02%3A00" rel="stylesheet">
 <!--[if lt IE 9]><script src="/assets/vendor/html5shiv.js"></script><![endif]-->
+
+<script>
+if (window.location.href.indexOf('sorich87.github.com') > -1) {
+  window.location.href = 'http://bootstraptour.com/api/';
+}
+</script>
 
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -134,7 +142,7 @@
           <td>String</td>
           <td>Appends the step popover to a specific element.<br>
           <em>See Usage section of
-          <a href="http://twitter.github.io/bootstrap/javascript.html#popovers" target="_blank">Popover</a>.
+          <a href="http://getbootstrap.com/javascript/#popovers" target="_blank">Popover</a>.
           </em>
           </td>
           <td><code>'body'</code></td>
@@ -145,14 +153,14 @@
           <td>This option set the left and right arrow navigation.</td>
           <td><code>true</code></td>
         </tr>
-        <tr>
+        <tr id="storage">
           <td>storage</td>
           <td>Object</td>
-          <td>The storage system you want to use. could be the objects window.localStorage,
+          <td>The storage system you want to use. Could be the objects window.localStorage,
           window.sessionStorage or your own object.<br>
           You can set this option as
           <code>false</code> to disable storage
-          persistence (the tour starts from beginning everytime the page is
+          persistence (the tour starts from beginning every time the page is
           loaded).<br>
           <em>Read more about <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Storage" target="_blank">DOM Storage interfaces</a>.</em>
           </td>
@@ -234,8 +242,7 @@
 <span class="s2">&lt;/div&gt;&quot;</span>
 </code></pre></div>
           </td>
-          </p>
-        <tr>
+        </tr>
         <tr>
           <td>afterGetState, afterSetState, afterRemoveState</td>
           <td>Function</td>
@@ -464,7 +471,7 @@
         <tr>
           <td id="reflex">reflex</td>
           <td>Boolean</td>
-          <td>Enable the reflex mode: you can click on the element for
+          <td>Enable the reflex mode: you can click on the element to
           continue the tour.</td>
           <td><code>false</code></td>
         </tr>
@@ -479,7 +486,7 @@
         <tr class="success">
           <td>duration <span class="label label-success">NEW</span></td>
           <td>Boolean|String</td>
-          <td>Set a expiration time for the stes. When the step expires,
+          <td>Set a expiration time for the steps. When the step expires,
           the next step is automatically shown. See it as a sort of guided, automatized tour
           functionality. The value is specified in milliseconds</td>
           <td><code>false</code></td>
@@ -490,7 +497,7 @@
           <td>String or function that returns a string of the HTML template for
           the popovers. If you pass a Function, two parameters are available:
           <strong>i</strong> is the position of step in the tour and
-          <strong>step</strong> is the an object that contains all the other step
+          <strong>step</strong> is the object that contains all the other step
           options.<br>
           From version 0.5, the navigation template is included inside the
           template so you can easily rewrite it. However, Bootstrap Tour maps the
@@ -576,6 +583,7 @@
     </table>
   </div>
 </section>
+
 <section id="methods">
   <div class="container">
     <div class="page-header">
@@ -636,11 +644,11 @@
         </tr>
         <tr>
           <td>pause()</td>
-          <td>Pause the duration timer. It works only if tour or current stap has duration.</td>
+          <td>Pause the duration timer. It works only if tour or current step has duration.</td>
         </tr>
         <tr>
           <td>resume()</td>
-          <td>Resume the duration timer. It works only if tour or current stap has duration.</td>
+          <td>Resume the duration timer. It works only if tour or current step has duration.</td>
         </tr>
         <tr>
           <td>ended()</td>
@@ -665,12 +673,103 @@
   </div>
 </section>
 
-    <script src="/assets/vendor/jquery.js?2014-08-02T21%3A50%3A01%2B02%3A00"></script>
-<script src="/assets/vendor/bootstrap.js?2014-08-02T21%3A50%3A01%2B02%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2014-08-02T21%3A50%3A01%2B02%3A00"></script>
-<script src="/assets/vendor/md5.js?2014-08-02T21%3A50%3A01%2B02%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2014-08-02T21%3A50%3A01%2B02%3A00"></script>
-<script src="/assets/js/bootstrap-tour.docs.js?2014-08-02T21%3A50%3A01%2B02%3A00"></script>
+<section id="multipage">
+    <div class="container">
+        <div class="page-header">
+            <h2>Multipage
+                <small>How to traverse across pages</small>
+            </h2>
+        </div>
+        <p>Bootstrap Tour can be used to create tours that span multiple pages. If you have URLs for each page that have
+            unique paths, you can easily create a tour like so:
+        </p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;/url/to/go/to/&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div>
+
+        <p>It's that simple.</p>
+
+        <p>If you do not know the URL you wish to go to because it contains a different value per user or per
+            instance, you can use a regular expression as the <code>path</code> attribute and set the redirect
+            attribute to a function that performs the redirect.
+        </p>
+        <p>For example:</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">redirect</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;/url/&#39;</span> <span class="o">+</span> <span class="nx">userId</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="nx">Regexp</span><span class="p">(</span><span class="s2">&quot;/\/url\/[^/]+/i&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div>
+
+        <p>Finally, if you are only using GET parameters to define different pages, and wish to redirect using those
+            parameters, you may run into the problem that Bootstrap Tour will consider the path of the two steps to be
+            identical. For example, you cannot use the path parameter to go from your homepage at <code>/</code> to a
+            search results page at <code>/?q=foo</code>, because from Bootstrap Tour's perspective, those are the same
+            location (<code>/</code>).
+        </p>
+        <p>To work around this limitation, you can set the <code>onNext</code> attribute a function that returns a
+            promise.</p>
+        <p>For example:</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;/?q=foo&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">()).</span><span class="nx">promise</span><span class="p">();</span>
+      <span class="p">};</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div>
+
+        <p>Doing this will prevent the next step from popping up while the redirect is being completed in the
+            <code>onNext</code> function.
+        </p>
+    </div>
+</section>
+
+    <script src="/assets/vendor/jquery.js?2014-08-02T22%3A24%3A57%2B02%3A00"></script>
+<script src="/assets/vendor/bootstrap.min.js?2014-08-02T22%3A24%3A57%2B02%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2014-08-02T22%3A24%3A57%2B02%3A00"></script>
+<script src="/assets/vendor/md5.js?2014-08-02T22%3A24%3A57%2B02%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2014-08-02T22%3A24%3A57%2B02%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2014-08-02T22%3A24%3A57%2B02%3A00"></script>
 <script>
   window.twttr = (function (d,s,id) {
     var t, js, fjs = d.getElementsByTagName(s)[0];

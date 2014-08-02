@@ -47,7 +47,7 @@
           duration: 5000
         }, {
           path: "/api",
-          element: "#methods",
+          element: "#methods table",
           placement: "top",
           title: "A new shiny Backdrop option",
           content: "If you need to highlight the current step's element, activate the backdrop and you won't lose\nthe focus anymore!",
@@ -69,7 +69,7 @@
           }
         }
       ]
-    }).init().start();
+    }).init();
     if (tour.ended()) {
       $('<div class="alert alert-info alert-dismissable"><button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>You ended the demo tour. <a href="#" data-demo>Restart the demo tour.</a></div>').prependTo(".content").alert();
     }

@@ -1,14 +1,13 @@
 {
   "name": "bootstrap-tour",
-  "description": "Quick and easy way to build your product tours with Twitter Bootstrap Popovers.",
-  "version": "0.9.0",
+  "description": "Quick and easy way to build your product tours with Bootstrap Popovers.",
+  "version": "0.9.3",
   "keywords": [
     "tour",
     "bootstrap",
     "js",
     "tour",
-    "intro",
-    "twitter"
+    "intro"
   ],
   "homepage": "http://bootstraptour.com",
   "author": {
@@ -74,11 +73,12 @@
   },
   "main": [
     "./build/js/bootstrap-tour.js",
-    "./build/css/bootstrap-tour.css"
+    "./build/js/bootstrap-tour-standalone.js",
+    "./build/css/bootstrap-tour.css",
+    "./build/css/bootstrap-tour-standalone.css"
   ],
   "scripts": {
-    "run": "grunt run",
-    "build": "grunt build",
-    "test": "grunt test"
+    "build": "gulp dist",
+    "test": "gulp test"
   }
 }

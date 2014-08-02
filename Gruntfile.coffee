@@ -75,8 +75,9 @@ module.exports = (grunt) ->
         options:
           banner: ""
         src: [
-          "src/js/standalone/tooltip.js",
-          "src/js/standalone/popover.js",
+          "bower_components/bootstrap/js/transition.js",
+          "bower_components/bootstrap/js/tooltip.js",
+          "bower_components/bootstrap/js/popover.js",
           "build/js/<%= pkg.name %>.js"
         ]
         dest: "build/js/<%= pkg.name %>-standalone.js"
@@ -159,7 +160,7 @@ module.exports = (grunt) ->
         keepRunner: true
         vendor: [
           "docs/assets/vendor/jquery.js"
-          "docs/assets/vendor/bootstrap.js"
+          "bower_components/bootstrap/dist/js/bootstrap.min.js"
         ]
         specs: "test/spec/*.spec.js"
       src: "build/js/<%= pkg.name %>.js"
@@ -169,6 +170,8 @@ module.exports = (grunt) ->
         files: [
           "docs/assets/js/bootstrap-tour.js": "build/js/bootstrap-tour.js"
           "docs/assets/css/bootstrap-tour.css": "build/css/bootstrap-tour.css"
+          "docs/assets/vendor/bootstrap.min.js": "bower_components/bootstrap/dist/js/bootstrap.min.js"
+          "docs/assets/vendor/bootstrap.min.css": "bower_components/bootstrap/dist/css/bootstrap.min.css"
         ]
       docs:
         src: "CNAME"

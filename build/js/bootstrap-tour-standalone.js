@@ -1,5 +1,5 @@
 /* ========================================================================
- * bootstrap-tour - v0.9.0
+ * bootstrap-tour - v0.9.3
  * http://bootstraptour.com
  * ========================================================================
  * Copyright 2012-2013 Ulrich Sossou
@@ -596,19 +596,26 @@
   document = window.document;
   Tour = (function() {
     function Tour(options) {
+      var storage;
+      try {
+        storage = window.localStorage;
+      } catch (_error) {
+        storage = false;
+      }
       this._options = $.extend({
         name: 'tour',
         steps: [],
         container: 'body',
         keyboard: true,
-        storage: window.localStorage,
+        storage: storage,
         debug: false,
         backdrop: false,
         redirect: true,
         orphan: false,
         duration: false,
+        delay: false,
         basePath: '',
-        template: '<div class="popover"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
+        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
         afterGetState: function(key, value) {},
         afterRemoveState: function(key) {},
@@ -665,6 +672,7 @@
           redirect: this._options.redirect,
           orphan: this._options.orphan,
           duration: this._options.duration,
+          delay: this._options.delay,
           template: this._options.template,
           onShow: this._options.onShow,
           onShown: this._options.onShown,
@@ -759,7 +767,6 @@
     Tour.prototype.restart = function() {
       this._removeState('current_step');
       this._removeState('end');
-      this.setCurrentStep(0);
       return this.start();
     };
 
@@ -850,7 +857,7 @@
           var current_path, path;
           _this.setCurrentStep(i);
           path = (function() {
-            switch (toString.call(step.path)) {
+            switch ({}.toString.call(step.path)) {
               case '[object Function]':
                 return step.path();
               case '[object String]':
@@ -880,6 +887,9 @@
             _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
           _this._scrollIntoView(step.element, function() {
+            if (_this.getCurrentStep() !== i) {
+              return;
+            }
             if ((step.element != null) && step.backdrop) {
               _this._showOverlayElement(step.element);
             }
@@ -894,7 +904,16 @@
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, showStepHelper);
+      if (step.delay) {
+        this._debug("Wait " + step.delay + " milliseconds to show the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, showStepHelper);
+          };
+        })(this), step.delay);
+      } else {
+        this._callOnPromiseDone(promise, showStepHelper);
+      }
       return promise;
     };
 
@@ -995,7 +1014,7 @@
     };
 
     Tour.prototype._isRedirect = function(path, currentPath) {
-      return (path != null) && path !== '' && ((toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || (toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
+      return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
     };
 
     Tour.prototype._redirect = function(step, path) {
@@ -1016,41 +1035,31 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $navigation, $template, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, options;
+      $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
-      $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
-      $navigation = $template.find('.popover-navigation');
       isOrphan = this._isOrphan(step);
+      step.template = this._getTemplate(step, i);
       if (isOrphan) {
         step.element = 'body';
         step.placement = 'top';
-        $template = $template.addClass('orphan');
       }
       $element = $(step.element);
-      $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
       $element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
       if (step.options) {
         $.extend(options, step.options);
       }
-      if (step.reflex) {
-        $element.css('cursor', 'pointer').on("click.tour-" + this._options.name, function() {
-          if (this._isLast()) {
-            return this.next();
-          } else {
-            return this.end();
-          }
-        });
+      if (step.reflex && !isOrphan) {
+        $element.css('cursor', 'pointer').on("click.tour-" + this._options.name, (function(_this) {
+          return function() {
+            if (_this._isLast()) {
+              return _this.next();
+            } else {
+              return _this.end();
+            }
+          };
+        })(this));
       }
-      if (step.prev < 0) {
-        $navigation.find('[data-role="prev"]').addClass('disabled');
-      }
-      if (step.next < 0) {
-        $navigation.find('[data-role="next"]').addClass('disabled');
-      }
-      if (!step.duration) {
-        $navigation.find('[data-role="pause-resume"]').remove();
-      }
-      step.template = $template.clone().wrap('<div>').parent().html();
       $element.popover({
         placement: step.placement,
         trigger: 'manual',
@@ -1065,9 +1074,31 @@
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
       this._reposition($tip, step);
-      if (isOrphan) {
+      if (this._isOrphan(step)) {
         return this._center($tip);
       }
+    };
+
+    Tour.prototype._getTemplate = function(step, i) {
+      var $navigation, $next, $prev, $template;
+      $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+      $navigation = $template.find('.popover-navigation');
+      $prev = $navigation.find('[data-role="prev"]');
+      $next = $navigation.find('[data-role="next"]');
+      if (this._isOrphan(step)) {
+        $template.addClass('orphan');
+      }
+      $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
+      if (step.prev < 0) {
+        $navigation.find('[data-role="prev"]').remove();
+      }
+      if (step.next < 0) {
+        $navigation.find('[data-role="next"]').remove();
+      }
+      if (!step.duration) {
+        $navigation.find('[data-role="pause-resume"]').remove();
+      }
+      return $template.clone().wrap('<div>').parent().html();
     };
 
     Tour.prototype._reposition = function($tip, step) {
@@ -1145,12 +1176,12 @@
     Tour.prototype._initMouseNavigation = function() {
       var _this;
       _this = this;
-      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']:not(.disabled)", (function(_this) {
+      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']", (function(_this) {
         return function(e) {
           e.preventDefault();
           return _this.next();
         };
-      })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']:not(.disabled)", (function(_this) {
+      })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']", (function(_this) {
         return function(e) {
           e.preventDefault();
           return _this.prev();
@@ -1242,9 +1273,11 @@
     };
 
     Tour.prototype._hideBackground = function() {
-      this.backdrop.remove();
-      this.backdrop.overlay = null;
-      return this.backdrop.backgroundShown = false;
+      if (this.backdrop) {
+        this.backdrop.remove();
+        this.backdrop.overlay = null;
+        return this.backdrop.backgroundShown = false;
+      }
     };
 
     Tour.prototype._showOverlayElement = function(element) {

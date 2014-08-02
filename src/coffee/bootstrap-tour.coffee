@@ -3,19 +3,25 @@
 
   class Tour
     constructor: (options) ->
+      try
+        storage = window.localStorage
+      catch
+        # localStorage may be unavailable due to security settings
+        storage = false
       @_options = $.extend
         name: 'tour'
         steps: []
         container: 'body'
         keyboard: true
-        storage: window.localStorage
+        storage: storage
         debug: false
         backdrop: false
         redirect: true
         orphan: false
         duration: false
+        delay: false
         basePath: ''
-        template: '<div class="popover">
+        template: '<div class="popover" role="tooltip">
           <div class="arrow"></div>
           <h3 class="popover-title"></h3>
           <div class="popover-content"></div>
@@ -83,6 +89,7 @@
           redirect: @_options.redirect
           orphan: @_options.orphan
           duration: @_options.duration
+          delay: @_options.delay
           template: @_options.template
           onShow: @_options.onShow
           onShown: @_options.onShown
@@ -164,7 +171,6 @@
     restart: ->
       @_removeState 'current_step'
       @_removeState 'end'
-      @setCurrentStep 0
       @start()
 
     # Pause step timer
@@ -239,7 +245,7 @@
         @setCurrentStep i
 
         # Support string or function for path
-        path = switch toString.call step.path
+        path = switch ({}).toString.call step.path
           when '[object Function]' then step.path()
           when '[object String]' then @_options.basePath + step.path
           else step.path
@@ -264,6 +270,8 @@
         @_showBackdrop(step.element unless @_isOrphan step) if step.backdrop
 
         @_scrollIntoView step.element, =>
+          return if @getCurrentStep() isnt i
+
           @_showOverlayElement step.element if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
@@ -272,7 +280,14 @@
         # Play step timer
         @resume() if step.duration
 
-      @_callOnPromiseDone promise, showStepHelper
+      if step.delay
+        @_debug "Wait #{step.delay} milliseconds to show the step #{@_current + 1}"
+        window.setTimeout =>
+          @_callOnPromiseDone promise, showStepHelper
+        , step.delay
+      else
+        @_callOnPromiseDone promise, showStepHelper
+
       promise
 
     getCurrentStep: ->
@@ -346,8 +361,8 @@
     # Check if step path equals current document path
     _isRedirect: (path, currentPath) ->
       path? and path isnt '' and (
-        (toString.call(path) is '[object RegExp]' and not path.test currentPath) or
-        (toString.call(path) is '[object String]' and
+        (({}).toString.call(path) is '[object RegExp]' and not path.test currentPath) or
+        (({}).toString.call(path) is '[object String]' and
           path.replace(/\?.*$/, '').replace(/\/?$/, '') isnt currentPath.replace(/\/?$/, ''))
       )
 
@@ -371,33 +386,31 @@
 
     # Show step popover
     _showPopover: (step, i) ->
+      # Remove previously existing tour popovers. This prevents displaying of
+      # multiple inactive popovers when user navigates the tour too quickly.
+      $(".tour-#{@_options.name}").remove()
+
       options = $.extend {}, @_options
-      $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
-      $navigation = $template.find '.popover-navigation'
       isOrphan = @_isOrphan step
+
+      step.template = @_getTemplate step, i
 
       if isOrphan
         step.element = 'body'
         step.placement = 'top'
-        $template = $template.addClass 'orphan'
 
       $element = $ step.element
-
-      $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
       $element.addClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
 
       $.extend options, step.options if step.options
-
-      if step.reflex
-        $element.css('cursor', 'pointer').on "click.tour-#{@_options.name}", ->
+      if step.reflex and not isOrphan
+        $element
+        .css('cursor', 'pointer')
+        .on "click.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
-      $navigation.find('[data-role="prev"]').addClass 'disabled' if step.prev < 0
-      $navigation.find('[data-role="next"]').addClass 'disabled' if step.next < 0
-      $navigation.find('[data-role="pause-resume"]').remove() unless step.duration
 
-      step.template = $template.clone().wrap('<div>').parent().html()
-
-      $element.popover({
+      $element
+      .popover(
         placement: step.placement
         trigger: 'manual'
         title: step.title
@@ -407,13 +420,28 @@
         container: step.container
         template: step.template
         selector: step.element
-      }).popover('show')
+      )
+      .popover 'show'
 
+      # Tip adjustment
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', step.id
       @_reposition $tip, step
+      @_center $tip if @_isOrphan step
 
-      @_center $tip if isOrphan
+    # Get popover template
+    _getTemplate: (step, i) ->
+      $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
+      $navigation = $template.find '.popover-navigation'
+      $prev = $navigation.find '[data-role="prev"]'
+      $next = $navigation.find '[data-role="next"]'
+
+      $template.addClass 'orphan' if @_isOrphan step
+      $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
+      $navigation.find('[data-role="prev"]').remove() if step.prev < 0
+      $navigation.find('[data-role="next"]').remove() if step.next < 0
+      $navigation.find('[data-role="pause-resume"]').remove() unless step.duration
+      $template.clone().wrap('<div>').parent().html()
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -487,14 +515,14 @@
       # End tour after click on element with attribute 'data-role=end'
       # Pause/resume tour after click on element with attribute 'data-role=pause-resume'
       $(document)
-      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']:not(.disabled)")
-      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']:not(.disabled)")
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']")
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']")
       .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']")
       .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='pause-resume']")
-      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']:not(.disabled)", (e) =>
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']", (e) =>
         e.preventDefault()
         @next()
-      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']:not(.disabled)", (e) =>
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']", (e) =>
         e.preventDefault()
         @prev()
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']", (e) =>
@@ -548,9 +576,10 @@
       @_hideBackground()
 
     _hideBackground: ->
-      @backdrop.remove()
-      @backdrop.overlay = null
-      @backdrop.backgroundShown = false
+      if @backdrop
+        @backdrop.remove()
+        @backdrop.overlay = null
+        @backdrop.backgroundShown = false
 
     _showOverlayElement: (element) ->
       $element = $ element
