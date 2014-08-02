@@ -1,6 +1,3 @@
-.grunt
-docs-build
-bower_components
 node_modules
 bootstrap-tour.sublime-project
 bootstrap-tour.sublime-workspace

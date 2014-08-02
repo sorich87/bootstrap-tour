@@ -1,0 +1,19 @@
+{
+  "frameworks": ["jasmine"],
+  "files": [
+    "node_modules/jquery/dist/jquery.js",
+    "node_modules/bootstrap/dist/js/bootstrap.js",
+    "test/bootstrap-tour.js",
+    "test/bootstrap-tour.spec.js"
+  ],
+  "reporters": ["progress"],
+  "port": 9876,
+  "colors": true,
+  "autoWatch": true,
+  "browsers": ["Chrome"],
+  "singleRun": false,
+  "plugins": [
+    "karma-jasmine",
+    "karma-chrome-launcher"
+  ]
+}

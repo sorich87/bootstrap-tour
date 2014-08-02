@@ -1,0 +1,61 @@
+body {
+  padding-bottom: 50px;
+}
+
+#github {
+  display: block;
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 0;
+  right: 0;
+  z-index: 1050;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.masthead {
+  position: relative;
+  padding: 30px 15px;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(0,0,0,.1);
+  background-color: #3276b1;
+  background-image: -webkit-linear-gradient(top, #285e8e 0%, #3276b1 100%);
+  background-image: linear-gradient(to bottom, #285e8e 0%, #3276b1 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#285e8e', endColorstr='#3276b1', GradientType=0);
+}
+.masthead small {
+  font-size: 80%;
+  color: #ccc;
+}
+
+/*
+ * Social buttons
+ *
+ * Twitter and GitHub social action buttons (for homepage and footer).
+ */
+
+.social {
+  display: inline-block;
+  margin-top: 40px;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+.social li {
+  display: inline-block;
+  line-height: 1;
+  padding: 5px 8px;
+}
+.social .tweet-btn a {
+  width: 98px !important;
+}
+/* Style the GitHub buttons via CSS instead of inline attributes */
+.github-btn {
+  border: 0;
+  overflow: hidden;
+}
