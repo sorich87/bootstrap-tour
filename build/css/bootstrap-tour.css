@@ -28,7 +28,7 @@
   z-index: 1100;
   background-color: #000;
   opacity: 0.8;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+  filter: alpha(opacity=80);
 }
 .tour-step-backdrop {
   position: relative;

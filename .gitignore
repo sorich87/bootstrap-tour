@@ -1,8 +1,10 @@
 node_modules
+bower_components
 bootstrap-tour.sublime-project
 bootstrap-tour.sublime-workspace
 npm-debug.log
-test/spec
+test
+docs/components
 _SpecRunner.html
 *.DS_Store
 smart.lock
