@@ -14,6 +14,6 @@
   "singleRun": false,
   "plugins": [
     "karma-jasmine",
-    "karma-chrome-launcher"
+    "karma-firefox-launcher"
   ]
 }
