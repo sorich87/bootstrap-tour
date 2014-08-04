@@ -1,8 +1,13 @@
 language: node_js
 node_js:
   - "0.10"
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 before_script:
   - npm install -g gulp
+  - npm install -g bower
+  - bower install
 branches:
   only:
     - master

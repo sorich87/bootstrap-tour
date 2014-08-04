@@ -48,7 +48,7 @@ brew install node
 ##### Development requirements
 
 ```bash
-$ npm install -g gulp-cli
+$ npm install -g gulp
 $ npm install
 $ gem install jekyll
 ```

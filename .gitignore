@@ -4,7 +4,7 @@ bootstrap-tour.sublime-project
 bootstrap-tour.sublime-workspace
 npm-debug.log
 test
-docs/components
+docs
 _SpecRunner.html
 *.DS_Store
 smart.lock
