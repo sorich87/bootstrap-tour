@@ -54,21 +54,20 @@ slug: home
 {% endhighlight %}
     <h3>Setup your tour:</h3>
 {% highlight javascript %}
-// Instantiate the tour
-var tour = new Tour({
+// Instance the tour
+var tour = new Tour(
   steps: [
-    {
-      element: "#my-element",
-      title: "Title of my step",
-      content: "Content of my step"
-    },
-    {
-      element: "#my-other-element",
-      title: "Title of my step",
-      content: "Content of my step"
-    }
-  ]
-});
+  {
+    element: "#my-element",
+    title: "Title of my step",
+    content: "Content of my step"
+  },
+  {
+    element: "#my-other-element",
+    title: "Title of my step",
+    content: "Content of my step"
+  }
+]);
 
 // Initialize the tour
 tour.init();
@@ -76,10 +75,6 @@ tour.init();
 // Start the tour
 tour.start();
 {% endhighlight %}
-    <p>This will run your tour <em>once</em> and will use your browser's local storage to keep track of whether you have
-        run the tour. If you wish to run the tour more than once, be sure to check out the <a
-                href="api/#storage">"storage" attribute</a> in the full documentation.
-    </p>
     <p>Do you want to do more? <a href="api">Read the full documentation.</a></p>
   </div>
 </section>
