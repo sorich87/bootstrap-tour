@@ -1,8 +1,8 @@
 # Bootstrap Tour
-[![Build Status](http://img.shields.io/travis/sorich87/bootstrap-tour.svg)](https://travis-ci.org/sorich87/bootstrap-tour)
-[![Dependency Status](https://david-dm.org/sorich87/bootstrap-tour.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour)
-[![devDependency Status](https://david-dm.org/sorich87/bootstrap-tour/dev-status.svg?theme=shields.io)](https://david-dm.org/sorich87/bootstrap-tour#info=devDependencies)
-[![NPM Version](http://img.shields.io/npm/v/bootstrap-tour.svg)](https://www.npmjs.org/)
+[![Build Status](http://img.shields.io/travis/sorich87/bootstrap-tour.svg?style=flat)](https://travis-ci.org/sorich87/bootstrap-tour)
+[![Dependency Status](http://img.shields.io/david/sorich87/bootstrap-tour.svg?style=flat)](https://david-dm.org/sorich87/bootstrap-tour)
+[![devDependency Status](http://img.shields.io/david/dev/sorich87/bootstrap-tour/dev-status.svg?style=flat)](https://david-dm.org/sorich87/bootstrap-tour#info=devDependencies)
+[![NPM Version](http://img.shields.io/npm/v/bootstrap-tour.svg?style=flat)](https://www.npmjs.org/)
 
 Quick and easy way to build your product tours with Bootstrap Popovers.
 
