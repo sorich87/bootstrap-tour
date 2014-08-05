@@ -610,6 +610,7 @@
         storage: storage,
         debug: false,
         backdrop: false,
+        backdropPadding: 0,
         redirect: true,
         orphan: false,
         duration: false,
@@ -669,6 +670,7 @@
           animation: true,
           container: this._options.container,
           backdrop: this._options.backdrop,
+          backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
           orphan: this._options.orphan,
           duration: this._options.duration,
@@ -1154,7 +1156,7 @@
       scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
       this._debug("Scroll into view. ScrollTop: " + scrollTop + ". Element offset: " + offsetTop + ". Window height: " + windowHeight + ".");
       counter = 0;
-      return $('body,html').stop(true, true).animate({
+      return $('body, html').stop(true, true).animate({
         scrollTop: Math.ceil(scrollTop)
       }, (function(_this) {
         return function() {
@@ -1281,21 +1283,21 @@
     };
 
     Tour.prototype._showOverlayElement = function(element) {
-      var $background, $element, offset;
+      var $element, height, offset, width;
       $element = $(element);
       if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
         return;
       }
       this.backdrop.overlayElementShown = true;
-      $background = $('<div>');
+      this.backdrop.$element = $element.addClass('tour-step-backdrop');
+      this.backdrop.$background = $('<div>', {
+        "class": 'tour-step-background'
+      });
+      width = $element.innerWidth();
+      height = $element.innerHeight();
       offset = $element.offset();
-      offset.top = offset.top;
-      offset.left = offset.left;
-      $background.width($element.innerWidth()).height($element.innerHeight()).addClass('tour-step-background').offset(offset);
-      $element.addClass('tour-step-backdrop');
-      $('body').append($background);
-      this.backdrop.$element = $element;
-      return this.backdrop.$background = $background;
+      this.backdrop.$background.appendTo('body');
+      return this._positionOverlayBackground(width, height, offset);
     };
 
     Tour.prototype._hideOverlayElement = function() {
@@ -1307,6 +1309,36 @@
       this.backdrop.$element = null;
       this.backdrop.$background = null;
       return this.backdrop.overlayElementShown = false;
+    };
+
+    Tour.prototype._positionOverlayBackground = function(width, height, offset) {
+      var _base, _base1, _base2, _base3;
+      if (this._options.backdropPadding) {
+        if (typeof this._options.backdropPadding === 'object') {
+          if ((_base = this._options.backdropPadding).top == null) {
+            _base.top = 0;
+          }
+          if ((_base1 = this._options.backdropPadding).right == null) {
+            _base1.right = 0;
+          }
+          if ((_base2 = this._options.backdropPadding).bottom == null) {
+            _base2.bottom = 0;
+          }
+          if ((_base3 = this._options.backdropPadding).left == null) {
+            _base3.left = 0;
+          }
+          offset.top = offset.top - this._options.backdropPadding.top;
+          offset.left = offset.left - this._options.backdropPadding.left;
+          width = width + this._options.backdropPadding.left + this._options.backdropPadding.right;
+          height = height + this._options.backdropPadding.top + this._options.backdropPadding.bottom;
+        } else {
+          offset.top = offset.top - this._options.backdropPadding;
+          offset.left = offset.left - this._options.backdropPadding;
+          width = width + (this._options.backdropPadding * 2);
+          height = height + (this._options.backdropPadding * 2);
+        }
+      }
+      return this.backdrop.$background.width(width).height(height).offset(offset);
     };
 
     Tour.prototype._clearTimer = function() {

@@ -19,6 +19,7 @@ var tour = new Tour({
   storage: window.localStorage,
   debug: false,
   backdrop: false,
+  backdropPadding: 0,
   redirect: true,
   orphan: false,
   duration: false,
@@ -119,12 +120,19 @@ var tour = new Tour({
           highlighting the current step.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>backdropPadding <span class="label label-success">NEW</span></td>
+          <td>Boolean|Object</td>
+          <td>Add padding to the backdrop element that highlights the step element.<br>
+          It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
+          <td><code>0</code></td>
+        </tr>
         <tr>
           <td>redirect</td>
           <td>Boolean|Function</td>
           <td>Set a custom function to execute as redirect function.
           The default redirect relies on the traditional
-          <code class="language-javascrip">document.location.href</code></td>
+          <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
         <tr>
@@ -296,6 +304,7 @@ tour.addStep({
   animation: true,
   container: "body",
   backdrop: false,
+  backdropPadding: false,
   redirect: true,
   reflex: false,
   orphan: false,
@@ -402,12 +411,19 @@ tour.addStep({
           highlighting the current step.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>backdropPadding <span class="label label-success">NEW</span></td>
+          <td>Boolean|Object</td>
+          <td>Add padding to the backdrop element that highlights the step element.<br>
+          It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
+          <td><code>0</code></td>
+        </tr>
         <tr>
           <td>redirect</td>
           <td>Boolean|Function</td>
           <td>Set a custom function to execute as redirect function.
           The default redirect relies on the traditional
-          <code class="language-javascrip">document.location.href</code></td>
+          <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
         <tr>

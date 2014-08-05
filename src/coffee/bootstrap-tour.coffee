@@ -16,6 +16,7 @@
         storage: storage
         debug: false
         backdrop: false
+        backdropPadding: 0
         redirect: true
         orphan: false
         duration: false
@@ -86,6 +87,7 @@
           animation: true
           container: @_options.container
           backdrop: @_options.backdrop
+          backdropPadding: @_options.backdropPadding
           redirect: @_options.redirect
           orphan: @_options.orphan
           duration: @_options.duration
@@ -491,7 +493,7 @@
 
       @_debug "Scroll into view. ScrollTop: #{scrollTop}. Element offset: #{offsetTop}. Window height: #{windowHeight}."
       counter = 0
-      $('body,html').stop(true,true).animate
+      $('body, html').stop(true, true).animate
         scrollTop: Math.ceil(scrollTop),
         =>
           if ++counter is 2
@@ -587,23 +589,15 @@
       return if not $element or $element.length is 0 or @backdrop.overlayElementShown
 
       @backdrop.overlayElementShown = true
-      $background = $ '<div>'
-
+      @backdrop.$element = $element.addClass 'tour-step-backdrop'
+      @backdrop.$background = $ '<div>',
+        class: 'tour-step-background'
+      width = $element.innerWidth()
+      height = $element.innerHeight()
       offset = $element.offset()
-      offset.top = offset.top
-      offset.left = offset.left
 
-      $background
-      .width($element.innerWidth())
-      .height($element.innerHeight())
-      .addClass('tour-step-background')
-      .offset(offset)
-
-      $element.addClass('tour-step-backdrop')
-
-      $('body').append($background)
-      @backdrop.$element = $element
-      @backdrop.$background = $background
+      @backdrop.$background.appendTo('body')
+      @_positionOverlayBackground width, height, offset
 
     _hideOverlayElement: ->
       return unless @backdrop.overlayElementShown
@@ -613,6 +607,30 @@
       @backdrop.$element = null
       @backdrop.$background = null
       @backdrop.overlayElementShown = false
+
+    _positionOverlayBackground: (width, height, offset) ->
+      if @_options.backdropPadding
+        if typeof @_options.backdropPadding is 'object'
+          @_options.backdropPadding.top ?= 0
+          @_options.backdropPadding.right ?= 0
+          @_options.backdropPadding.bottom ?= 0
+          @_options.backdropPadding.left ?= 0
+
+          offset.top = offset.top - @_options.backdropPadding.top
+          offset.left = offset.left - @_options.backdropPadding.left
+          width = width + @_options.backdropPadding.left + @_options.backdropPadding.right
+          height = height + @_options.backdropPadding.top + @_options.backdropPadding.bottom
+        else
+          offset.top = offset.top - @_options.backdropPadding
+          offset.left = offset.left - @_options.backdropPadding
+          width = width + (@_options.backdropPadding * 2)
+          height = height + (@_options.backdropPadding * 2)
+
+      @backdrop
+      .$background
+      .width(width)
+      .height(height)
+      .offset(offset)
 
     _clearTimer: ->
       window.clearTimeout @_timer

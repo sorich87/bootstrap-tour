@@ -207,6 +207,7 @@ describe "Bootstrap Tour", ->
       animation: false
       container: "body"
       backdrop: false
+      backdropPadding: 0
       redirect: true
       orphan: false
       duration: false
@@ -344,9 +345,9 @@ describe "Bootstrap Tour", ->
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.addStep(element: $("<div></div>").appendTo("body"))
     @tour.showStep(0)
-    expect($(".popover [data-role='prev']").length).toBe 0
+    expect($(".popover [data-role='prev']").hasClass('disabled')).toBe true
     @tour.showStep(1)
-    expect($(".popover [data-role='next']").length).toBe 0
+    expect($(".popover [data-role='next']").hasClass('disabled')).toBe true
 
   it "'setCurrentStep' should set the current step", ->
     @tour = new Tour
@@ -460,8 +461,8 @@ describe "Bootstrap Tour", ->
     expect($(".popover").length).toBe 1
 
   it "'reflex' parameter should change the element cursor to pointer when the step is shown", ->
-    $element = $("<div></div>").appendTo("body")
     @tour = new Tour
+    $element = $("<div></div>").appendTo("body")
     @tour.addStep
       element: $element
       reflex: true
@@ -506,6 +507,39 @@ describe "Bootstrap Tour", ->
     @tour = new Tour
     @tour._showOverlayElement '#nonExistingElement'
     expect(@tour.backdrop.overlayElementShown).toBe false
+
+  ###
+  it "should render the padding on the backdrop element", ->
+    @tour = new Tour
+      backdrop: true
+    $firstElement = $("<div></div>",
+      height: 20
+    ).appendTo("body")
+    $secondElement = $("<div></div>",
+      height: 20
+    ).appendTo("body")
+    firstPadding = 20
+    secondPadding =
+      top: 40
+      right: 30
+      bottom: 20
+      left: 10
+
+    @tour.addStep
+      backdrop: true
+      backdropPadding: firstPadding
+      element: $firstElement
+    @tour.addStep
+      backdrop: true
+      backdropPadding: secondPadding
+      element: $secondElement
+    @tour.showStep(0)
+    expect(@tour.backdrop.$background.width()).toBe $firstElement.innerWidth() + (firstPadding * 2)
+    expect(@tour.backdrop.$background.height()).toBe $firstElement.innerHeight() + (firstPadding * 2)
+    @tour.showStep(1)
+    expect(@tour.backdrop.$background.width()).toBe $secondElement.innerWidth() + secondPadding.left + secondPadding.right
+    expect(@tour.backdrop.$background.height()).toBe $secondElement.innerHeight() + secondPadding.top + secondPadding.bottom
+  ###
 
   it "'basePath' should prepend the path to the steps", ->
     @tour = new Tour
