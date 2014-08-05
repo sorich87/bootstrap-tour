@@ -438,8 +438,8 @@
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
-      $navigation.find('[data-role="prev"]').remove() if step.prev < 0
-      $navigation.find('[data-role="next"]').remove() if step.next < 0
+      $navigation.find('[data-role="prev"]').addClass('disabled') if step.prev < 0
+      $navigation.find('[data-role="next"]').addClass('disabled') if step.next < 0
       $navigation.find('[data-role="pause-resume"]').remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 

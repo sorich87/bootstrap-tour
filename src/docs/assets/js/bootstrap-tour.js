@@ -518,10 +518,10 @@
       }
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
       if (step.prev < 0) {
-        $navigation.find('[data-role="prev"]').remove();
+        $navigation.find('[data-role="prev"]').addClass('disabled');
       }
       if (step.next < 0) {
-        $navigation.find('[data-role="next"]').remove();
+        $navigation.find('[data-role="next"]').addClass('disabled');
       }
       if (!step.duration) {
         $navigation.find('[data-role="pause-resume"]').remove();
