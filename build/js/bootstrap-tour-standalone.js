@@ -1052,7 +1052,9 @@
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        $element.addClass('tour-step-element-reflex').on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
+        $element.addClass('tour-step-element-reflex');
+        $element.off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name);
+        $element.on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();

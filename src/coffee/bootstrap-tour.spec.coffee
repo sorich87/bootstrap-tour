@@ -732,16 +732,6 @@ describe "Bootstrap Tour", ->
     expect(@tour._timer).toBe null
     expect(@tour._duration).toBe null
 
-  it "should ignore `reflex` attribute on orphan steps", ->
-    @tour = new Tour
-    $element = $("<div></div>").appendTo("body")
-    @tour.addStep
-      element: $element
-      orphan: true
-      reflex: true
-    @tour.showStep(0)
-    expect($._data($element[0], "events").click.length).toBe 0
-
   ### TODO: fix $.support.transition conflict between jquery and bootstrap
   it "should not display inactive popover upon rapid navigation", ->
     # Flag that gives signal to the async test that it should evaluate.

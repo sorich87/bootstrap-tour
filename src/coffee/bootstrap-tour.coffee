@@ -409,9 +409,9 @@
 
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
-        $element
-        .addClass('tour-step-element-reflex')
-        .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
+        $element.addClass('tour-step-element-reflex')
+        $element.off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
+        $element.on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
       $element
