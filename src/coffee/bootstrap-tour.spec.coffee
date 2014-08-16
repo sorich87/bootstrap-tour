@@ -508,16 +508,11 @@ describe "Bootstrap Tour", ->
     @tour._showOverlayElement '#nonExistingElement'
     expect(@tour.backdrop.overlayElementShown).toBe false
 
-  ###
   it "should render the padding on the backdrop element", ->
     @tour = new Tour
       backdrop: true
-    $firstElement = $("<div></div>",
-      height: 20
-    ).appendTo("body")
-    $secondElement = $("<div></div>",
-      height: 20
-    ).appendTo("body")
+    $firstElement = $("<div></div>", width: 10, height: 10).appendTo("body")
+    $secondElement = $("<div></div>", width: 10, height: 10).appendTo("body")
     firstPadding = 20
     secondPadding =
       top: 40
@@ -533,13 +528,12 @@ describe "Bootstrap Tour", ->
       backdrop: true
       backdropPadding: secondPadding
       element: $secondElement
-    @tour.showStep(0)
+    @tour.start()
     expect(@tour.backdrop.$background.width()).toBe $firstElement.innerWidth() + (firstPadding * 2)
     expect(@tour.backdrop.$background.height()).toBe $firstElement.innerHeight() + (firstPadding * 2)
-    @tour.showStep(1)
+    @tour.next()
     expect(@tour.backdrop.$background.width()).toBe $secondElement.innerWidth() + secondPadding.left + secondPadding.right
     expect(@tour.backdrop.$background.height()).toBe $secondElement.innerHeight() + secondPadding.top + secondPadding.bottom
-  ###
 
   it "'basePath' should prepend the path to the steps", ->
     @tour = new Tour

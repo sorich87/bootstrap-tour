@@ -893,7 +893,7 @@
               return;
             }
             if ((step.element != null) && step.backdrop) {
-              _this._showOverlayElement(step.element);
+              _this._showOverlayElement(step);
             }
             _this._showPopover(step, i);
             if (step.onShown != null) {
@@ -1282,9 +1282,9 @@
       }
     };
 
-    Tour.prototype._showOverlayElement = function(element) {
-      var $element, height, offset, width;
-      $element = $(element);
+    Tour.prototype._showOverlayElement = function(step) {
+      var $element, elementData;
+      $element = $(step.element);
       if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
         return;
       }
@@ -1293,11 +1293,16 @@
       this.backdrop.$background = $('<div>', {
         "class": 'tour-step-background'
       });
-      width = $element.innerWidth();
-      height = $element.innerHeight();
-      offset = $element.offset();
+      elementData = {
+        width: $element.innerWidth(),
+        height: $element.innerHeight(),
+        offset: $element.offset()
+      };
       this.backdrop.$background.appendTo('body');
-      return this._positionOverlayBackground(width, height, offset);
+      if (step.backdropPadding) {
+        elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
+      }
+      return this.backdrop.$background.width(elementData.width).height(elementData.height).offset(elementData.offset);
     };
 
     Tour.prototype._hideOverlayElement = function() {
@@ -1311,34 +1316,31 @@
       return this.backdrop.overlayElementShown = false;
     };
 
-    Tour.prototype._positionOverlayBackground = function(width, height, offset) {
-      var _base, _base1, _base2, _base3;
-      if (this._options.backdropPadding) {
-        if (typeof this._options.backdropPadding === 'object') {
-          if ((_base = this._options.backdropPadding).top == null) {
-            _base.top = 0;
-          }
-          if ((_base1 = this._options.backdropPadding).right == null) {
-            _base1.right = 0;
-          }
-          if ((_base2 = this._options.backdropPadding).bottom == null) {
-            _base2.bottom = 0;
-          }
-          if ((_base3 = this._options.backdropPadding).left == null) {
-            _base3.left = 0;
-          }
-          offset.top = offset.top - this._options.backdropPadding.top;
-          offset.left = offset.left - this._options.backdropPadding.left;
-          width = width + this._options.backdropPadding.left + this._options.backdropPadding.right;
-          height = height + this._options.backdropPadding.top + this._options.backdropPadding.bottom;
-        } else {
-          offset.top = offset.top - this._options.backdropPadding;
-          offset.left = offset.left - this._options.backdropPadding;
-          width = width + (this._options.backdropPadding * 2);
-          height = height + (this._options.backdropPadding * 2);
+    Tour.prototype._applyBackdropPadding = function(padding, data) {
+      if (typeof padding === 'object') {
+        if (padding.top == null) {
+          padding.top = 0;
         }
+        if (padding.right == null) {
+          padding.right = 0;
+        }
+        if (padding.bottom == null) {
+          padding.bottom = 0;
+        }
+        if (padding.left == null) {
+          padding.left = 0;
+        }
+        data.offset.top = data.offset.top - padding.top;
+        data.offset.left = data.offset.left - padding.left;
+        data.width = data.width + padding.left + padding.right;
+        data.height = data.height + padding.top + padding.bottom;
+      } else {
+        data.offset.top = data.offset.top - padding;
+        data.offset.left = data.offset.left - padding;
+        data.width = data.width + (padding * 2);
+        data.height = data.height + (padding * 2);
       }
-      return this.backdrop.$background.width(width).height(height).offset(offset);
+      return data;
     };
 
     Tour.prototype._clearTimer = function() {

@@ -274,7 +274,7 @@
         @_scrollIntoView step.element, =>
           return if @getCurrentStep() isnt i
 
-          @_showOverlayElement step.element if step.element? and step.backdrop
+          @_showOverlayElement step if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
@@ -583,21 +583,27 @@
         @backdrop.overlay = null
         @backdrop.backgroundShown = false
 
-    _showOverlayElement: (element) ->
-      $element = $ element
+    _showOverlayElement: (step) ->
+      $element = $ step.element
 
       return if not $element or $element.length is 0 or @backdrop.overlayElementShown
 
       @backdrop.overlayElementShown = true
       @backdrop.$element = $element.addClass 'tour-step-backdrop'
-      @backdrop.$background = $ '<div>',
-        class: 'tour-step-background'
-      width = $element.innerWidth()
-      height = $element.innerHeight()
-      offset = $element.offset()
+      @backdrop.$background = $ '<div>', class: 'tour-step-background'
+      elementData =
+        width: $element.innerWidth()
+        height: $element.innerHeight()
+        offset: $element.offset()
 
       @backdrop.$background.appendTo('body')
-      @_positionOverlayBackground width, height, offset
+
+      elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
+      @backdrop
+      .$background
+      .width(elementData.width)
+      .height(elementData.height)
+      .offset(elementData.offset)
 
     _hideOverlayElement: ->
       return unless @backdrop.overlayElementShown
@@ -608,29 +614,24 @@
       @backdrop.$background = null
       @backdrop.overlayElementShown = false
 
-    _positionOverlayBackground: (width, height, offset) ->
-      if @_options.backdropPadding
-        if typeof @_options.backdropPadding is 'object'
-          @_options.backdropPadding.top ?= 0
-          @_options.backdropPadding.right ?= 0
-          @_options.backdropPadding.bottom ?= 0
-          @_options.backdropPadding.left ?= 0
+    _applyBackdropPadding: (padding, data) ->
+      if typeof padding is 'object'
+        padding.top ?= 0
+        padding.right ?= 0
+        padding.bottom ?= 0
+        padding.left ?= 0
 
-          offset.top = offset.top - @_options.backdropPadding.top
-          offset.left = offset.left - @_options.backdropPadding.left
-          width = width + @_options.backdropPadding.left + @_options.backdropPadding.right
-          height = height + @_options.backdropPadding.top + @_options.backdropPadding.bottom
-        else
-          offset.top = offset.top - @_options.backdropPadding
-          offset.left = offset.left - @_options.backdropPadding
-          width = width + (@_options.backdropPadding * 2)
-          height = height + (@_options.backdropPadding * 2)
+        data.offset.top = data.offset.top - padding.top
+        data.offset.left = data.offset.left - padding.left
+        data.width = data.width + padding.left + padding.right
+        data.height = data.height + padding.top + padding.bottom
+      else
+        data.offset.top = data.offset.top - padding
+        data.offset.left = data.offset.left - padding
+        data.width = data.width + (padding * 2)
+        data.height = data.height + (padding * 2)
 
-      @backdrop
-      .$background
-      .width(width)
-      .height(height)
-      .offset(offset)
+      data
 
     _clearTimer: ->
       window.clearTimeout @_timer
