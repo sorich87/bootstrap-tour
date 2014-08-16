@@ -828,7 +828,7 @@
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
           if (step.reflex) {
-            $element.css('cursor', '').off("click.tour-" + _this._options.name);
+            $element.removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -1041,7 +1041,7 @@
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
-      step.template = this._getTemplate(step, i);
+      step.template = this._template(step, i);
       if (isOrphan) {
         step.element = 'body';
         step.placement = 'top';
@@ -1052,7 +1052,7 @@
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        $element.css('cursor', 'pointer').on("click.tour-" + this._options.name, (function(_this) {
+        $element.addClass('tour-step-element-reflex').on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();
@@ -1081,7 +1081,7 @@
       }
     };
 
-    Tour.prototype._getTemplate = function(step, i) {
+    Tour.prototype._template = function(step, i) {
       var $navigation, $next, $prev, $template;
       $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
       $navigation = $template.find('.popover-navigation');
@@ -1101,6 +1101,14 @@
         $navigation.find('[data-role="pause-resume"]').remove();
       }
       return $template.clone().wrap('<div>').parent().html();
+    };
+
+    Tour.prototype._reflexEvent = function(reflex) {
+      if ({}.toString.call(reflex) === '[object Boolean]') {
+        return 'click';
+      } else {
+        return reflex;
+      }
     };
 
     Tour.prototype._reposition = function($tip, step) {

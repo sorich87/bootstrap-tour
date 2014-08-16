@@ -220,7 +220,10 @@
         $element
         .popover('destroy')
         .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
-        $element.css('cursor', '').off "click.tour-#{@_options.name}" if step.reflex
+        if step.reflex
+          $element
+          .removeClass('tour-step-element-reflex')
+          .off "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}"
 
         @_hideBackdrop() if step.backdrop
 
@@ -395,7 +398,7 @@
       options = $.extend {}, @_options
       isOrphan = @_isOrphan step
 
-      step.template = @_getTemplate step, i
+      step.template = @_template step, i
 
       if isOrphan
         step.element = 'body'
@@ -407,8 +410,8 @@
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
         $element
-        .css('cursor', 'pointer')
-        .on "click.tour-#{@_options.name}", =>
+        .addClass('tour-step-element-reflex')
+        .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
       $element
@@ -432,7 +435,7 @@
       @_center $tip if @_isOrphan step
 
     # Get popover template
-    _getTemplate: (step, i) ->
+    _template: (step, i) ->
       $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
@@ -444,6 +447,9 @@
       $navigation.find('[data-role="next"]').addClass('disabled') if step.next < 0
       $navigation.find('[data-role="pause-resume"]').remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
+
+    _reflexEvent: (reflex) ->
+      if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -477,9 +483,7 @@
 
     # Copy pasted from bootstrap-tooltip.js with some alterations
     _replaceArrow: ($tip, delta, dimension, position)->
-      $tip
-        .find('.arrow')
-        .css(position, if delta then 50 * (1 - delta / dimension) + '%' else '')
+      $tip.find('.arrow').css position, if delta then 50 * (1 - delta / dimension) + '%' else ''
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->

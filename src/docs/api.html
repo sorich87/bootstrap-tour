@@ -426,11 +426,12 @@ tour.addStep({
           <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
-        <tr>
-          <td id="reflex">reflex</td>
-          <td>Boolean</td>
-          <td>Enable the reflex mode: you can click on the element to
-          continue the tour.</td>
+        <tr class="success">
+          <td id="reflex">reflex <span class="label label-warning">UPDATED</span></td>
+          <td>Boolean|String</td>
+          <td>Enable the reflex mode: attach an handler on <code>click</code> on the step element to continue the tour.<br>
+          In order to bind the handler to a custom event, you can pass a string with its name.<br>
+          Also, the class <code>tour-step-element-reflex</code> is added to the element, as hook for your custom style (e.g: cursor: pointer).</td>
           <td><code>false</code></td>
         </tr>
         <tr>

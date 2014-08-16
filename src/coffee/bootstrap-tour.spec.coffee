@@ -460,18 +460,18 @@ describe "Bootstrap Tour", ->
     deferred.resolve()
     expect($(".popover").length).toBe 1
 
-  it "'reflex' parameter should change the element cursor to pointer when the step is shown", ->
+  it "should add 'tour-step-element-reflex' class to the step element if reflex is active", ->
     @tour = new Tour
     $element = $("<div></div>").appendTo("body")
     @tour.addStep
       element: $element
       reflex: true
     @tour.addStep(element: $("<div></div>").appendTo("body"))
-    expect($element.css("cursor")).toBe "auto" # Tour doesn't change the element cursor before displaying the step
+    expect($element.hasClass("tour-step-element-reflex")).toBe false
     @tour.start()
-    expect($element.css("cursor")).toBe "pointer" # Tour change the element cursor to pointer when the step is displayed
+    expect($element.hasClass("tour-step-element-reflex")).toBe true
     @tour.next()
-    expect($element.css("cursor")).toBe "auto" # Tour reset the element cursor when the step is hidden
+    expect($element.hasClass("tour-step-element-reflex")).toBe false
 
   it "'showStep' redirects to the anchor when the path is an anchor", ->
     @tour = new Tour
@@ -738,7 +738,7 @@ describe "Bootstrap Tour", ->
       orphan: true
       reflex: true
     @tour.showStep(0)
-    expect($('body').css("cursor")).not.toBe "pointer"
+    expect($._data($element[0], "events")).not.toBeDefined()
 
   ### TODO: fix $.support.transition conflict between jquery and bootstrap
   it "should not display inactive popover upon rapid navigation", ->
