@@ -54,7 +54,7 @@ gulp.task 'coffee', ->
   .pipe $.header banner, pkg: pkg
   .pipe gulp.dest "#{paths.dist}/js"
   .pipe gulp.dest "#{paths.src}/docs/assets/js"
-  .pipe gulp.dest "#{paths.test}"
+  .pipe gulp.dest paths.test
   .pipe $.uglify()
   .pipe $.header banner, pkg: pkg
   .pipe $.rename suffix: '.min'
@@ -119,6 +119,7 @@ gulp.task 'test-coffee', ['coffee'], ->
   gulp
   .src "#{paths.src}/coffee/#{name}.spec.coffee"
   .pipe $.changed paths.test
+  .pipe $.coffeelint './coffeelint.json'
   .pipe $.coffeelint.reporter()
     .on 'error', $.util.log
   .pipe $.coffee()
