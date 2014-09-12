@@ -685,12 +685,12 @@ input[type="button"].btn-block {
   opacity: 0.8;
   filter: alpha(opacity=80);
 }
-.tour-step-backdrop {
+.tour-backdrop-step {
   position: relative;
   z-index: 1101;
   background: inherit;
 }
-.tour-step-background {
+.tour-backdrop-step-overlay {
   position: absolute !important;
   z-index: 1100;
   background: inherit;

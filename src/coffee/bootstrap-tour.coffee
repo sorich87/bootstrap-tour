@@ -7,13 +7,8 @@ do ($ = window.jQuery, window) ->
       @steps = []
       @force = false
       @inited = false
-      @backdrop =
-        overlay: null
-        $element: null
-        $background: null
-        backgroundShown: false
-        overlayElementShown: false
-
+      @$backdrop = null
+      @$backdropOverlay = null
       @addSteps @options.steps if @options.steps.length
       @
 
@@ -144,6 +139,8 @@ do ($ = window.jQuery, window) ->
       # If onHide returns a promise, let's wait until it's done to execute
       promise = @_promise(options.onHide @, i if options.onHide?)
 
+      @_hideBackdrop() if options.backdrop
+
       @_onPromiseDone promise, (e) =>
         $element = $ options.element
         $element = $('body') unless $element.data('bs.popover') or $element.data 'popover'
@@ -155,7 +152,7 @@ do ($ = window.jQuery, window) ->
           .removeClass('tour-step-element-reflex')
           .off "#{@_reflexEvent(options.reflex)}.tour-#{@options.name}"
 
-        @_hideBackdrop() if options.backdrop
+        @_hideStepBackdrop options.element if options.backdrop
 
         options.onHidden @ if options.onHidden?
 
@@ -207,7 +204,7 @@ do ($ = window.jQuery, window) ->
         @_scrollIntoView options.element, =>
           return if @currentStep() isnt i
 
-          @_showOverlayElement step if options.element? and options.backdrop
+          @_showStepBackdrop step if options.element? and options.backdrop
 
           @_showPopover step, i
           options.onShown @ if options.onShown?
@@ -497,73 +494,56 @@ do ($ = window.jQuery, window) ->
       else
         fn.call(@, parameters)
 
-    _showBackdrop: (element) ->
-      return if @backdrop.backgroundShown
+    _showBackdrop: ->
+      return if @$backdrop and @$backdrop.length
 
-      @backdrop = $ '<div>', class: 'tour-backdrop'
-      @backdrop.backgroundShown = true
-      $('body').append @backdrop
+      @$backdrop = $('<div>', class: 'tour-backdrop').appendTo 'body'
 
-    _hideBackdrop: ->
-      @_hideOverlayElement()
-      @_hideBackground()
-
-    _hideBackground: ->
-      if @backdrop
-        @backdrop.remove()
-        @backdrop.overlay = null
-        @backdrop.backgroundShown = false
-
-    _showOverlayElement: (step) ->
+    _showStepBackdrop: (step) ->
       options = step.options
       $element = $ options.element
 
-      return if not $element.length or @backdrop.overlayElementShown
+      return if not $element.length or (@$backdropOverlay and @$backdropOverlay.length)
 
-      @backdrop.overlayElementShown = true
-      @backdrop.$element = $element.addClass 'tour-step-backdrop'
-      @backdrop.$background = $ '<div>', class: 'tour-step-background'
-      elementData =
-        width: $element.innerWidth()
-        height: $element.innerHeight()
-        offset: $element.offset()
+      $element.addClass 'tour-backdrop-step'
+      @$backdropOverlay = $('<div>', do ->
+        data =
+          class: 'tour-backdrop-step-overlay'
+          width: $element.innerWidth()
+          height: $element.innerHeight()
+          offset: $element.offset()
+        padding = options.backdropPadding
 
-      @backdrop.$background.appendTo('body')
+        if padding
+          if typeof padding is 'object'
+            padding.top ?= 0
+            padding.right ?= 0
+            padding.bottom ?= 0
+            padding.left ?= 0
 
-      elementData = @_applyBackdropPadding options.backdropPadding, elementData if options.backdropPadding
-      @backdrop
-      .$background
-      .width(elementData.width)
-      .height(elementData.height)
-      .offset(elementData.offset)
+            data.offset.top = data.offset.top - padding.top
+            data.offset.left = data.offset.left - padding.left
+            data.width = data.width + padding.left + padding.right
+            data.height = data.height + padding.top + padding.bottom
+          else
+            data.offset.top = data.offset.top - padding
+            data.offset.left = data.offset.left - padding
+            data.width = data.width + (padding * 2)
+            data.height = data.height + (padding * 2)
+        data
+      ).appendTo 'body'
 
-    _hideOverlayElement: ->
-      return unless @backdrop.overlayElementShown
+    _hideBackdrop: ->
+      if @$backdrop and @$backdrop.length
+        @$backdrop.remove()
 
-      @backdrop.$element.removeClass 'tour-step-backdrop'
-      @backdrop.$background.remove()
-      @backdrop.$element = null
-      @backdrop.$background = null
-      @backdrop.overlayElementShown = false
+    _hideStepBackdrop: (element) ->
+      $element = $(element)
 
-    _applyBackdropPadding: (padding, data) ->
-      if typeof padding is 'object'
-        padding.top ?= 0
-        padding.right ?= 0
-        padding.bottom ?= 0
-        padding.left ?= 0
+      return if not $element.length or (not @$backdropOverlay or not @$backdropOverlay.length)
 
-        data.offset.top = data.offset.top - padding.top
-        data.offset.left = data.offset.left - padding.left
-        data.width = data.width + padding.left + padding.right
-        data.height = data.height + padding.top + padding.bottom
-      else
-        data.offset.top = data.offset.top - padding
-        data.offset.left = data.offset.left - padding
-        data.width = data.width + (padding * 2)
-        data.height = data.height + (padding * 2)
-
-      data
+      $element.removeClass 'tour-backdrop-step'
+      @$backdropOverlay.remove()
 
     _clearTimer: ->
       window.clearTimeout @_timer

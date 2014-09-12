@@ -14,6 +14,7 @@ $ ->
       content: """
       Introduce new users to your product by walking them through it step by step.
       """
+      backdrop: on
     ,
       path: "/"
       element: "#usage"
