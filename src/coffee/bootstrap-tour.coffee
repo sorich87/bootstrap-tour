@@ -3,7 +3,7 @@ do ($ = window.jQuery, window) ->
 
   class Tour
     constructor: (options = {}) ->
-      @options = $.extend Tour.defaults, options
+      @options = $.extend {}, Tour.defaults, options
       @steps = []
       @force = false
       @inited = false
@@ -13,11 +13,14 @@ do ($ = window.jQuery, window) ->
         $background: null
         backgroundShown: false
         overlayElementShown: false
+
+      @addSteps @options.steps if @options.steps.length
       @
 
     # Add multiple steps
     addSteps: (steps) ->
-      @addStep step for step in steps
+      for step in steps
+        @addStep step
       @
 
     # Add a new step
@@ -25,10 +28,8 @@ do ($ = window.jQuery, window) ->
       @steps.push new TourStep step
       @
 
-    # Get a step by its indice
+    # Get a step by its index
     step: (i) ->
-      return false unless @steps[i]
-
       @steps[i]
 
     # get or set the current step
@@ -55,7 +56,7 @@ do ($ = window.jQuery, window) ->
       @_onResize => @showStep @current
 
       # Continue a tour that had started on a previous page load
-      @showStep @current if @current
+      @showStep @current if @current?
 
       @inited = true
       @
@@ -106,56 +107,58 @@ do ($ = window.jQuery, window) ->
     # Pause step timer
     pause: ->
       step = @step @current
-      return @ unless step and step.duration
+      return @ if not step or not step.options.duration
 
       @_paused = true
       @_duration -= new Date().getTime() - @_start
-      window.clearTimeout(@_timer)
+      window.clearTimeout @_timer
 
       @_debug "Paused/Stopped step #{@current + 1} timer (#{@_duration} remaining)."
 
-      step.onPause @, @_duration if step.onPause?
+      step.options.onPause @, @_duration if step.options.onPause?
 
     # Resume step timer
     resume: ->
       step = @step @current
-      return @ unless step and step.duration
+      return @ if not step or not step.options.duration
 
       @_paused = false
       @_start = new Date().getTime()
-      @_duration = @_duration or step.duration
+      @_duration = @_duration or step.options.duration
       @_timer = window.setTimeout =>
         if @_isLast() then @next() else @end()
       , @_duration
 
       @_debug "Started step #{@current + 1} timer with duration #{@_duration}"
 
-      step.onResume @, @_duration if step.onResume? and @_duration isnt step.duration
+      step.options.onResume @, @_duration if step.options.onResume? and @_duration isnt step.options.duration
 
     # Hide the specified step
     hideStep: (i) ->
       step = @step i
       return unless step
 
+      options = step.options
       @_clearTimer()
 
       # If onHide returns a promise, let's wait until it's done to execute
-      promise = @_promise(step.onHide @, i if step.onHide?)
+      promise = @_promise(options.onHide @, i if options.onHide?)
 
       @_onPromiseDone promise, (e) =>
-        $element = $ step.element
-        $element = $('body') unless $element.data('bs.popover') or $element.data('popover')
+        $element = $ options.element
+        $element = $('body') unless $element.data('bs.popover') or $element.data 'popover'
         $element
         .popover('destroy')
         .removeClass "tour-#{@options.name}-element tour-#{@options.name}-#{i}-element"
-        if step.reflex
+        if options.reflex
           $element
           .removeClass('tour-step-element-reflex')
-          .off "#{@_reflexEvent(step.reflex)}.tour-#{@options.name}"
+          .off "#{@_reflexEvent(options.reflex)}.tour-#{@options.name}"
 
-        @_hideBackdrop() if step.backdrop
+        @_hideBackdrop() if options.backdrop
 
-        step.onHidden(@) if step.onHidden?
+        options.onHidden @ if options.onHidden?
+
       promise
 
     # Show the specified step
@@ -167,55 +170,57 @@ do ($ = window.jQuery, window) ->
       step = @step i
       return unless step
 
+      options = step.options
       skipToPrevious = i < @current
 
       # If onShow returns a promise, let's wait until it's done to execute
-      promise = @_promise(step.onShow @, i if step.onShow?)
+      promise = @_promise(options.onShow @, i if options.onShow?)
 
       showStepHelper = (e) =>
         @currentStep i
 
         # Support string or function for path
-        path = switch ({}).toString.call step.path
-          when '[object Function]' then step.path()
-          when '[object String]' then @options.basePath + step.path
-          else step.path
+        options.path = switch ({}).toString.call options.path
+          when '[object Function]' then options.path()
+          when '[object String]' then @options.basePath + options.path
+          else options.path
 
         # Redirect to step path if not already there
-        current_path = [document.location.pathname, document.location.hash].join('')
-        if @_isRedirect path, current_path
-          @_redirect step, path
+        if @_isRedirect options.path, [document.location.pathname, document.location.hash].join('')
+          @_redirect options.redirect, options.path
           return
 
         # Skip if step is orphan and orphan options is false
-        if @_isOrphan step
-          if not step.orphan
+        if @_isOrphan options.element
+          if not options.orphan
             @_debug """Skip the orphan step #{@current + 1}.
             Orphan option is false and the element does not exist or is hidden."""
-            if skipToPrevious then @_showPrevStep() else @_showNextStep()
+            @[if skipToPrevious then '_showPrevStep' else '_showNextStep']()
             return
 
           @_debug "Show the orphan step #{@current + 1}. Orphans option is true."
 
         # Show backdrop
-        @_showBackdrop(step.element unless @_isOrphan step) if step.backdrop
+        @_showBackdrop(options.element unless @_isOrphan options.element) if options.backdrop
 
-        @_scrollIntoView step.element, =>
+        # Scroll into view and show popover
+        @_scrollIntoView options.element, =>
           return if @currentStep() isnt i
 
-          @_showOverlayElement step if step.element? and step.backdrop
+          @_showOverlayElement step if options.element? and options.backdrop
+
           @_showPopover step, i
-          step.onShown @ if step.onShown?
+          options.onShown @ if options.onShown?
           @_debug "Step #{@current + 1} of #{@steps.length}"
 
         # Play step timer
-        @resume() if step.duration
+        @resume() if options.duration
 
-      if step.delay
-        @_debug "Wait #{step.delay} milliseconds to show the step #{@current + 1}"
+      if options.delay
+        @_debug "Wait #{options.delay} milliseconds to show the step #{@current + 1}"
         window.setTimeout =>
           @_onPromiseDone promise, showStepHelper
-        , step.delay
+        , options.delay
       else
         @_onPromiseDone promise, showStepHelper
 
@@ -253,22 +258,22 @@ do ($ = window.jQuery, window) ->
 
       value = null if value is undefined or value is 'null'
 
-      console.log @options
-
       @options.afterGetState key, value
       return value
 
     # Show next step
     _showNextStep: ->
       step = @step @current
+      options = step.options
 
-      @_onPromiseDone @_promise(step.onNext @ if step.onNext?), (e) => @showStep @current + 1 # previously step.next
+      @_onPromiseDone @_promise(options.onNext @ if options.onNext?), (e) => @showStep @current + 1
 
     # Show prev step
     _showPrevStep: ->
       step = @step @current
+      options = step.options
 
-      @_onPromiseDone @_promise(step.onPrev @ if step.onPrev?), (e) => @showStep @current - 1 # previous step.prev
+      @_onPromiseDone @_promise(options.onPrev @ if options.onPrev?), (e) => @showStep @current - 1
 
     # Print message in console
     _debug: (text) ->
@@ -283,87 +288,94 @@ do ($ = window.jQuery, window) ->
       )
 
     # Execute the redirect
-    _redirect: (step, path) ->
-      if $.isFunction step.redirect
-        step.redirect.call this, path
-      else if step.redirect is true
+    _redirect: (redirect, path) ->
+      if $.isFunction redirect
+        redirect.call this, path
+      else if redirect is true
         @_debug "Redirect to #{path}"
         document.location.href = path
 
-    _isOrphan: (step) ->
+    _isOrphan: (element) ->
+      return false if element?
+
+      $element = $(element)
+
       # Do not check for is(':hidden') on svg elements. jQuery does not work properly on svg.
-      not step.element? or
-      not $(step.element).length or
-      $(step.element).is(':hidden') and
-      ($(step.element)[0].namespaceURI isnt 'http://www.w3.org/2000/svg')
+      not $element.length or
+      $element.is(':hidden') and
+      $element[0].namespaceURI isnt 'http://www.w3.org/2000/svg'
 
     _isLast: ->
       @current < @steps.length - 1
 
     # Show step popover
     _showPopover: (step, i) ->
+      options = step.options
+
       # Remove previously existing tour popovers. This prevents displaying of
       # multiple inactive popovers when user navigates the tour too quickly.
       $(".tour-#{@options.name}").remove()
 
-      options = $.extend {}, @options
-      isOrphan = @_isOrphan step
-
-      step.template = @_template step, i
+      # set up step before popover creation
+      isOrphan = @_isOrphan options.element
+      options.template = @_template step, i
 
       if isOrphan
-        step.element = 'body'
-        step.placement = 'top'
+        options.element = 'body'
+        options.placement = 'top'
 
-      $element = $ step.element
+      # add classes to popover element
+      $element = $ options.element
       $element.addClass "tour-#{@options.name}-element tour-#{@options.name}-#{i}-element"
 
-      $.extend options, step.options if step.options
-      if step.reflex and not isOrphan
+      # add reflex handlers
+      if options.reflex and not isOrphan
         $element.addClass('tour-step-element-reflex')
-        $element.off("#{@_reflexEvent(step.reflex)}.tour-#{@options.name}")
-        $element.on "#{@_reflexEvent(step.reflex)}.tour-#{@options.name}", =>
+        $element.off("#{@_reflexEvent(options.reflex)}.tour-#{@options.name}")
+        $element.on "#{@_reflexEvent(options.reflex)}.tour-#{@options.name}", =>
           if @_isLast() then @next() else @end()
 
       $element
       .popover(
-        placement: step.placement
+        placement: options.placement
         trigger: 'manual'
-        title: step.title
-        content: step.content
+        title: options.title
+        content: options.content
         html: true
-        animation: step.animation
-        container: step.container
-        template: step.template
-        selector: step.element
+        animation: options.animation
+        container: options.container
+        template: options.template
+        selector: options.element
       )
       .popover 'show'
 
-      # Tip adjustment
+      # adjust tip
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', "tour-step-#{i}-tooltip"
-      @_reposition $tip, step
-      @_center $tip if @_isOrphan step
+      @_reposition $tip, options.placement
+      @_center $tip if isOrphan
 
     # Get popover template
     _template: (step, i) ->
-      $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
+      options = step.options
+
+      $template = if $.isFunction options.template then $(options.template i, step) else $(options.template)
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
 
-      $template.addClass 'orphan' if @_isOrphan step
+      $template.addClass 'orphan' if @_isOrphan options.element
       $template.addClass "tour-#{@options.name} tour-#{@options.name}-#{i}"
       $navigation.find('[data-role="prev"]').addClass('disabled') if i is 0
       $navigation.find('[data-role="next"]').addClass('disabled') if i is @steps.length - 1
-      $navigation.find('[data-role="pause-resume"]').remove() unless step.duration
+      $navigation.find('[data-role="pause-resume"]').remove() unless options.duration
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
       if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
 
     # Prevent popover from crossing over the edge of the window
-    _reposition: ($tip, step) ->
+    _reposition: ($tip, placement) ->
       offsetWidth = $tip[0].offsetWidth
       offsetHeight = $tip[0].offsetHeight
 
@@ -381,7 +393,7 @@ do ($ = window.jQuery, window) ->
       $tip.offset(tipOffset)
 
       # Reposition the arrow
-      if step.placement is 'bottom' or step.placement is 'top'
+      if placement is 'bottom' or placement is 'top'
         if originalLeft isnt tipOffset.left
           @_replaceArrow $tip, (tipOffset.left - originalLeft) * 2, offsetWidth, 'left'
       else
@@ -398,24 +410,26 @@ do ($ = window.jQuery, window) ->
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (element, callback) ->
-      $element = $(element)
+      $element = $ element
+
       return callback() unless $element.length
 
-      $window = $(window)
-      offsetTop = $element.offset().top
+      $window = $ window
       windowHeight = $window.height()
-      scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
+      offsetTop = $element.offset().top
+      scrollTop = Math.ceil Math.max 0, offsetTop - (windowHeight / 2)
+      counter = 0
 
       @_debug "Scroll into view. ScrollTop: #{scrollTop}. Element offset: #{offsetTop}. Window height: #{windowHeight}."
-      counter = 0
-      $('body, html').stop(true, true).animate
-        scrollTop: Math.ceil(scrollTop),
-        =>
-          if ++counter is 2
-            callback()
-            @_debug """Scroll into view.
-            Animation end element offset: #{$element.offset().top}.
-            Window height: #{$window.height()}."""
+
+      $('body, html')
+      .stop(true, true)
+      .animate scrollTop: scrollTop, =>
+        if ++counter is 2
+          callback()
+          @_debug """Scroll into view.
+          Animation end element offset: #{$element.offset().top}.
+          Window height: #{$window.height()}."""
 
     # Debounced window resize
     _onResize: (callback, timeout) ->
@@ -501,9 +515,10 @@ do ($ = window.jQuery, window) ->
         @backdrop.backgroundShown = false
 
     _showOverlayElement: (step) ->
-      $element = $ step.element
+      options = step.options
+      $element = $ options.element
 
-      return if not $element or $element.length is 0 or @backdrop.overlayElementShown
+      return if not $element.length or @backdrop.overlayElementShown
 
       @backdrop.overlayElementShown = true
       @backdrop.$element = $element.addClass 'tour-step-backdrop'
@@ -515,7 +530,7 @@ do ($ = window.jQuery, window) ->
 
       @backdrop.$background.appendTo('body')
 
-      elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
+      elementData = @_applyBackdropPadding options.backdropPadding, elementData if options.backdropPadding
       @backdrop
       .$background
       .width(elementData.width)
@@ -557,15 +572,16 @@ do ($ = window.jQuery, window) ->
 
 
   # Tour Step
-  class Step
+  class TourStep
     constructor: (options = {}) ->
-      @options = $.extend TourStep.defaults, options
+      @options = $.extend {}, TourStep.defaults, options
 
   window.Tour = Tour
-  window.TourStep = Step
+  window.TourStep = TourStep
 
   window.Tour.defaults =
     name: 'tour'
+    steps: []
     basePath: ''
     storage: do ->
       # localStorage may be unavailable due to security settings

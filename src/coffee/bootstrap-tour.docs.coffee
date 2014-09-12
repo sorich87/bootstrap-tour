@@ -57,6 +57,7 @@ $ ->
       the focus anymore!
       """
       backdrop: true
+      backdropPadding: 15
     ,
       path: "/api"
       element: "#reflex"
