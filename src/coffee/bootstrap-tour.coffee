@@ -21,6 +21,7 @@
         orphan: false
         duration: false
         delay: false
+        scrollTo: true
         basePath: ''
         template: '<div class="popover" role="tooltip">
           <div class="arrow"></div>
@@ -92,6 +93,7 @@
           orphan: @_options.orphan
           duration: @_options.duration
           delay: @_options.delay
+          scrollTo: @_options.container
           template: @_options.template
           onShow: @_options.onShow
           onShown: @_options.onShown
@@ -274,13 +276,18 @@
         # Show backdrop
         @_showBackdrop(step.element unless @_isOrphan step) if step.backdrop
 
-        @_scrollIntoView step.element, =>
+        # Scroll to element if scrollTo is true and show step
+        afterScroll = =>
           return if @getCurrentStep() isnt i
 
           @_showOverlayElement step if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
+        if step.scrollTo
+          @_scrollIntoView step.element, afterScroll
+        else
+          afterScroll()
 
         # Play step timer
         @resume() if step.duration

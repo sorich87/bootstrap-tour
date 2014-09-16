@@ -615,6 +615,7 @@
         orphan: false,
         duration: false,
         delay: false,
+        scrollTo: true,
         basePath: '',
         template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
@@ -675,6 +676,7 @@
           orphan: this._options.orphan,
           duration: this._options.duration,
           delay: this._options.delay,
+          scrollTo: this._options.container,
           template: this._options.template,
           onShow: this._options.onShow,
           onShown: this._options.onShown,
@@ -888,7 +890,7 @@
           if (step.backdrop) {
             _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
-          _this._scrollIntoView(step.element, function() {
+          afterScroll(function() {
             if (_this.getCurrentStep() !== i) {
               return;
             }
@@ -901,6 +903,11 @@
             }
             return _this._debug("Step " + (_this._current + 1) + " of " + _this._options.steps.length);
           });
+          if (step.scrollTo) {
+            _this._scrollIntoView(step.element, afterScroll);
+          } else {
+            afterScroll();
+          }
           if (step.duration) {
             return _this.resume();
           }
