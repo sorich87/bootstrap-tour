@@ -212,6 +212,7 @@ describe 'Bootstrap Tour', ->
       orphan: false
       duration: false
       delay: false
+      scrollTo: true
       template: '<div class="popover">
         <div class="arrow"></div>
         <h3 class="popover-title"></h3>
