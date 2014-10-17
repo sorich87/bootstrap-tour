@@ -35,6 +35,10 @@
   z-index: 1101;
   background: inherit;
 }
+.tour-step-backdrop > td {
+  position: relative;
+  z-index: 1101;
+}
 .tour-step-background {
   position: absolute !important;
   z-index: 1100;

@@ -44,7 +44,6 @@
     "jquery": ">=1.8"
   },
   "devDependencies": {
-    "jquery": "~2.1.1",
     "gulp": "~3.8.6",
     "gulp-load-plugins": "~0.5.3",
     "coffee-script": "~1.7.1",
