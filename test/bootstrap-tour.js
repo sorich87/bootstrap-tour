@@ -1,5 +1,5 @@
 /* ========================================================================
- * bootstrap-tour - v0.9.3
+ * bootstrap-tour - v0.10.0
  * http://bootstraptour.com
  * ========================================================================
  * Copyright 2012-2013 Ulrich Sossou
@@ -513,7 +513,7 @@
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
       this._reposition($tip, step);
-      if (this._isOrphan(step)) {
+      if (isOrphan) {
         return this._center($tip);
       }
     };
