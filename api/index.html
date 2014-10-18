@@ -5,27 +5,28 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Quick and easy way to build your product tours with Bootstrap Popovers.">
-
 <title>
   
     API Documentation &middot; Bootstrap Tour
   
 </title>
-
-<link href="/assets/vendor/bootstrap.min.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/docs.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<!--[if lt IE 9]><script src="/assets/vendor/html5shiv.js"></script><![endif]-->
-
+<link href="/components/bootstrap/dist/css/bootstrap.min.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="http://boostraptour.com/api/" rel="canonical">
+<!--[if lt IE 9]><script src="/components/html5shiv/dist/html5shiv.min.js"></script><![endif]-->
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+if (window.location.href.indexOf('sorich87.github.com') > -1) {
+  window.location.href = 'http://bootstraptour.com/api/';
+}
 
-  ga('create', 'UA-47485647-1', 'bootstraptour.com');
-  ga('send', 'pageview');
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-47485647-1', 'bootstraptour.com');
+ga('send', 'pageview');
 </script>
 
   </head>
@@ -64,7 +65,7 @@
       <h2>Options <small>Well, let's go deeper</small></h2>
     </div>
     <h3 id="tour-options">Global options</h3>
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
   <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;tour&quot;</span><span class="p">,</span>
   <span class="nx">steps</span><span class="o">:</span> <span class="p">[],</span>
   <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
@@ -72,6 +73,7 @@
   <span class="nx">storage</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">,</span>
   <span class="nx">debug</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">backdropPadding</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">duration</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
@@ -101,8 +103,7 @@
   <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{}</span>
-<span class="p">});</span>
-</code></pre></div>
+<span class="p">});</span></code></pre></div>
     <table class="table  table-bordered table-striped">
       <thead>
         <tr>
@@ -116,10 +117,9 @@
         <tr>
           <td>name</td>
           <td>String</td>
-          <td>This option is used to build the name of the
-          storage item where the tour state is stored. You can
-          initialize several tours with different names in the same page and
-          application.</td>
+          <td>This option is used to build the name of the storage item where the tour state is stored.
+            The name should contain only alphanumerics, underscores and hyphens.
+            You can initialize several tours with different names in the same page and application.</td>
           <td><code>'tour'</code></td>
         </tr>
         <tr>
@@ -140,15 +140,21 @@
           <td><code>'body'</code></td>
         </tr>
         <tr>
+          <td>autoscroll</td>
+          <td>Boolean</td>
+          <td>Autoscrolls the window when the step popover is out of view.</td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
           <td>keyboard</td>
           <td>Boolean</td>
           <td>This option set the left and right arrow navigation.</td>
           <td><code>true</code></td>
         </tr>
-        <tr>
+        <tr id="storage">
           <td>storage</td>
           <td>Object</td>
-          <td>The storage system you want to use. could be the objects window.localStorage,
+          <td>The storage system you want to use. Could be the objects window.localStorage,
           window.sessionStorage or your own object.<br>
           You can set this option as
           <code>false</code> to disable storage
@@ -172,12 +178,19 @@
           highlighting the current step.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>backdropPadding <span class="label label-success">NEW</span></td>
+          <td>Boolean|Object</td>
+          <td>Add padding to the backdrop element that highlights the step element.<br>
+          It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
+          <td><code>0</code></td>
+        </tr>
         <tr>
           <td>redirect</td>
           <td>Boolean|Function</td>
           <td>Set a custom function to execute as redirect function.
           The default redirect relies on the traditional
-          <code class="language-javascrip">document.location.href</code></td>
+          <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
         <tr>
@@ -221,7 +234,7 @@
           <code class="language-markup">data-role</code> attribute.
           </td>
           <td>
-<div class="highlight"><pre><code class="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
 <span class="s2">  &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
 <span class="s2">  &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
 <span class="s2">  &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
@@ -231,11 +244,9 @@
 <span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
 <span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
 <span class="s2">  &lt;/div&gt;</span>
-<span class="s2">&lt;/div&gt;&quot;</span>
-</code></pre></div>
+<span class="s2">&lt;/div&gt;&quot;</span></code></pre></div>
           </td>
-          </p>
-        <tr>
+        </tr>
         <tr>
           <td>afterGetState, afterSetState, afterRemoveState</td>
           <td>Function</td>
@@ -261,12 +272,11 @@
           </ul>
           <p>A simple example if to send a post request to your server each
           time there is a change:</p>
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
   <span class="nx">afterSetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">$</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/some/path&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">});</span>
-</code></pre></div>
+<span class="p">});</span></code></pre></div>
           </td>
           <td><code>function (key, value) { }</code></td>
         </tr>
@@ -336,7 +346,7 @@
     </table>
     <a id="step-options"></a>
     <h3>Step Options</h3>
-<div class="highlight"><pre><code class="javascript"><span class="nx">tour</span><span class="p">.</span><span class="nx">addStep</span><span class="p">({</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tour</span><span class="p">.</span><span class="nx">addStep</span><span class="p">({</span>
   <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">placement</span><span class="o">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span>
@@ -347,6 +357,7 @@
   <span class="nx">animation</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
   <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">backdropPadding</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">reflex</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
@@ -359,8 +370,7 @@
   <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
-<span class="p">});</span>
-</code></pre></div>
+<span class="p">});</span></code></pre></div>
     <table class="table  table-bordered table-striped">
       <thead>
         <tr>
@@ -453,19 +463,27 @@
           highlighting the current step.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>backdropPadding <span class="label label-success">NEW</span></td>
+          <td>Boolean|Object</td>
+          <td>Add padding to the backdrop element that highlights the step element.<br>
+          It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
+          <td><code>0</code></td>
+        </tr>
         <tr>
           <td>redirect</td>
           <td>Boolean|Function</td>
           <td>Set a custom function to execute as redirect function.
           The default redirect relies on the traditional
-          <code class="language-javascrip">document.location.href</code></td>
+          <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
-        <tr>
-          <td id="reflex">reflex</td>
-          <td>Boolean</td>
-          <td>Enable the reflex mode: you can click on the element to
-          continue the tour.</td>
+        <tr class="success">
+          <td id="reflex">reflex <span class="label label-warning">UPDATED</span></td>
+          <td>Boolean|String</td>
+          <td>Enable the reflex mode: attach an handler on <code>click</code> on the step element to continue the tour.<br>
+          In order to bind the handler to a custom event, you can pass a string with its name.<br>
+          Also, the class <code>tour-step-element-reflex</code> is added to the element, as hook for your custom style (e.g: cursor: pointer).</td>
           <td><code>false</code></td>
         </tr>
         <tr>
@@ -500,7 +518,7 @@
           <code class="language-markup">data-role</code> attribute.
           </td>
           <td>
-<div class="highlight"><pre><code class="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
 <span class="s2">  &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
 <span class="s2">  &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
 <span class="s2">  &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
@@ -510,8 +528,7 @@
 <span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
 <span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
 <span class="s2">  &lt;/div&gt;</span>
-<span class="s2">&lt;/div&gt;&quot;</span>
-</code></pre></div>
+<span class="s2">&lt;/div&gt;&quot;</span></code></pre></div>
           </td>
         </tr>
         <tr>
@@ -576,6 +593,7 @@
     </table>
   </div>
 </section>
+
 <section id="methods">
   <div class="container">
     <div class="page-header">
@@ -665,19 +683,107 @@
   </div>
 </section>
 
-    <script src="/assets/vendor/jquery.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/vendor/bootstrap.min.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/vendor/md5.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/js/docs.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
+<section id="multipage">
+    <div class="container">
+        <div class="page-header">
+            <h2>Multipage
+                <small>How to traverse across pages</small>
+            </h2>
+        </div>
+        <p>Bootstrap Tour can be used to create tours that span multiple pages. If you have URLs for each page that have
+            unique paths, you can easily create a tour like so:
+        </p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;/url/to/go/to/&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span></code></pre></div>
+
+        <p>It's that simple.</p>
+
+        <p>If you do not know the URL you wish to go to because it contains a different value per user or per
+            instance, you can use a regular expression as the <code>path</code> attribute and set the redirect
+            attribute to a function that performs the redirect.
+        </p>
+        <p>For example:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">redirect</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;/url/&#39;</span> <span class="o">+</span> <span class="nx">userId</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">path</span><span class="o">:</span> <span class="nx">Regexp</span><span class="p">(</span><span class="s2">&quot;/\/url\/[^/]+/i&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span></code></pre></div>
+
+        <p>Finally, if you are only using GET parameters to define different pages, and wish to redirect using those
+            parameters, you may run into the problem that Bootstrap Tour will consider the path of the two steps to be
+            identical. For example, you cannot use the path parameter to go from your homepage at <code>/</code> to a
+            search results page at <code>/?q=foo</code>, because from Bootstrap Tour's perspective, those are the same
+            location (<code>/</code>).
+        </p>
+        <p>To work around this limitation, you can set the <code>onNext</code> attribute a function that returns a
+            promise.</p>
+        <p>For example:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;/?q=foo&#39;</span><span class="p">;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">()).</span><span class="nx">promise</span><span class="p">();</span>
+      <span class="p">};</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
+      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
+      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span></code></pre></div>
+
+        <p>Doing this will prevent the next step from popping up while the redirect is being completed in the
+            <code>onNext</code> function.
+        </p>
+    </div>
+</section>
+
+    <script src="/components/jquery/dist/jquery.min.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.min.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/components/blueimp-md5/js/md5.min.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
 <script>
-  window.twttr = (function (d,s,id) {
-    var t, js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return; js=d.createElement(s); js.id=id; js.async=1;
-    js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
-    return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
-  }(document, "script", "twitter-wjs"));
+window.twttr = (function (d,s,id) {
+  var t, js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return; js=d.createElement(s); js.id=id; js.async=1;
+  js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
+  return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
+}(document, "script", "twitter-wjs"));
 </script>
 
   </body>

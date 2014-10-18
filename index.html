@@ -5,27 +5,28 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Quick and easy way to build your product tours with Bootstrap Popovers.">
-
 <title>
   
     Bootstrap Tour
   
 </title>
-
-<link href="/assets/vendor/bootstrap.min.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/docs.css?2014-05-18T10%3A22%3A25%2B01%3A00" rel="stylesheet">
-<!--[if lt IE 9]><script src="/assets/vendor/html5shiv.js"></script><![endif]-->
-
+<link href="/components/bootstrap/dist/css/bootstrap.min.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2014-10-18T20%3A10%3A36%2B01%3A00" rel="stylesheet">
+<link href="http://boostraptour.com/" rel="canonical">
+<!--[if lt IE 9]><script src="/components/html5shiv/dist/html5shiv.min.js"></script><![endif]-->
 <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+if (window.location.href.indexOf('sorich87.github.com') > -1) {
+  window.location.href = 'http://bootstraptour.com/';
+}
 
-  ga('create', 'UA-47485647-1', 'bootstraptour.com');
-  ga('send', 'pageview');
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-47485647-1', 'bootstraptour.com');
+ga('send', 'pageview');
 </script>
 
   </head>
@@ -91,22 +92,20 @@
     </div>
     <h3>Add the dependencies</h3>
     <p>If you are using Bootstrap, include <code>bootstrap-tour.min.css</code> and <code>bootstrap-tour.min.js</code>:</p>
-<div class="highlight"><pre><code class="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
 <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
 ...
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre></div>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
     <p>Otherwise, just include <code>bootstrap-tour-standalone.min.css</code> and <code>bootstrap-tour-standalone.min.js</code>:</p>
-<div class="highlight"><pre><code class="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour-standalone.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour-standalone.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
 ...
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour-standalone.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</code></pre></div>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour-standalone.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
     <h3>Setup your tour:</h3>
-<div class="highlight"><pre><code class="javascript"><span class="c1">// Instance the tour</span>
-<span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Instance the tour</span>
+<span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">(</span>
   <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
   <span class="p">{</span>
     <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
@@ -118,14 +117,13 @@
     <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
     <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
   <span class="p">}</span>
-<span class="p">]});</span>
+<span class="p">]);</span>
 
 <span class="c1">// Initialize the tour</span>
 <span class="nx">tour</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
 
 <span class="c1">// Start the tour</span>
-<span class="nx">tour</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
-</code></pre></div>
+<span class="nx">tour</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span></code></pre></div>
     <p>Do you want to do more? <a href="api">Read the full documentation.</a></p>
   </div>
 </section>
@@ -157,19 +155,19 @@
   </div>
 </section>
 
-    <script src="/assets/vendor/jquery.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/vendor/bootstrap.min.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/vendor/md5.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
-<script src="/assets/js/docs.js?2014-05-18T10%3A22%3A25%2B01%3A00"></script>
+    <script src="/components/jquery/dist/jquery.min.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.min.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/components/blueimp-md5/js/md5.min.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2014-10-18T20%3A10%3A36%2B01%3A00"></script>
 <script>
-  window.twttr = (function (d,s,id) {
-    var t, js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return; js=d.createElement(s); js.id=id; js.async=1;
-    js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
-    return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
-  }(document, "script", "twitter-wjs"));
+window.twttr = (function (d,s,id) {
+  var t, js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return; js=d.createElement(s); js.id=id; js.async=1;
+  js.src="https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs);
+  return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
+}(document, "script", "twitter-wjs"));
 </script>
 
   </body>
