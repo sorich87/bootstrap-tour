@@ -12,6 +12,7 @@
         name: 'tour'
         steps: []
         container: 'body'
+        autoscroll: true
         keyboard: true
         storage: storage
         debug: false
@@ -86,6 +87,7 @@
           prev: i - 1
           animation: true
           container: @_options.container
+          autoscroll: @_options.autoscroll
           backdrop: @_options.backdrop
           backdropPadding: @_options.backdropPadding
           redirect: @_options.redirect
@@ -274,13 +276,18 @@
         # Show backdrop
         @_showBackdrop(step.element unless @_isOrphan step) if step.backdrop
 
-        @_scrollIntoView step.element, =>
+        showPopoverAndOverlay = =>
           return if @getCurrentStep() isnt i
 
           @_showOverlayElement step if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
+
+        if step.autoscroll
+          @_scrollIntoView step.element, showPopoverAndOverlay
+        else
+          showPopoverAndOverlay()
 
         # Play step timer
         @resume() if step.duration

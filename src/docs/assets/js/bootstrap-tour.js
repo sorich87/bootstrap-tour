@@ -34,6 +34,7 @@
         name: 'tour',
         steps: [],
         container: 'body',
+        autoscroll: true,
         keyboard: true,
         storage: storage,
         debug: false,
@@ -97,6 +98,7 @@
           prev: i - 1,
           animation: true,
           container: this._options.container,
+          autoscroll: this._options.autoscroll,
           backdrop: this._options.backdrop,
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
@@ -284,7 +286,7 @@
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
       showStepHelper = (function(_this) {
         return function(e) {
-          var current_path, path;
+          var current_path, path, showPopoverAndOverlay;
           _this.setCurrentStep(i);
           path = (function() {
             switch ({}.toString.call(step.path)) {
@@ -316,7 +318,7 @@
           if (step.backdrop) {
             _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
           }
-          _this._scrollIntoView(step.element, function() {
+          showPopoverAndOverlay = function() {
             if (_this.getCurrentStep() !== i) {
               return;
             }
@@ -328,7 +330,12 @@
               step.onShown(_this);
             }
             return _this._debug("Step " + (_this._current + 1) + " of " + _this._options.steps.length);
-          });
+          };
+          if (step.autoscroll) {
+            _this._scrollIntoView(step.element, showPopoverAndOverlay);
+          } else {
+            showPopoverAndOverlay();
+          }
           if (step.duration) {
             return _this.resume();
           }
