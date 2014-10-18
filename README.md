@@ -66,6 +66,7 @@ $ gulp test
 $ gulp docs
 $ gulp clean
 $ gulp server
+$ gulp bump --type minor (major.minor.patch)
 ```
 
 Check `gulpfile.coffee` to know more.
