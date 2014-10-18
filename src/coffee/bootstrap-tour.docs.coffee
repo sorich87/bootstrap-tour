@@ -5,7 +5,7 @@ $ ->
   tour = new Tour(
     onStart: -> $demo.addClass "disabled", true
     onEnd: -> $demo.removeClass "disabled", true
-    debug: true,
+    debug: true
     steps: [
       path: "/"
       element: "#demo"
@@ -76,7 +76,6 @@ $ ->
     ]
   )
   .init()
-  .start()
 
   $('<div class="alert alert-info alert-dismissable"><button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>You ended the demo tour. <a href="#" data-demo>Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
 

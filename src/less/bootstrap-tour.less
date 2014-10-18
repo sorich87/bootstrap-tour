@@ -7,16 +7,22 @@
   z-index: 1100;
   background-color: #000;
   opacity: 0.8;
+  filter: alpha(opacity=80);
 }
 
 .tour-step-backdrop {
   position: relative;
   z-index: 1101;
   background: inherit;
+
+  > td {
+    position: relative;
+    z-index: 1101;
+  }
 }
 
 .tour-step-background {
-  position: absolute;
+  position: absolute !important;
   z-index: 1100;
   background: inherit;
   border-radius: 6px;

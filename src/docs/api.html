@@ -19,6 +19,7 @@ var tour = new Tour({
   storage: window.localStorage,
   debug: false,
   backdrop: false,
+  backdropPadding: 0,
   redirect: true,
   orphan: false,
   duration: false,
@@ -63,10 +64,9 @@ var tour = new Tour({
         <tr>
           <td>name</td>
           <td>String</td>
-          <td>This option is used to build the name of the
-          storage item where the tour state is stored. You can
-          initialize several tours with different names in the same page and
-          application.</td>
+          <td>This option is used to build the name of the storage item where the tour state is stored.
+            The name should contain only alphanumerics, underscores and hyphens.
+            You can initialize several tours with different names in the same page and application.</td>
           <td><code>'tour'</code></td>
         </tr>
         <tr>
@@ -87,15 +87,21 @@ var tour = new Tour({
           <td><code>'body'</code></td>
         </tr>
         <tr>
+          <td>autoscroll</td>
+          <td>Boolean</td>
+          <td>Autoscrolls the window when the step popover is out of view.</td>
+          <td><code>true</code></td>
+        </tr>
+        <tr>
           <td>keyboard</td>
           <td>Boolean</td>
           <td>This option set the left and right arrow navigation.</td>
           <td><code>true</code></td>
         </tr>
-        <tr>
+        <tr id="storage">
           <td>storage</td>
           <td>Object</td>
-          <td>The storage system you want to use. could be the objects window.localStorage,
+          <td>The storage system you want to use. Could be the objects window.localStorage,
           window.sessionStorage or your own object.<br>
           You can set this option as
           <code>false</code> to disable storage
@@ -119,12 +125,19 @@ var tour = new Tour({
           highlighting the current step.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>backdropPadding <span class="label label-success">NEW</span></td>
+          <td>Boolean|Object</td>
+          <td>Add padding to the backdrop element that highlights the step element.<br>
+          It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
+          <td><code>0</code></td>
+        </tr>
         <tr>
           <td>redirect</td>
           <td>Boolean|Function</td>
           <td>Set a custom function to execute as redirect function.
           The default redirect relies on the traditional
-          <code class="language-javascrip">document.location.href</code></td>
+          <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
         <tr>
@@ -182,8 +195,7 @@ var tour = new Tour({
 </div>"
 {% endhighlight %}
           </td>
-          </p>
-        <tr>
+        </tr>
         <tr>
           <td>afterGetState, afterSetState, afterRemoveState</td>
           <td>Function</td>
@@ -297,6 +309,7 @@ tour.addStep({
   animation: true,
   container: "body",
   backdrop: false,
+  backdropPadding: false,
   redirect: true,
   reflex: false,
   orphan: false,
@@ -403,19 +416,27 @@ tour.addStep({
           highlighting the current step.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>backdropPadding <span class="label label-success">NEW</span></td>
+          <td>Boolean|Object</td>
+          <td>Add padding to the backdrop element that highlights the step element.<br>
+          It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
+          <td><code>0</code></td>
+        </tr>
         <tr>
           <td>redirect</td>
           <td>Boolean|Function</td>
           <td>Set a custom function to execute as redirect function.
           The default redirect relies on the traditional
-          <code class="language-javascrip">document.location.href</code></td>
+          <code class="language-javascript">document.location.href</code></td>
           <td><code>true</code></td>
         </tr>
-        <tr>
-          <td id="reflex">reflex</td>
-          <td>Boolean</td>
-          <td>Enable the reflex mode: you can click on the element to
-          continue the tour.</td>
+        <tr class="success">
+          <td id="reflex">reflex <span class="label label-warning">UPDATED</span></td>
+          <td>Boolean|String</td>
+          <td>Enable the reflex mode: attach an handler on <code>click</code> on the step element to continue the tour.<br>
+          In order to bind the handler to a custom event, you can pass a string with its name.<br>
+          Also, the class <code>tour-step-element-reflex</code> is added to the element, as hook for your custom style (e.g: cursor: pointer).</td>
           <td><code>false</code></td>
         </tr>
         <tr>
@@ -527,6 +548,7 @@ tour.addStep({
     </table>
   </div>
 </section>
+
 <section id="methods">
   <div class="container">
     <div class="page-header">
@@ -614,4 +636,98 @@ tour.addStep({
       </tbody>
     </table>
   </div>
+</section>
+
+<section id="multipage">
+    <div class="container">
+        <div class="page-header">
+            <h2>Multipage
+                <small>How to traverse across pages</small>
+            </h2>
+        </div>
+        <p>Bootstrap Tour can be used to create tours that span multiple pages. If you have URLs for each page that have
+            unique paths, you can easily create a tour like so:
+        </p>
+{% highlight javascript %}
+var tour = new Tour({
+  steps: [
+    {
+      element: "#my-element",
+      title: "Title of my step",
+      content: "Content of my step"
+    },
+    {
+      element: "#my-other-element",
+      title: "Title of my step",
+      content: "Content of my step",
+      path: "/url/to/go/to/"
+    }
+  ]
+});
+{% endhighlight %}
+
+        <p>It's that simple.</p>
+
+        <p>If you do not know the URL you wish to go to because it contains a different value per user or per
+            instance, you can use a regular expression as the <code>path</code> attribute and set the redirect
+            attribute to a function that performs the redirect.
+        </p>
+        <p>For example:</p>
+
+{% highlight javascript %}
+var tour = new Tour({
+  steps: [
+    {
+      element: "#my-element",
+      title: "Title of my step",
+      content: "Content of my step",
+      redirect: function(){
+        document.location.href = '/url/' + userId;
+      };
+    },
+    {
+      element: "#my-other-element",
+      title: "Title of my step",
+      content: "Content of my step",
+      path: Regexp("/\/url\/[^/]+/i")
+    }
+  ]
+});
+{% endhighlight %}
+
+        <p>Finally, if you are only using GET parameters to define different pages, and wish to redirect using those
+            parameters, you may run into the problem that Bootstrap Tour will consider the path of the two steps to be
+            identical. For example, you cannot use the path parameter to go from your homepage at <code>/</code> to a
+            search results page at <code>/?q=foo</code>, because from Bootstrap Tour's perspective, those are the same
+            location (<code>/</code>).
+        </p>
+        <p>To work around this limitation, you can set the <code>onNext</code> attribute a function that returns a
+            promise.</p>
+        <p>For example:</p>
+
+{% highlight javascript %}
+var tour = new Tour({
+  steps: [
+    {
+      element: "#my-element",
+      title: "Title of my step",
+      content: "Content of my step",
+      onNext: function(){
+        document.location.href = '/?q=foo';
+        return (new jQuery.Deferred()).promise();
+      };
+    },
+    {
+      element: "#my-other-element",
+      title: "Title of my step",
+      content: "Content of my step",
+    }
+  ]
+});
+{% endhighlight %}
+
+        <p>Doing this will prevent the next step from popping up while the redirect is being completed in the
+            <code>onNext</code> function.
+        </p>
+    </div>
 </section>
