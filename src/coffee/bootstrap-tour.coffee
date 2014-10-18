@@ -439,7 +439,7 @@
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', step.id
       @_reposition $tip, step
-      @_center $tip if @_isOrphan step
+      @_center $tip if isOrphan
 
     # Get popover template
     _template: (step, i) ->
