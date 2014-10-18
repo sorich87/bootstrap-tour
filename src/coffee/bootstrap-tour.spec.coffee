@@ -205,6 +205,7 @@ describe 'Bootstrap Tour', ->
       next: 2
       prev: -1
       animation: false
+      autoscroll: true
       container: 'body'
       backdrop: false
       backdropPadding: 0
