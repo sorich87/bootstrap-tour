@@ -1,9 +1,12 @@
 {
     "name": "sorich87/bootstrap-tour",
-    "type":"vcs",
+    "type":"component",
     "url":"https://github.com/sorich87/bootstrap-tour.git",
+    "homepage": "http://bootstraptour.com/",
+    "description": "Show people how to use your web site",
     "keywords": [
         "bootstrap",
         "tour"
-    ]
+    ],
+    "license": "Apache-2.0",
 }
