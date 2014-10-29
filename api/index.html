@@ -77,6 +77,7 @@ ga('send', 'pageview');
   <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">duration</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">delay</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">basePath</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">template</span><span class="o">:</span> <span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
 <span class="s2">    &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
@@ -180,7 +181,7 @@ ga('send', 'pageview');
         </tr>
         <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
-          <td>Boolean|Object</td>
+          <td>Number|Object</td>
           <td>Add padding to the backdrop element that highlights the step element.<br>
           It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
           <td><code>0</code></td>
@@ -203,11 +204,23 @@ ga('send', 'pageview');
         </tr>
         <tr id="duration" class="success">
           <td>duration <span class="label label-success">NEW</span></td>
-          <td>Boolean|String</td>
+          <td>Boolean|Number</td>
           <td>Set a expiration time for the steps. When the current step expires,
           the next step is automatically shown. See it as a sort of guided, automatized tour
           functionality. The value is specified in milliseconds</td>
           <td><code>false</code></td>
+        </tr>
+        <tr id="delay" class="success">
+          <td>delay <span class="label label-success">NEW</span></td>
+          <td>Boolean|Number</td>
+          <td>Specifies a delay for the showing and hiding the tour steps.
+          It can be:
+          <ul>
+            <li>a falsy - there is no delay</li>
+            <li>a number - used as a delay for both showing and hiding. In milliseconds</li>
+            <li>a object containing optional <code>show</code> and <code>hide</code> numbers - defines the delays for showing and hiding respectively</li>
+          </ul>
+          <td><code>0</code></td>
         </tr>
         <tr>
           <td>basePath</td>
