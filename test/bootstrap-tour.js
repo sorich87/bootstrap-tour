@@ -507,8 +507,7 @@
         html: true,
         animation: step.animation,
         container: step.container,
-        template: step.template,
-        selector: step.element
+        template: step.template
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
