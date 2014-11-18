@@ -17,6 +17,7 @@
         storage: storage
         debug: false
         backdrop: false
+        backdropContainer: 'body'
         backdropPadding: 0
         redirect: true
         orphan: false
@@ -89,6 +90,7 @@
           container: @_options.container
           autoscroll: @_options.autoscroll
           backdrop: @_options.backdrop
+          backdropContainer: @_options.backdropContainer
           backdropPadding: @_options.backdropPadding
           redirect: @_options.redirect
           orphan: @_options.orphan
@@ -274,7 +276,7 @@
           @_debug "Show the orphan step #{@_current + 1}. Orphans option is true."
 
         # Show backdrop
-        @_showBackdrop(step.element unless @_isOrphan step) if step.backdrop
+        @_showBackdrop(step) if step.backdrop
 
         showPopoverAndOverlay = =>
           return if @getCurrentStep() isnt i
@@ -577,12 +579,12 @@
       else
         cb.call(@, arg)
 
-    _showBackdrop: (element) ->
+    _showBackdrop: (step) ->
       return if @backdrop.backgroundShown
 
       @backdrop = $ '<div>', class: 'tour-backdrop'
       @backdrop.backgroundShown = true
-      $('body').append @backdrop
+      $(step.backdropContainer).append @backdrop
 
     _hideBackdrop: ->
       @_hideOverlayElement()
@@ -607,7 +609,7 @@
         height: $element.innerHeight()
         offset: $element.offset()
 
-      @backdrop.$background.appendTo('body')
+      @backdrop.$background.appendTo(step.backdropContainer)
 
       elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
       @backdrop
