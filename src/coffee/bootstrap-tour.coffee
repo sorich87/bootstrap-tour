@@ -61,23 +61,23 @@ do ($ = window.jQuery, window) ->
       @init force unless @inited # Backward compatibility
 
       if @current is null
-        @_onPromiseDone @_promise(@options.onStart(@) if @options.onStart?), @showStep, 0
+        @_resolvePromise @_promise(=> @options.onStart(@) if @options.onStart?).then -> @showStep 0
       @
 
     # Hide current step and show next step
     next: ->
-      @_onPromiseDone @hideStep(@current), @_showNextStep
+      @_resolvePromise @hideStep(@current).then -> @_showNextStep
 
     # Hide current step and show prev step
     prev: ->
-      @_onPromiseDone @hideStep(@current), @_showPrevStep
+      @_resolvePromise @hideStep(@current).then -> @_showPrevStep
 
     goTo: (i) ->
-      @_onPromiseDone @hideStep(@current), @showStep, i
+      @_resolvePromise @hideStep(@current).then -> @showStep i
 
     # End tour
     end: ->
-      @_onPromiseDone @hideStep(@current), (e) =>
+      @_resolvePromise @hideStep(@current).then =>
         $(document).off "click.tour-#{@options.name}"
         $(document).off "keyup.tour-#{@options.name}"
         $(window).off "resize.tour-#{@options.name}"
@@ -137,11 +137,11 @@ do ($ = window.jQuery, window) ->
       @_clearTimer()
 
       # If onHide returns a promise, let's wait until it's done to execute
-      promise = @_promise(options.onHide @, i if options.onHide?)
+      promise = @_promise(=> options.onHide @, i if options.onHide?)
 
       @_hideBackdrop() if options.backdrop
 
-      @_onPromiseDone promise, (e) =>
+      promise.then (e) =>
         $element = $ options.element
         $element = $('body') unless $element.data('bs.popover') or $element.data 'popover'
         $element
@@ -156,6 +156,7 @@ do ($ = window.jQuery, window) ->
 
         options.onHidden @ if options.onHidden?
 
+      @_resolvePromise promise
       promise
 
     # Show the specified step
@@ -171,9 +172,9 @@ do ($ = window.jQuery, window) ->
       skipToPrevious = i < @current
 
       # If onShow returns a promise, let's wait until it's done to execute
-      promise = @_promise(options.onShow @, i if options.onShow?)
+      promise = @_promise(=> options.onShow @, i if options.onShow?)
 
-      showStepHelper = (e) =>
+      promise.then (e) =>
         @currentStep i
 
         # Support string or function for path
@@ -216,10 +217,10 @@ do ($ = window.jQuery, window) ->
       if options.delay
         @_debug "Wait #{options.delay} milliseconds to show the step #{@current + 1}"
         window.setTimeout =>
-          @_onPromiseDone promise, showStepHelper
+          @_resolvePromise promise
         , options.delay
       else
-        @_onPromiseDone promise, showStepHelper
+        @_resolvePromise promise
 
       promise
 
@@ -263,14 +264,14 @@ do ($ = window.jQuery, window) ->
       step = @step @current
       options = step.options
 
-      @_onPromiseDone @_promise(options.onNext @ if options.onNext?), (e) => @showStep @current + 1
+      @_resolvePromise @_promise(=> options.onNext @ if options.onNext?).then => @showStep @current + 1
 
     # Show prev step
     _showPrevStep: ->
       step = @step @current
       options = step.options
 
-      @_onPromiseDone @_promise(options.onPrev @ if options.onPrev?), (e) => @showStep @current - 1
+      @_resolvePromise @_promise(=> options.onPrev @ if options.onPrev?).then => @showStep @current - 1
 
     # Print message in console
     _debug: (text) ->
@@ -484,15 +485,16 @@ do ($ = window.jQuery, window) ->
             @end()
 
     # Checks if the result of a callback is a promise
-    _promise: (result) ->
-      if result and $.isFunction(result.then) then result else null
+    _promise: (fn) ->
+      deferred = new $.Deferred()
 
-    _onPromiseDone: (promise, fn, parameters) ->
-      if promise
-        promise.then (e) =>
-          fn.call(@, parameters)
-      else
-        fn.call(@, parameters)
+      if $.isFunction fn
+        deferred.then -> fn
+
+      deferred
+
+    _resolvePromise: (deferred) ->
+      deferred.resolve()
 
     _showBackdrop: ->
       return if @$backdrop and @$backdrop.length

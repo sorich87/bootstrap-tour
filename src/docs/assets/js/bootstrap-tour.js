@@ -96,26 +96,40 @@
         this.init(force);
       }
       if (this.current === null) {
-        this._onPromiseDone(this._promise(this.options.onStart != null ? this.options.onStart(this) : void 0), this.showStep, 0);
+        this._resolvePromise(this._promise((function(_this) {
+          return function() {
+            if (_this.options.onStart != null) {
+              return _this.options.onStart(_this);
+            }
+          };
+        })(this)).then(function() {
+          return this.showStep(0);
+        }));
       }
       return this;
     };
 
     Tour.prototype.next = function() {
-      return this._onPromiseDone(this.hideStep(this.current), this._showNextStep);
+      return this._resolvePromise(this.hideStep(this.current).then(function() {
+        return this._showNextStep;
+      }));
     };
 
     Tour.prototype.prev = function() {
-      return this._onPromiseDone(this.hideStep(this.current), this._showPrevStep);
+      return this._resolvePromise(this.hideStep(this.current).then(function() {
+        return this._showPrevStep;
+      }));
     };
 
     Tour.prototype.goTo = function(i) {
-      return this._onPromiseDone(this.hideStep(this.current), this.showStep, i);
+      return this._resolvePromise(this.hideStep(this.current).then(function() {
+        return this.showStep(i);
+      }));
     };
 
     Tour.prototype.end = function() {
-      return this._onPromiseDone(this.hideStep(this.current), (function(_this) {
-        return function(e) {
+      return this._resolvePromise(this.hideStep(this.current).then((function(_this) {
+        return function() {
           $(document).off("click.tour-" + _this.options.name);
           $(document).off("keyup.tour-" + _this.options.name);
           $(window).off("resize.tour-" + _this.options.name);
@@ -127,7 +141,7 @@
             return _this.options.onEnd(_this);
           }
         };
-      })(this));
+      })(this)));
     };
 
     Tour.prototype.ended = function() {
@@ -187,11 +201,17 @@
       }
       options = step.options;
       this._clearTimer();
-      promise = this._promise(options.onHide != null ? options.onHide(this, i) : void 0);
+      promise = this._promise((function(_this) {
+        return function() {
+          if (options.onHide != null) {
+            return options.onHide(_this, i);
+          }
+        };
+      })(this));
       if (options.backdrop) {
         this._hideBackdrop();
       }
-      this._onPromiseDone(promise, (function(_this) {
+      promise.then((function(_this) {
         return function(e) {
           var $element;
           $element = $(options.element);
@@ -210,11 +230,12 @@
           }
         };
       })(this));
+      this._resolvePromise(promise);
       return promise;
     };
 
     Tour.prototype.showStep = function(i) {
-      var options, promise, showStepHelper, skipToPrevious, step;
+      var options, promise, skipToPrevious, step;
       if (this.ended()) {
         this._debug('Tour ended, showStep prevented.');
         return this;
@@ -225,8 +246,14 @@
       }
       options = step.options;
       skipToPrevious = i < this.current;
-      promise = this._promise(options.onShow != null ? options.onShow(this, i) : void 0);
-      showStepHelper = (function(_this) {
+      promise = this._promise((function(_this) {
+        return function() {
+          if (options.onShow != null) {
+            return options.onShow(_this, i);
+          }
+        };
+      })(this));
+      promise.then((function(_this) {
         return function(e) {
           _this.currentStep(i);
           options.path = (function() {
@@ -271,16 +298,16 @@
             return _this.resume();
           }
         };
-      })(this);
+      })(this));
       if (options.delay) {
         this._debug("Wait " + options.delay + " milliseconds to show the step " + (this.current + 1));
         window.setTimeout((function(_this) {
           return function() {
-            return _this._onPromiseDone(promise, showStepHelper);
+            return _this._resolvePromise(promise);
           };
         })(this), options.delay);
       } else {
-        this._onPromiseDone(promise, showStepHelper);
+        this._resolvePromise(promise);
       }
       return promise;
     };
@@ -340,22 +367,34 @@
       var options, step;
       step = this.step(this.current);
       options = step.options;
-      return this._onPromiseDone(this._promise(options.onNext != null ? options.onNext(this) : void 0), (function(_this) {
-        return function(e) {
+      return this._resolvePromise(this._promise((function(_this) {
+        return function() {
+          if (options.onNext != null) {
+            return options.onNext(_this);
+          }
+        };
+      })(this)).then((function(_this) {
+        return function() {
           return _this.showStep(_this.current + 1);
         };
-      })(this));
+      })(this)));
     };
 
     Tour.prototype._showPrevStep = function() {
       var options, step;
       step = this.step(this.current);
       options = step.options;
-      return this._onPromiseDone(this._promise(options.onPrev != null ? options.onPrev(this) : void 0), (function(_this) {
-        return function(e) {
+      return this._resolvePromise(this._promise((function(_this) {
+        return function() {
+          if (options.onPrev != null) {
+            return options.onPrev(_this);
+          }
+        };
+      })(this)).then((function(_this) {
+        return function() {
           return _this.showStep(_this.current - 1);
         };
-      })(this));
+      })(this)));
     };
 
     Tour.prototype._debug = function(text) {
@@ -600,24 +639,19 @@
       })(this));
     };
 
-    Tour.prototype._promise = function(result) {
-      if (result && $.isFunction(result.then)) {
-        return result;
-      } else {
-        return null;
+    Tour.prototype._promise = function(fn) {
+      var deferred;
+      deferred = new $.Deferred();
+      if ($.isFunction(fn)) {
+        deferred.then(function() {
+          return fn;
+        });
       }
+      return deferred;
     };
 
-    Tour.prototype._onPromiseDone = function(promise, fn, parameters) {
-      if (promise) {
-        return promise.then((function(_this) {
-          return function(e) {
-            return fn.call(_this, parameters);
-          };
-        })(this));
-      } else {
-        return fn.call(this, parameters);
-      }
+    Tour.prototype._resolvePromise = function(deferred) {
+      return deferred.resolve();
     };
 
     Tour.prototype._showBackdrop = function() {
