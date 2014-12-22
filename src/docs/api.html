@@ -64,10 +64,9 @@ var tour = new Tour({
         <tr>
           <td>name</td>
           <td>String</td>
-          <td>This option is used to build the name of the
-          storage item where the tour state is stored. You can
-          initialize several tours with different names in the same page and
-          application.</td>
+          <td>This option is used to build the name of the storage item where the tour state is stored.
+            The name should contain only alphanumerics, underscores and hyphens.
+            You can initialize several tours with different names in the same page and application.</td>
           <td><code>'tour'</code></td>
         </tr>
         <tr>
@@ -86,6 +85,12 @@ var tour = new Tour({
           </em>
           </td>
           <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>autoscroll</td>
+          <td>Boolean</td>
+          <td>Autoscrolls the window when the step popover is out of view.</td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>keyboard</td>

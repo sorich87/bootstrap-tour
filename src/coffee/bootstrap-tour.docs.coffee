@@ -2,7 +2,7 @@ $ ->
   $demo = $("#demo")
   duration = 5000
   remaining = duration
-  tour = new Tour(
+  tour = new Tour
     onStart: -> $demo.addClass "disabled", true
     onEnd: -> $demo.removeClass "disabled", true
     debug: true
@@ -14,7 +14,6 @@ $ ->
       content: """
       Introduce new users to your product by walking them through it step by step.
       """
-      backdrop: on
     ,
       path: "/"
       element: "#usage"
@@ -76,21 +75,18 @@ $ ->
       orphan: true
       onHidden: -> window.location.assign "/"
     ]
-  )
   .init()
+  .start()
 
-  $('<div class="alert alert-info alert-dismissable"><button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>You ended the demo tour. <a href="#" data-demo>Restart the demo tour.</a></div>').prependTo(".content").alert() if tour.ended()
-
-  $(document).on "click", "[data-demo]", (e) ->
-    e.preventDefault()
+  $("#demo").on "click", (event) ->
+    event.preventDefault()
     return if $(this).hasClass "disabled"
+
     tour.restart()
-    $(".alert").alert "close"
 
   $("html").smoothScroll()
 
-  $(".gravatar").each ->
+  $("[data-gravatar]").each ->
     $this = $(@)
-    email = md5 $this.data "email"
 
-    $(@).attr "src", "http://www.gravatar.com/avatar/#{email}?s=60"
+    $this.attr "src", "http://www.gravatar.com/avatar/#{md5($this.data("gravatar"))}?s=60"

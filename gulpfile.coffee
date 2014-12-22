@@ -1,3 +1,5 @@
+"use strict"
+
 gulp = require 'gulp'
 $ = require('gulp-load-plugins') lazy: false
 extend = require('util')._extend
@@ -196,6 +198,13 @@ gulp.task 'watch', ['connect'], ->
   .on 'change', (event) ->
     gulp.src event.path
     .pipe $.connect.reload()
+
+# bump
+gulp.task 'bump', ['test'], ->
+  gulp
+  .src ['./bower.json', './package.json', './smart.json']
+  .pipe $.bump(type: $.util.env.type || 'patch')
+  .pipe gulp.dest('./')
 
 # tasks
 gulp.task 'clean', ['clean-dist', 'clean-test', 'clean-docs']

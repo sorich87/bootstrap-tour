@@ -1,5 +1,5 @@
 /* ========================================================================
- * bootstrap-tour - v0.9.3
+ * bootstrap-tour - v0.10.0
  * http://bootstraptour.com
  * ========================================================================
  * Copyright 2012-2013 Ulrich Sossou
@@ -34,6 +34,10 @@
   position: relative;
   z-index: 1101;
   background: inherit;
+}
+.tour-backdrop-step > td {
+  position: relative;
+  z-index: 1101;
 }
 .tour-backdrop-step-overlay {
   position: absolute !important;
