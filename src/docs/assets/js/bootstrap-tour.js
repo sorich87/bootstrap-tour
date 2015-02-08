@@ -519,23 +519,24 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $template;
+      var $navigation, $next, $prev, $resume, $template;
       $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');
+      $resume = $navigation.find('[data-role="pause-resume"]');
       if (this._isOrphan(step)) {
         $template.addClass('orphan');
       }
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
       if (step.prev < 0) {
-        $navigation.find('[data-role="prev"]').addClass('disabled');
+        $prev.addClass('disabled');
       }
       if (step.next < 0) {
-        $navigation.find('[data-role="next"]').addClass('disabled');
+        $next.addClass('disabled');
       }
       if (!step.duration) {
-        $navigation.find('[data-role="pause-resume"]').remove();
+        $resume.remove();
       }
       return $template.clone().wrap('<div>').parent().html();
     };
