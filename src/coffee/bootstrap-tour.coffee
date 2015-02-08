@@ -322,7 +322,7 @@
         try @_options.storage.setItem keyName, value
         catch e
           if e.code is DOMException.QUOTA_EXCEEDED_ERR
-            @debug 'LocalStorage quota exceeded. State storage failed.'
+            @_debug 'LocalStorage quota exceeded. State storage failed.'
         @_options.afterSetState keyName, value
       else
         @_state ?= {}
