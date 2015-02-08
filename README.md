@@ -16,7 +16,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
 
-We use [Gulp](http://gulpjs.com/) and [Jasmine](http://pivotal.github.io/jasmine/). Both make your life easier ;)
+We use [Gulp](http://gulpjs.com/) and [Jasmine](http://jasmine.github.io/). Both make your life easier ;)
 
 ### Develop
 
