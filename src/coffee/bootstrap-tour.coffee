@@ -324,7 +324,7 @@
         try @_options.storage.setItem keyName, value
         catch e
           if e.code is DOMException.QUOTA_EXCEEDED_ERR
-            @debug 'LocalStorage quota exceeded. State storage failed.'
+            @_debug 'LocalStorage quota exceeded. State storage failed.'
         @_options.afterSetState keyName, value
       else
         @_state ?= {}
@@ -449,12 +449,13 @@
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
+      $resume = $navigation.find '[data-role="pause-resume"]'
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
-      $navigation.find('[data-role="prev"]').addClass('disabled') if step.prev < 0
-      $navigation.find('[data-role="next"]').addClass('disabled') if step.next < 0
-      $navigation.find('[data-role="pause-resume"]').remove() unless step.duration
+      $prev.addClass('disabled') if step.prev < 0
+      $next.addClass('disabled') if step.next < 0
+      $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->

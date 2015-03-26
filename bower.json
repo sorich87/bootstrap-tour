@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-tour",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "main": [
     "./build/js/bootstrap-tour.js",
     "./build/js/bootstrap-tour-standalone.js",
