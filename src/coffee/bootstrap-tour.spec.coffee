@@ -209,6 +209,7 @@ describe 'Bootstrap Tour', ->
       container: 'body'
       backdrop: false
       backdropPadding: 0
+      backdropContainer: 'body'
       redirect: true
       orphan: false
       duration: false

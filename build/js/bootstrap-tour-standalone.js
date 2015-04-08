@@ -1,5 +1,5 @@
 /* ========================================================================
- * bootstrap-tour - v0.10.1
+ * bootstrap-tour - v0.10.2
  * http://bootstraptour.com
  * ========================================================================
  * Copyright 2012-2013 Ulrich Sossou
@@ -611,6 +611,7 @@
         storage: storage,
         debug: false,
         backdrop: false,
+        backdropContainer: 'body',
         backdropPadding: 0,
         redirect: true,
         orphan: false,
@@ -672,6 +673,7 @@
           container: this._options.container,
           autoscroll: this._options.autoscroll,
           backdrop: this._options.backdrop,
+          backdropContainer: this._options.backdropContainer,
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
           orphan: this._options.orphan,
@@ -888,7 +890,7 @@
             _this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
           }
           if (step.backdrop) {
-            _this._showBackdrop(!_this._isOrphan(step) ? step.element : void 0);
+            _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
             if (_this.getCurrentStep() !== i) {
@@ -1276,7 +1278,7 @@
       }
     };
 
-    Tour.prototype._showBackdrop = function(element) {
+    Tour.prototype._showBackdrop = function(step) {
       if (this.backdrop.backgroundShown) {
         return;
       }
@@ -1284,7 +1286,7 @@
         "class": 'tour-backdrop'
       });
       this.backdrop.backgroundShown = true;
-      return $('body').append(this.backdrop);
+      return $(step.backdropContainer).append(this.backdrop);
     };
 
     Tour.prototype._hideBackdrop = function() {
@@ -1316,7 +1318,7 @@
         height: $element.innerHeight(),
         offset: $element.offset()
       };
-      this.backdrop.$background.appendTo('body');
+      this.backdrop.$background.appendTo(step.backdropContainer);
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
       }

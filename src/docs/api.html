@@ -19,6 +19,7 @@ var tour = new Tour({
   storage: window.localStorage,
   debug: false,
   backdrop: false,
+  backdropContainer: 'body',
   backdropPadding: 0,
   redirect: true,
   orphan: false,
@@ -125,6 +126,12 @@ var tour = new Tour({
           <td>Show a dark backdrop behind the popover and its element,
           highlighting the current step.</td>
           <td><code>false</code></td>
+        </tr>
+        <tr class="success">
+          <td>backdropContainer <span class="label label-success">NEW</span></td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the backdrop should be shown.</td>
+          <td><code>'body'</code></td>
         </tr>
         <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
@@ -322,6 +329,7 @@ tour.addStep({
   animation: true,
   container: "body",
   backdrop: false,
+  backdropContainer: 'body',
   backdropPadding: false,
   redirect: true,
   reflex: false,
@@ -428,6 +436,12 @@ tour.addStep({
           <td>Show a dark backdrop behind the popover and its element,
           highlighting the current step.</td>
           <td><code>false</code></td>
+        </tr>
+        <tr class="success">
+          <td>backdropContainer <span class="label label-success">NEW</span></td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the backdrop should be shown.</td>
+          <td><code>'body'</code></td>
         </tr>
         <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
