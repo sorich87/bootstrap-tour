@@ -542,7 +542,9 @@
     };
 
     Tour.prototype._reflexEvent = function(reflex) {
-      if ({}.toString.call(reflex) === '[object Boolean]' || '[object String]') {
+      var typeString;
+      typeString = {}.toString.call(reflex);
+      if (typeString === '[object Boolean]' || typeString === '[object String]') {
         return 'click';
       } else {
         return reflex;

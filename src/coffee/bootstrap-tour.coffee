@@ -460,7 +460,9 @@
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
-      if ({}).toString.call(reflex) is '[object Boolean]' or '[object String]' then 'click' else reflex
+      typeString = ({}).toString.call(reflex)
+      if typeString is '[object Boolean]' or
+         typeString is '[object String]' then 'click' else reflex
 
     _reflexElement: (reflex, $element) ->
       switch ({}).toString.call reflex
