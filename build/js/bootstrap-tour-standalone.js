@@ -635,6 +635,7 @@
       }, options);
       this._force = false;
       this._inited = false;
+      this._current = null;
       this.backdrop = {
         overlay: null,
         $element: null,
@@ -721,7 +722,7 @@
       if (!this._inited) {
         this.init(force);
       }
-      if (this._current == null) {
+      if (this._current === null) {
         promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
         this._callOnPromiseDone(promise, this.showStep, 0);
       }
