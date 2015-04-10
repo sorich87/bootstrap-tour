@@ -57,6 +57,7 @@
 
       @_force = false
       @_inited = false
+      @_current = null
       @backdrop =
         overlay: null
         $element: null

@@ -635,6 +635,7 @@
       }, options);
       this._force = false;
       this._inited = false;
+      this._current = null;
       this.backdrop = {
         overlay: null,
         $element: null,
