@@ -25,6 +25,11 @@ var tour = new Tour({
   orphan: false,
   duration: false,
   delay: false,
+  hideNextOnEnd: true,
+  endTourCss: 'btn-default',
+  nextbuttonCss: 'btn-default',
+  prevbuttonCss: 'btn-default',
+  pauseresumebuttonCss: 'btn-default',
   basePath: "",
   template: "<div class='popover tour'>
     <div class='arrow'></div>
@@ -175,6 +180,37 @@ var tour = new Tour({
             <li>a object containing optional <code>show</code> and <code>hide</code> numbers - defines the delays for showing and hiding respectively</li>
           </ul>
           <td><code>0</code></td>
+        </tr>
+
+        <tr id="hideNextOnEnd" class="success">
+            <td>hideNextOnEnd <span class="label label-success">NEW</span></td>
+            <td>Boolean</td>
+            <td>Specifies if you want to hide the next button on the final step. Setting to false will just disable the next button.
+            <td><code>true</code></td>
+        </tr>
+        <tr id="endTourCss" class="success">
+            <td>endTourCss <span class="label label-success">NEW</span></td>
+            <td>string</td>
+            <td>CSS class for End Tour Button.
+            <td><code>'btn-default'</code></td>
+        </tr>
+        <tr id="nextbuttonCss" class="success">
+            <td>nextbuttonCss <span class="label label-success">NEW</span></td>
+            <td>string</td>
+            <td>CSS class for Next Button.
+            <td><code>'btn-default'</code></td>
+        </tr>
+        <tr id="prevbuttonCss" class="success">
+            <td>prevbuttonCss <span class="label label-success">NEW</span></td>
+            <td>string</td>
+            <td>CSS class for Prev Button.
+            <td><code>'btn-default'</code></td>
+        </tr>
+        <tr id="pauseresumebuttonCss" class="success">
+            <td>pauseresumebuttonCss <span class="label label-success">NEW</span></td>
+            <td>string</td>
+            <td>CSS class for Pause/Resume Button.
+            <td><code>'btn-default'</code></td>
         </tr>
         <tr>
           <td>basePath</td>

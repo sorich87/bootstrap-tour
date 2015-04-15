@@ -45,6 +45,11 @@
         orphan: false,
         duration: false,
         delay: false,
+        hideNextOnEnd: true,
+        endTourCss: 'btn-default',
+        nextbuttonCss: 'btn-default',
+        prevbuttonCss: 'btn-default',
+        pauseresumebuttonCss: 'btn-default',
         basePath: '',
         template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
@@ -522,21 +527,36 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $resume, $template;
+      var $navigation, $next, $prev, $resume, $end, $template;
       $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');
       $resume = $navigation.find('[data-role="pause-resume"]');
+      $end = $navigation.find('[data-role="end"]');
+
+      $prev.addClass(this._options.prevbuttonCss);
+      $next.addClass(this._options.nextbuttonCss);
+      $end.addClass(this._options.endTourCss);
+      $resume.addClass(this._options.pauseresumebuttonCss);
+
       if (this._isOrphan(step)) {
         $template.addClass('orphan');
       }
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
       if (step.prev < 0) {
         $prev.addClass('disabled');
+
+        if (this._options.hideNextOnEnd) {
+          $next.removeClass('hidden');
+        }
       }
       if (step.next < 0) {
-        $next.addClass('disabled');
+          if (this._options.hideNextOnEnd) {
+            $next.addClass('hidden');
+          } else {
+            $next.addClass('disabled');
+          }
       }
       if (!step.duration) {
         $resume.remove();

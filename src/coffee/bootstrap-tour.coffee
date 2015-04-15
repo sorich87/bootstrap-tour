@@ -24,6 +24,11 @@
         duration: false
         delay: false
         basePath: ''
+        hideNextOnEnd: true
+        endTourCss: 'btn-default'
+        nextbuttonCss: 'btn-default'
+        prevbuttonCss: 'btn-default'
+        pauseresumebuttonCss: 'btn-default'
         template: '<div class="popover" role="tooltip">
           <div class="arrow"></div>
           <h3 class="popover-title"></h3>
@@ -451,9 +456,27 @@
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
       $resume = $navigation.find '[data-role="pause-resume"]'
+      $end = $navigation.find '[data-role="end"]'
+
+      $prev.addClass @_options.prevbuttonCss
+      $next.addClass @_options.nextbuttonCss
+      $end.addClass @_options.endTourCss
+      $resume.addClass @_options.pauseresumebuttonCss
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
+
+      if (step.prev < 0)
+        $prev.addClass 'disabled'
+        if (@_options.hideNextOnEnd)
+          $next.removeClass 'hidden'
+
+      if (step.next < 0)
+        if (@_options.hideNextOnEnd)
+           $next.addClass 'hidden'
+         else
+           $next.addClass 'disabled'
+
       $prev.addClass('disabled') if step.prev < 0
       $next.addClass('disabled') if step.next < 0
       $resume.remove() unless step.duration

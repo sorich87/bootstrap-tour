@@ -214,6 +214,11 @@ describe 'Bootstrap Tour', ->
       orphan: false
       duration: false
       delay: false
+      hideNextOnEnd: true
+      endTourCss: 'btn-default'
+      nextbuttonCss: 'btn-default'
+      prevbuttonCss: 'btn-default'
+      pauseresumebuttonCss: 'btn-default'
       template: '<div class="popover">
         <div class="arrow"></div>
         <h3 class="popover-title"></h3>
