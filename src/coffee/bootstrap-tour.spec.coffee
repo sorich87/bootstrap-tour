@@ -234,6 +234,7 @@ describe 'Bootstrap Tour', ->
       onPrev: (tour) ->
       onPause: (tour) ->
       onResume: (tour) ->
+      onRedirectError: (tour) ->
     @tour.addStep(step)
     # remove properties that we don't want to check from both steps object
     expect(@tour.getStep(0)).toEqual step
