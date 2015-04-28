@@ -268,7 +268,7 @@
 
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
-          if not step.orphan
+          if step.orphan is false
             @_debug """Skip the orphan step #{@_current + 1}.
             Orphan option is false and the element does not exist or is hidden."""
             if skipToPrevious then @_showPrevStep() else @_showNextStep()
@@ -446,7 +446,12 @@
 
     # Get popover template
     _template: (step, i) ->
-      $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
+      template = step.template
+
+      if @_isOrphan(step) and ({}).toString.call(step.orphan) isnt '[object Boolean]'
+        template = step.orphan
+
+      $template = if $.isFunction template then $(template i, step) else $(template)
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'

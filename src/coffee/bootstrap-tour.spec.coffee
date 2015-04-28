@@ -687,6 +687,14 @@ describe 'Bootstrap Tour', ->
     expect($('.popover').hasClass('orphan')).toBe true
     $('.popover').remove()
 
+  it 'should use orphan template to show orphan steps', ->
+    @tour = new Tour
+    step = orphan: '<div class="popover orphan-custom-template"></div>'
+    @tour.addStep step
+    template = @tour._template(step, 0)
+
+    expect($(template).hasClass('orphan-custom-template')).toBe true
+
   it 'handles quota_exceeded exceptions', ->
     @tour = new Tour
     @tour.addStep(element: $('<div></div>').appendTo('body'))
