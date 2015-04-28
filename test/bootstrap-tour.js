@@ -59,7 +59,8 @@
         onNext: function(tour) {},
         onPrev: function(tour) {},
         onPause: function(tour, duration) {},
-        onResume: function(tour, duration) {}
+        onResume: function(tour, duration) {},
+        onRedirectError: function(tour) {}
       }, options);
       this._force = false;
       this._inited = false;
@@ -116,7 +117,8 @@
           onNext: this._options.onNext,
           onPrev: this._options.onPrev,
           onPause: this._options.onPause,
-          onResume: this._options.onResume
+          onResume: this._options.onResume,
+          onRedirectError: this._options.onRedirectError
         }, this._options.steps[i]);
       }
     };
@@ -202,6 +204,7 @@
     Tour.prototype.restart = function() {
       this._removeState('current_step');
       this._removeState('end');
+      this._removeState('redirect_to');
       return this.start();
     };
 
@@ -303,11 +306,11 @@
           }).call(_this);
           current_path = [document.location.pathname, document.location.hash].join('');
           if (_this._isRedirect(path, current_path)) {
-            _this._redirect(step, path);
+            _this._redirect(step, i, path);
             return;
           }
           if (_this._isOrphan(step)) {
-            if (!step.orphan) {
+            if (step.orphan === false) {
               _this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
               if (skipToPrevious) {
                 _this._showPrevStep();
@@ -457,12 +460,21 @@
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
     };
 
-    Tour.prototype._redirect = function(step, path) {
+    Tour.prototype._redirect = function(step, i, path) {
       if ($.isFunction(step.redirect)) {
         return step.redirect.call(this, path);
       } else if (step.redirect === true) {
         this._debug("Redirect to " + path);
-        return document.location.href = path;
+        if (this._getState('redirect_to') === ("" + i)) {
+          this._debug("Error redirection loop to " + path);
+          this._removeState('redirect_to');
+          if (step.onRedirectError != null) {
+            return step.onRedirectError(this);
+          }
+        } else {
+          this._setState('redirect_to', "" + i);
+          return document.location.href = path;
+        }
       }
     };
 
@@ -522,8 +534,12 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $resume, $template;
-      $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+      var $navigation, $next, $prev, $resume, $template, template;
+      template = step.template;
+      if (this._isOrphan(step) && {}.toString.call(step.orphan) !== '[object Boolean]') {
+        template = step.orphan;
+      }
+      $template = $.isFunction(template) ? $(template(i, step)) : $(template);
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');
