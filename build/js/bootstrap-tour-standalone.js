@@ -666,6 +666,7 @@
         return $.extend({
           id: "step-" + i,
           path: '',
+          host: '',
           placement: 'right',
           title: '',
           content: '<p></p>',
@@ -877,7 +878,7 @@
             }
           }).call(_this);
           current_path = [document.location.pathname, document.location.hash].join('');
-          if (_this._isRedirect(path, current_path)) {
+          if (_this._isRedirect(step.host, path, current_path)) {
             _this._redirect(step, i, path);
             return;
           }
@@ -1028,7 +1029,14 @@
       }
     };
 
-    Tour.prototype._isRedirect = function(path, currentPath) {
+    Tour.prototype._isRedirect = function(host, path, currentPath) {
+      var current_host;
+      if (host !== '') {
+        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
+        if (host !== current_host) {
+          return true;
+        }
+      }
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
     };
 
@@ -1045,7 +1053,7 @@
           }
         } else {
           this._setState('redirect_to', "" + i);
-          return document.location.href = path;
+          return document.location.href = "" + step.host + path;
         }
       }
     };
