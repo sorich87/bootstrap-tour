@@ -308,7 +308,9 @@
           current_path = [document.location.pathname, document.location.hash].join('');
           if (_this._isRedirect(step.host, path, current_path)) {
             _this._redirect(step, i, path);
-            return;
+            if (!_this._isJustPathHashDifferent(path, current_path)) {
+              return;
+            }
           }
           if (_this._isOrphan(step)) {
             if (step.orphan === false) {
@@ -468,11 +470,20 @@
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
     };
 
+    Tour.prototype._isJustPathHashDifferent = function(path, currentPath) {
+      if ({}.toString.call(path) === '[object String]') {
+        path = path.split('#');
+        currentPath = currentPath.split('#');
+        return path[0].replace(/\?.*$/, '').replace(/\/?$/, '') === currentPath[0].replace(/\/?$/, '') && path[1] !== currentPath[1];
+      }
+      return false;
+    };
+
     Tour.prototype._redirect = function(step, i, path) {
       if ($.isFunction(step.redirect)) {
         return step.redirect.call(this, path);
       } else if (step.redirect === true) {
-        this._debug("Redirect to " + path);
+        this._debug("Redirect to " + step.host + path);
         if (this._getState('redirect_to') === ("" + i)) {
           this._debug("Error redirection loop to " + path);
           this._removeState('redirect_to');

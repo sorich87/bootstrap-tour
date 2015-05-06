@@ -419,6 +419,25 @@ describe 'Bootstrap Tour', ->
     # don't redirect if current path matches path regex
     expect(@tour._isRedirect '', /some*/, '/somepath').toBe false
 
+  it 'should evaluate `path hash correctly', ->
+    @tour = new Tour
+
+    expect(@tour._isJustPathHashDifferent('#hash', '/')).toBe true
+
+    expect(@tour._isJustPathHashDifferent('#hash', '/#hashtwo')).toBe true
+
+    expect(@tour._isJustPathHashDifferent('/', '/#hashtwo')).toBe true
+
+    expect(@tour._isJustPathHashDifferent('/anotherpath#hash', '/somepath')).toBe false
+
+    expect(@tour._isJustPathHashDifferent('/anotherpath#hash', '/somepath#hash')).toBe false
+
+    expect(@tour._isJustPathHashDifferent('/somepath#hash', '/somepath')).toBe true
+
+    expect(@tour._isJustPathHashDifferent('/somepath#hash', '/somepath#hashtwo')).toBe true
+
+    expect(@tour._isJustPathHashDifferent('/somepath', '/somepath')).toBe false
+
   it '`_getState` should return null after `_removeState` with null value', ->
     @tour = new Tour
     @tour._setState('test', 'test')

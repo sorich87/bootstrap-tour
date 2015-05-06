@@ -268,7 +268,8 @@
         current_path = [document.location.pathname, document.location.hash].join('')
         if @_isRedirect step.host, path, current_path
           @_redirect step, i, path
-          return
+
+          return unless @_isJustPathHashDifferent(path, current_path)
 
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
@@ -388,6 +389,16 @@
         (({}).toString.call(path) is '[object String]' and
           path.replace(/\?.*$/, '').replace(/\/?$/, '') isnt currentPath.replace(/\/?$/, ''))
       )
+
+    _isJustPathHashDifferent: (path, currentPath) ->
+      if ({}).toString.call(path) is '[object String]'
+        path = path.split('#')
+        currentPath = currentPath.split('#')
+
+        return path[0].replace(/\?.*$/, '').replace(/\/?$/, '') is currentPath[0].replace(/\/?$/, '') and
+          path[1] isnt currentPath[1]
+
+      false
 
     # Execute the redirect
     _redirect: (step, i, path) ->
