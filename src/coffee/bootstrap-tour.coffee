@@ -226,7 +226,7 @@
         .popover('destroy')
         .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
         if step.reflex
-          $element
+          @_reflexElement(step.reflex, $element)
           .removeClass('tour-step-element-reflex')
           .off "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}"
 
@@ -419,9 +419,10 @@
 
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
-        $element.addClass('tour-step-element-reflex')
-        $element.off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
-        $element.on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
+        @_reflexElement(step.reflex, $element)
+        .addClass('tour-step-element-reflex')
+        .off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
+        .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
       $element
@@ -460,7 +461,14 @@
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
-      if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
+      typeString = ({}).toString.call(reflex)
+      if typeString is '[object Boolean]' or
+         typeString is '[object String]' then 'click' else reflex
+
+    _reflexElement: (reflex, $element) ->
+      switch ({}).toString.call reflex
+        when '[object Boolean]' then $element
+        when '[object String]' then $ reflex
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
