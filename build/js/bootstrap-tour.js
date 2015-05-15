@@ -307,7 +307,7 @@
             return;
           }
           if (_this._isOrphan(step)) {
-            if (!step.orphan) {
+            if (step.orphan === false) {
               _this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
               if (skipToPrevious) {
                 _this._showPrevStep();
@@ -520,8 +520,12 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $resume, $template;
-      $template = $.isFunction(step.template) ? $(step.template(i, step)) : $(step.template);
+      var $navigation, $next, $prev, $resume, $template, template;
+      template = step.template;
+      if (this._isOrphan(step) && {}.toString.call(step.orphan) !== '[object Boolean]') {
+        template = step.orphan;
+      }
+      $template = $.isFunction(template) ? $(template(i, step)) : $(template);
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');

@@ -150,7 +150,7 @@ var tour = new Tour({
         </tr>
         <tr>
           <td>orphan</td>
-          <td>Boolean</td>
+          <td>Boolean|String|function</td>
           <td>Allow to show the step regardless whether its element is not set, is
           not present in the page or is hidden. The step is fixed
           positioned in the middle of the page.</td>
@@ -468,10 +468,12 @@ tour.addStep({
         </tr>
         <tr>
           <td>orphan</td>
-          <td>Boolean</td>
+          <td>Boolean|String|Function</td>
           <td>Allow to show the step regardless whether its element is not set, is
           not present in the page or is hidden. The step is fixed
-          positioned in the middle of the page.</td>
+          positioned in the middle of the page.<br>
+          You can use a string or function that returns a string of the HTML template for
+          the orphan popovers</td>
           <td><code>false</code></td>
         </tr>
         <tr class="success">
