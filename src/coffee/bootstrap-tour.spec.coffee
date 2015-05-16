@@ -199,6 +199,7 @@ describe 'Bootstrap Tour', ->
       element: $('<div></div>').appendTo('body')
       id: 'step-0'
       path: 'test'
+      host: ''
       placement: 'left'
       title: 'Test'
       content: 'Just a test'
@@ -399,23 +400,23 @@ describe 'Bootstrap Tour', ->
     @tour = new Tour
 
     # redirect if path doesn't match current path
-    expect(@tour._isRedirect('/anotherpath', '/somepath')).toBe true
+    expect(@tour._isRedirect('', '/anotherpath', '/somepath')).toBe true
     # don't redirect if no path
-    expect(@tour._isRedirect(undefined, '/')).toBe false
+    expect(@tour._isRedirect('', undefined, '/')).toBe false
     # don't redirect if path empty
-    expect(@tour._isRedirect('', '/')).toBe false
+    expect(@tour._isRedirect('', '', '/')).toBe false
     # don't redirect if path matches current path
-    expect(@tour._isRedirect('/somepath', '/somepath')).toBe false
+    expect(@tour._isRedirect('', '/somepath', '/somepath')).toBe false
     # don't redirect if path with slash matches current path
-    expect(@tour._isRedirect('/somepath/', '/somepath')).toBe false
+    expect(@tour._isRedirect('', '/somepath/', '/somepath')).toBe false
     # don't redirect if path matches current path with slash
-    expect(@tour._isRedirect('/somepath', '/somepath/')).toBe false
+    expect(@tour._isRedirect('', '/somepath', '/somepath/')).toBe false
     # don't redirect if path with query params matches current path
-    expect(@tour._isRedirect('/somepath?search=true', '/somepath')).toBe false
+    expect(@tour._isRedirect('', '/somepath?search=true', '/somepath')).toBe false
     # don't redirect if path with slash and query params matches current path
-    expect(@tour._isRedirect('/somepath/?search=true', '/somepath')).toBe false
+    expect(@tour._isRedirect('', '/somepath/?search=true', '/somepath')).toBe false
     # don't redirect if current path matches path regex
-    expect(@tour._isRedirect /some*/, '/somepath').toBe false
+    expect(@tour._isRedirect '', /some*/, '/somepath').toBe false
 
   it '`_getState` should return null after `_removeState` with null value', ->
     @tour = new Tour
@@ -568,7 +569,26 @@ describe 'Bootstrap Tour', ->
       path: 'test.html'
 
     # Tour adds basePath to step path
-    expect(@tour._isRedirect(@tour._options.basePath + @tour.getStep(0).path, 'test/test.html')).toBe false
+    expect(
+      @tour._isRedirect(
+        @tour.getStep(0).host, @tour._options.basePath + @tour.getStep(0).path, 'test/test.html'
+      )
+    )
+    .toBe false
+
+  it 'should redirect to the steps if host is different', ->
+    @tour = new Tour
+    @tour.addStep
+      element: $('<div></div>').appendTo('body')
+      path: 'test.html'
+      host: 'http://sub.exemple.com'
+
+    expect(
+      @tour._isRedirect(
+        @tour.getStep(0).host, @tour._options.basePath + @tour.getStep(0).path, 'test.html'
+      )
+    )
+    .toBe true
 
   it 'with `onNext` option should run the callback before showing the next step', ->
     tour_test = 0

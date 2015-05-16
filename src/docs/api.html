@@ -320,6 +320,7 @@ var tour = new Tour({
 {% highlight javascript %}
 tour.addStep({
   path: "",
+  host: "",
   element: "",
   placement: "right",
   title: "",
@@ -360,6 +361,14 @@ tour.addStep({
           <td>String or RegExp</td>
           <td>Path to the page on which the step should be shown. This
           allows you to build tours that span several pages!</td>
+          <td><code>''</code></td>
+        </tr>
+      <tbody>
+        <tr class="success">
+          <td>host <span class="label label-success">NEW</span></td>
+          <td>String</td>
+          <td>Host of the page on which the step should be shown. This
+            allows you to build tours for several sub-domains</td>
           <td><code>''</code></td>
         </tr>
         <tr>

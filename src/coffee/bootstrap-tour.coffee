@@ -82,6 +82,7 @@
         $.extend
           id: "step-#{i}"
           path: ''
+          host: ''
           placement: 'right'
           title: ''
           content: '<p></p>' # no empty as default, otherwise popover won't show up
@@ -262,7 +263,7 @@
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
-        if @_isRedirect path, current_path
+        if @_isRedirect step.host, path, current_path
           @_redirect step, path
           return
 
@@ -374,7 +375,11 @@
       window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}" if @_options.debug
 
     # Check if step path equals current document path
-    _isRedirect: (path, currentPath) ->
+    _isRedirect: (host, path, currentPath) ->
+      if host isnt ''
+        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname))
+        return true if host isnt current_host
+
       path? and path isnt '' and (
         (({}).toString.call(path) is '[object RegExp]' and not path.test currentPath) or
         (({}).toString.call(path) is '[object String]' and
@@ -386,8 +391,8 @@
       if $.isFunction step.redirect
         step.redirect.call this, path
       else if step.redirect is true
-        @_debug "Redirect to #{path}"
-        document.location.href = path
+        @_debug "Redirect to #{step.host}#{path}"
+        document.location.href = "#{step.host}#{path}"
 
     _isOrphan: (step) ->
       # Do not check for is(':hidden') on svg elements. jQuery does not work properly on svg.
