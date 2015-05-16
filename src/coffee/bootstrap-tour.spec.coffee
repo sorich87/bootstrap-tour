@@ -626,6 +626,18 @@ describe 'Bootstrap Tour', ->
     @tour.prev()
     expect(tour_test).toBe 2 # tour runs onPrev when prev step is called
 
+  it 'with `onRedirectError` option should run the callback when redirection failed', ->
+    tour_test = 0
+    @tour = new Tour
+    @tour.addStep
+      element: $('<div></div>').appendTo('body')
+      path: '/path'
+      onRedirectError: -> tour_test = 2
+
+    @tour._setState 'redirect_to', 0 # tour has previously redirected to step '0'
+    @tour.start()
+    expect(tour_test).toBe 2 # tour runs onRedirectError when redirection failed
+
   it 'should render custom navigation template', ->
     @tour = new Tour
       template:
