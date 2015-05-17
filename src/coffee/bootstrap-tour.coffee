@@ -83,6 +83,7 @@
         $.extend
           id: "step-#{i}"
           path: ''
+          host: ''
           placement: 'right'
           title: ''
           content: '<p></p>' # no empty as default, otherwise popover won't show up
@@ -265,13 +266,13 @@
 
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
-        if @_isRedirect path, current_path
+        if @_isRedirect step.host, path, current_path
           @_redirect step, i, path
           return
 
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
-          if not step.orphan
+          if step.orphan is false
             @_debug """Skip the orphan step #{@_current + 1}.
             Orphan option is false and the element does not exist or is hidden."""
             if skipToPrevious then @_showPrevStep() else @_showNextStep()
@@ -377,7 +378,11 @@
       window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}" if @_options.debug
 
     # Check if step path equals current document path
-    _isRedirect: (path, currentPath) ->
+    _isRedirect: (host, path, currentPath) ->
+      if host isnt ''
+        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname))
+        return true if host isnt current_host
+
       path? and path isnt '' and (
         (({}).toString.call(path) is '[object RegExp]' and not path.test currentPath) or
         (({}).toString.call(path) is '[object String]' and
@@ -389,7 +394,7 @@
       if $.isFunction step.redirect
         step.redirect.call this, path
       else if step.redirect is true
-        @_debug "Redirect to #{path}"
+        @_debug "Redirect to #{step.host}#{path}"
         if @_getState('redirect_to') is "#{i}"
           @_debug "Error redirection loop to #{path}"
           @_removeState 'redirect_to'
@@ -397,7 +402,7 @@
           step.onRedirectError @ if step.onRedirectError?
         else
           @_setState 'redirect_to', "#{i}"
-          document.location.href = path
+          document.location.href = "#{step.host}#{path}"
 
     _isOrphan: (step) ->
       # Do not check for is(':hidden') on svg elements. jQuery does not work properly on svg.
@@ -457,7 +462,12 @@
 
     # Get popover template
     _template: (step, i) ->
-      $template = if $.isFunction step.template then $(step.template i, step) else $(step.template)
+      template = step.template
+
+      if @_isOrphan(step) and ({}).toString.call(step.orphan) isnt '[object Boolean]'
+        template = step.orphan
+
+      $template = if $.isFunction template then $(template i, step) else $(template)
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
