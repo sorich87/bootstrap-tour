@@ -419,6 +419,27 @@ describe 'Bootstrap Tour', ->
     # don't redirect if current path matches path regex
     expect(@tour._isRedirect '', /some*/, '/somepath').toBe false
 
+  it 'should evaluate `path` hash correctly', ->
+    @tour = new Tour
+
+    expect(@tour._pathHashDifferent('http://example.com', '', '/')).toBe false
+
+    expect(@tour._pathHashDifferent('', '#hash', '/')).toBe true
+
+    expect(@tour._pathHashDifferent('', '#hash', '/#hashtwo')).toBe true
+
+    expect(@tour._pathHashDifferent('', '/', '/#hashtwo')).toBe true
+
+    expect(@tour._pathHashDifferent('', '/anotherpath#hash', '/somepath')).toBe false
+
+    expect(@tour._pathHashDifferent('', '/anotherpath#hash', '/somepath#hash')).toBe false
+
+    expect(@tour._pathHashDifferent('', '/somepath#hash', '/somepath')).toBe true
+
+    expect(@tour._pathHashDifferent('', '/somepath#hash', '/somepath#hashtwo')).toBe true
+
+    expect(@tour._pathHashDifferent('', '/somepath', '/somepath')).toBe false
+
   it '`_getState` should return null after `_removeState` with null value', ->
     @tour = new Tour
     @tour._setState('test', 'test')
@@ -505,6 +526,15 @@ describe 'Bootstrap Tour', ->
       path: '#mytest'
     @tour.showStep(0)
     expect(document.location.hash).toBe '#mytest' # Tour step has moved to the anchor
+    document.location.hash = ''
+
+  it '`showStep` show the step when the path is an anchor', ->
+    @tour = new Tour
+    @tour.addStep
+      element: $('<div></div>').appendTo('body')
+      path: '#mytest'
+    @tour.showStep(0)
+    expect(@tour.getStep(0).element.data('bs.popover').tip().filter(':visible').length).toBe 1 # tour shows correct step
     document.location.hash = ''
 
   it '`backdrop` parameter should show backdrop with step', ->
