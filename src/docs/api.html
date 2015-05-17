@@ -50,7 +50,8 @@ var tour = new Tour({
   onNext: function (tour) {},
   onPrev: function (tour) {},
   onPause: function (tour, duration) {},
-  onResume: function (tour, duration) {}
+  onResume: function (tour, duration) {},
+  onRedirectError: function (tour) {}
 });
 {% endhighlight %}
     <table class="table  table-bordered table-striped">
@@ -313,6 +314,14 @@ var tour = new Tour({
           remaining duration.</td>
           <td><code>function (tour, duration) { }</code></td>
         </tr>
+        </tr>
+        <tr class="success">
+          <td>onRedirectError <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when there is a redirection error. This
+            happens when bootstrap tour cannot redirect to the path of the step</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
       </tbody>
     </table>
     <a id="step-options"></a>
@@ -343,7 +352,8 @@ tour.addStep({
   onNext: function (tour) {},
   onPrev: function (tour) {},
   onPause: function (tour) {},
-  onResume: function (tour) {}
+  onResume: function (tour) {},
+  onRedirectError: function (tour) {}
 });
 {% endhighlight %}
     <table class="table  table-bordered table-striped">
@@ -581,6 +591,14 @@ tour.addStep({
           remaining duration. It overrides the global
           <code>onResume</code> option</td>
           <td><code>function (tour, duration) { }</code></td>
+        </tr>
+        <tr class="success">
+          <td>onRedirectError <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when there is a redirection error. This
+            happens when bootstrap tour cannot redirect to the path of the step. It overrides the global
+            <code>onRedirectError</code> option</td>
+          <td><code>function (tour) { }</code></td>
         </tr>
       </tbody>
     </table>
