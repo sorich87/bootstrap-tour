@@ -59,7 +59,8 @@
         onNext: function(tour) {},
         onPrev: function(tour) {},
         onPause: function(tour, duration) {},
-        onResume: function(tour, duration) {}
+        onResume: function(tour, duration) {},
+        onRedirectError: function(tour) {}
       }, options);
       this._force = false;
       this._inited = false;
@@ -93,6 +94,7 @@
         return $.extend({
           id: "step-" + i,
           path: '',
+          host: '',
           placement: 'right',
           title: '',
           content: '<p></p>',
@@ -116,7 +118,8 @@
           onNext: this._options.onNext,
           onPrev: this._options.onPrev,
           onPause: this._options.onPause,
-          onResume: this._options.onResume
+          onResume: this._options.onResume,
+          onRedirectError: this._options.onRedirectError
         }, this._options.steps[i]);
       }
     };
@@ -202,6 +205,7 @@
     Tour.prototype.restart = function() {
       this._removeState('current_step');
       this._removeState('end');
+      this._removeState('redirect_to');
       return this.start();
     };
 
@@ -302,8 +306,8 @@
             }
           }).call(_this);
           current_path = [document.location.pathname, document.location.hash].join('');
-          if (_this._isRedirect(path, current_path)) {
-            _this._redirect(step, path);
+          if (_this._isRedirect(step.host, path, current_path)) {
+            _this._redirect(step, i, path);
             return;
           }
           if (_this._isOrphan(step)) {
@@ -453,16 +457,32 @@
       }
     };
 
-    Tour.prototype._isRedirect = function(path, currentPath) {
+    Tour.prototype._isRedirect = function(host, path, currentPath) {
+      var current_host;
+      if (host !== '') {
+        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
+        if (host !== current_host) {
+          return true;
+        }
+      }
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
     };
 
-    Tour.prototype._redirect = function(step, path) {
+    Tour.prototype._redirect = function(step, i, path) {
       if ($.isFunction(step.redirect)) {
         return step.redirect.call(this, path);
       } else if (step.redirect === true) {
-        this._debug("Redirect to " + path);
-        return document.location.href = path;
+        this._debug("Redirect to " + step.host + path);
+        if (this._getState('redirect_to') === ("" + i)) {
+          this._debug("Error redirection loop to " + path);
+          this._removeState('redirect_to');
+          if (step.onRedirectError != null) {
+            return step.onRedirectError(this);
+          }
+        } else {
+          this._setState('redirect_to', "" + i);
+          return document.location.href = "" + step.host + path;
+        }
       }
     };
 

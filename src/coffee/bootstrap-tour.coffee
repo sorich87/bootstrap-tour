@@ -53,6 +53,7 @@
         onPrev: (tour) ->
         onPause: (tour, duration) ->
         onResume: (tour, duration) ->
+        onRedirectError: (tour) ->
       , options
 
       @_force = false
@@ -107,6 +108,7 @@
           onPrev: @_options.onPrev
           onPause: @_options.onPause
           onResume: @_options.onResume
+          onRedirectError: @_options.onRedirectError
         , @_options.steps[i]
 
     # Setup event bindings and continue a tour that has already started
@@ -179,6 +181,7 @@
     restart: ->
       @_removeState 'current_step'
       @_removeState 'end'
+      @_removeState 'redirect_to'
       @start()
 
     # Pause step timer
@@ -264,7 +267,7 @@
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
         if @_isRedirect step.host, path, current_path
-          @_redirect step, path
+          @_redirect step, i, path
           return
 
         # Skip if step is orphan and orphan options is false
@@ -387,12 +390,19 @@
       )
 
     # Execute the redirect
-    _redirect: (step, path) ->
+    _redirect: (step, i, path) ->
       if $.isFunction step.redirect
         step.redirect.call this, path
       else if step.redirect is true
         @_debug "Redirect to #{step.host}#{path}"
-        document.location.href = "#{step.host}#{path}"
+        if @_getState('redirect_to') is "#{i}"
+          @_debug "Error redirection loop to #{path}"
+          @_removeState 'redirect_to'
+
+          step.onRedirectError @ if step.onRedirectError?
+        else
+          @_setState 'redirect_to', "#{i}"
+          document.location.href = "#{step.host}#{path}"
 
     _isOrphan: (step) ->
       # Do not check for is(':hidden') on svg elements. jQuery does not work properly on svg.
