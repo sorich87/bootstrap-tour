@@ -235,7 +235,6 @@ describe 'Bootstrap Tour', ->
       onPrev: (tour) ->
       onPause: (tour) ->
       onResume: (tour) ->
-      onRedirectError: (tour) ->
     @tour.addStep(step)
     # remove properties that we don't want to check from both steps object
     expect(@tour.getStep(0)).toEqual step
@@ -419,25 +418,6 @@ describe 'Bootstrap Tour', ->
     # don't redirect if current path matches path regex
     expect(@tour._isRedirect '', /some*/, '/somepath').toBe false
 
-  it 'should evaluate `path hash correctly', ->
-    @tour = new Tour
-
-    expect(@tour._isJustPathHashDifferent('#hash', '/')).toBe true
-
-    expect(@tour._isJustPathHashDifferent('#hash', '/#hashtwo')).toBe true
-
-    expect(@tour._isJustPathHashDifferent('/', '/#hashtwo')).toBe true
-
-    expect(@tour._isJustPathHashDifferent('/anotherpath#hash', '/somepath')).toBe false
-
-    expect(@tour._isJustPathHashDifferent('/anotherpath#hash', '/somepath#hash')).toBe false
-
-    expect(@tour._isJustPathHashDifferent('/somepath#hash', '/somepath')).toBe true
-
-    expect(@tour._isJustPathHashDifferent('/somepath#hash', '/somepath#hashtwo')).toBe true
-
-    expect(@tour._isJustPathHashDifferent('/somepath', '/somepath')).toBe false
-
   it '`_getState` should return null after `_removeState` with null value', ->
     @tour = new Tour
     @tour._setState('test', 'test')
@@ -499,6 +479,23 @@ describe 'Bootstrap Tour', ->
     expect($element.hasClass('tour-step-element-reflex')).toBe true
     @tour.next()
     expect($element.hasClass('tour-step-element-reflex')).toBe false
+
+  it 'should add `tour-step-element-reflex` class to the defined element if reflex is defined', ->
+    @tour = new Tour
+    $element = $('<div></div>').appendTo('body')
+    $definedElement = $('<div id="ref"></div>').appendTo('body')
+    @tour.addStep
+      element: $element
+      reflex: '#ref'
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    expect($element.hasClass('tour-step-element-reflex')).toBe false
+    expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
+    @tour.start()
+    expect($element.hasClass('tour-step-element-reflex')).toBe false
+    expect($definedElement.hasClass('tour-step-element-reflex')).toBe true
+    @tour.next()
+    expect($element.hasClass('tour-step-element-reflex')).toBe false
+    expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
 
   it '`showStep` redirects to the anchor when the path is an anchor', ->
     @tour = new Tour
@@ -730,6 +727,24 @@ describe 'Bootstrap Tour', ->
   it 'should use orphan template to show orphan steps', ->
     @tour = new Tour
     step = orphan: '<div class="popover orphan-custom-template"></div>'
+    @tour.addStep step
+    template = @tour._template(step, 0)
+
+    expect($(template).hasClass('orphan-custom-template')).toBe true
+
+  it 'should not use orphan template to show steps', ->
+    @tour = new Tour
+    step =
+      orphan: '<div class="popover orphan-custom-template"></div>'
+      element: $('<div></div>').appendTo('body')
+    @tour.addStep step
+    template = @tour._template(step, 0)
+
+    expect($(template).hasClass('orphan-custom-template')).toBe false
+
+  it 'should execute orphan template if it is a function', ->
+    @tour = new Tour
+    step = orphan: -> '<div class="popover orphan-custom-template"></div>'
     @tour.addStep step
     template = @tour._template(step, 0)
 

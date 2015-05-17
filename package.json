@@ -70,12 +70,7 @@
   "engines": {
     "node": ">= 0.8.0"
   },
-  "main": [
-    "./build/js/bootstrap-tour.js",
-    "./build/js/bootstrap-tour-standalone.js",
-    "./build/css/bootstrap-tour.css",
-    "./build/css/bootstrap-tour-standalone.css"
-  ],
+  "main": "./build/js/bootstrap-tour.js",
   "scripts": {
     "build": "gulp dist",
     "test": "gulp test"

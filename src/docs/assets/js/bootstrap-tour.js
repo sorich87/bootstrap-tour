@@ -265,7 +265,7 @@
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
           if (step.reflex) {
-            $element.removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
+            _this._reflexElement(step.reflex, $element).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -521,9 +521,7 @@
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        $element.addClass('tour-step-element-reflex');
-        $element.off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name);
-        $element.on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
+        this._reflexElement(step.reflex, $element).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();
@@ -580,10 +578,21 @@
     };
 
     Tour.prototype._reflexEvent = function(reflex) {
-      if ({}.toString.call(reflex) === '[object Boolean]') {
+      var typeString;
+      typeString = {}.toString.call(reflex);
+      if (typeString === '[object Boolean]' || typeString === '[object String]') {
         return 'click';
       } else {
         return reflex;
+      }
+    };
+
+    Tour.prototype._reflexElement = function(reflex, $element) {
+      switch ({}.toString.call(reflex)) {
+        case '[object Boolean]':
+          return $element;
+        case '[object String]':
+          return $(reflex);
       }
     };
 

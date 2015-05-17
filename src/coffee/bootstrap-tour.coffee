@@ -53,7 +53,6 @@
         onPrev: (tour) ->
         onPause: (tour, duration) ->
         onResume: (tour, duration) ->
-        onRedirectError: (tour) ->
       , options
 
       @_force = false
@@ -108,7 +107,6 @@
           onPrev: @_options.onPrev
           onPause: @_options.onPause
           onResume: @_options.onResume
-          onRedirectError: @_options.onRedirectError
         , @_options.steps[i]
 
     # Setup event bindings and continue a tour that has already started
@@ -181,7 +179,6 @@
     restart: ->
       @_removeState 'current_step'
       @_removeState 'end'
-      @_removeState 'redirect_to'
       @start()
 
     # Pause step timer
@@ -230,7 +227,7 @@
         .popover('destroy')
         .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
         if step.reflex
-          $element
+          @_reflexElement(step.reflex, $element)
           .removeClass('tour-step-element-reflex')
           .off "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}"
 
@@ -267,9 +264,8 @@
         # Redirect to step path if not already there
         current_path = [document.location.pathname, document.location.hash].join('')
         if @_isRedirect step.host, path, current_path
-          @_redirect step, i, path
-
-          return unless @_isJustPathHashDifferent(path, current_path)
+          @_redirect step, path
+          return
 
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
@@ -390,30 +386,13 @@
           path.replace(/\?.*$/, '').replace(/\/?$/, '') isnt currentPath.replace(/\/?$/, ''))
       )
 
-    _isJustPathHashDifferent: (path, currentPath) ->
-      if ({}).toString.call(path) is '[object String]'
-        path = path.split('#')
-        currentPath = currentPath.split('#')
-
-        return path[0].replace(/\?.*$/, '').replace(/\/?$/, '') is currentPath[0].replace(/\/?$/, '') and
-          path[1] isnt currentPath[1]
-
-      false
-
     # Execute the redirect
-    _redirect: (step, i, path) ->
+    _redirect: (step, path) ->
       if $.isFunction step.redirect
         step.redirect.call this, path
       else if step.redirect is true
         @_debug "Redirect to #{step.host}#{path}"
-        if @_getState('redirect_to') is "#{i}"
-          @_debug "Error redirection loop to #{path}"
-          @_removeState 'redirect_to'
-
-          step.onRedirectError @ if step.onRedirectError?
-        else
-          @_setState 'redirect_to', "#{i}"
-          document.location.href = "#{step.host}#{path}"
+        document.location.href = "#{step.host}#{path}"
 
     _isOrphan: (step) ->
       # Do not check for is(':hidden') on svg elements. jQuery does not work properly on svg.
@@ -445,9 +424,10 @@
 
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
-        $element.addClass('tour-step-element-reflex')
-        $element.off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
-        $element.on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
+        @_reflexElement(step.reflex, $element)
+        .addClass('tour-step-element-reflex')
+        .off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
+        .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
       $element
@@ -491,7 +471,14 @@
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
-      if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
+      typeString = ({}).toString.call(reflex)
+      if typeString is '[object Boolean]' or
+         typeString is '[object String]' then 'click' else reflex
+
+    _reflexElement: (reflex, $element) ->
+      switch ({}).toString.call reflex
+        when '[object Boolean]' then $element
+        when '[object String]' then $ reflex
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
