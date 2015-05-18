@@ -10,10 +10,10 @@
     API Documentation &middot; Bootstrap Tour
   
 </title>
-<link href="/components/bootstrap/dist/css/bootstrap.min.css?2015-02-08T07%3A51%3A43%2B01%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2015-02-08T07%3A51%3A43%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2015-02-08T07%3A51%3A43%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.docs.css?2015-02-08T07%3A51%3A43%2B01%3A00" rel="stylesheet">
+<link href="/components/bootstrap/dist/css/bootstrap.min.css?2015-05-18T18%3A41%3A03%2B01%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2015-05-18T18%3A41%3A03%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2015-05-18T18%3A41%3A03%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2015-05-18T18%3A41%3A03%2B01%3A00" rel="stylesheet">
 <link href="http://boostraptour.com/api/" rel="canonical">
 <!--[if lt IE 9]><script src="/components/html5shiv/dist/html5shiv.min.js"></script><![endif]-->
 <script>
@@ -73,6 +73,7 @@ ga('send', 'pageview');
   <span class="nx">storage</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">,</span>
   <span class="nx">debug</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">backdropContainer</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span>
   <span class="nx">backdropPadding</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
   <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
@@ -103,7 +104,8 @@ ga('send', 'pageview');
   <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onRedirectError</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">});</span></code></pre></div>
     <table class="table  table-bordered table-striped">
       <thead>
@@ -180,6 +182,12 @@ ga('send', 'pageview');
           <td><code>false</code></td>
         </tr>
         <tr class="success">
+          <td>backdropContainer <span class="label label-success">NEW</span></td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the backdrop should be shown.</td>
+          <td><code>'body'</code></td>
+        </tr>
+        <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
           <td>Number|Object</td>
           <td>Add padding to the backdrop element that highlights the step element.<br>
@@ -196,7 +204,7 @@ ga('send', 'pageview');
         </tr>
         <tr>
           <td>orphan</td>
-          <td>Boolean</td>
+          <td>Boolean|String|function</td>
           <td>Allow to show the step regardless whether its element is not set, is
           not present in the page or is hidden. The step is fixed
           positioned in the middle of the page.</td>
@@ -355,12 +363,21 @@ ga('send', 'pageview');
           remaining duration.</td>
           <td><code>function (tour, duration) { }</code></td>
         </tr>
+        </tr>
+        <tr class="success">
+          <td>onRedirectError <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when there is a redirection error. This
+            happens when bootstrap tour cannot redirect to the path of the step</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
       </tbody>
     </table>
     <a id="step-options"></a>
     <h3>Step Options</h3>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tour</span><span class="p">.</span><span class="nx">addStep</span><span class="p">({</span>
   <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+  <span class="nx">host</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">placement</span><span class="o">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span>
   <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
@@ -370,6 +387,7 @@ ga('send', 'pageview');
   <span class="nx">animation</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
   <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">backdropContainer</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span>
   <span class="nx">backdropPadding</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
   <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">reflex</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
@@ -382,7 +400,8 @@ ga('send', 'pageview');
   <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="nx">onRedirectError</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
 <span class="p">});</span></code></pre></div>
     <table class="table  table-bordered table-striped">
       <thead>
@@ -399,6 +418,14 @@ ga('send', 'pageview');
           <td>String or RegExp</td>
           <td>Path to the page on which the step should be shown. This
           allows you to build tours that span several pages!</td>
+          <td><code>''</code></td>
+        </tr>
+      <tbody>
+        <tr class="success">
+          <td>host <span class="label label-success">NEW</span></td>
+          <td>String</td>
+          <td>Host of the page on which the step should be shown. This
+            allows you to build tours for several sub-domains</td>
           <td><code>''</code></td>
         </tr>
         <tr>
@@ -477,6 +504,12 @@ ga('send', 'pageview');
           <td><code>false</code></td>
         </tr>
         <tr class="success">
+          <td>backdropContainer <span class="label label-success">NEW</span></td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the backdrop should be shown.</td>
+          <td><code>'body'</code></td>
+        </tr>
+        <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
           <td>Boolean|Object</td>
           <td>Add padding to the backdrop element that highlights the step element.<br>
@@ -501,10 +534,12 @@ ga('send', 'pageview');
         </tr>
         <tr>
           <td>orphan</td>
-          <td>Boolean</td>
+          <td>Boolean|String|Function</td>
           <td>Allow to show the step regardless whether its element is not set, is
           not present in the page or is hidden. The step is fixed
-          positioned in the middle of the page.</td>
+          positioned in the middle of the page.<br>
+          You can use a string or function that returns a string of the HTML template for
+          the orphan popovers</td>
           <td><code>false</code></td>
         </tr>
         <tr class="success">
@@ -601,6 +636,14 @@ ga('send', 'pageview');
           remaining duration. It overrides the global
           <code>onResume</code> option</td>
           <td><code>function (tour, duration) { }</code></td>
+        </tr>
+        <tr class="success">
+          <td>onRedirectError <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when there is a redirection error. This
+            happens when bootstrap tour cannot redirect to the path of the step. It overrides the global
+            <code>onRedirectError</code> option</td>
+          <td><code>function (tour) { }</code></td>
         </tr>
       </tbody>
     </table>
@@ -784,12 +827,12 @@ ga('send', 'pageview');
     </div>
 </section>
 
-    <script src="/components/jquery/dist/jquery.min.js?2015-02-08T07%3A51%3A43%2B01%3A00"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.min.js?2015-02-08T07%3A51%3A43%2B01%3A00"></script>
-<script src="/components/blueimp-md5/js/md5.min.js?2015-02-08T07%3A51%3A43%2B01%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2015-02-08T07%3A51%3A43%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2015-02-08T07%3A51%3A43%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.docs.js?2015-02-08T07%3A51%3A43%2B01%3A00"></script>
+    <script src="/components/jquery/dist/jquery.min.js?2015-05-18T18%3A41%3A03%2B01%3A00"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.min.js?2015-05-18T18%3A41%3A03%2B01%3A00"></script>
+<script src="/components/blueimp-md5/js/md5.min.js?2015-05-18T18%3A41%3A03%2B01%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2015-05-18T18%3A41%3A03%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2015-05-18T18%3A41%3A03%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2015-05-18T18%3A41%3A03%2B01%3A00"></script>
 <script>
 window.twttr = (function (d,s,id) {
   var t, js, fjs = d.getElementsByTagName(s)[0];
@@ -798,6 +841,7 @@ window.twttr = (function (d,s,id) {
   return window.twttr || (t = { _e: [], ready: function(f){ t._e.push(f) } });
 }(document, "script", "twitter-wjs"));
 </script>
+<script src="//my.hellobar.com/57b1551a81424b1f77a1410e42da564bcd15c21d.js" type="text/javascript" charset="utf-8" async="async"></script>
 
   </body>
 </html>
