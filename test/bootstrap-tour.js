@@ -308,7 +308,9 @@
           current_path = [document.location.pathname, document.location.hash].join('');
           if (_this._isRedirect(step.host, path, current_path)) {
             _this._redirect(step, i, path);
-            return;
+            if (!_this._pathHashDifferent(step.host, path, current_path)) {
+              return;
+            }
           }
           if (_this._isOrphan(step)) {
             if (step.orphan === false) {
@@ -466,6 +468,27 @@
         }
       }
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
+    };
+
+    Tour.prototype._pathHashDifferent = function(host, path, currentPath) {
+      var currentPathArr, current_host, diff, pathArr;
+      if (host !== '') {
+        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
+        if (host !== current_host) {
+          return false;
+        }
+      }
+      diff = false;
+      if ({}.toString.call(path) === '[object String]') {
+        pathArr = path.split('#');
+        currentPathArr = currentPath.split('#');
+        if (path.indexOf('#') === 0) {
+          diff = pathArr[1] !== currentPathArr[1];
+        } else {
+          diff = pathArr[0].replace(/\?.*$/, '').replace(/\/?$/, '') === currentPathArr[0].replace(/\/?$/, '') && pathArr[1] !== currentPathArr[1];
+        }
+      }
+      return diff;
     };
 
     Tour.prototype._redirect = function(step, i, path) {
