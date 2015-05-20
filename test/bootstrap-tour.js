@@ -305,10 +305,10 @@
                 return step.path;
             }
           }).call(_this);
-          current_path = [document.location.pathname, document.location.hash].join('');
+          current_path = [document.location.pathname, document.location.search, document.location.hash].join('');
           if (_this._isRedirect(step.host, path, current_path)) {
             _this._redirect(step, i, path);
-            if (!_this._pathHashDifferent(step.host, path, current_path)) {
+            if (!_this._isHostDifferent(step.host, document.location.href) && !_this._isJustPathHashDifferent(path, current_path)) {
               return;
             }
           }
@@ -460,14 +460,27 @@
     };
 
     Tour.prototype._isRedirect = function(host, path, currentPath) {
-      var current_host;
       if (host !== '') {
-        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
-        if (host !== current_host) {
+        if (this._isHostDifferent(host, document.location.href)) {
           return true;
         }
       }
-      return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
+      return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && this._isPathDifferent(path, currentPath)));
+    };
+
+    Tour.prototype._isHostDifferent = function(host, currentURL) {
+      return this._getProtocol(host) !== this._getProtocol(currentURL) || this._getHost(host) !== this._getHost(currentURL);
+    };
+
+    Tour.prototype._isPathDifferent = function(path, currentPath) {
+      return this._getPath(path) !== this._getPath(currentPath) || !this._equal(this._getQuery(path), this._getQuery(currentPath)) || !this._equal(this._getHash(path), this._getHash(currentPath));
+    };
+
+    Tour.prototype._isJustPathHashDifferent = function(path, currentPath) {
+      if ({}.toString.call(path) === '[object String]') {
+        return this._getPath(path) === this._getPath(currentPath) && this._equal(this._getQuery(path), this._getQuery(currentPath)) && !this._equal(this._getHash(path), this._getHash(currentPath));
+      }
+      return false;
     };
 
     Tour.prototype._pathHashDifferent = function(host, path, currentPath) {
@@ -852,6 +865,63 @@
       window.clearTimeout(this._timer);
       this._timer = null;
       return this._duration = null;
+    };
+
+    Tour.prototype._getProtocol = function(url) {
+      url = url.split('://');
+      if (url.length > 1) {
+        return url[0];
+      } else {
+        return 'http';
+      }
+    };
+
+    Tour.prototype._getHost = function(url) {
+      url = url.split('//');
+      url = url.length > 1 ? url[1] : url[0];
+      return url.split('/')[0];
+    };
+
+    Tour.prototype._getPath = function(path) {
+      return path.replace(/\/?$/, '').split('?')[0].split('#')[0];
+    };
+
+    Tour.prototype._getQuery = function(path) {
+      return this._getParams(path, '?');
+    };
+
+    Tour.prototype._getHash = function(path) {
+      return this._getParams(path, '#');
+    };
+
+    Tour.prototype._getParams = function(path, start) {
+      var param, params, paramsObject, _i, _len;
+      params = path.split(start);
+      if (params.length === 1) {
+        return {};
+      }
+      params = params[1].split('&');
+      paramsObject = {};
+      for (_i = 0, _len = params.length; _i < _len; _i++) {
+        param = params[_i];
+        param = param.split('=');
+        paramsObject[param[0]] = param[1] || '';
+      }
+      return paramsObject;
+    };
+
+    Tour.prototype._equal = function(obj1, obj2) {
+      var k, v;
+      if ({}.toString.call(obj1) === '[object Object]' && {}.toString.call(obj2) === '[object Object]') {
+        for (k in obj1) {
+          v = obj1[k];
+          if (obj2[k] !== v) {
+            return false;
+          }
+        }
+        return true;
+      }
+      return obj1 === obj2;
     };
 
     return Tour;

@@ -397,7 +397,29 @@ describe 'Bootstrap Tour', ->
     # tour show the second step on the same element
     expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
 
-  it 'should evaluate `path correctly', ->
+  it 'should get url properties correctly', ->
+    @tour = new Tour
+
+    expect(@tour._getProtocol('http://example.com')).toBe 'http'
+    expect(@tour._getProtocol('https://example.com')).toBe 'https'
+    expect(@tour._getProtocol('www.example.com')).toBe 'http'
+    expect(@tour._getProtocol('example.com')).toBe 'http'
+
+    expect(@tour._getHost('http://example.com')).toBe 'example.com'
+    expect(@tour._getHost('www.example.com')).toBe 'www.example.com'
+    expect(@tour._getHost('example.com/path')).toBe 'example.com'
+
+    expect(@tour._getPath('/somepath?foo=bar')).toBe '/somepath'
+    expect(@tour._getPath('/somepath#foo=bar')).toBe '/somepath'
+    expect(@tour._getPath('/somepath?foo=bar#hash')).toBe '/somepath'
+
+    expect(@tour._getQuery('/somepath?one=bar')).toEqual {one: 'bar'}
+    expect(@tour._getQuery('/somepath?one=bar&two=foo')).toEqual {one: 'bar', two: 'foo'}
+
+    expect(@tour._getHash('/somepath#one=bar&two=foo')).toEqual {one: 'bar', two: 'foo'}
+    expect(@tour._getHash('/somepath#one=bar&two=foo')).toEqual {one: 'bar', two: 'foo'}
+
+  it 'should evaluate `path` correctly', ->
     @tour = new Tour
 
     # redirect if path doesn't match current path
@@ -413,32 +435,28 @@ describe 'Bootstrap Tour', ->
     # don't redirect if path matches current path with slash
     expect(@tour._isRedirect('', '/somepath', '/somepath/')).toBe false
     # don't redirect if path with query params matches current path
-    expect(@tour._isRedirect('', '/somepath?search=true', '/somepath')).toBe false
+    expect(@tour._isRedirect('', '/somepath?search=true', '/somepath')).toBe true
     # don't redirect if path with slash and query params matches current path
-    expect(@tour._isRedirect('', '/somepath/?search=true', '/somepath')).toBe false
+    expect(@tour._isRedirect('', '/somepath/?search=true', '/somepath')).toBe true
+
+    expect(@tour._isRedirect('', '/somepath?search=true&foo=bar', '/somepath')).toBe true
+    expect(@tour._isRedirect('', '/somepath?search=true&foo=bar', '/somepath?search=true')).toBe true
+    expect(@tour._isRedirect('', '/somepath?search=true&foo=bar', '/somepath?foo=bar')).toBe true
+    expect(@tour._isRedirect('', '/somepath?search=true&foo=bar', '/somepath?foo=bar&search=true')).toBe false
+    expect(@tour._isRedirect('', '/somepath?search=true&foo=bar', '/somepath?search=true&foo=bar')).toBe false
+    # don't redirect if path with query params matches current path
+    expect(@tour._isRedirect('', '/somepath#search=true', '/somepath')).toBe true
+    # don't redirect if path with slash and query params matches current path
+    expect(@tour._isRedirect('', '/somepath/#search=true', '/somepath')).toBe true
+
+    expect(@tour._isRedirect('', '/somepath#search=true&foo=bar', '/somepath')).toBe true
+    expect(@tour._isRedirect('', '/somepath#search=true&foo=bar', '/somepath#search=true')).toBe true
+    expect(@tour._isRedirect('', '/somepath#search=true&foo=bar', '/somepath#foo=bar')).toBe true
+    expect(@tour._isRedirect('', '/somepath#search=true&foo=bar', '/somepath#foo=bar&search=true')).toBe false
+    expect(@tour._isRedirect('', '/somepath#search=true&foo=bar', '/somepath#search=true&foo=bar')).toBe false
+
     # don't redirect if current path matches path regex
     expect(@tour._isRedirect '', /some*/, '/somepath').toBe false
-
-  it 'should evaluate `path` hash correctly', ->
-    @tour = new Tour
-
-    expect(@tour._pathHashDifferent('http://example.com', '', '/')).toBe false
-
-    expect(@tour._pathHashDifferent('', '#hash', '/')).toBe true
-
-    expect(@tour._pathHashDifferent('', '#hash', '/#hashtwo')).toBe true
-
-    expect(@tour._pathHashDifferent('', '/', '/#hashtwo')).toBe true
-
-    expect(@tour._pathHashDifferent('', '/anotherpath#hash', '/somepath')).toBe false
-
-    expect(@tour._pathHashDifferent('', '/anotherpath#hash', '/somepath#hash')).toBe false
-
-    expect(@tour._pathHashDifferent('', '/somepath#hash', '/somepath')).toBe true
-
-    expect(@tour._pathHashDifferent('', '/somepath#hash', '/somepath#hashtwo')).toBe true
-
-    expect(@tour._pathHashDifferent('', '/somepath', '/somepath')).toBe false
 
   it '`_getState` should return null after `_removeState` with null value', ->
     @tour = new Tour
@@ -609,6 +627,8 @@ describe 'Bootstrap Tour', ->
 
   it 'should redirect to the steps if host is different', ->
     @tour = new Tour
+    current_host = document.location.host
+
     @tour.addStep
       element: $('<div></div>').appendTo('body')
       path: 'test.html'
@@ -620,6 +640,13 @@ describe 'Bootstrap Tour', ->
       )
     )
     .toBe true
+
+    expect(
+      @tour._isRedirect(
+        current_host, @tour._options.basePath + @tour.getStep(0).path, 'test.html'
+      )
+    )
+    .toBe false
 
   it 'with `onNext` option should run the callback before showing the next step', ->
     tour_test = 0
