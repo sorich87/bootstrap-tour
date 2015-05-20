@@ -1491,6 +1491,12 @@
             return false;
           }
         }
+        for (k in obj2) {
+          v = obj2[k];
+          if (obj1[k] !== v) {
+            return false;
+          }
+        }
         return true;
       }
       return obj1 === obj2;
