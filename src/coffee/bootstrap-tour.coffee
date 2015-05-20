@@ -763,6 +763,8 @@
       ({}).toString.call(obj2) is '[object Object]'
         for k,v of obj1
           return false if obj2[k] isnt v
+        for k,v of obj2
+          return false if obj1[k] isnt v
         return true
 
       return obj1 is obj2
