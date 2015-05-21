@@ -265,10 +265,12 @@
           else step.path
 
         # Redirect to step path if not already there
-        current_path = [document.location.pathname, document.location.hash].join('')
-        if @_isRedirect step.host, path, current_path
+        if @_isRedirect step.host, path, document.location
           @_redirect step, i, path
-          return unless @_pathHashDifferent(step.host, path, current_path)
+
+          if not @_isHostDifferent(step.host, document.location.href) and not
+          @_isJustPathHashDifferent(path, document.location.href)
+            return
 
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
@@ -378,16 +380,37 @@
       window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}" if @_options.debug
 
     # Check if step path equals current document path
-    _isRedirect: (host, path, currentPath) ->
+    _isRedirect: (host, path, location) ->
       if host isnt ''
-        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname))
-        return true if host isnt current_host
+        return true if @_isHostDifferent(host, location.href)
+
+      currentPath = [
+        location.pathname,
+        location.search,
+        location.hash
+      ].join('')
 
       path? and path isnt '' and (
-        (({}).toString.call(path) is '[object RegExp]' and not path.test currentPath) or
-        (({}).toString.call(path) is '[object String]' and
-          path.replace(/\?.*$/, '').replace(/\/?$/, '') isnt currentPath.replace(/\/?$/, ''))
+        (({}).toString.call(path) is '[object RegExp]' and not path.test(currentPath)) or
+        (({}).toString.call(path) is '[object String]' and @_isPathDifferent(path, currentPath))
       )
+
+    _isHostDifferent: (host, currentURL) ->
+      @_getProtocol(host) isnt @_getProtocol(currentURL) or
+      @_getHost(host) isnt @_getHost(currentURL)
+
+    _isPathDifferent: (path, currentPath) ->
+      @_getPath(path) isnt @_getPath(currentPath) or not
+      @_equal(@_getQuery(path), @_getQuery(currentPath)) or not
+      @_equal(@_getHash(path), @_getHash(currentPath))
+
+    _isJustPathHashDifferent: (path, currentPath) ->
+      if ({}).toString.call(path) is '[object String]'
+        return @_getPath(path) is @_getPath(currentPath) and
+          @_equal(@_getQuery(path), @_getQuery(currentPath)) and not
+          @_equal(@_getHash(path), @_getHash(currentPath))
+
+      false
 
     # Check if it is just the hash part of the step path
     # and current path that is different
@@ -703,6 +726,48 @@
       @_timer = null
       @_duration = null
 
+    _getProtocol: (url) ->
+      url = url.split('://')
+      return if url.length > 1 then url[0] else 'http'
+
+    _getHost: (url) ->
+      url = url.split('//')
+      url = if url.length > 1 then  url[1] else url[0]
+
+      return url.split('/')[0]
+
+    _getPath: (path) ->
+      return path.replace(/\/?$/, '').split('?')[0].split('#')[0]
+
+    _getQuery: (path) ->
+      return @_getParams(path, '?')
+
+    _getHash: (path) ->
+      return @_getParams(path, '#')
+
+    _getParams: (path, start) ->
+      params = path.split(start)
+      return {} if params.length is 1
+
+      params = params[1].split('&')
+      paramsObject = {}
+
+      for param in params
+        param = param.split('=')
+        paramsObject[param[0]] = param[1] or ''
+
+      return paramsObject
+
+    _equal: (obj1, obj2) ->
+      if ({}).toString.call(obj1) is '[object Object]' and
+      ({}).toString.call(obj2) is '[object Object]'
+        for k,v of obj1
+          return false if obj2[k] isnt v
+        for k,v of obj2
+          return false if obj1[k] isnt v
+        return true
+
+      return obj1 is obj2
   window.Tour = Tour
 
 ) jQuery, window
