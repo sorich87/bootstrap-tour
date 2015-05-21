@@ -265,17 +265,11 @@
           else step.path
 
         # Redirect to step path if not already there
-        current_path = [
-          document.location.pathname,
-          document.location.search,
-          document.location.hash
-        ].join('')
-
-        if @_isRedirect step.host, path, current_path
+        if @_isRedirect step.host, path, document.location
           @_redirect step, i, path
 
           if not @_isHostDifferent(step.host, document.location.href) and not
-          @_isJustPathHashDifferent(path, current_path)
+          @_isJustPathHashDifferent(path, document.location.href)
             return
 
         # Skip if step is orphan and orphan options is false
@@ -386,9 +380,15 @@
       window.console.log "Bootstrap Tour '#{@_options.name}' | #{text}" if @_options.debug
 
     # Check if step path equals current document path
-    _isRedirect: (host, path, currentPath) ->
+    _isRedirect: (host, path, location) ->
       if host isnt ''
-        return true if @_isHostDifferent(host, document.location.href)
+        return true if @_isHostDifferent(host, location.href)
+
+      currentPath = [
+        location.pathname,
+        location.search,
+        location.hash
+      ].join('')
 
       path? and path isnt '' and (
         (({}).toString.call(path) is '[object RegExp]' and not path.test(currentPath)) or
