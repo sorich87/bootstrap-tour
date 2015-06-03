@@ -382,7 +382,12 @@
     # Check if step path equals current document path
     _isRedirect: (host, path, location) ->
       if host isnt ''
-        return true if @_isHostDifferent(host, location.href)
+        currentHostURL = "#{location.protocol}//#{location.host}"
+
+        return true if (
+          (({}).toString.call(host) is '[object RegExp]' and not host.test(currentHostURL)) or
+          (({}).toString.call(host) is '[object String]' and @_isHostDifferent(host, location.href))
+        )
 
       currentPath = [
         location.pathname,
