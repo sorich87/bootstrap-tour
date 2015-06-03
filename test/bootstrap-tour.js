@@ -293,7 +293,7 @@
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
       showStepHelper = (function(_this) {
         return function(e) {
-          var current_path, path, showPopoverAndOverlay;
+          var path, showPopoverAndOverlay;
           _this.setCurrentStep(i);
           path = (function() {
             switch ({}.toString.call(step.path)) {
@@ -305,10 +305,9 @@
                 return step.path;
             }
           }).call(_this);
-          current_path = [document.location.pathname, document.location.search, document.location.hash].join('');
-          if (_this._isRedirect(step.host, path, current_path)) {
+          if (_this._isRedirect(step.host, path, document.location)) {
             _this._redirect(step, i, path);
-            if (!_this._isHostDifferent(step.host, document.location.href) && !_this._isJustPathHashDifferent(path, current_path)) {
+            if (!_this._isHostDifferent(step.host, document.location.href) && !_this._isJustPathHashDifferent(path, document.location.href)) {
               return;
             }
           }
@@ -459,12 +458,14 @@
       }
     };
 
-    Tour.prototype._isRedirect = function(host, path, currentPath) {
+    Tour.prototype._isRedirect = function(host, path, location) {
+      var currentPath;
       if (host !== '') {
-        if (this._isHostDifferent(host, document.location.href)) {
+        if (this._isHostDifferent(host, location.href)) {
           return true;
         }
       }
+      currentPath = [location.pathname, location.search, location.hash].join('');
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && this._isPathDifferent(path, currentPath)));
     };
 
