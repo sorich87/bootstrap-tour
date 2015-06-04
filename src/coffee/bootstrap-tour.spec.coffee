@@ -737,23 +737,23 @@ describe 'Bootstrap Tour', ->
     @tour.addStep
       element: $('<div></div>').appendTo('body')
       path: 'test.html'
-      host: 'http://sub.exemple.com'
+      host: 'http://sub.example.com'
 
     @tour.addStep
       element: $('<div></div>').appendTo('body')
       path: 'test.html'
-      host: /exemple\.com$/
+      host: /example\.com$/
 
     expect(
       @tour._isRedirect(
         @tour.getStep(0).host,
         @tour._options.basePath + @tour.getStep(0).path,
         {
-          href: 'http://exemple.com/test.html',
+          href: 'http://example.com/test.html',
           pathname: 'test.html',
           search: '',
           hash: '',
-          host: 'exemple.com',
+          host: 'example.com',
           protocol: 'http'
         }
       )
@@ -779,11 +779,11 @@ describe 'Bootstrap Tour', ->
         @tour.getStep(1).host,
         @tour._options.basePath + @tour.getStep(1).path,
         {
-          href: 'http://sub.exemple.com/test.html',
+          href: 'http://sub.example.com/test.html',
           pathname: 'test.html',
           search: '',
           hash: '',
-          host: 'sub.exemple.com',
+          host: 'sub.example.com',
           protocol: 'http'
         }
       )
@@ -794,11 +794,11 @@ describe 'Bootstrap Tour', ->
         @tour.getStep(1).host,
         @tour._options.basePath + @tour.getStep(1).path,
         {
-          href: 'http://exemple.com/test.html',
+          href: 'http://example.com/test.html',
           pathname: 'test.html',
           search: '',
           hash: '',
-          host: 'exemple.com',
+          host: 'example.com',
           protocol: 'http'
         }
       )
@@ -809,7 +809,7 @@ describe 'Bootstrap Tour', ->
         @tour.getStep(1).host,
         @tour._options.basePath + @tour.getStep(1).path,
         {
-          href: 'http://anotherexemple.com/test.html',
+          href: 'http://anotherexample.com/test.html',
           pathname: 'test.html',
           search: '',
           hash: '',
