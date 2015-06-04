@@ -737,13 +737,25 @@ describe 'Bootstrap Tour', ->
     @tour.addStep
       element: $('<div></div>').appendTo('body')
       path: 'test.html'
-      host: 'http://sub.exemple.com'
+      host: 'http://sub.example.com'
+
+    @tour.addStep
+      element: $('<div></div>').appendTo('body')
+      path: 'test.html'
+      host: /example\.com$/
 
     expect(
       @tour._isRedirect(
         @tour.getStep(0).host,
         @tour._options.basePath + @tour.getStep(0).path,
-        href: 'http://exemple.com/test.html' , pathname: 'test.html', search: '', hash: ''
+        {
+          href: 'http://example.com/test.html',
+          pathname: 'test.html',
+          search: '',
+          hash: '',
+          host: 'example.com',
+          protocol: 'http'
+        }
       )
     ).toBe true
 
@@ -751,9 +763,61 @@ describe 'Bootstrap Tour', ->
       @tour._isRedirect(
         current_host,
         @tour._options.basePath + @tour.getStep(0).path,
-        href: "http://#{current_host}/test.html" , pathname: 'test.html', search: '', hash: ''
+        {
+          href: "http://#{current_host}/test.html",
+          pathname: 'test.html',
+          search: '',
+          hash: '',
+          host: current_host,
+          protocol: 'http'
+        }
       )
     ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        @tour.getStep(1).host,
+        @tour._options.basePath + @tour.getStep(1).path,
+        {
+          href: 'http://sub.example.com/test.html',
+          pathname: 'test.html',
+          search: '',
+          hash: '',
+          host: 'sub.example.com',
+          protocol: 'http'
+        }
+      )
+    ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        @tour.getStep(1).host,
+        @tour._options.basePath + @tour.getStep(1).path,
+        {
+          href: 'http://example.com/test.html',
+          pathname: 'test.html',
+          search: '',
+          hash: '',
+          host: 'example.com',
+          protocol: 'http'
+        }
+      )
+    ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        @tour.getStep(1).host,
+        @tour._options.basePath + @tour.getStep(1).path,
+        {
+          href: 'http://anotherexample.com/test.html',
+          pathname: 'test.html',
+          search: '',
+          hash: '',
+          host: 'another.com',
+          protocol: 'http'
+        }
+      )
+    ).toBe true
 
   it 'with `onNext` option should run the callback before showing the next step', ->
     tour_test = 0
