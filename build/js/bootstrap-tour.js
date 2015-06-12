@@ -712,6 +712,16 @@
           e.preventDefault();
           return _this.end();
         };
+      })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause']", (function(_this) {
+        return function(e) {
+          e.preventDefault();
+          return _this.pause();
+        };
+      })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='resume']", (function(_this) {
+        return function(e) {
+          e.preventDefault();
+          return _this.resume();
+        };
       })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']", function(e) {
         var $this;
         e.preventDefault();
