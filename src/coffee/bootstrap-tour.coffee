@@ -268,9 +268,7 @@
         if @_isRedirect step.host, path, document.location
           @_redirect step, i, path
 
-          if not @_isHostDifferent(step.host, document.location.href) and
-          @_isJustPathHashDifferent(path, document.location.href)
-            return
+          return unless @_isJustPathHashDifferent(step.host, path, document.location)
 
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
@@ -404,7 +402,16 @@
       @_equal(@_getQuery(path), @_getQuery(currentPath)) or not
       @_equal(@_getHash(path), @_getHash(currentPath))
 
-    _isJustPathHashDifferent: (path, currentPath) ->
+    _isJustPathHashDifferent: (host, path, location) ->
+      if host isnt ''
+        return false if @_isHostDifferent(host, location.href)
+
+      currentPath = [
+        location.pathname,
+        location.search,
+        location.hash
+      ].join('')
+
       if ({}).toString.call(path) is '[object String]'
         return @_getPath(path) is @_getPath(currentPath) and
           @_equal(@_getQuery(path), @_getQuery(currentPath)) and not
