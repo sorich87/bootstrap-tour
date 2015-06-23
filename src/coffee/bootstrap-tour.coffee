@@ -268,7 +268,7 @@
         if @_isRedirect step.host, path, document.location
           @_redirect step, i, path
 
-          if not @_isHostDifferent(step.host, document.location.href) and not
+          if not @_isHostDifferent(step.host, document.location.href) and
           @_isJustPathHashDifferent(path, document.location.href)
             return
 
@@ -411,28 +411,6 @@
           @_equal(@_getHash(path), @_getHash(currentPath))
 
       false
-
-    # Check if it is just the hash part of the step path
-    # and current path that is different
-    _pathHashDifferent: (host, path, currentPath) ->
-      if host isnt ''
-        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname))
-        return false if host isnt current_host
-
-      diff = false
-      if ({}).toString.call(path) is '[object String]'
-        pathArr = path.split('#')
-        currentPathArr = currentPath.split('#')
-
-        if path.indexOf('#') is 0
-          # Compare just hash part when the step path is an anchor
-          diff = pathArr[1] isnt currentPathArr[1]
-        else
-          # Compare both pathname and hash parts
-          diff = pathArr[0].replace(/\?.*$/, '').replace(/\/?$/, '') is currentPathArr[0].replace(/\/?$/, '') and
-          pathArr[1] isnt currentPathArr[1]
-
-      diff
 
     # Execute the redirect
     _redirect: (step, i, path) ->
