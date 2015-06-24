@@ -651,10 +651,11 @@ describe 'Bootstrap Tour', ->
     document.location.hash = ''
 
   it '`showStep` show the step when the path is an anchor', ->
+    current_path = location.pathname
     @tour = new Tour
     @tour.addStep
       element: $('<div></div>').appendTo('body')
-      path: '#mytest'
+      path: "#{current_path}#mytest"
     @tour.showStep(0)
     expect(@tour.getStep(0).element.data('bs.popover').tip().filter(':visible').length).toBe 1 # tour shows correct step
     document.location.hash = ''

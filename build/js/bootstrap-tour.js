@@ -307,7 +307,7 @@
           }).call(_this);
           if (_this._isRedirect(step.host, path, document.location)) {
             _this._redirect(step, i, path);
-            if (!_this._isHostDifferent(step.host, document.location.href) && !_this._isJustPathHashDifferent(path, document.location.href)) {
+            if (!_this._isJustPathHashDifferent(step.host, path, document.location)) {
               return;
             }
           }
@@ -477,32 +477,18 @@
       return this._getPath(path) !== this._getPath(currentPath) || !this._equal(this._getQuery(path), this._getQuery(currentPath)) || !this._equal(this._getHash(path), this._getHash(currentPath));
     };
 
-    Tour.prototype._isJustPathHashDifferent = function(path, currentPath) {
+    Tour.prototype._isJustPathHashDifferent = function(host, path, location) {
+      var currentPath;
+      if (host !== '') {
+        if (this._isHostDifferent(host, location.href)) {
+          return false;
+        }
+      }
+      currentPath = [location.pathname, location.search, location.hash].join('');
       if ({}.toString.call(path) === '[object String]') {
         return this._getPath(path) === this._getPath(currentPath) && this._equal(this._getQuery(path), this._getQuery(currentPath)) && !this._equal(this._getHash(path), this._getHash(currentPath));
       }
       return false;
-    };
-
-    Tour.prototype._pathHashDifferent = function(host, path, currentPath) {
-      var currentPathArr, current_host, diff, pathArr;
-      if (host !== '') {
-        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
-        if (host !== current_host) {
-          return false;
-        }
-      }
-      diff = false;
-      if ({}.toString.call(path) === '[object String]') {
-        pathArr = path.split('#');
-        currentPathArr = currentPath.split('#');
-        if (path.indexOf('#') === 0) {
-          diff = pathArr[1] !== currentPathArr[1];
-        } else {
-          diff = pathArr[0].replace(/\?.*$/, '').replace(/\/?$/, '') === currentPathArr[0].replace(/\/?$/, '') && pathArr[1] !== currentPathArr[1];
-        }
-      }
-      return diff;
     };
 
     Tour.prototype._redirect = function(step, i, path) {
