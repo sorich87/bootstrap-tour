@@ -878,8 +878,10 @@
             }
           }).call(_this);
           if (_this._isRedirect(step.host, path, document.location)) {
-            _this._redirect(step, i, path);
-            if (!_this._isJustPathHashDifferent(step.host, path, document.location)) {
+            if (_this._isJustPathHashDifferent(step.host, path, document.location)) {
+              _this._redirect(step, i, path);
+            } else {
+              _this._redirect(step, i, path);
               return;
             }
           }
@@ -1470,23 +1472,34 @@
     };
 
     Tour.prototype._equal = function(obj1, obj2) {
-      var k, v;
+      var k, obj1Keys, obj2Keys, v, _i, _len;
       if ({}.toString.call(obj1) === '[object Object]' && {}.toString.call(obj2) === '[object Object]') {
+        obj1Keys = Object.keys(obj1);
+        obj2Keys = Object.keys(obj2);
+        if (obj1Keys.length !== obj2Keys.length) {
+          return false;
+        }
         for (k in obj1) {
           v = obj1[k];
-          if (obj2[k] !== v) {
-            return false;
-          }
-        }
-        for (k in obj2) {
-          v = obj2[k];
-          if (obj1[k] !== v) {
+          if (!this._equal(obj2[k], v)) {
             return false;
           }
         }
         return true;
+      } else if ({}.toString.call(obj1) === '[object Array]' && {}.toString.call(obj2) === '[object Array]') {
+        if (obj1.length !== obj2.length) {
+          return false;
+        }
+        for (k = _i = 0, _len = obj1.length; _i < _len; k = ++_i) {
+          v = obj1[k];
+          if (!this._equal(v, obj2[k])) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return obj1 === obj2;
       }
-      return obj1 === obj2;
     };
 
     return Tour;
