@@ -48,6 +48,27 @@
 .popover[class*="tour-"] {
   z-index: 1100;
 }
+.popover[class*="tour-"] .popover-indicators .carousel-indicators {
+  position: static;
+  margin: 0px auto 3px;
+  width: 100%;
+  height: 10px;
+  line-height: 8px;
+}
+.popover[class*="tour-"] .popover-indicators .carousel-indicators li {
+  width: 8px;
+  height: 8px;
+  background-color: #CCC;
+  margin: 0px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.popover[class*="tour-"] .popover-indicators .carousel-indicators li.active {
+  width: 8px;
+  height: 8px;
+  background-color: #999;
+}
 .popover[class*="tour-"] .popover-navigation {
   padding: 9px 14px;
 }

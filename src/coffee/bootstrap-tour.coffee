@@ -28,6 +28,7 @@
           <div class="arrow"></div>
           <h3 class="popover-title"></h3>
           <div class="popover-content"></div>
+          <div class="popover-indicators"></div>
           <div class="popover-navigation">
             <div class="btn-group">
               <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button>
@@ -40,6 +41,25 @@
             <button class="btn btn-sm btn-default" data-role="end">End tour</button>
           </div>
         </div>'
+        indicatorsTemplate: (index, steps) ->
+
+          template = '<ol class="carousel-indicators">'
+
+          for i in [0...steps.length] by 1
+
+            template += '
+              <li data-role="indicator" data-step-to="' + i + '"'
+
+            if i == index
+              template += ' class="active"'
+
+            template += '>' + steps[i].title + '</li>'
+
+          template += '</ol>'
+
+          return template
+
+        indicators: false
         afterSetState: (key, value) ->
         afterGetState: (key, value) ->
         afterRemoveState: (key) ->
@@ -100,6 +120,8 @@
           duration: @_options.duration
           delay: @_options.delay
           template: @_options.template
+          indicatorsTemplate: @_options.indicatorsTemplate
+          indicators: @_options.indicators
           onShow: @_options.onShow
           onShown: @_options.onShown
           onHide: @_options.onHide
@@ -498,10 +520,20 @@
         template = step.orphan
 
       $template = if $.isFunction template then $(template i, step) else $(template)
+      $popoverIndicators = $template.find '.popover-indicators'
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
       $resume = $navigation.find '[data-role="pause-resume"]'
+
+      if step.indicators
+        if $.isFunction step.indicatorsTemplate
+          indicatorsTemplate = step.indicatorsTemplate i, @_options.steps
+        else
+          indicatorsTemplate = step.indicatorsTemplate
+        $popoverIndicators.append indicatorsTemplate
+      else
+        $popoverIndicators.hide()
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
@@ -594,6 +626,7 @@
       .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']")
       .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']")
       .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='pause-resume']")
+      .off("click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='indicator']")
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='next']", (e) =>
         e.preventDefault()
         @next()
@@ -609,6 +642,9 @@
 
         $this.text if _this._paused then $this.data 'pause-text' else $this.data 'resume-text'
         if _this._paused then _this.resume() else _this.pause()
+      .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='indicator']", (e) =>
+        e.preventDefault()
+        @goTo($(e.target).data 'step-to')
 
     # Keyboard navigation
     _initKeyboardNavigation: ->

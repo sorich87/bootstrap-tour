@@ -678,7 +678,21 @@
         duration: false,
         delay: false,
         basePath: '',
-        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
+        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-indicators"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
+        indicatorsTemplate: function(index, steps) {
+          var i, template, _i, _ref;
+          template = '<ol class="carousel-indicators">';
+          for (i = _i = 0, _ref = steps.length; _i < _ref; i = _i += 1) {
+            template += '<li data-role="indicator" data-step-to="' + i + '"';
+            if (i === index) {
+              template += ' class="active"';
+            }
+            template += '>' + steps[i].title + '</li>';
+          }
+          template += '</ol>';
+          return template;
+        },
+        indicators: false,
         afterSetState: function(key, value) {},
         afterGetState: function(key, value) {},
         afterRemoveState: function(key) {},
@@ -743,6 +757,8 @@
           duration: this._options.duration,
           delay: this._options.delay,
           template: this._options.template,
+          indicatorsTemplate: this._options.indicatorsTemplate,
+          indicators: this._options.indicators,
           onShow: this._options.onShow,
           onShown: this._options.onShown,
           onHide: this._options.onHide,
@@ -1195,16 +1211,27 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $resume, $template, template;
+      var $navigation, $next, $popoverIndicators, $prev, $resume, $template, indicatorsTemplate, template;
       template = step.template;
       if (this._isOrphan(step) && {}.toString.call(step.orphan) !== '[object Boolean]') {
         template = step.orphan;
       }
       $template = $.isFunction(template) ? $(template(i, step)) : $(template);
+      $popoverIndicators = $template.find('.popover-indicators');
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');
       $resume = $navigation.find('[data-role="pause-resume"]');
+      if (step.indicators) {
+        if ($.isFunction(step.indicatorsTemplate)) {
+          indicatorsTemplate = step.indicatorsTemplate(i, this._options.steps);
+        } else {
+          indicatorsTemplate = step.indicatorsTemplate;
+        }
+        $popoverIndicators.append(indicatorsTemplate);
+      } else {
+        $popoverIndicators.hide();
+      }
       if (this._isOrphan(step)) {
         $template.addClass('orphan');
       }
@@ -1315,7 +1342,7 @@
     Tour.prototype._initMouseNavigation = function() {
       var _this;
       _this = this;
-      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']", (function(_this) {
+      return $(document).off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='pause-resume']").off("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='indicator']").on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='next']", (function(_this) {
         return function(e) {
           e.preventDefault();
           return _this.next();
@@ -1340,7 +1367,12 @@
         } else {
           return _this.pause();
         }
-      });
+      }).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='indicator']", (function(_this) {
+        return function(e) {
+          e.preventDefault();
+          return _this.goTo($(e.target).data('step-to'));
+        };
+      })(this));
     };
 
     Tour.prototype._initKeyboardNavigation = function() {

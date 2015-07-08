@@ -66,6 +66,13 @@ $ ->
       reflex: true
     ,
       path: "/api"
+      element: "#indicators"
+      placement: "bottom"
+      title: "Indicators"
+      content: "Show indicators for feedback and navigation!"
+      indicators: true
+    ,
+      path: "/api"
       title: "And support for orphan steps"
       content: """
       If you activate the orphan property, the step(s) are shown centered in the page, and you can

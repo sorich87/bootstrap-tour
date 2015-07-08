@@ -227,6 +227,25 @@ describe 'Bootstrap Tour', ->
           <button class="btn btn-sm btn-default" data-role="end">End tour</button>
         </nav>
       </div>'
+      indicatorsTemplate: (index, steps) ->
+
+        template = '<ol class="carousel-indicators">'
+
+        for i in [0...steps.length] by 1
+
+          template += '
+            <li data-role="indicator" data-step-to="' + i + '"'
+
+          if i == index
+            template += ' class="active"'
+
+          template += '>' + steps[i].title + '</li>'
+
+        template += '</ol>'
+
+        return template
+
+      indicators: false
       onShow: (tour) ->
       onShown: (tour) ->
       onHide: (tour) ->
@@ -830,6 +849,7 @@ describe 'Bootstrap Tour', ->
           <div class="arrow"></div>
           <h3 class="popover-title"></h3>
           <div class="popover-content"></div>
+          <div class="popover-indicators"></div>
           <div class="popover-navigation">
             <a data-role="prev"></a>
             <a data-role="next"></a>
@@ -983,6 +1003,43 @@ describe 'Bootstrap Tour', ->
     @tour.end()
     expect(@tour._timer).toBe null
     expect(@tour._duration).toBe null
+
+  #indicators
+  it 'should show indicators', ->
+    @tour = new Tour
+      indicators: true
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    expect($('.popover .popover-indicators li').length).toBe 2
+  
+  it 'should show / not show indicators if overwritten by step', ->
+    @tour = new Tour
+    @tour.addStep(element: $('<div></div>').appendTo('body'), indicators: true)
+    @tour.addStep(element: $('<div></div>').appendTo('body'), indicators: false)
+    @tour.start()
+    expect($('.popover .popover-indicators li').length).toBe 2
+    @tour.next()
+    expect($('.popover .popover-indicators li').length).toBe 0
+    
+  it 'should render a custom indicatorsTemplate string', ->
+    @tour = new Tour
+      indicators: true
+      indicatorsTemplate: '<div>test</div>'
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    expect($('.popover .popover-indicators').first().html()).toBe '<div>test</div>'
+    
+  it 'should render a custom indicatorsTemplate function', ->
+    @tour = new Tour
+      indicators: true
+      indicatorsTemplate: (index, steps) -> "<div>#{index}, #{steps.length}</div>"
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    @tour.next()
+    expect($('.popover .popover-indicators').first().html()).toBe '<div>1, 3</div>'
 
   ### TODO: fix $.support.transition conflict between jquery and bootstrap
   it 'should not display inactive popover upon rapid navigation', ->

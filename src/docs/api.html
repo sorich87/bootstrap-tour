@@ -207,6 +207,7 @@ var tour = new Tour({
   <div class='arrow'></div>
   <h3 class='popover-title'></h3>
   <div class='popover-content'></div>
+  <div class="popover-indicators"></div>
   <div class='popover-navigation'>
     <button class='btn btn-default' data-role='prev'>« Prev</button>
     <span data-role='separator'>|</span>
@@ -214,6 +215,46 @@ var tour = new Tour({
     <button class='btn btn-default' data-role='end'>End tour</button>
   </div>
 </div>"
+{% endhighlight %}
+          </td>
+        </tr>
+        <tr class="success">
+          <td>indicators <span class="label label-success">NEW</span></td>
+          <td>Boolean</td>
+          <td>Show a listing of all steps for feedback and navigation.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr class="success">
+          <td>indicatorsTemplate <span class="label label-success">NEW</span></td>
+          <td>String|Function</td>
+          <td>
+            String or function that returns a string of the HTML template for
+            the indicators. If you pass a Function, two parameters are available:
+            <strong>index</strong> is the position of step in the tour and
+            <strong>steps</strong> is the array of objects that contains all the steps.
+          </td>
+          <td>
+{% highlight javascript %}
+function(step, index) {
+  var i, template, _i, _ref;
+  template = '<ol class="carousel-indicators">';
+  for (i = _i = 0, _ref = this._options.steps.length; _i < _ref; i = _i += 1) {
+    template += '<li data-role="indicator" data-step-to="' + i + '"';
+    if (i === index) {
+      template += ' class="active"';
+    }
+    template += '>' + this._options.steps[i].title + '</li>';
+  }
+  template += '</ol>';
+  return template;
+}
+{% endhighlight %}
+            which generates a ordered list, e.g.:
+{% highlight html %}
+<ol class="carousel-indicators">
+  <li data-role="indicator" data-step-to="0" class="active">Title of my step</li>
+  <li data-role="indicator" data-step-to="1">"Title of other step</li>
+</ol>
 {% endhighlight %}
           </td>
         </tr>
@@ -524,6 +565,7 @@ tour.addStep({
   <div class='arrow'></div>
   <h3 class='popover-title'></h3>
   <div class='popover-content'></div>
+  <div class="popover-indicators"></div>
   <div class='popover-navigation'>
     <button class='btn btn-default' data-role='prev'>« Prev</button>
     <span data-role='separator'>|</span>
@@ -531,6 +573,46 @@ tour.addStep({
     <button class='btn btn-default' data-role='end'>End tour</button>
   </div>
 </div>"
+{% endhighlight %}
+          </td>
+        </tr>
+        <tr class="success">
+          <td id="indicators">indicators <span class="label label-success">NEW</span></td>
+          <td>Boolean</td>
+          <td>Show a listing of all steps for feedback and navigation in this step.</td>
+          <td><code>false</code></td>
+        </tr>
+        <tr class="success">
+          <td>indicatorsTemplate <span class="label label-success">NEW</span></td>
+          <td>String|Function</td>
+          <td>
+            String or function that returns a string of the HTML template for
+            the indicators of this step. If you pass a Function, two parameters are available:
+            <strong>index</strong> is the position of step in the tour and
+            <strong>steps</strong> is the array of objects that contains all the steps.
+          </td>
+          <td>
+{% highlight javascript %}
+function(step, index) {
+  var i, template, _i, _ref;
+  template = '<ol class="carousel-indicators">';
+  for (i = _i = 0, _ref = this._options.steps.length; _i < _ref; i = _i += 1) {
+    template += '<li data-role="indicator" data-step-to="' + i + '"';
+    if (i === index) {
+      template += ' class="active"';
+    }
+    template += '>' + this._options.steps[i].title + '</li>';
+  }
+  template += '</ol>';
+  return template;
+}
+{% endhighlight %}
+            which generates a ordered list, e.g.:
+{% highlight html %}
+<ol class="carousel-indicators">
+  <li data-role="indicator" data-step-to="0" class="active">Title of my step</li>
+  <li data-role="indicator" data-step-to="1">"Title of other step</li>
+</ol>
 {% endhighlight %}
           </td>
         </tr>
