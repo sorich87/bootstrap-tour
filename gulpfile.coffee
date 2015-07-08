@@ -131,7 +131,7 @@ gulp.task 'test-go', ['test-coffee'], (done) ->
 
 # docs
 gulp.task 'docs-build', ['coffee', 'less'], (done) ->
-  spawn 'jekyll', ['build']
+  spawn `(process.platform === "win32" ? "jekyll.bat" : "jekyll")`, ['build']
     .on 'close', done
 
 gulp.task 'docs-copy', ['docs-build'], ->
