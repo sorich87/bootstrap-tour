@@ -64,6 +64,7 @@ gulp.task 'coffee-standalone', ->
   streamqueue objectMode: true,
     gulp
     .src [
+      "./bower_components/bootstrap/js/transition.js"
       "./bower_components/bootstrap/js/tooltip.js"
       "./bower_components/bootstrap/js/popover.js"
     ]
