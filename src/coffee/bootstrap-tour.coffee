@@ -507,6 +507,7 @@
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
+      $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
       $prev.addClass('disabled') if step.prev < 0
       $next.addClass('disabled') if step.next < 0
       $resume.remove() unless step.duration
@@ -661,17 +662,18 @@
     _showOverlayElement: (step) ->
       $element = $ step.element
 
-      return if not $element or $element.length is 0 or @backdrop.overlayElementShown
+      return if not $element or $element.length is 0
 
-      @backdrop.overlayElementShown = true
-      @backdrop.$element = $element.addClass 'tour-step-backdrop'
-      @backdrop.$background = $ '<div>', class: 'tour-step-background'
+      if !@backdrop.overlayElementShown
+        @backdrop.$element = $element.addClass 'tour-step-backdrop'
+        @backdrop.$background = $ '<div>', class: 'tour-step-background'
+        @backdrop.$background.appendTo(step.backdropContainer)
+        @backdrop.overlayElementShown = true
+
       elementData =
         width: $element.innerWidth()
         height: $element.innerHeight()
         offset: $element.offset()
-
-      @backdrop.$background.appendTo(step.backdropContainer)
 
       elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
       @backdrop
