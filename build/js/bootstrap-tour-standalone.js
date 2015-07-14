@@ -1211,9 +1211,6 @@
         $template.addClass('orphan');
       }
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
-      if (step.reflex) {
-        $template.addClass("tour-" + this._options.name + "-reflex");
-      }
       if (step.prev < 0) {
         $prev.addClass('disabled');
       }
