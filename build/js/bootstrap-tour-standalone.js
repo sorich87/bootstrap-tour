@@ -1422,20 +1422,22 @@
     Tour.prototype._showOverlayElement = function(step) {
       var $element, elementData;
       $element = $(step.element);
-      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
+      if (!$element || $element.length === 0) {
         return;
       }
-      this.backdrop.overlayElementShown = true;
-      this.backdrop.$element = $element.addClass('tour-step-backdrop');
-      this.backdrop.$background = $('<div>', {
-        "class": 'tour-step-background'
-      });
+      if (!this.backdrop.overlayElementShown) {
+        this.backdrop.$element = $element.addClass('tour-step-backdrop');
+        this.backdrop.$background = $('<div>', {
+          "class": 'tour-step-background'
+        });
+        this.backdrop.$background.appendTo(step.backdropContainer);
+        this.backdrop.overlayElementShown = true;
+      }
       elementData = {
         width: $element.innerWidth(),
         height: $element.innerHeight(),
         offset: $element.offset()
       };
-      this.backdrop.$background.appendTo(step.backdropContainer);
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
       }
