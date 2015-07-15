@@ -22,7 +22,7 @@
         redirect: true
         orphan: false
         duration: false
-        delay: false
+        delay: 0
         basePath: ''
         template: '<div class="popover" role="tooltip">
           <div class="arrow"></div>
@@ -299,13 +299,7 @@
         # Play step timer
         @resume() if step.duration
 
-      if step.delay
-        @_debug "Wait #{step.delay} milliseconds to show the step #{@_current + 1}"
-        window.setTimeout =>
-          @_callOnPromiseDone promise, showStepHelper
-        , step.delay
-      else
-        @_callOnPromiseDone promise, showStepHelper
+      @_callOnPromiseDone promise, showStepHelper
 
       promise
 
@@ -481,6 +475,7 @@
         container: step.container
         template: step.template
         selector: step.element
+        delay: step.delay
       )
       .popover 'show'
 
