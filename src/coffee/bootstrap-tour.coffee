@@ -252,7 +252,16 @@
 
         step.onHidden(@) if step.onHidden?
 
-      @_callOnPromiseDone promise, hideStepHelper
+      hideDelay = step.delay.hide || step.delay
+
+      if hideDelay
+        @_debug "Wait #{hideDelay} milliseconds to hide the step #{@_current + 1}"
+        window.setTimeout =>
+          @_callOnPromiseDone promise, hideStepHelper
+        , hideDelay
+      else
+        @_callOnPromiseDone promise, hideStepHelper
+
       promise
 
     # Show the specified step
@@ -313,11 +322,13 @@
         # Play step timer
         @resume() if step.duration
 
-      if step.delay
-        @_debug "Wait #{step.delay} milliseconds to show the step #{@_current + 1}"
+      showDelay = step.delay.show || step.delay
+
+      if showDelay
+        @_debug "Wait #{showDelay} milliseconds to show the step #{@_current + 1}"
         window.setTimeout =>
           @_callOnPromiseDone promise, showStepHelper
-        , step.delay
+        , showDelay
       else
         @_callOnPromiseDone promise, showStepHelper
 

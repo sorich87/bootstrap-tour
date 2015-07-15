@@ -893,7 +893,7 @@
     };
 
     Tour.prototype.hideStep = function(i, iNext) {
-      var hideStepHelper, promise, step;
+      var hideDelay, hideStepHelper, promise, step;
       step = this.getStep(i);
       if (!step) {
         return;
@@ -922,12 +922,22 @@
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, hideStepHelper);
+      hideDelay = step.delay.hide || step.delay;
+      if (hideDelay) {
+        this._debug("Wait " + hideDelay + " milliseconds to hide the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, hideStepHelper);
+          };
+        })(this), hideDelay);
+      } else {
+        this._callOnPromiseDone(promise, hideStepHelper);
+      }
       return promise;
     };
 
     Tour.prototype.showStep = function(i) {
-      var promise, showStepHelper, skipToPrevious, step;
+      var promise, showDelay, showStepHelper, skipToPrevious, step;
       if (this.ended()) {
         this._debug('Tour ended, showStep prevented.');
         return this;
@@ -996,13 +1006,14 @@
           }
         };
       })(this);
-      if (step.delay) {
-        this._debug("Wait " + step.delay + " milliseconds to show the step " + (this._current + 1));
+      showDelay = step.delay.show || step.delay;
+      if (showDelay) {
+        this._debug("Wait " + showDelay + " milliseconds to show the step " + (this._current + 1));
         window.setTimeout((function(_this) {
           return function() {
             return _this._callOnPromiseDone(promise, showStepHelper);
           };
-        })(this), step.delay);
+        })(this), showDelay);
       } else {
         this._callOnPromiseDone(promise, showStepHelper);
       }
@@ -1402,13 +1413,6 @@
               if (_this._current > 0) {
                 return _this.prev();
               }
-<<<<<<< HEAD
-              break;
-            case 27:
-              e.preventDefault();
-              return _this.end();
-=======
->>>>>>> 5e3de44... Remove the esc key behavior
           }
         };
       })(this));
