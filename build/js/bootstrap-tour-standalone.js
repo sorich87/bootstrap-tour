@@ -881,7 +881,7 @@
     };
 
     Tour.prototype.hideStep = function(i) {
-      var hideStepHelper, promise, step;
+      var hideDelay, hideStepHelper, promise, step;
       step = this.getStep(i);
       if (!step) {
         return;
@@ -907,12 +907,22 @@
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, hideStepHelper);
+      hideDelay = step.delay.hide || step.delay;
+      if (hideDelay) {
+        this._debug("Wait " + hideDelay + " milliseconds to hide the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, hideStepHelper);
+          };
+        })(this), hideDelay);
+      } else {
+        this._callOnPromiseDone(promise, hideStepHelper);
+      }
       return promise;
     };
 
     Tour.prototype.showStep = function(i) {
-      var promise, showStepHelper, skipToPrevious, step;
+      var promise, showDelay, showStepHelper, skipToPrevious, step;
       if (this.ended()) {
         this._debug('Tour ended, showStep prevented.');
         return this;
@@ -983,7 +993,17 @@
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, showStepHelper);
+      showDelay = step.delay.show || step.delay;
+      if (showDelay) {
+        this._debug("Wait " + showDelay + " milliseconds to show the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, showStepHelper);
+          };
+        })(this), showDelay);
+      } else {
+        this._callOnPromiseDone(promise, showStepHelper);
+      }
       return promise;
     };
 
