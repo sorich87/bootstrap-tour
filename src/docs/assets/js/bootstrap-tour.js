@@ -44,7 +44,7 @@
         redirect: true,
         orphan: false,
         duration: false,
-        delay: 0,
+        delay: false,
         basePath: '',
         template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
@@ -349,7 +349,16 @@
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, showStepHelper);
+      if (step.delay) {
+        this._debug("Wait " + step.delay + " milliseconds to show the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, showStepHelper);
+          };
+        })(this), step.delay);
+      } else {
+        this._callOnPromiseDone(promise, showStepHelper);
+      }
       return promise;
     };
 
@@ -543,8 +552,7 @@
         animation: step.animation,
         container: step.container,
         template: step.template,
-        selector: step.element,
-        delay: step.delay
+        selector: step.element
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
