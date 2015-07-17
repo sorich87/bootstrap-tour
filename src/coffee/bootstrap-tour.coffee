@@ -254,7 +254,7 @@
 
       hideDelay = step.delay.hide || step.delay
 
-      if hideDelay
+      if ({}).toString.call(hideDelay) is '[object Number]' and hideDelay > 0
         @_debug "Wait #{hideDelay} milliseconds to hide the step #{@_current + 1}"
         window.setTimeout =>
           @_callOnPromiseDone promise, hideStepHelper
@@ -324,7 +324,7 @@
 
       showDelay = step.delay.show || step.delay
 
-      if showDelay
+      if ({}).toString.call(showDelay) is '[object Number]' and showDelay > 0
         @_debug "Wait #{showDelay} milliseconds to show the step #{@_current + 1}"
         window.setTimeout =>
           @_callOnPromiseDone promise, showStepHelper
