@@ -997,6 +997,29 @@ describe 'Bootstrap Tour', ->
     expect(@tour._timer).toBe null
     expect(@tour._duration).toBe null
 
+  it 'should call window.setTimeout when delay is defined', ->
+    counter = 0
+    initialTimeout = window.setTimeout
+    window.setTimeout = (callback, duration) ->
+      counter++
+      callback()
+
+    @tour = new Tour
+      delay: {
+        show: 300
+        hide: 400
+      }
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    expect(counter).toBe 1
+    @tour.next()
+    expect(counter).toBe 3
+    @tour.end()
+    expect(counter).toBe 4
+
+    window.setTimeout = initialTimeout
+
   ### TODO: fix $.support.transition conflict between jquery and bootstrap
   it 'should not display inactive popover upon rapid navigation', ->
     # Flag that gives signal to the async test that it should evaluate.

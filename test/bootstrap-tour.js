@@ -276,7 +276,7 @@
         };
       })(this);
       hideDelay = step.delay.hide || step.delay;
-      if (hideDelay) {
+      if ({}.toString.call(hideDelay) === '[object Number]' && hideDelay > 0) {
         this._debug("Wait " + hideDelay + " milliseconds to hide the step " + (this._current + 1));
         window.setTimeout((function(_this) {
           return function() {
@@ -362,7 +362,7 @@
         };
       })(this);
       showDelay = step.delay.show || step.delay;
-      if (showDelay) {
+      if ({}.toString.call(showDelay) === '[object Number]' && showDelay > 0) {
         this._debug("Wait " + showDelay + " milliseconds to show the step " + (this._current + 1));
         window.setTimeout((function(_this) {
           return function() {
