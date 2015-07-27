@@ -96,6 +96,7 @@
           backdropContainer: @_options.backdropContainer
           backdropPadding: @_options.backdropPadding
           redirect: @_options.redirect
+          reflexElement: @_options.steps[i].element
           orphan: @_options.orphan
           duration: @_options.duration
           delay: @_options.delay
@@ -230,7 +231,7 @@
         .popover('destroy')
         .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
         if step.reflex
-          @_reflexElement(step.reflex, $element)
+          $ step.reflexElement
           .removeClass('tour-step-element-reflex')
           .off "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}"
 
@@ -477,7 +478,7 @@
 
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
-        @_reflexElement(step.reflex, $element)
+        $ step.reflexElement
         .addClass('tour-step-element-reflex')
         .off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
@@ -526,14 +527,7 @@
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
-      typeString = ({}).toString.call(reflex)
-      if typeString is '[object Boolean]' or
-         typeString is '[object String]' then 'click' else reflex
-
-    _reflexElement: (reflex, $element) ->
-      switch ({}).toString.call reflex
-        when '[object Boolean]' then $element
-        when '[object String]' then $ reflex
+      if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
