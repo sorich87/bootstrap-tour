@@ -230,6 +230,8 @@
         $element
         .popover('destroy')
         .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
+        $element
+        .data('bs.popover', null)
         if step.reflex
           $ step.reflexElement
           .removeClass('tour-step-element-reflex')
