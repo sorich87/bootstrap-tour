@@ -676,7 +676,7 @@
         redirect: true,
         orphan: false,
         duration: false,
-        delay: 0,
+        delay: false,
         basePath: '',
         template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
@@ -739,6 +739,7 @@
           backdropContainer: this._options.backdropContainer,
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
+          reflexElement: this._options.steps[i].element,
           orphan: this._options.orphan,
           duration: this._options.duration,
           delay: this._options.delay,
@@ -897,7 +898,7 @@
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
           if (step.reflex) {
-            _this._reflexElement(step.reflex, $element).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
+            $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -1178,7 +1179,7 @@
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        this._reflexElement(step.reflex, $element).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
+        $(step.reflexElement).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();
@@ -1197,8 +1198,7 @@
         animation: step.animation,
         container: step.container,
         template: step.template,
-        selector: step.element,
-        delay: step.delay
+        selector: step.element
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
@@ -1239,21 +1239,10 @@
     };
 
     Tour.prototype._reflexEvent = function(reflex) {
-      var typeString;
-      typeString = {}.toString.call(reflex);
-      if (typeString === '[object Boolean]' || typeString === '[object String]') {
+      if ({}.toString.call(reflex) === '[object Boolean]') {
         return 'click';
       } else {
         return reflex;
-      }
-    };
-
-    Tour.prototype._reflexElement = function(reflex, $element) {
-      switch ({}.toString.call(reflex)) {
-        case '[object Boolean]':
-          return $element;
-        case '[object String]':
-          return $(reflex);
       }
     };
 

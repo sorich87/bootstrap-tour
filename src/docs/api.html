@@ -24,7 +24,7 @@ var tour = new Tour({
   redirect: true,
   orphan: false,
   duration: false,
-  delay: 0,
+  delay: false,
   basePath: "",
   template: "<div class='popover tour'>
     <div class='arrow'></div>
@@ -166,10 +166,11 @@ var tour = new Tour({
         </tr>
         <tr id="delay" class="success">
           <td>delay <span class="label label-success">NEW</span></td>
-          <td>Number</td>
+          <td>Boolean|Number</td>
           <td>Specifies a delay for the showing and hiding the tour steps.
           It can be:
           <ul>
+            <li>a falsy - there is no delay</li>
             <li>a number - used as a delay for both showing and hiding. In milliseconds</li>
             <li>a object containing optional <code>show</code> and <code>hide</code> numbers - defines the delays for showing and hiding respectively</li>
           </ul>
