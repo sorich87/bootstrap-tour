@@ -212,6 +212,7 @@ describe 'Bootstrap Tour', ->
       backdropPadding: 0
       backdropContainer: 'body'
       redirect: true
+      reflexElement: $('<div></div>').appendTo('body')
       orphan: false
       duration: false
       delay: false
@@ -643,13 +644,14 @@ describe 'Bootstrap Tour', ->
     @tour.next()
     expect($element.hasClass('tour-step-element-reflex')).toBe false
 
-  it 'should add `tour-step-element-reflex` class to the defined element if reflex is defined', ->
+  it 'should add `tour-step-element-reflex` class to reflexElement if reflex is defined', ->
     @tour = new Tour
     $element = $('<div></div>').appendTo('body')
     $definedElement = $('<div id="ref"></div>').appendTo('body')
     @tour.addStep
       element: $element
-      reflex: '#ref'
+      reflex: true
+      reflexElement: '#ref'
     @tour.addStep(element: $('<div></div>').appendTo('body'))
     expect($element.hasClass('tour-step-element-reflex')).toBe false
     expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
@@ -659,6 +661,19 @@ describe 'Bootstrap Tour', ->
     @tour.next()
     expect($element.hasClass('tour-step-element-reflex')).toBe false
     expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
+
+  it 'should add `tour-{tourName}-reflex` class to the step popover if reflex is active', ->
+    @tour = new Tour
+    $element = $('<div></div>').appendTo('body')
+    @tour.addStep
+      element: $element
+      reflex: true
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe false
+    @tour.start()
+    expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe true
+    @tour.next()
+    expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe false
 
   it '`showStep` redirects to the anchor when the path is an anchor', ->
     @tour = new Tour

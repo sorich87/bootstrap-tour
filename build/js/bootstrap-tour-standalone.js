@@ -753,6 +753,7 @@
           backdropContainer: this._options.backdropContainer,
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
+          reflexElement: this._options.steps[i].element,
           orphan: this._options.orphan,
           duration: this._options.duration,
           delay: this._options.delay,
@@ -912,8 +913,9 @@
             $element = $('body');
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
+          $element.data('bs.popover', null);
           if (step.reflex) {
-            _this._reflexElement(step.reflex, $element).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
+            $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -1181,7 +1183,7 @@
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        this._reflexElement(step.reflex, $element).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
+        $(step.reflexElement).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();
@@ -1236,6 +1238,9 @@
         $template.addClass('orphan');
       }
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
+      if (step.reflex) {
+        $template.addClass("tour-" + this._options.name + "-reflex");
+      }
       if (step.prev < 0) {
         $prev.addClass('disabled');
       }
@@ -1249,21 +1254,10 @@
     };
 
     Tour.prototype._reflexEvent = function(reflex) {
-      var typeString;
-      typeString = {}.toString.call(reflex);
-      if (typeString === '[object Boolean]' || typeString === '[object String]') {
+      if ({}.toString.call(reflex) === '[object Boolean]') {
         return 'click';
       } else {
         return reflex;
-      }
-    };
-
-    Tour.prototype._reflexElement = function(reflex, $element) {
-      switch ({}.toString.call(reflex)) {
-        case '[object Boolean]':
-          return $element;
-        case '[object String]':
-          return $(reflex);
       }
     };
 
@@ -1454,20 +1448,22 @@
     Tour.prototype._showOverlayElement = function(step) {
       var $element, elementData;
       $element = $(step.element);
-      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
+      if (!$element || $element.length === 0) {
         return;
       }
-      this.backdrop.overlayElementShown = true;
-      this.backdrop.$element = $element.addClass('tour-step-backdrop');
-      this.backdrop.$background = $('<div>', {
-        "class": 'tour-step-background'
-      });
+      if (!this.backdrop.overlayElementShown) {
+        this.backdrop.$element = $element.addClass('tour-step-backdrop');
+        this.backdrop.$background = $('<div>', {
+          "class": 'tour-step-background'
+        });
+        this.backdrop.$background.appendTo(step.backdropContainer);
+        this.backdrop.overlayElementShown = true;
+      }
       elementData = {
         width: $element.innerWidth(),
         height: $element.innerHeight(),
         offset: $element.offset()
       };
-      this.backdrop.$background.appendTo(step.backdropContainer);
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
       }

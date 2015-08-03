@@ -116,6 +116,7 @@
           backdropContainer: @_options.backdropContainer
           backdropPadding: @_options.backdropPadding
           redirect: @_options.redirect
+          reflexElement: @_options.steps[i].element
           orphan: @_options.orphan
           duration: @_options.duration
           delay: @_options.delay
@@ -251,8 +252,10 @@
         $element
         .popover('destroy')
         .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
+        $element
+        .data('bs.popover', null)
         if step.reflex
-          @_reflexElement(step.reflex, $element)
+          $ step.reflexElement
           .removeClass('tour-step-element-reflex')
           .off "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}"
 
@@ -486,7 +489,7 @@
 
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
-        @_reflexElement(step.reflex, $element)
+        $ step.reflexElement
         .addClass('tour-step-element-reflex')
         .off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
@@ -537,20 +540,14 @@
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
+      $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
       $prev.addClass('disabled') if step.prev < 0
       $next.addClass('disabled') if step.next < 0
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
-      typeString = ({}).toString.call(reflex)
-      if typeString is '[object Boolean]' or
-         typeString is '[object String]' then 'click' else reflex
-
-    _reflexElement: (reflex, $element) ->
-      switch ({}).toString.call reflex
-        when '[object Boolean]' then $element
-        when '[object String]' then $ reflex
+      if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -695,17 +692,18 @@
     _showOverlayElement: (step) ->
       $element = $ step.element
 
-      return if not $element or $element.length is 0 or @backdrop.overlayElementShown
+      return if not $element or $element.length is 0
 
-      @backdrop.overlayElementShown = true
-      @backdrop.$element = $element.addClass 'tour-step-backdrop'
-      @backdrop.$background = $ '<div>', class: 'tour-step-background'
+      if !@backdrop.overlayElementShown
+        @backdrop.$element = $element.addClass 'tour-step-backdrop'
+        @backdrop.$background = $ '<div>', class: 'tour-step-background'
+        @backdrop.$background.appendTo(step.backdropContainer)
+        @backdrop.overlayElementShown = true
+
       elementData =
         width: $element.innerWidth()
         height: $element.innerHeight()
         offset: $element.offset()
-
-      @backdrop.$background.appendTo(step.backdropContainer)
 
       elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
       @backdrop
