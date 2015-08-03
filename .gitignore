@@ -8,3 +8,4 @@ docs
 _SpecRunner.html
 *.DS_Store
 smart.lock
+.idea/
