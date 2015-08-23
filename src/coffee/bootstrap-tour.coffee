@@ -633,7 +633,6 @@
             e.preventDefault()
             @prev() if @_current > 0
           when 27
-            e.preventDefault()
             @end()
 
     # Checks if the result of a callback is a promise

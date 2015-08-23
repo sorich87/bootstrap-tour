@@ -1374,7 +1374,6 @@
               }
               break;
             case 27:
-              e.preventDefault();
               return _this.end();
           }
         };
