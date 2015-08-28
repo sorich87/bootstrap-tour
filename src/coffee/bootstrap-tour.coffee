@@ -632,8 +632,6 @@
           when 37
             e.preventDefault()
             @prev() if @_current > 0
-          when 27
-            @end()
 
     # Checks if the result of a callback is a promise
     _makePromise: (result) ->

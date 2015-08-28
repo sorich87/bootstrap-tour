@@ -1372,9 +1372,6 @@
               if (_this._current > 0) {
                 return _this.prev();
               }
-              break;
-            case 27:
-              return _this.end();
           }
         };
       })(this));
