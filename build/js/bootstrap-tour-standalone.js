@@ -1402,10 +1402,13 @@
               if (_this._current > 0) {
                 return _this.prev();
               }
+<<<<<<< HEAD
               break;
             case 27:
               e.preventDefault();
               return _this.end();
+=======
+>>>>>>> 5e3de44... Remove the esc key behavior
           }
         };
       })(this));

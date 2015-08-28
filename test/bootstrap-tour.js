@@ -770,10 +770,6 @@
               if (_this._current > 0) {
                 return _this.prev();
               }
-              break;
-            case 27:
-              e.preventDefault();
-              return _this.end();
           }
         };
       })(this));
