@@ -78,3 +78,4 @@ Check `gulpfile.coffee` to know more.
 
 Code licensed under the [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0).
 Documentation licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
+2015
