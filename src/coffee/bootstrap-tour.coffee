@@ -265,23 +265,22 @@
       # If onShow returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onShow @, i if step.onShow?)
 
+      @setCurrentStep i
+
+      # Support string or function for path
+      path = switch ({}).toString.call step.path
+        when '[object Function]' then step.path()
+        when '[object String]' then @_options.basePath + step.path
+        else step.path
+
+      # Redirect to step path if not already there
+      if @_isRedirect step.host, path, document.location
+        if @_isJustPathHashDifferent(step.host, path, document.location)
+          @_redirect step, i, path
+        else
+          return @_redirect step, i, path
+
       showStepHelper = (e) =>
-        @setCurrentStep i
-
-        # Support string or function for path
-        path = switch ({}).toString.call step.path
-          when '[object Function]' then step.path()
-          when '[object String]' then @_options.basePath + step.path
-          else step.path
-
-        # Redirect to step path if not already there
-        if @_isRedirect step.host, path, document.location
-          if @_isJustPathHashDifferent(step.host, path, document.location)
-            @_redirect step, i, path
-          else
-            @_redirect step, i, path
-            return
-
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
           if step.orphan is false

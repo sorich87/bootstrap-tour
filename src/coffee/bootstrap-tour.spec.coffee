@@ -585,9 +585,11 @@ describe 'Bootstrap Tour', ->
       onShow: -> return deferred
     @tour.start()
     @tour.next()
-    expect(@tour._current).toBe 0 # tour shows old state until resolving of onShow promise
+    # tour shows old state until resolving of onShow promise
+    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined
     deferred.resolve()
-    expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
+    # tour shows new state after resolving onShow promise
+    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
 
   it 'should not hide popover until the onHide promise is resolved', ->
     deferred = $.Deferred()
