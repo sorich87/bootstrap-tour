@@ -946,11 +946,7 @@
         }
       }).call(this);
       if (this._isRedirect(step.host, path, document.location)) {
-        if (this._isJustPathHashDifferent(step.host, path, document.location)) {
-          this._redirect(step, i, path);
-        } else {
-          return this._redirect(step, i, path);
-        }
+        this._redirect(step, i, path);
       }
       showStepHelper = (function(_this) {
         return function(e) {
@@ -1120,20 +1116,6 @@
 
     Tour.prototype._isPathDifferent = function(path, currentPath) {
       return this._getPath(path) !== this._getPath(currentPath) || !this._equal(this._getQuery(path), this._getQuery(currentPath)) || !this._equal(this._getHash(path), this._getHash(currentPath));
-    };
-
-    Tour.prototype._isJustPathHashDifferent = function(host, path, location) {
-      var currentPath;
-      if (host !== '') {
-        if (this._isHostDifferent(host, location.href)) {
-          return false;
-        }
-      }
-      currentPath = [location.pathname, location.search, location.hash].join('');
-      if ({}.toString.call(path) === '[object String]') {
-        return this._getPath(path) === this._getPath(currentPath) && this._equal(this._getQuery(path), this._getQuery(currentPath)) && !this._equal(this._getHash(path), this._getHash(currentPath));
-      }
-      return false;
     };
 
     Tour.prototype._redirect = function(step, i, path) {
