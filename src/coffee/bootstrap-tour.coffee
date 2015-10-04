@@ -275,10 +275,7 @@
 
       # Redirect to step path if not already there
       if @_isRedirect step.host, path, document.location
-        if @_isJustPathHashDifferent(step.host, path, document.location)
-          @_redirect step, i, path
-        else
-          return @_redirect step, i, path
+        @_redirect step, i, path
 
       showStepHelper = (e) =>
         # Skip if step is orphan and orphan options is false
@@ -414,23 +411,6 @@
       @_getPath(path) isnt @_getPath(currentPath) or not
       @_equal(@_getQuery(path), @_getQuery(currentPath)) or not
       @_equal(@_getHash(path), @_getHash(currentPath))
-
-    _isJustPathHashDifferent: (host, path, location) ->
-      if host isnt ''
-        return false if @_isHostDifferent(host, location.href)
-
-      currentPath = [
-        location.pathname,
-        location.search,
-        location.hash
-      ].join('')
-
-      if ({}).toString.call(path) is '[object String]'
-        return @_getPath(path) is @_getPath(currentPath) and
-          @_equal(@_getQuery(path), @_getQuery(currentPath)) and not
-          @_equal(@_getHash(path), @_getHash(currentPath))
-
-      false
 
     # Execute the redirect
     _redirect: (step, i, path) ->
