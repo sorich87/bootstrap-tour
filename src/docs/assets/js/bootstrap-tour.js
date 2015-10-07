@@ -328,7 +328,7 @@
             _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i) {
+            if (_this.getCurrentStep() !== i || !$(step.element).is(':visible')) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
