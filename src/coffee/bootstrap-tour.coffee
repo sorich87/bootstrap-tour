@@ -255,12 +255,12 @@
 
       skipToPrevious = i < @_current
 
+      @setCurrentStep i
+
       # If onShow returns a promise, let's wait until it's done to execute
       promise = @_makePromise(step.onShow @, i if step.onShow?)
 
       showStepHelper = (e) =>
-        @setCurrentStep i
-
         # Support string or function for path
         path = switch ({}).toString.call step.path
           when '[object Function]' then step.path()
