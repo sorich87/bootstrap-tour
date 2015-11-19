@@ -16,9 +16,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
 
-The license of Bootstrap Tour is Apache for now. However, the project intends to move to the MIT license like Bootstrap has. All the biggest contributors are ok with the change and thus, all new contributions as of 2015-07-22 are to be with the MIT license. And once all previous contributors have approved the change (or their code has been removed), the project will become licensed MIT. Please see: https://github.com/sorich87/bootstrap-tour/issues/257
-
-
 We use [Gulp](http://gulpjs.com/) and [Jasmine](http://jasmine.github.io/). Both make your life easier ;)
 
 ### Develop
@@ -76,5 +73,5 @@ Check `gulpfile.coffee` to know more.
 
 ## License
 
-Code licensed under the [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0).
+Code licensed under the [MIT license](https://opensource.org/licenses/MIT).
 Documentation licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
