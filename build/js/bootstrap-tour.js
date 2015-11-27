@@ -601,7 +601,7 @@
       $window = $(window);
       offsetTop = $element.offset().top;
       windowHeight = $window.height();
-      scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
+      scrollTop = Math.max(0, offsetTop + $element.height() - (windowHeight / 2));
       this._debug("Scroll into view. ScrollTop: " + scrollTop + ". Element offset: " + offsetTop + ". Window height: " + windowHeight + ".");
       counter = 0;
       return $('body, html').stop(true, true).animate({
