@@ -473,9 +473,34 @@
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
+      limits = {
+        top:$(window).scrollTop()
+        bottom:$(window).scrollTop() + $(window).height()
+        left:$(window).scrollLeft()
+        right:$(window).scrollLeft() + $(window).width()
+      }
+
       $element
       .popover(
-        placement: step.placement
+        placement: (popover,element)->
+          $('body').append(popover)
+          height = $('.popover.tour-tour').height()
+          width = $('.popover.tour-tour').width()
+          distances = {
+            top: $(element).offset().top - height
+            bottom: $(element).offset().top + $(element).height() + height
+            left: $(element).offset().left - width
+            right: $(element).offset().left + $(element).width() + width
+          }
+          $('.popover.tour-tour').remove()
+          if step.placement is 'right'
+            return if distances.right < limits.right then 'right' else 'left'
+          else if step.placement is 'left'
+            return if distances.left > limits.left then 'left' else 'right'
+          else if step.placement is 'top'
+            return if distances.top > limits.top then 'top' else 'bottom'
+          else if step.placement is 'bottom'
+            return if distances.bottom < limits.bottom then 'bottom' else 'top'
         trigger: 'manual'
         title: step.title
         content: step.content
@@ -486,7 +511,7 @@
         selector: step.element
       )
       .popover 'show'
-
+      
       # Tip adjustment
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', step.id
