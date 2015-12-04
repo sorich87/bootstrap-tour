@@ -265,6 +265,7 @@
             $element = $('body');
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
+          $element.data('bs.popover', null);
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -291,11 +292,11 @@
         return;
       }
       skipToPrevious = i < this._current;
+      this.setCurrentStep(i);
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
       showStepHelper = (function(_this) {
         return function(e) {
           var path, showPopoverAndOverlay;
-          _this.setCurrentStep(i);
           path = (function() {
             switch ({}.toString.call(step.path)) {
               case '[object Function]':
