@@ -2,14 +2,14 @@
  * bootstrap-tour - v0.10.2
  * http://bootstraptour.com
  * ========================================================================
- * Copyright 2012-2013 Ulrich Sossou
+ * Copyright 2012-2015 Ulrich Sossou
  *
  * ========================================================================
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the MIT License (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://opensource.org/licenses/MIT
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -897,6 +897,7 @@
             $element = $('body');
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
+          $element.removeData('bs.popover');
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -1151,7 +1152,7 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, limits, options;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -1176,8 +1177,51 @@
           };
         })(this));
       }
+      limits = {
+        top: $(window).scrollTop(),
+        bottom: $(window).scrollTop() + $(window).height(),
+        left: $(window).scrollLeft(),
+        right: $(window).scrollLeft() + $(window).width()
+      };
       $element.popover({
-        placement: step.placement,
+        placement: function(popover, element) {
+          var distances, height, width;
+          $('body').append(popover);
+          height = $('.popover.tour-tour').height();
+          width = $('.popover.tour-tour').width();
+          distances = {
+            top: $(element).offset().top - height,
+            bottom: $(element).offset().top + $(element).height() + height,
+            left: $(element).offset().left - width,
+            right: $(element).offset().left + $(element).width() + width
+          };
+          $('.popover.tour-tour').remove();
+          if (step.placement === 'right') {
+            if (distances.right < limits.right) {
+              return 'right';
+            } else {
+              return 'left';
+            }
+          } else if (step.placement === 'left') {
+            if (distances.left > limits.left) {
+              return 'left';
+            } else {
+              return 'right';
+            }
+          } else if (step.placement === 'top') {
+            if (distances.top > limits.top) {
+              return 'top';
+            } else {
+              return 'bottom';
+            }
+          } else if (step.placement === 'bottom') {
+            if (distances.bottom < limits.bottom) {
+              return 'bottom';
+            } else {
+              return 'top';
+            }
+          }
+        },
         trigger: 'manual',
         title: step.title,
         content: step.content,
