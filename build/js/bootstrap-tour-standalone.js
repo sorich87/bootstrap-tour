@@ -1152,7 +1152,7 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, limits, options;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -1177,8 +1177,51 @@
           };
         })(this));
       }
+      limits = {
+        top: $(window).scrollTop(),
+        bottom: $(window).scrollTop() + $(window).height(),
+        left: $(window).scrollLeft(),
+        right: $(window).scrollLeft() + $(window).width()
+      };
       $element.popover({
-        placement: step.placement,
+        placement: function(popover, element) {
+          var distances, height, width;
+          $('body').append(popover);
+          height = $('.popover.tour-tour').height();
+          width = $('.popover.tour-tour').width();
+          $('.popover.tour-tour').remove();
+          distances = {
+            top: $(element).offset().top - height,
+            bottom: $(element).offset().top + $(element).height() + height,
+            left: $(element).offset().left - width,
+            right: $(element).offset().left + $(element).width() + width
+          };
+          if (step.placement === 'right') {
+            if (distances.right < limits.right) {
+              return 'right';
+            } else {
+              return 'left';
+            }
+          } else if (step.placement === 'left') {
+            if (distances.left > limits.left) {
+              return 'left';
+            } else {
+              return 'right';
+            }
+          } else if (step.placement === 'top') {
+            if (distances.top > limits.top) {
+              return 'top';
+            } else {
+              return 'bottom';
+            }
+          } else if (step.placement === 'bottom') {
+            if (distances.bottom < limits.bottom) {
+              return 'bottom';
+            } else {
+              return 'top';
+            }
+          }
+        },
         trigger: 'manual',
         title: step.title,
         content: step.content,
