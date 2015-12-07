@@ -34,6 +34,7 @@
         name: 'tour',
         steps: [],
         container: 'body',
+        smartPlacement: true,
         autoscroll: true,
         keyboard: true,
         storage: storage,
@@ -102,6 +103,7 @@
           prev: i - 1,
           animation: true,
           container: this._options.container,
+          smartPlacement: this._options.smartPlacement,
           autoscroll: this._options.autoscroll,
           backdrop: this._options.backdrop,
           backdropContainer: this._options.backdropContainer,
@@ -519,8 +521,53 @@
       return this._current < this._options.steps.length - 1;
     };
 
+    Tour.prototype._getBestPlacement = function(popover, element, placement) {
+      var distances, height, limits, width;
+      limits = {
+        top: $(window).scrollTop(),
+        bottom: $(window).scrollTop() + $(window).height(),
+        left: $(window).scrollLeft(),
+        right: $(window).scrollLeft() + $(window).width()
+      };
+      $('body').append(popover);
+      height = $('.popover.tour-tour').height();
+      width = $('.popover.tour-tour').width();
+      $('.popover.tour-tour').remove();
+      distances = {
+        top: $(element).offset().top - height,
+        bottom: $(element).offset().top + $(element).height() + height,
+        left: $(element).offset().left - width,
+        right: $(element).offset().left + $(element).width() + width
+      };
+      if (placement === 'right') {
+        if (distances.right < limits.right) {
+          return 'right';
+        } else {
+          return 'left';
+        }
+      } else if (placement === 'left') {
+        if (distances.left > limits.left) {
+          return 'left';
+        } else {
+          return 'right';
+        }
+      } else if (placement === 'top') {
+        if (distances.top > limits.top) {
+          return 'top';
+        } else {
+          return 'bottom';
+        }
+      } else if (placement === 'bottom') {
+        if (distances.bottom < limits.bottom) {
+          return 'bottom';
+        } else {
+          return 'top';
+        }
+      }
+    };
+
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, getBestPlacement, isOrphan, options;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -545,8 +592,15 @@
           };
         })(this));
       }
+      getBestPlacement = this._getBestPlacement;
       $element.popover({
-        placement: step.placement,
+        placement: function(popover, element) {
+          if (step.smartPlacement === true) {
+            return getBestPlacement(popover, element, step.placement);
+          } else {
+            return step.placement;
+          }
+        },
         trigger: 'manual',
         title: step.title,
         content: step.content,
