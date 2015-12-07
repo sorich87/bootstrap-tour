@@ -287,7 +287,7 @@
         @_showBackdrop(step) if step.backdrop
 
         showPopoverAndOverlay = =>
-          return if @getCurrentStep() isnt i
+          return if @getCurrentStep() isnt i or @ended()
 
           @_showOverlayElement step if step.element? and step.backdrop
           @_showPopover step, i
