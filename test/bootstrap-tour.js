@@ -329,7 +329,7 @@
             _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i) {
+            if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
@@ -377,6 +377,10 @@
         this._current = this._current === null ? null : parseInt(this._current, 10);
       }
       return this;
+    };
+
+    Tour.prototype.redraw = function() {
+      return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
     };
 
     Tour.prototype._setState = function(key, value) {
@@ -781,10 +785,10 @@
       }
     };
 
-    Tour.prototype._showOverlayElement = function(step) {
+    Tour.prototype._showOverlayElement = function(step, force) {
       var $element, elementData;
       $element = $(step.element);
-      if (!$element || $element.length === 0) {
+      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
         return;
       }
       if (!this.backdrop.overlayElementShown) {
