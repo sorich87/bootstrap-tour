@@ -666,6 +666,7 @@
         name: 'tour',
         steps: [],
         container: 'body',
+        smartPlacement: true,
         autoscroll: true,
         keyboard: true,
         storage: storage,
@@ -734,6 +735,7 @@
           prev: i - 1,
           animation: true,
           container: this._options.container,
+          smartPlacement: this._options.smartPlacement,
           autoscroll: this._options.autoscroll,
           backdrop: this._options.backdrop,
           backdropContainer: this._options.backdropContainer,
@@ -1178,7 +1180,13 @@
         })(this));
       }
       $element.popover({
-        placement: step.placement,
+        placement: function() {
+          if (step.smartPlacement === true) {
+            return "auto " + step.placement;
+          } else {
+            return step.placement;
+          }
+        },
         trigger: 'manual',
         title: step.title,
         content: step.content,
