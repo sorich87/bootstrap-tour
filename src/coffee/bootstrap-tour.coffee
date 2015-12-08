@@ -449,35 +449,6 @@
     _isLast: ->
       @_current < @_options.steps.length - 1
 
-    _getBestPlacement: (popover,element,placement) ->
-      limits = {
-        top:$(window).scrollTop()
-        bottom:$(window).scrollTop() + $(window).height()
-        left:$(window).scrollLeft()
-        right:$(window).scrollLeft() + $(window).width()
-      }
-
-      $('body').append(popover)
-      height = $('.popover.tour-tour').height()
-      width = $('.popover.tour-tour').width()
-      $('.popover.tour-tour').remove()
-
-      distances = {
-        top: $(element).offset().top - height
-        bottom: $(element).offset().top + $(element).height() + height
-        left: $(element).offset().left - width
-        right: $(element).offset().left + $(element).width() + width
-      }
-
-      if placement is 'right'
-        return if distances.right < limits.right then 'right' else 'left'
-      else if placement is 'left'
-        return if distances.left > limits.left then 'left' else 'right'
-      else if placement is 'top'
-        return if distances.top > limits.top then 'top' else 'bottom'
-      else if placement is 'bottom'
-        return if distances.bottom < limits.bottom then 'bottom' else 'top'
-
     # Show step popover
     _showPopover: (step, i) ->
       # Remove previously existing tour popovers. This prevents displaying of
@@ -504,15 +475,10 @@
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
-      getBestPlacement = @_getBestPlacement
-
       $element
       .popover(
-        placement: (popover,element)->
-          if step.smartPlacement is true
-            getBestPlacement popover,element,step.placement
-          else
-            return step.placement
+        placement: ->
+          return if step.smartPlacement is true then "auto #{step.placement}" else step.placement
         trigger: 'manual'
         title: step.title
         content: step.content
