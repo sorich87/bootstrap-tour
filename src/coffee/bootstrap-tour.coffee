@@ -325,8 +325,8 @@
         @_current = if @_current is null then null else parseInt @_current, 10
       @
 
-    # Manually trigger a resize on the overlay element
-    resizeOverlay: ->
+    # Manually trigger a redraw on the overlay element
+    redraw: ->
       @_showOverlayElement(@getStep(@getCurrentStep()).element, true)
 
     # Set a state in storage
@@ -657,8 +657,8 @@
         @backdrop.overlay = null
         @backdrop.backgroundShown = false
 
-    _showOverlayElement: (element, force) ->
-      $element = $ element
+    _showOverlayElement: (step, force) ->
+      $element = $ step.element
 
       return if not $element or $element.length is 0 or @backdrop.overlayElementShown and not force
 

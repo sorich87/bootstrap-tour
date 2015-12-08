@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* ========================================================================
  * bootstrap-tour - v0.10.2
  * http://bootstraptour.com
@@ -652,26 +651,6 @@
 
 }(jQuery);
 
-=======
-/* ===========================================================
-# bootstrap-tour - v0.9.3
-# http://bootstraptour.com
-# ==============================================================
-# Copyright 2012-2013 Ulrich Sossou
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-*/
->>>>>>> b3f1362d7b9741f39b7e342a34381a41c2188ac9
 (function($, window) {
   var Tour, document;
   document = window.document;
@@ -982,7 +961,7 @@
             _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i) {
+            if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
@@ -1032,7 +1011,7 @@
       return this;
     };
 
-    Tour.prototype.resizeOverlay = function() {
+    Tour.prototype.redraw = function() {
       return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
     };
 
@@ -1438,17 +1417,10 @@
       }
     };
 
-<<<<<<< HEAD
-    Tour.prototype._showOverlayElement = function(step) {
+    Tour.prototype._showOverlayElement = function(step, force) {
       var $element, elementData;
       $element = $(step.element);
-      if (!$element || $element.length === 0) {
-=======
-    Tour.prototype._showOverlayElement = function(element, force) {
-      var $background, $element, offset;
-      $element = $(element);
       if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
->>>>>>> b3f1362d7b9741f39b7e342a34381a41c2188ac9
         return;
       }
       if (!this.backdrop.overlayElementShown) {

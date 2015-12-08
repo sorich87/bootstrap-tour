@@ -329,7 +329,7 @@
             _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i) {
+            if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
@@ -379,7 +379,7 @@
       return this;
     };
 
-    Tour.prototype.resizeOverlay = function() {
+    Tour.prototype.redraw = function() {
       return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
     };
 
@@ -785,17 +785,10 @@
       }
     };
 
-<<<<<<< HEAD:src/docs/assets/js/bootstrap-tour.js
-    Tour.prototype._showOverlayElement = function(step) {
+    Tour.prototype._showOverlayElement = function(step, force) {
       var $element, elementData;
       $element = $(step.element);
-      if (!$element || $element.length === 0) {
-=======
-    Tour.prototype._showOverlayElement = function(element, force) {
-      var $background, $element, offset;
-      $element = $(element);
       if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
->>>>>>> b3f1362d7b9741f39b7e342a34381a41c2188ac9:docs/assets/js/bootstrap-tour.js
         return;
       }
       if (!this.backdrop.overlayElementShown) {
