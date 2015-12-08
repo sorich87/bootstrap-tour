@@ -15,6 +15,7 @@ var tour = new Tour({
   name: "tour",
   steps: [],
   container: "body",
+  smartPlacement: true,
   keyboard: true,
   storage: window.localStorage,
   debug: false,
@@ -87,6 +88,13 @@ var tour = new Tour({
           </em>
           </td>
           <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>Allows to change the step placement if there is not enough place to show it.<br>
+          </td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>autoscroll</td>
@@ -331,6 +339,7 @@ tour.addStep({
   host: "",
   element: "",
   placement: "right",
+  smartPlacement: true,
   title: "",
   content: "",
   next: 0,
@@ -397,6 +406,13 @@ tour.addStep({
           <code>'right'</code>.
           </td>
           <td><code>'right'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>Allows to change the step placement if there is not enough place to show it.<br>
+          </td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>title</td>

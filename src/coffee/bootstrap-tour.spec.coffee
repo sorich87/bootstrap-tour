@@ -208,6 +208,7 @@ describe 'Bootstrap Tour', ->
       animation: false
       autoscroll: true
       container: 'body'
+      smartPlacement: true
       backdrop: false
       backdropPadding: 0
       backdropContainer: 'body'

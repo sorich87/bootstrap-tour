@@ -12,6 +12,7 @@
         name: 'tour'
         steps: []
         container: 'body'
+        smartPlacement: true
         autoscroll: true
         keyboard: true
         storage: storage
@@ -91,6 +92,7 @@
           prev: i - 1
           animation: true
           container: @_options.container
+          smartPlacement: @_options.smartPlacement
           autoscroll: @_options.autoscroll
           backdrop: @_options.backdrop
           backdropContainer: @_options.backdropContainer
@@ -475,7 +477,8 @@
 
       $element
       .popover(
-        placement: step.placement
+        placement: ->
+          return if step.smartPlacement is true then "auto #{step.placement}" else step.placement
         trigger: 'manual'
         title: step.title
         content: step.content
