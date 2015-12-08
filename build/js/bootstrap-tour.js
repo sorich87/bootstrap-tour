@@ -379,6 +379,10 @@
       return this;
     };
 
+    Tour.prototype.resizeOverlay = function() {
+      return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
+    };
+
     Tour.prototype._setState = function(key, value) {
       var e, keyName;
       if (this._options.storage) {
@@ -781,10 +785,17 @@
       }
     };
 
+<<<<<<< HEAD
     Tour.prototype._showOverlayElement = function(step) {
       var $element, elementData;
       $element = $(step.element);
       if (!$element || $element.length === 0) {
+=======
+    Tour.prototype._showOverlayElement = function(element, force) {
+      var $background, $element, offset;
+      $element = $(element);
+      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
+>>>>>>> b3f1362d7b9741f39b7e342a34381a41c2188ac9
         return;
       }
       if (!this.backdrop.overlayElementShown) {
