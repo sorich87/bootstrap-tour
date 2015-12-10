@@ -92,8 +92,7 @@ var tour = new Tour({
         <tr>
           <td>smartPlacement</td>
           <td>Boolean</td>
-          <td>Allows to change the step placement if there is not enough place to show it.<br>
-          </td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement, every time.<br></td>
           <td><code>true</code></td>
         </tr>
         <tr>
@@ -403,15 +402,18 @@ tour.addStep({
           <code>'top'</code>,
           <code>'bottom'</code>,
           <code>'left'</code>,
-          <code>'right'</code>.
+          <code>'right'</code>,
+          <code>'auto'</code>.
+          When "auto" is specified, it will dynamically reorient the popover.
+          For example, if placement is "auto left", the popover will display to
+          the left when possible, otherwise it will display right.
           </td>
           <td><code>'right'</code></td>
         </tr>
         <tr>
           <td>smartPlacement</td>
           <td>Boolean</td>
-          <td>Allows to change the step placement if there is not enough place to show it.<br>
-          </td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement.</td>
           <td><code>true</code></td>
         </tr>
         <tr>

@@ -1154,7 +1154,7 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, options, shouldAddSmart;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -1179,14 +1179,9 @@
           };
         })(this));
       }
+      shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
       $element.popover({
-        placement: function() {
-          if (step.smartPlacement === true) {
-            return "auto " + step.placement;
-          } else {
-            return step.placement;
-          }
-        },
+        placement: shouldAddSmart ? "auto " + step.placement : step.placement,
         trigger: 'manual',
         title: step.title,
         content: step.content,
