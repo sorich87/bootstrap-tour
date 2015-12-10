@@ -477,9 +477,11 @@
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
+      shouldAddSmart = step.smartPlacement is true and step.placement.search(/auto/i) is -1
+
       $element
       .popover(
-        placement: step.placement
+        placement: if shouldAddSmart then "auto #{step.placement}" else step.placement
         trigger: 'manual'
         title: step.title
         content: step.content

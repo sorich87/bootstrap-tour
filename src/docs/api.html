@@ -15,6 +15,7 @@ var tour = new Tour({
   name: "tour",
   steps: [],
   container: "body",
+  smartPlacement: true,
   keyboard: true,
   storage: window.localStorage,
   debug: false,
@@ -87,6 +88,12 @@ var tour = new Tour({
           </em>
           </td>
           <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement, every time.<br></td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>autoscroll</td>
@@ -331,6 +338,7 @@ tour.addStep({
   host: "",
   element: "",
   placement: "right",
+  smartPlacement: true,
   title: "",
   content: "",
   next: 0,
@@ -394,9 +402,19 @@ tour.addStep({
           <code>'top'</code>,
           <code>'bottom'</code>,
           <code>'left'</code>,
-          <code>'right'</code>.
+          <code>'right'</code>,
+          <code>'auto'</code>.
+          When "auto" is specified, it will dynamically reorient the popover.
+          For example, if placement is "auto left", the popover will display to
+          the left when possible, otherwise it will display right.
           </td>
           <td><code>'right'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement.</td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>title</td>
