@@ -38,6 +38,7 @@
         keyboard: true,
         storage: storage,
         debug: false,
+        mustFinish: false,
         backdrop: false,
         backdropContainer: 'body',
         backdropPadding: 0,
@@ -613,6 +614,9 @@
       }
       if (frozen) {
         $end.addClass('disabled');
+      }
+      if (this._options.mustFinish && i + 1 < this._options.steps.length) {
+        $end.addClass('hide');
       }
       if (!step.duration) {
         $resume.remove();

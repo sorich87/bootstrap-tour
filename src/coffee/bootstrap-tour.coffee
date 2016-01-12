@@ -16,6 +16,7 @@
         keyboard: true
         storage: storage
         debug: false
+        mustFinish: false
         backdrop: false
         backdropContainer: 'body'
         backdropPadding: 0
@@ -535,6 +536,7 @@
       $prev.addClass('disabled') if step.prev < 0 || frozen
       $next.addClass('disabled') if step.next < 0 || frozen
       $end.addClass('disabled') if frozen
+      $end.addClass('hide') if @_options.mustFinish && i + 1 < @_options.steps.length
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 

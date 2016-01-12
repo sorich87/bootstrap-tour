@@ -38,10 +38,12 @@
         keyboard: true,
         storage: storage,
         debug: false,
+        mustFinish: false,
         backdrop: false,
         backdropContainer: 'body',
         backdropPadding: 0,
         redirect: true,
+        frozenContext: {},
         orphan: false,
         duration: false,
         delay: false,
@@ -74,6 +76,19 @@
       };
       this;
     }
+
+    Tour.prototype.unfreeze = function() {
+      $('.popover-navigation button').prop('disabled', false);
+      $('.popover-navigation button').removeClass('disabled');
+      if (this._current < 1) {
+        $('.popover-navigation [data-role="prev"]').prop('disabled', true);
+        $('.popover-navigation [data-role="prev"]').addClass('disabled');
+      }
+      if (this._current >= this._options.steps.length - 1) {
+        $('.popover-navigation [data-role="next"]').prop('disabled', true);
+        return $('.popover-navigation [data-role="next"]').addClass('disabled');
+      }
+    };
 
     Tour.prototype.addSteps = function(steps) {
       var step, _i, _len;
@@ -116,6 +131,8 @@
           onShown: this._options.onShown,
           onHide: this._options.onHide,
           onHidden: this._options.onHidden,
+          isFrozen: this._options.isFrozen || function() {},
+          frozenContext: this._options.frozenContext,
           onNext: this._options.onNext,
           onPrev: this._options.onPrev,
           onPause: this._options.onPause,
@@ -570,7 +587,7 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $resume, $template, template;
+      var $end, $navigation, $next, $prev, $resume, $template, frozen, template;
       template = step.template;
       if (this._isOrphan(step) && {}.toString.call(step.orphan) !== '[object Boolean]') {
         template = step.orphan;
@@ -579,7 +596,9 @@
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');
+      $end = $navigation.find('[data-role="end"]');
       $resume = $navigation.find('[data-role="pause-resume"]');
+      frozen = step.isFrozen.call(this._options.frozenContext);
       if (this._isOrphan(step)) {
         $template.addClass('orphan');
       }
@@ -587,11 +606,17 @@
       if (step.reflex) {
         $template.addClass("tour-" + this._options.name + "-reflex");
       }
-      if (step.prev < 0) {
+      if (step.prev < 0 || frozen) {
         $prev.addClass('disabled');
       }
-      if (step.next < 0) {
+      if (step.next < 0 || frozen) {
         $next.addClass('disabled');
+      }
+      if (frozen) {
+        $end.addClass('disabled');
+      }
+      if (this._options.mustFinish && i + 1 < this._options.steps.length) {
+        $end.addClass('hide');
       }
       if (!step.duration) {
         $resume.remove();
