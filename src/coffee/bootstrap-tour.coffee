@@ -16,10 +16,12 @@
         keyboard: true
         storage: storage
         debug: false
+        mustFinish: false
         backdrop: false
         backdropContainer: 'body'
         backdropPadding: 0
         redirect: true
+        frozenContext: {}
         orphan: false
         duration: false
         delay: false
@@ -67,6 +69,18 @@
         overlayElementShown: false
       @
 
+    # unfreeze tour
+    unfreeze: ->
+      $('.popover-navigation button').prop('disabled', false)
+      $('.popover-navigation button').removeClass('disabled')
+      if @_current < 1
+        $('.popover-navigation [data-role="prev"]').prop 'disabled', true
+        $('.popover-navigation [data-role="prev"]').addClass 'disabled'
+
+      if @_current >= @_options.steps.length-1
+        $('.popover-navigation [data-role="next"]').prop 'disabled', true
+        $('.popover-navigation [data-role="next"]').addClass 'disabled'
+
     # Add multiple steps
     addSteps: (steps) ->
       @addStep step for step in steps
@@ -105,6 +119,8 @@
           onShown: @_options.onShown
           onHide: @_options.onHide
           onHidden: @_options.onHidden
+          isFrozen: @_options.isFrozen || ->
+          frozenContext: @_options.frozenContext
           onNext: @_options.onNext
           onPrev: @_options.onPrev
           onPause: @_options.onPause
@@ -510,13 +526,17 @@
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
+      $end = $navigation.find '[data-role="end"]'
       $resume = $navigation.find '[data-role="pause-resume"]'
+      frozen = step.isFrozen.call(@_options.frozenContext)
 
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
       $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
-      $prev.addClass('disabled') if step.prev < 0
-      $next.addClass('disabled') if step.next < 0
+      $prev.addClass('disabled') if step.prev < 0 || frozen
+      $next.addClass('disabled') if step.next < 0 || frozen
+      $end.addClass('disabled') if frozen
+      $end.addClass('hide') if @_options.mustFinish && i + 1 < @_options.steps.length
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 
