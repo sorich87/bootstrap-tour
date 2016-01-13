@@ -300,7 +300,7 @@
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
 
         if step.autoscroll
-          @_scrollIntoView step.element, showPopoverAndOverlay
+          @_scrollIntoView step, showPopoverAndOverlay
         else
           showPopoverAndOverlay()
 
@@ -542,14 +542,23 @@
       $tip.find('.arrow').css position, if delta then 50 * (1 - delta / dimension) + '%' else ''
 
     # Scroll to the popup if it is not in the viewport
-    _scrollIntoView: (element, callback) ->
-      $element = $(element)
+    _scrollIntoView: (step, callback) ->
+      $element = $(step.element)
       return callback() unless $element.length
 
       $window = $(window)
       offsetTop = $element.offset().top
+      height = $element.outerHeight()
       windowHeight = $window.height()
-      scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
+      scrollTop = 0
+
+      switch step.placement
+        when 'top'
+          scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
+        when 'left', 'right'
+          scrollTop = Math.max(0, (offsetTop + height / 2) - (windowHeight / 2))
+        when 'bottom'
+          scrollTop = Math.max(0, (offsetTop + height) - (windowHeight / 2))
 
       @_debug "Scroll into view. ScrollTop: #{scrollTop}. Element offset: #{offsetTop}. Window height: #{windowHeight}."
       counter = 0

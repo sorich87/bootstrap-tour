@@ -348,7 +348,7 @@
             return _this._debug("Step " + (_this._current + 1) + " of " + _this._options.steps.length);
           };
           if (step.autoscroll) {
-            _this._scrollIntoView(step.element, showPopoverAndOverlay);
+            _this._scrollIntoView(step, showPopoverAndOverlay);
           } else {
             showPopoverAndOverlay();
           }
@@ -636,16 +636,28 @@
       return $tip.find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
     };
 
-    Tour.prototype._scrollIntoView = function(element, callback) {
-      var $element, $window, counter, offsetTop, scrollTop, windowHeight;
-      $element = $(element);
+    Tour.prototype._scrollIntoView = function(step, callback) {
+      var $element, $window, counter, height, offsetTop, scrollTop, windowHeight;
+      $element = $(step.element);
       if (!$element.length) {
         return callback();
       }
       $window = $(window);
       offsetTop = $element.offset().top;
+      height = $element.outerHeight();
       windowHeight = $window.height();
-      scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
+      scrollTop = 0;
+      switch (step.placement) {
+        case 'top':
+          scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
+          break;
+        case 'left':
+        case 'right':
+          scrollTop = Math.max(0, (offsetTop + height / 2) - (windowHeight / 2));
+          break;
+        case 'bottom':
+          scrollTop = Math.max(0, (offsetTop + height) - (windowHeight / 2));
+      }
       this._debug("Scroll into view. ScrollTop: " + scrollTop + ". Element offset: " + offsetTop + ". Window height: " + windowHeight + ".");
       counter = 0;
       return $('body, html').stop(true, true).animate({
