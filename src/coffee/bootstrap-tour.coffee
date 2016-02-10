@@ -515,8 +515,12 @@
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
       $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
-      $prev.addClass('disabled') if step.prev < 0
-      $next.addClass('disabled') if step.next < 0
+      if step.prev < 0
+        $prev.addClass('disabled')
+        $prev.prop('disabled',true)
+      if step.next < 0
+        $next.addClass('disabled')
+        $next.prop('disabled',true)
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 
