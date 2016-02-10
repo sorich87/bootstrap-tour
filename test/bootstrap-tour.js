@@ -589,9 +589,11 @@
       }
       if (step.prev < 0) {
         $prev.addClass('disabled');
+        $prev.prop('disabled', true);
       }
       if (step.next < 0) {
         $next.addClass('disabled');
+        $next.prop('disabled', true);
       }
       if (!step.duration) {
         $resume.remove();
