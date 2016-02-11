@@ -677,7 +677,7 @@
       elementData =
         width: $element.innerWidth()
         height: $element.innerHeight()
-        offset: $element.offset()
+        offset: $element.position()
 
       elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
       @backdrop
