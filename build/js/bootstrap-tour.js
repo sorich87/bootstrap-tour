@@ -333,7 +333,7 @@
               return;
             }
             if ((step.element != null) && step.backdrop) {
-              _this._showOverlayElement(step);
+              _this._showOverlayElement(step, true);
             }
             _this._showPopover(step, i);
             if (step.onShown != null) {
