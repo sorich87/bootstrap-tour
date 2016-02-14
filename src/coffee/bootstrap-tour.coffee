@@ -289,7 +289,7 @@
         showPopoverAndOverlay = =>
           return if @getCurrentStep() isnt i or @ended()
 
-          @_showOverlayElement step if step.element? and step.backdrop
+          @_showOverlayElement step, true if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
@@ -587,6 +587,7 @@
       $(window).on "resize.tour-#{@_options.name}", ->
         clearTimeout(timeout)
         timeout = setTimeout(callback, 100)
+
 
     # Event bindings for mouse navigation
     _initMouseNavigation: ->
