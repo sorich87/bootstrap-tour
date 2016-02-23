@@ -163,6 +163,14 @@ var tour = new Tour({
           positioned in the middle of the page.</td>
           <td><code>false</code></td>
         </tr>
+        <tr class="success">
+          <td>skipOrphan <span class="label label-success">NEW</span></td>
+          <td>Boolean</td>
+          <td>If <code>false</code> it will behave similar to the option <code>orphan</code>,
+          but instead showing the k-th step, it will do nothing. So on the next tour initialization
+          it will show k-th step if its element is present on the webpage.</td>
+          <td><code>true</code></td>
+        </tr>
         <tr id="duration" class="success">
           <td>duration <span class="label label-success">NEW</span></td>
           <td>Boolean|Number</td>
@@ -511,6 +519,14 @@ tour.addStep({
           You can use a string or function that returns a string of the HTML template for
           the orphan popovers</td>
           <td><code>false</code></td>
+        </tr>
+        <tr class="success">
+          <td>skipOrphan <span class="label label-success">NEW</span></td>
+          <td>Boolean</td>
+          <td>If <code>false</code> it will behave similar to the option <code>orphan</code>,
+          but instead showing the k-th step, it will do nothing. So on the next tour initialization
+          it will show k-th step if its element is present on the webpage.</td>
+          <td><code>true</code></td>
         </tr>
         <tr class="success">
           <td>duration <span class="label label-success">NEW</span></td>

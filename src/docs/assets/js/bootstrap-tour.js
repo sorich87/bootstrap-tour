@@ -43,6 +43,7 @@
         backdropPadding: 0,
         redirect: true,
         orphan: false,
+        skipOrphan: true,
         duration: false,
         delay: false,
         basePath: '',
@@ -109,6 +110,7 @@
           redirect: this._options.redirect,
           reflexElement: this._options.steps[i].element,
           orphan: this._options.orphan,
+          skipOrphan: this._options.skipOrphan,
           duration: this._options.duration,
           delay: this._options.delay,
           template: this._options.template,
@@ -315,6 +317,9 @@
           }
           if (_this._isOrphan(step)) {
             if (step.orphan === false) {
+              if (step.skipOrphan === false) {
+                return;
+              }
               _this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
               if (skipToPrevious) {
                 _this._showPrevStep();
