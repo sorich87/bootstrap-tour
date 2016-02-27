@@ -408,8 +408,10 @@
 
     # Check if step path equals current document path
     _isRedirect: (host, path, location) ->
-      if host isnt ''
-        return true if @_isHostDifferent(host, location.href)
+      return true if host? and host isnt '' and (
+        (({}).toString.call(host) is '[object RegExp]' and not host.test(location.origin)) or
+        (({}).toString.call(host) is '[object String]' and @_isHostDifferent(host, location.origin))
+      )
 
       currentPath = [
         location.pathname,
@@ -453,7 +455,9 @@
       if $.isFunction step.redirect
         step.redirect.call this, path
       else if step.redirect is true
-        @_debug "Redirect to #{step.host}#{path}"
+        href = if ({}).toString.call(step.host) is '[object String]' then "#{step.host}#{path}" else path
+        @_debug "Redirect to #{href}"
+
         if @_getState('redirect_to') is "#{i}"
           @_debug "Error redirection loop to #{path}"
           @_removeState 'redirect_to'
@@ -461,7 +465,7 @@
           step.onRedirectError @ if step.onRedirectError?
         else
           @_setState 'redirect_to', "#{i}"
-          document.location.href = "#{step.host}#{path}"
+          document.location.href = href
 
     _isOrphan: (step) ->
       # Do not check for is(':hidden') on svg elements. jQuery does not work properly on svg.

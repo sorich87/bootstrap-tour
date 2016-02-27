@@ -1122,10 +1122,8 @@
 
     Tour.prototype._isRedirect = function(host, path, location) {
       var currentPath;
-      if (host !== '') {
-        if (this._isHostDifferent(host, location.href)) {
-          return true;
-        }
+      if ((host != null) && host !== '' && (({}.toString.call(host) === '[object RegExp]' && !host.test(location.origin)) || ({}.toString.call(host) === '[object String]' && this._isHostDifferent(host, location.origin)))) {
+        return true;
       }
       currentPath = [location.pathname, location.search, location.hash].join('');
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && this._isPathDifferent(path, currentPath)));
@@ -1154,10 +1152,12 @@
     };
 
     Tour.prototype._redirect = function(step, i, path) {
+      var href;
       if ($.isFunction(step.redirect)) {
         return step.redirect.call(this, path);
       } else if (step.redirect === true) {
-        this._debug("Redirect to " + step.host + path);
+        href = {}.toString.call(step.host) === '[object String]' ? "" + step.host + path : path;
+        this._debug("Redirect to " + href);
         if (this._getState('redirect_to') === ("" + i)) {
           this._debug("Error redirection loop to " + path);
           this._removeState('redirect_to');
@@ -1166,7 +1166,7 @@
           }
         } else {
           this._setState('redirect_to', "" + i);
-          return document.location.href = "" + step.host + path;
+          return document.location.href = href;
         }
       }
     };
