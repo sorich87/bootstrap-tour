@@ -6,7 +6,7 @@
 
 Quick and easy way to build your product tours with Bootstrap Popovers.
 
-*Compatible with Bootstrap >= 2.3.0*
+*Compatible with Bootstrap >= 2.3.0*.
 
 ## Demo and Documentation
 [http://bootstraptour.com](http://bootstraptour.com)
@@ -16,8 +16,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
 
-We use [Gulp](http://gulpjs.com/) and [Jasmine](http://jasmine.github.io/). Both make your life easier ;)
-
+We use [Gulp](http://gulpjs.com/) and [Jasmine](http://jasmine.github.io/). Both make your life easier
 ### Develop
 
 Files to be developed are located under `./src/`.
