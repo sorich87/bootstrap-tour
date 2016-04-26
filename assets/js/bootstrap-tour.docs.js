@@ -51,7 +51,8 @@
           placement: "top",
           title: "A new shiny Backdrop option",
           content: "If you need to highlight the current step's element, activate the backdrop and you won't lose\nthe focus anymore!",
-          backdrop: true
+          backdrop: true,
+          backdropPadding: 5
         }, {
           path: "/api",
           element: "#reflex",

@@ -1,15 +1,15 @@
 /* ========================================================================
- * bootstrap-tour - v0.10.2
+ * bootstrap-tour - v0.10.3
  * http://bootstraptour.com
  * ========================================================================
- * Copyright 2012-2013 Ulrich Sossou
+ * Copyright 2012-2015 Ulrich Sossou
  *
  * ========================================================================
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the MIT License (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://opensource.org/licenses/MIT
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -107,6 +107,7 @@
           backdropContainer: this._options.backdropContainer,
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
+          reflexElement: this._options.steps[i].element,
           orphan: this._options.orphan,
           duration: this._options.duration,
           delay: this._options.delay,
@@ -264,8 +265,9 @@
             $element = $('body');
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
+          $element.removeData('bs.popover');
           if (step.reflex) {
-            _this._reflexElement(step.reflex, $element).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
+            $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
             _this._hideBackdrop();
@@ -293,7 +295,7 @@
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
       showStepHelper = (function(_this) {
         return function(e) {
-          var current_path, path, showPopoverAndOverlay;
+          var path, showPopoverAndOverlay;
           _this.setCurrentStep(i);
           path = (function() {
             switch ({}.toString.call(step.path)) {
@@ -305,10 +307,9 @@
                 return step.path;
             }
           }).call(_this);
-          current_path = [document.location.pathname, document.location.hash].join('');
-          if (_this._isRedirect(step.host, path, current_path)) {
+          if (_this._isRedirect(step.host, path, document.location)) {
             _this._redirect(step, i, path);
-            if (!_this._pathHashDifferent(step.host, path, current_path)) {
+            if (!_this._isJustPathHashDifferent(step.host, path, document.location)) {
               return;
             }
           }
@@ -328,11 +329,11 @@
             _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i) {
+            if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
-              _this._showOverlayElement(step);
+              _this._showOverlayElement(step, true);
             }
             _this._showPopover(step, i);
             if (step.onShown != null) {
@@ -376,6 +377,10 @@
         this._current = this._current === null ? null : parseInt(this._current, 10);
       }
       return this;
+    };
+
+    Tour.prototype.redraw = function() {
+      return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
     };
 
     Tour.prototype._setState = function(key, value) {
@@ -459,36 +464,37 @@
       }
     };
 
-    Tour.prototype._isRedirect = function(host, path, currentPath) {
-      var current_host;
+    Tour.prototype._isRedirect = function(host, path, location) {
+      var currentPath;
       if (host !== '') {
-        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
-        if (host !== current_host) {
+        if (this._isHostDifferent(host, location.href)) {
           return true;
         }
       }
-      return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && path.replace(/\?.*$/, '').replace(/\/?$/, '') !== currentPath.replace(/\/?$/, '')));
+      currentPath = [location.pathname, location.search, location.hash].join('');
+      return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && this._isPathDifferent(path, currentPath)));
     };
 
-    Tour.prototype._pathHashDifferent = function(host, path, currentPath) {
-      var currentPathArr, current_host, diff, pathArr;
+    Tour.prototype._isHostDifferent = function(host, currentURL) {
+      return this._getProtocol(host) !== this._getProtocol(currentURL) || this._getHost(host) !== this._getHost(currentURL);
+    };
+
+    Tour.prototype._isPathDifferent = function(path, currentPath) {
+      return this._getPath(path) !== this._getPath(currentPath) || !this._equal(this._getQuery(path), this._getQuery(currentPath)) || !this._equal(this._getHash(path), this._getHash(currentPath));
+    };
+
+    Tour.prototype._isJustPathHashDifferent = function(host, path, location) {
+      var currentPath;
       if (host !== '') {
-        current_host = document.location.href.substr(0, document.location.href.lastIndexOf(document.location.pathname));
-        if (host !== current_host) {
+        if (this._isHostDifferent(host, location.href)) {
           return false;
         }
       }
-      diff = false;
+      currentPath = [location.pathname, location.search, location.hash].join('');
       if ({}.toString.call(path) === '[object String]') {
-        pathArr = path.split('#');
-        currentPathArr = currentPath.split('#');
-        if (path.indexOf('#') === 0) {
-          diff = pathArr[1] !== currentPathArr[1];
-        } else {
-          diff = pathArr[0].replace(/\?.*$/, '').replace(/\/?$/, '') === currentPathArr[0].replace(/\/?$/, '') && pathArr[1] !== currentPathArr[1];
-        }
+        return this._getPath(path) === this._getPath(currentPath) && this._equal(this._getQuery(path), this._getQuery(currentPath)) && !this._equal(this._getHash(path), this._getHash(currentPath));
       }
-      return diff;
+      return false;
     };
 
     Tour.prototype._redirect = function(step, i, path) {
@@ -518,7 +524,7 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, options, shouldAddSmart;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -533,7 +539,7 @@
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        this._reflexElement(step.reflex, $element).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
+        $(step.reflexElement).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();
@@ -543,8 +549,9 @@
           };
         })(this));
       }
+      shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
       $element.popover({
-        placement: step.placement,
+        placement: shouldAddSmart ? "auto " + step.placement : step.placement,
         trigger: 'manual',
         title: step.title,
         content: step.content,
@@ -577,11 +584,16 @@
         $template.addClass('orphan');
       }
       $template.addClass("tour-" + this._options.name + " tour-" + this._options.name + "-" + i);
+      if (step.reflex) {
+        $template.addClass("tour-" + this._options.name + "-reflex");
+      }
       if (step.prev < 0) {
         $prev.addClass('disabled');
+        $prev.prop('disabled', true);
       }
       if (step.next < 0) {
         $next.addClass('disabled');
+        $next.prop('disabled', true);
       }
       if (!step.duration) {
         $resume.remove();
@@ -590,21 +602,10 @@
     };
 
     Tour.prototype._reflexEvent = function(reflex) {
-      var typeString;
-      typeString = {}.toString.call(reflex);
-      if (typeString === '[object Boolean]' || typeString === '[object String]') {
+      if ({}.toString.call(reflex) === '[object Boolean]') {
         return 'click';
       } else {
         return reflex;
-      }
-    };
-
-    Tour.prototype._reflexElement = function(reflex, $element) {
-      switch ({}.toString.call(reflex)) {
-        case '[object Boolean]':
-          return $element;
-        case '[object String]':
-          return $(reflex);
       }
     };
 
@@ -787,23 +788,25 @@
       }
     };
 
-    Tour.prototype._showOverlayElement = function(step) {
+    Tour.prototype._showOverlayElement = function(step, force) {
       var $element, elementData;
       $element = $(step.element);
-      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown) {
+      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
         return;
       }
-      this.backdrop.overlayElementShown = true;
-      this.backdrop.$element = $element.addClass('tour-step-backdrop');
-      this.backdrop.$background = $('<div>', {
-        "class": 'tour-step-background'
-      });
+      if (!this.backdrop.overlayElementShown) {
+        this.backdrop.$element = $element.addClass('tour-step-backdrop');
+        this.backdrop.$background = $('<div>', {
+          "class": 'tour-step-background'
+        });
+        this.backdrop.$background.appendTo(step.backdropContainer);
+        this.backdrop.overlayElementShown = true;
+      }
       elementData = {
         width: $element.innerWidth(),
         height: $element.innerHeight(),
         offset: $element.offset()
       };
-      this.backdrop.$background.appendTo(step.backdropContainer);
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
       }
@@ -852,6 +855,69 @@
       window.clearTimeout(this._timer);
       this._timer = null;
       return this._duration = null;
+    };
+
+    Tour.prototype._getProtocol = function(url) {
+      url = url.split('://');
+      if (url.length > 1) {
+        return url[0];
+      } else {
+        return 'http';
+      }
+    };
+
+    Tour.prototype._getHost = function(url) {
+      url = url.split('//');
+      url = url.length > 1 ? url[1] : url[0];
+      return url.split('/')[0];
+    };
+
+    Tour.prototype._getPath = function(path) {
+      return path.replace(/\/?$/, '').split('?')[0].split('#')[0];
+    };
+
+    Tour.prototype._getQuery = function(path) {
+      return this._getParams(path, '?');
+    };
+
+    Tour.prototype._getHash = function(path) {
+      return this._getParams(path, '#');
+    };
+
+    Tour.prototype._getParams = function(path, start) {
+      var param, params, paramsObject, _i, _len;
+      params = path.split(start);
+      if (params.length === 1) {
+        return {};
+      }
+      params = params[1].split('&');
+      paramsObject = {};
+      for (_i = 0, _len = params.length; _i < _len; _i++) {
+        param = params[_i];
+        param = param.split('=');
+        paramsObject[param[0]] = param[1] || '';
+      }
+      return paramsObject;
+    };
+
+    Tour.prototype._equal = function(obj1, obj2) {
+      var k, v;
+      if ({}.toString.call(obj1) === '[object Object]' && {}.toString.call(obj2) === '[object Object]') {
+        for (k in obj1) {
+          v = obj1[k];
+          if (obj2[k] !== v) {
+            return false;
+          }
+        }
+        for (k in obj2) {
+          v = obj2[k];
+          if (obj1[k] !== v) {
+            return false;
+          }
+        }
+        return true;
+      }
+      return obj1 === obj2;
     };
 
     return Tour;

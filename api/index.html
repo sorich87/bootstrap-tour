@@ -10,10 +10,10 @@
     API Documentation &middot; Bootstrap Tour
   
 </title>
-<link href="/components/bootstrap/dist/css/bootstrap.min.css?2015-05-20T21%3A25%3A40%2B01%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2015-05-20T21%3A25%3A40%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2015-05-20T21%3A25%3A40%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.docs.css?2015-05-20T21%3A25%3A40%2B01%3A00" rel="stylesheet">
+<link href="/components/bootstrap/dist/css/bootstrap.min.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
 <link href="http://boostraptour.com/api/" rel="canonical">
 <!--[if lt IE 9]><script src="/components/html5shiv/dist/html5shiv.min.js"></script><![endif]-->
 <script>
@@ -69,6 +69,7 @@ ga('send', 'pageview');
   <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;tour&quot;</span><span class="p">,</span>
   <span class="nx">steps</span><span class="o">:</span> <span class="p">[],</span>
   <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
+  <span class="nx">smartPlacement</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">keyboard</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">storage</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">,</span>
   <span class="nx">debug</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
@@ -90,7 +91,6 @@ ga('send', 'pageview');
 <span class="s2">        &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
 <span class="s2">    &lt;/div&gt;</span>
 <span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
-<span class="s2">    &lt;/nav&gt;</span>
 <span class="s2">  &lt;/div&gt;&quot;</span><span class="p">,</span>
   <span class="nx">afterGetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
   <span class="nx">afterSetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
@@ -141,6 +141,12 @@ ga('send', 'pageview');
           </em>
           </td>
           <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement, every time.<br></td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>autoscroll</td>
@@ -380,6 +386,7 @@ ga('send', 'pageview');
   <span class="nx">host</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">placement</span><span class="o">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span>
+  <span class="nx">smartPlacement</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
   <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
   <span class="nx">next</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -442,9 +449,19 @@ ga('send', 'pageview');
           <code>'top'</code>,
           <code>'bottom'</code>,
           <code>'left'</code>,
-          <code>'right'</code>.
+          <code>'right'</code>,
+          <code>'auto'</code>.
+          When "auto" is specified, it will dynamically reorient the popover.
+          For example, if placement is "auto left", the popover will display to
+          the left when possible, otherwise it will display right.
           </td>
           <td><code>'right'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement.</td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>title</td>
@@ -734,6 +751,11 @@ ga('send', 'pageview');
           <td>Override the current step. Pass <code>i</code>
           as the index of the step in the tour (0-based).</td>
         </tr>
+        <tr>
+          <td>redraw()</td>
+          <td>Triggers a redraw on the overlay element.  Useful for
+          Dynamically sized tour targets.</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -827,12 +849,12 @@ ga('send', 'pageview');
     </div>
 </section>
 
-    <script src="/components/jquery/dist/jquery.min.js?2015-05-20T21%3A25%3A40%2B01%3A00"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.min.js?2015-05-20T21%3A25%3A40%2B01%3A00"></script>
-<script src="/components/blueimp-md5/js/md5.min.js?2015-05-20T21%3A25%3A40%2B01%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2015-05-20T21%3A25%3A40%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2015-05-20T21%3A25%3A40%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.docs.js?2015-05-20T21%3A25%3A40%2B01%3A00"></script>
+    <script src="/components/jquery/dist/jquery.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+<script src="/components/blueimp-md5/js/md5.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
 <script>
 window.twttr = (function (d,s,id) {
   var t, js, fjs = d.getElementsByTagName(s)[0];
