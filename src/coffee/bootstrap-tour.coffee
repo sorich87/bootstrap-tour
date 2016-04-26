@@ -21,6 +21,7 @@
         backdropPadding: 0
         redirect: true
         orphan: false
+        skipOrphan: true
         duration: false
         delay: false
         basePath: ''
@@ -98,6 +99,7 @@
           redirect: @_options.redirect
           reflexElement: @_options.steps[i].element
           orphan: @_options.orphan
+          skipOrphan: @_options.skipOrphan
           duration: @_options.duration
           delay: @_options.delay
           template: @_options.template
@@ -276,6 +278,8 @@
         # Skip if step is orphan and orphan options is false
         if @_isOrphan step
           if step.orphan is false
+            if step.skipOrphan is false
+              return
             @_debug """Skip the orphan step #{@_current + 1}.
             Orphan option is false and the element does not exist or is hidden."""
             if skipToPrevious then @_showPrevStep() else @_showNextStep()
