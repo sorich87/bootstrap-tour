@@ -692,7 +692,9 @@
       })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']", (function(_this) {
         return function(e) {
           e.preventDefault();
-          return _this.prev();
+          if (_this._current > 0) {
+            return _this.prev();
+          }
         };
       })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']", (function(_this) {
         return function(e) {

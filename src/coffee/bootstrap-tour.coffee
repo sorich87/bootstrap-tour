@@ -607,7 +607,7 @@
         @next()
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']", (e) =>
         e.preventDefault()
-        @prev()
+        @prev() if @_current > 0
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']", (e) =>
         e.preventDefault()
         @end()
