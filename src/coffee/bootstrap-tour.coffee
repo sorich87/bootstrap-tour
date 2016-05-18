@@ -1,4 +1,4 @@
-(($, window) ->
+factory = (($) ->
   document = window.document
 
   class Tour
@@ -762,6 +762,12 @@
         return true
 
       return obj1 is obj2
-  window.Tour = Tour
+  Tour
+)
 
-) jQuery, window
+if typeof define is 'function' and define.amd?
+  define(['jquery'], factory)
+else if typeof exports is 'object'
+  module.exports = factory(jQuery)
+else
+  window.Tour = factory(jQuery)
