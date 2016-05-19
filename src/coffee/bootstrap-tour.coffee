@@ -97,6 +97,7 @@
           backdropPadding: @_options.backdropPadding
           redirect: @_options.redirect
           reflexElement: @_options.steps[i].element
+          backdropElement: @_options.steps[i].element
           orphan: @_options.orphan
           duration: @_options.duration
           delay: @_options.delay
@@ -145,16 +146,16 @@
 
     # Hide current step and show next step
     next: ->
-      promise = @hideStep @_current
+      promise = @hideStep @_current, @_current+1
       @_callOnPromiseDone promise, @_showNextStep
 
     # Hide current step and show prev step
     prev: ->
-      promise = @hideStep @_current
+      promise = @hideStep @_current, @_current-1
       @_callOnPromiseDone promise, @_showPrevStep
 
     goTo: (i) ->
-      promise = @hideStep @_current
+      promise = @hideStep @_current, i
       @_callOnPromiseDone promise, @showStep, i
 
     # End tour
@@ -215,7 +216,7 @@
       step.onResume @, @_duration if step.onResume? and @_duration isnt step.duration
 
     # Hide the specified step
-    hideStep: (i) ->
+    hideStep: (i, iNext) ->
       step = @getStep i
       return unless step
 
@@ -237,7 +238,9 @@
           .removeClass('tour-step-element-reflex')
           .off "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}"
 
-        @_hideBackdrop() if step.backdrop
+        if step.backdrop
+          next_step = iNext? and @getStep iNext
+          @_hideBackdrop() if !next_step or !next_step.backdrop or next_step.backdropElement != step.backdropElement
 
         step.onHidden(@) if step.onHidden?
 
@@ -666,19 +669,20 @@
 
     _showOverlayElement: (step, force) ->
       $element = $ step.element
+      $backdropElement = $ step.backdropElement
 
       return if not $element or $element.length is 0 or @backdrop.overlayElementShown and not force
 
       if !@backdrop.overlayElementShown
-        @backdrop.$element = $element.addClass 'tour-step-backdrop'
+        @backdrop.$element = $backdropElement.addClass 'tour-step-backdrop'
         @backdrop.$background = $ '<div>', class: 'tour-step-background'
         @backdrop.$background.appendTo(step.backdropContainer)
         @backdrop.overlayElementShown = true
 
       elementData =
-        width: $element.innerWidth()
-        height: $element.innerHeight()
-        offset: $element.offset()
+        width: $backdropElement.innerWidth()
+        height: $backdropElement.innerHeight()
+        offset: $backdropElement.offset()
 
       elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
       @backdrop
