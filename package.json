@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "coffee-script": "~1.7.1",
-    "gulp": "~3.8.6",
+    "gulp": "~3.9.0",
     "gulp-bump": "^0.1.11",
     "gulp-changed": "~0.4.1",
     "gulp-clean": "~0.3.1",

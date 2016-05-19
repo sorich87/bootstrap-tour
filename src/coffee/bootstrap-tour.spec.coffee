@@ -211,6 +211,7 @@ describe 'Bootstrap Tour', ->
       backdrop: false
       backdropPadding: 0
       backdropContainer: 'body'
+      backdropElement: $('<div></div>').appendTo('body')
       redirect: true
       reflexElement: $('<div></div>').appendTo('body')
       orphan: false

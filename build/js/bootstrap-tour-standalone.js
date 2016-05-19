@@ -750,6 +750,7 @@
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
           reflexElement: this._options.steps[i].element,
+          backdropElement: this._options.steps[i].element,
           orphan: this._options.orphan,
           duration: this._options.duration,
           delay: this._options.delay,
@@ -805,19 +806,19 @@
 
     Tour.prototype.next = function() {
       var promise;
-      promise = this.hideStep(this._current);
+      promise = this.hideStep(this._current, this._current + 1);
       return this._callOnPromiseDone(promise, this._showNextStep);
     };
 
     Tour.prototype.prev = function() {
       var promise;
-      promise = this.hideStep(this._current);
+      promise = this.hideStep(this._current, this._current - 1);
       return this._callOnPromiseDone(promise, this._showPrevStep);
     };
 
     Tour.prototype.goTo = function(i) {
       var promise;
-      promise = this.hideStep(this._current);
+      promise = this.hideStep(this._current, i);
       return this._callOnPromiseDone(promise, this.showStep, i);
     };
 
@@ -891,7 +892,7 @@
       }
     };
 
-    Tour.prototype.hideStep = function(i) {
+    Tour.prototype.hideStep = function(i, iNext) {
       var hideStepHelper, promise, step;
       step = this.getStep(i);
       if (!step) {
@@ -901,7 +902,7 @@
       promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
       hideStepHelper = (function(_this) {
         return function(e) {
-          var $element;
+          var $element, next_step;
           $element = $(step.element);
           if (!($element.data('bs.popover') || $element.data('popover'))) {
             $element = $('body');
@@ -911,7 +912,10 @@
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
-            _this._hideBackdrop();
+            next_step = (iNext != null) && _this.getStep(iNext);
+            if (!next_step || !next_step.backdrop || next_step.backdropElement !== step.backdropElement) {
+              _this._hideBackdrop();
+            }
           }
           if (step.onHidden != null) {
             return step.onHidden(_this);
@@ -1440,13 +1444,14 @@
     };
 
     Tour.prototype._showOverlayElement = function(step, force) {
-      var $element, elementData;
+      var $backdropElement, $element, elementData;
       $element = $(step.element);
+      $backdropElement = $(step.backdropElement);
       if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
         return;
       }
       if (!this.backdrop.overlayElementShown) {
-        this.backdrop.$element = $element.addClass('tour-step-backdrop');
+        this.backdrop.$element = $backdropElement.addClass('tour-step-backdrop');
         this.backdrop.$background = $('<div>', {
           "class": 'tour-step-background'
         });
@@ -1454,9 +1459,9 @@
         this.backdrop.overlayElementShown = true;
       }
       elementData = {
-        width: $element.innerWidth(),
-        height: $element.innerHeight(),
-        offset: $element.offset()
+        width: $backdropElement.innerWidth(),
+        height: $backdropElement.innerHeight(),
+        offset: $backdropElement.offset()
       };
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
