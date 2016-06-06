@@ -651,7 +651,17 @@
 
 }(jQuery);
 
-(function($, window) {
+(function(window, factory) {
+  if (typeof define === 'function' && define.amd) {
+    return define(['jquery'], function(jQuery) {
+      return window.Tour = factory(jQuery);
+    });
+  } else if (typeof exports === 'object') {
+    return module.exports = factory(require('jQuery'));
+  } else {
+    return window.Tour = factory(window.jQuery);
+  }
+})(window, function($) {
   var Tour, document;
   document = window.document;
   Tour = (function() {
@@ -1557,5 +1567,5 @@
     return Tour;
 
   })();
-  return window.Tour = Tour;
-})(jQuery, window);
+  return Tour;
+});

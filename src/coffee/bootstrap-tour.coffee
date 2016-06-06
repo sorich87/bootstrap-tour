@@ -1,4 +1,11 @@
-(($, window) ->
+((window, factory) ->
+  if typeof define is 'function' and define.amd
+    define ['jquery'], (jQuery) -> (window.Tour = factory(jQuery))
+  else if typeof exports is 'object'
+    module.exports = factory(require('jQuery'))
+  else
+    window.Tour = factory(window.jQuery)
+)(window, ($) ->
   document = window.document
 
   class Tour
@@ -762,6 +769,5 @@
         return true
 
       return obj1 is obj2
-  window.Tour = Tour
-
-) jQuery, window
+  Tour
+)
