@@ -1,15 +1,15 @@
 /* ========================================================================
- * bootstrap-tour - v0.10.2
+ * bootstrap-tour - v0.10.3
  * http://bootstraptour.com
  * ========================================================================
- * Copyright 2012-2013 Ulrich Sossou
+ * Copyright 2012-2015 Ulrich Sossou
  *
  * ========================================================================
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the MIT License (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://opensource.org/licenses/MIT
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,17 @@
  * ========================================================================
  */
 
-(function($, window) {
+(function(window, factory) {
+  if (typeof define === 'function' && define.amd) {
+    return define(['jquery'], function(jQuery) {
+      return window.Tour = factory(jQuery);
+    });
+  } else if (typeof exports === 'object') {
+    return module.exports = factory(require('jQuery'));
+  } else {
+    return window.Tour = factory(window.jQuery);
+  }
+})(window, function($) {
   var Tour, document;
   document = window.document;
   Tour = (function() {
@@ -265,7 +275,7 @@
           if (!($element.data('bs.popover') || $element.data('popover'))) {
             $element = $('body');
           }
-          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
+          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover').focus();
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -339,11 +349,11 @@
             _this._showBackdrop(step);
           }
           showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i) {
+            if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
-              _this._showOverlayElement(step);
+              _this._showOverlayElement(step, true);
             }
             _this._showPopover(step, i);
             if (step.onShown != null) {
@@ -388,6 +398,10 @@
         this._current = this._current === null ? null : parseInt(this._current, 10);
       }
       return this;
+    };
+
+    Tour.prototype.redraw = function() {
+      return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
     };
 
     Tour.prototype._setState = function(key, value) {
@@ -517,7 +531,7 @@
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, options, shouldAddSmart;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -542,8 +556,9 @@
           };
         })(this));
       }
+      shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
       $element.popover({
-        placement: step.placement,
+        placement: shouldAddSmart ? "auto " + step.placement : step.placement,
         trigger: 'manual',
         title: step.title,
         content: step.content,
@@ -555,6 +570,7 @@
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
+      this._focus($tip, $element, step.next < 0);
       this._reposition($tip, step);
       if (isOrphan) {
         return this._center($tip);
@@ -580,10 +596,10 @@
         $template.addClass("tour-" + this._options.name + "-reflex");
       }
       if (step.prev < 0) {
-        $prev.addClass('disabled');
+        $prev.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
       }
       if (step.next < 0) {
-        $next.addClass('disabled');
+        $next.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
       }
       if (!step.duration) {
         $resume.remove();
@@ -597,6 +613,15 @@
       } else {
         return reflex;
       }
+    };
+
+    Tour.prototype._focus = function($tip, $element, end) {
+      var $next, role;
+      role = end ? 'end' : 'next';
+      $next = $tip.find("[data-role='" + role + "']");
+      return $element.on('shown.bs.popover', function() {
+        return $next.focus();
+      });
     };
 
     Tour.prototype._reposition = function($tip, step) {
@@ -694,7 +719,9 @@
       })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='prev']", (function(_this) {
         return function(e) {
           e.preventDefault();
-          return _this.prev();
+          if (_this._current > 0) {
+            return _this.prev();
+          }
         };
       })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']", (function(_this) {
         return function(e) {
@@ -786,11 +813,11 @@
       }
     };
 
-    Tour.prototype._showOverlayElement = function(step) {
+    Tour.prototype._showOverlayElement = function(step, force) {
       var $backdropElement, $element, elementData;
       $element = $(step.element);
       $backdropElement = $(step.backdropElement);
-      if (!$element || $element.length === 0) {
+      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
         return;
       }
       if (!this.backdrop.overlayElementShown) {
@@ -933,5 +960,5 @@
     return Tour;
 
   })();
-  return window.Tour = Tour;
-})(jQuery, window);
+  return Tour;
+});

@@ -1,4 +1,11 @@
-(($, window) ->
+((window, factory) ->
+  if typeof define is 'function' and define.amd
+    define ['jquery'], (jQuery) -> (window.Tour = factory(jQuery))
+  else if typeof exports is 'object'
+    module.exports = factory(require('jQuery'))
+  else
+    window.Tour = factory(window.jQuery)
+)(window, ($) ->
   document = window.document
 
   class Tour
@@ -229,8 +236,11 @@
         $element = $ step.element
         $element = $('body') unless $element.data('bs.popover') or $element.data('popover')
         $element
-        .popover('destroy')
-        .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
+          .popover('destroy')
+          .removeClass("tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element")
+          .removeData('bs.popover')
+          .focus()
+
         if step.reflex
           $ step.reflexElement
           .removeClass('tour-step-element-reflex')
@@ -295,9 +305,9 @@
         @_showBackdrop(step) if step.backdrop
 
         showPopoverAndOverlay = =>
-          return if @getCurrentStep() isnt i
+          return if @getCurrentStep() isnt i or @ended()
 
-          @_showOverlayElement step if step.element? and step.backdrop
+          @_showOverlayElement step, true if step.element? and step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
@@ -334,6 +344,10 @@
         @_current = @_getState 'current_step'
         @_current = if @_current is null then null else parseInt @_current, 10
       @
+
+    # Manually trigger a redraw on the overlay element
+    redraw: ->
+      @_showOverlayElement(@getStep(@getCurrentStep()).element, true)
 
     # Set a state in storage
     _setState: (key, value) ->
@@ -470,9 +484,11 @@
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
+      shouldAddSmart = step.smartPlacement is true and step.placement.search(/auto/i) is -1
+
       $element
       .popover(
-        placement: step.placement
+        placement: if shouldAddSmart then "auto #{step.placement}" else step.placement
         trigger: 'manual'
         title: step.title
         content: step.content
@@ -487,6 +503,8 @@
       # Tip adjustment
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', step.id
+
+      @_focus $tip, $element, step.next < 0
       @_reposition $tip, step
       @_center $tip if isOrphan
 
@@ -506,13 +524,28 @@
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
       $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
-      $prev.addClass('disabled') if step.prev < 0
-      $next.addClass('disabled') if step.next < 0
+
+      if step.prev < 0
+        $prev.addClass('disabled')
+          .prop('disabled', true)
+          .prop('tabindex', -1)
+
+      if step.next < 0
+        $next.addClass('disabled')
+          .prop('disabled', true)
+          .prop('tabindex', -1)
+
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
       if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
+
+    _focus: ($tip, $element, end) ->
+      role = if end then 'end' else 'next'
+      $next = $tip.find("[data-role='#{role}']")
+
+      $element.on 'shown.bs.popover', -> $next.focus()
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
@@ -584,6 +617,7 @@
         clearTimeout(timeout)
         timeout = setTimeout(callback, 100)
 
+
     # Event bindings for mouse navigation
     _initMouseNavigation: ->
       _this = @
@@ -602,7 +636,7 @@
         @next()
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='prev']", (e) =>
         e.preventDefault()
-        @prev()
+        @prev() if @_current > 0
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']", (e) =>
         e.preventDefault()
         @end()
@@ -656,11 +690,11 @@
         @backdrop.overlay = null
         @backdrop.backgroundShown = false
 
-    _showOverlayElement: (step) ->
+    _showOverlayElement: (step, force) ->
       $element = $ step.element
       $backdropElement = $ step.backdropElement
 
-      return if not $element or $element.length is 0
+      return if not $element or $element.length is 0 or @backdrop.overlayElementShown and not force
 
       if !@backdrop.overlayElementShown
         @backdrop.$element = $backdropElement.addClass 'tour-step-backdrop'
@@ -764,6 +798,6 @@
         return true
       else
         return obj1 is obj2
-  window.Tour = Tour
 
-) jQuery, window
+  Tour
+)

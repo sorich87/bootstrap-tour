@@ -10,10 +10,10 @@
   "port": 9876,
   "colors": true,
   "autoWatch": true,
-  "browsers": ["Chrome"],
+  "browsers": ["PhantomJS"],
   "singleRun": false,
   "plugins": [
     "karma-jasmine",
-    "karma-chrome-launcher"
+    "karma-phantomjs-launcher"
   ]
 }
