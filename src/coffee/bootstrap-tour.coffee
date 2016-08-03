@@ -287,7 +287,7 @@
         else step.path
 
       # Redirect to step path if not already there
-      if @_isRedirect step.host, path, document.location
+      if step.redirect and @_isRedirect step.host, path, document.location
         @_redirect step, i, path
 
         return unless @_isJustPathHashDifferent(step.host, path, document.location)
@@ -454,7 +454,7 @@
     _redirect: (step, i, path) ->
       if $.isFunction step.redirect
         step.redirect.call this, path
-      else if step.redirect is true
+      else
         href = if ({}).toString.call(step.host) is '[object String]' then "#{step.host}#{path}" else path
         @_debug "Redirect to #{href}"
 

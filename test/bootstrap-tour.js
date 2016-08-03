@@ -327,7 +327,7 @@
             return step.path;
         }
       }).call(this);
-      if (this._isRedirect(step.host, path, document.location)) {
+      if (step.redirect && this._isRedirect(step.host, path, document.location)) {
         this._redirect(step, i, path);
         if (!this._isJustPathHashDifferent(step.host, path, document.location)) {
           return;
@@ -523,7 +523,7 @@
       var href;
       if ($.isFunction(step.redirect)) {
         return step.redirect.call(this, path);
-      } else if (step.redirect === true) {
+      } else {
         href = {}.toString.call(step.host) === '[object String]' ? "" + step.host + path : path;
         this._debug("Redirect to " + href);
         if (this._getState('redirect_to') === ("" + i)) {
