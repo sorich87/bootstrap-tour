@@ -305,7 +305,7 @@
     };
 
     Tour.prototype.showStep = function(i) {
-      var promise, showDelay, showStepHelper, skipToPrevious, step;
+      var path, promise, showDelay, showStepHelper, skipToPrevious, step;
       if (this.ended()) {
         this._debug('Tour ended, showStep prevented.');
         return this;
@@ -316,26 +316,26 @@
       }
       skipToPrevious = i < this._current;
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
+      this.setCurrentStep(i);
+      path = (function() {
+        switch ({}.toString.call(step.path)) {
+          case '[object Function]':
+            return step.path();
+          case '[object String]':
+            return this._options.basePath + step.path;
+          default:
+            return step.path;
+        }
+      }).call(this);
+      if (this._isRedirect(step.host, path, document.location)) {
+        this._redirect(step, i, path);
+        if (!this._isJustPathHashDifferent(step.host, path, document.location)) {
+          return;
+        }
+      }
       showStepHelper = (function(_this) {
         return function(e) {
-          var path, showPopoverAndOverlay;
-          _this.setCurrentStep(i);
-          path = (function() {
-            switch ({}.toString.call(step.path)) {
-              case '[object Function]':
-                return step.path();
-              case '[object String]':
-                return this._options.basePath + step.path;
-              default:
-                return step.path;
-            }
-          }).call(_this);
-          if (_this._isRedirect(step.host, path, document.location)) {
-            _this._redirect(step, i, path);
-            if (!_this._isJustPathHashDifferent(step.host, path, document.location)) {
-              return;
-            }
-          }
+          var showPopoverAndOverlay;
           if (_this._isOrphan(step)) {
             if (step.orphan === false) {
               _this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
