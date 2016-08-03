@@ -274,8 +274,7 @@
           if (!($element.data('bs.popover') || $element.data('popover'))) {
             $element = $('body');
           }
-          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element");
-          $element.removeData('bs.popover');
+          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover').focus();
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -573,6 +572,7 @@
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
+      this._focus($tip, $element, step.next < 0);
       this._reposition($tip, step);
       if (isOrphan) {
         return this._center($tip);
@@ -598,12 +598,10 @@
         $template.addClass("tour-" + this._options.name + "-reflex");
       }
       if (step.prev < 0) {
-        $prev.addClass('disabled');
-        $prev.prop('disabled', true);
+        $prev.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
       }
       if (step.next < 0) {
-        $next.addClass('disabled');
-        $next.prop('disabled', true);
+        $next.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
       }
       if (!step.duration) {
         $resume.remove();
@@ -617,6 +615,15 @@
       } else {
         return reflex;
       }
+    };
+
+    Tour.prototype._focus = function($tip, $element, end) {
+      var $next, role;
+      role = end ? 'end' : 'next';
+      $next = $tip.find("[data-role='" + role + "']");
+      return $element.on('shown.bs.popover', function() {
+        return $next.focus();
+      });
     };
 
     Tour.prototype._reposition = function($tip, step) {

@@ -235,10 +235,11 @@
         $element = $ step.element
         $element = $('body') unless $element.data('bs.popover') or $element.data('popover')
         $element
-        .popover('destroy')
-        .removeClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
-        $element
-        .removeData('bs.popover')
+          .popover('destroy')
+          .removeClass("tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element")
+          .removeData('bs.popover')
+          .focus()
+
         if step.reflex
           $ step.reflexElement
           .removeClass('tour-step-element-reflex')
@@ -503,6 +504,8 @@
       # Tip adjustment
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', step.id
+
+      @_focus $tip, $element, step.next < 0
       @_reposition $tip, step
       @_center $tip if isOrphan
 
@@ -522,17 +525,28 @@
       $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
       $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
+
       if step.prev < 0
         $prev.addClass('disabled')
-        $prev.prop('disabled',true)
+          .prop('disabled', true)
+          .prop('tabindex', -1)
+
       if step.next < 0
         $next.addClass('disabled')
-        $next.prop('disabled',true)
+          .prop('disabled', true)
+          .prop('tabindex', -1)
+
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
 
     _reflexEvent: (reflex) ->
       if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
+
+    _focus: ($tip, $element, end) ->
+      role = if end then 'end' else 'next'
+      $next = $tip.find("[data-role='#{role}']")
+
+      $element.on 'shown.bs.popover', -> $next.focus()
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
