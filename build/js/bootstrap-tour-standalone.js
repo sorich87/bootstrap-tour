@@ -750,6 +750,7 @@
           backdropPadding: this._options.backdropPadding,
           redirect: this._options.redirect,
           reflexElement: this._options.steps[i].element,
+          backdropElement: this._options.steps[i].element,
           orphan: this._options.orphan,
           duration: this._options.duration,
           delay: this._options.delay,
@@ -805,19 +806,19 @@
 
     Tour.prototype.next = function() {
       var promise;
-      promise = this.hideStep(this._current);
+      promise = this.hideStep(this._current, this._current + 1);
       return this._callOnPromiseDone(promise, this._showNextStep);
     };
 
     Tour.prototype.prev = function() {
       var promise;
-      promise = this.hideStep(this._current);
+      promise = this.hideStep(this._current, this._current - 1);
       return this._callOnPromiseDone(promise, this._showPrevStep);
     };
 
     Tour.prototype.goTo = function(i) {
       var promise;
-      promise = this.hideStep(this._current);
+      promise = this.hideStep(this._current, i);
       return this._callOnPromiseDone(promise, this.showStep, i);
     };
 
@@ -891,8 +892,8 @@
       }
     };
 
-    Tour.prototype.hideStep = function(i) {
-      var hideStepHelper, promise, step;
+    Tour.prototype.hideStep = function(i, iNext) {
+      var hideDelay, hideStepHelper, promise, step;
       step = this.getStep(i);
       if (!step) {
         return;
@@ -901,7 +902,7 @@
       promise = this._makePromise(step.onHide != null ? step.onHide(this, i) : void 0);
       hideStepHelper = (function(_this) {
         return function(e) {
-          var $element;
+          var $element, next_step;
           $element = $(step.element);
           if (!($element.data('bs.popover') || $element.data('popover'))) {
             $element = $('body');
@@ -911,19 +912,32 @@
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
-            _this._hideBackdrop();
+            next_step = (iNext != null) && _this.getStep(iNext);
+            if (!next_step || !next_step.backdrop || next_step.backdropElement !== step.backdropElement) {
+              _this._hideBackdrop();
+            }
           }
           if (step.onHidden != null) {
             return step.onHidden(_this);
           }
         };
       })(this);
-      this._callOnPromiseDone(promise, hideStepHelper);
+      hideDelay = step.delay.hide || step.delay;
+      if ({}.toString.call(hideDelay) === '[object Number]' && hideDelay > 0) {
+        this._debug("Wait " + hideDelay + " milliseconds to hide the step " + (this._current + 1));
+        window.setTimeout((function(_this) {
+          return function() {
+            return _this._callOnPromiseDone(promise, hideStepHelper);
+          };
+        })(this), hideDelay);
+      } else {
+        this._callOnPromiseDone(promise, hideStepHelper);
+      }
       return promise;
     };
 
     Tour.prototype.showStep = function(i) {
-      var promise, showStepHelper, skipToPrevious, step;
+      var path, promise, showDelay, showStepHelper, skipToPrevious, step;
       if (this.ended()) {
         this._debug('Tour ended, showStep prevented.');
         return this;
@@ -934,26 +948,23 @@
       }
       skipToPrevious = i < this._current;
       promise = this._makePromise(step.onShow != null ? step.onShow(this, i) : void 0);
+      this.setCurrentStep(i);
+      path = (function() {
+        switch ({}.toString.call(step.path)) {
+          case '[object Function]':
+            return step.path();
+          case '[object String]':
+            return this._options.basePath + step.path;
+          default:
+            return step.path;
+        }
+      }).call(this);
+      if (this._isRedirect(step.host, path, document.location)) {
+        this._redirect(step, i, path);
+      }
       showStepHelper = (function(_this) {
         return function(e) {
-          var path, showPopoverAndOverlay;
-          _this.setCurrentStep(i);
-          path = (function() {
-            switch ({}.toString.call(step.path)) {
-              case '[object Function]':
-                return step.path();
-              case '[object String]':
-                return this._options.basePath + step.path;
-              default:
-                return step.path;
-            }
-          }).call(_this);
-          if (_this._isRedirect(step.host, path, document.location)) {
-            _this._redirect(step, i, path);
-            if (!_this._isJustPathHashDifferent(step.host, path, document.location)) {
-              return;
-            }
-          }
+          var showPopoverAndOverlay;
           if (_this._isOrphan(step)) {
             if (step.orphan === false) {
               _this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
@@ -983,7 +994,7 @@
             return _this._debug("Step " + (_this._current + 1) + " of " + _this._options.steps.length);
           };
           if (step.autoscroll) {
-            _this._scrollIntoView(step.element, showPopoverAndOverlay);
+            _this._scrollIntoView(step, showPopoverAndOverlay);
           } else {
             showPopoverAndOverlay();
           }
@@ -992,13 +1003,14 @@
           }
         };
       })(this);
-      if (step.delay) {
-        this._debug("Wait " + step.delay + " milliseconds to show the step " + (this._current + 1));
+      showDelay = step.delay.show || step.delay;
+      if ({}.toString.call(showDelay) === '[object Number]' && showDelay > 0) {
+        this._debug("Wait " + showDelay + " milliseconds to show the step " + (this._current + 1));
         window.setTimeout((function(_this) {
           return function() {
             return _this._callOnPromiseDone(promise, showStepHelper);
           };
-        })(this), step.delay);
+        })(this), showDelay);
       } else {
         this._callOnPromiseDone(promise, showStepHelper);
       }
@@ -1107,10 +1119,8 @@
 
     Tour.prototype._isRedirect = function(host, path, location) {
       var currentPath;
-      if (host !== '') {
-        if (this._isHostDifferent(host, location.href)) {
-          return true;
-        }
+      if ((host != null) && host !== '' && (({}.toString.call(host) === '[object RegExp]' && !host.test(location.origin)) || ({}.toString.call(host) === '[object String]' && this._isHostDifferent(host, location.origin)))) {
+        return true;
       }
       currentPath = [location.pathname, location.search, location.hash].join('');
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && this._isPathDifferent(path, currentPath)));
@@ -1124,25 +1134,13 @@
       return this._getPath(path) !== this._getPath(currentPath) || !this._equal(this._getQuery(path), this._getQuery(currentPath)) || !this._equal(this._getHash(path), this._getHash(currentPath));
     };
 
-    Tour.prototype._isJustPathHashDifferent = function(host, path, location) {
-      var currentPath;
-      if (host !== '') {
-        if (this._isHostDifferent(host, location.href)) {
-          return false;
-        }
-      }
-      currentPath = [location.pathname, location.search, location.hash].join('');
-      if ({}.toString.call(path) === '[object String]') {
-        return this._getPath(path) === this._getPath(currentPath) && this._equal(this._getQuery(path), this._getQuery(currentPath)) && !this._equal(this._getHash(path), this._getHash(currentPath));
-      }
-      return false;
-    };
-
     Tour.prototype._redirect = function(step, i, path) {
+      var href;
       if ($.isFunction(step.redirect)) {
         return step.redirect.call(this, path);
       } else if (step.redirect === true) {
-        this._debug("Redirect to " + step.host + path);
+        href = {}.toString.call(step.host) === '[object String]' ? "" + step.host + path : path;
+        this._debug("Redirect to " + href);
         if (this._getState('redirect_to') === ("" + i)) {
           this._debug("Error redirection loop to " + path);
           this._removeState('redirect_to');
@@ -1151,7 +1149,7 @@
           }
         } else {
           this._setState('redirect_to', "" + i);
-          return document.location.href = "" + step.host + path;
+          return document.location.href = href;
         }
       }
     };
@@ -1299,16 +1297,28 @@
       return $tip.find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
     };
 
-    Tour.prototype._scrollIntoView = function(element, callback) {
-      var $element, $window, counter, offsetTop, scrollTop, windowHeight;
-      $element = $(element);
+    Tour.prototype._scrollIntoView = function(step, callback) {
+      var $element, $window, counter, height, offsetTop, scrollTop, windowHeight;
+      $element = $(step.element);
       if (!$element.length) {
         return callback();
       }
       $window = $(window);
       offsetTop = $element.offset().top;
+      height = $element.outerHeight();
       windowHeight = $window.height();
-      scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
+      scrollTop = 0;
+      switch (step.placement) {
+        case 'top':
+          scrollTop = Math.max(0, offsetTop - (windowHeight / 2));
+          break;
+        case 'left':
+        case 'right':
+          scrollTop = Math.max(0, (offsetTop + height / 2) - (windowHeight / 2));
+          break;
+        case 'bottom':
+          scrollTop = Math.max(0, (offsetTop + height) - (windowHeight / 2));
+      }
       this._debug("Scroll into view. ScrollTop: " + scrollTop + ". Element offset: " + offsetTop + ". Window height: " + windowHeight + ".");
       counter = 0;
       return $('body, html').stop(true, true).animate({
@@ -1386,10 +1396,6 @@
               if (_this._current > 0) {
                 return _this.prev();
               }
-              break;
-            case 27:
-              e.preventDefault();
-              return _this.end();
           }
         };
       })(this));
@@ -1439,14 +1445,22 @@
       }
     };
 
+<<<<<<< HEAD
+    Tour.prototype._showOverlayElement = function(step) {
+      var $backdropElement, $element, elementData;
+      $element = $(step.element);
+      $backdropElement = $(step.backdropElement);
+      if (!$element || $element.length === 0) {
+=======
     Tour.prototype._showOverlayElement = function(step, force) {
       var $element, elementData;
       $element = $(step.element);
       if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
+>>>>>>> eb20b9b0472e92358123e3ec6cd65f147b90ba47
         return;
       }
       if (!this.backdrop.overlayElementShown) {
-        this.backdrop.$element = $element.addClass('tour-step-backdrop');
+        this.backdrop.$element = $backdropElement.addClass('tour-step-backdrop');
         this.backdrop.$background = $('<div>', {
           "class": 'tour-step-background'
         });
@@ -1454,9 +1468,9 @@
         this.backdrop.overlayElementShown = true;
       }
       elementData = {
-        width: $element.innerWidth(),
-        height: $element.innerHeight(),
-        offset: $element.offset()
+        width: $backdropElement.innerWidth(),
+        height: $backdropElement.innerHeight(),
+        offset: $backdropElement.offset()
       };
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
@@ -1552,23 +1566,34 @@
     };
 
     Tour.prototype._equal = function(obj1, obj2) {
-      var k, v;
+      var k, obj1Keys, obj2Keys, v, _i, _len;
       if ({}.toString.call(obj1) === '[object Object]' && {}.toString.call(obj2) === '[object Object]') {
+        obj1Keys = Object.keys(obj1);
+        obj2Keys = Object.keys(obj2);
+        if (obj1Keys.length !== obj2Keys.length) {
+          return false;
+        }
         for (k in obj1) {
           v = obj1[k];
-          if (obj2[k] !== v) {
-            return false;
-          }
-        }
-        for (k in obj2) {
-          v = obj2[k];
-          if (obj1[k] !== v) {
+          if (!this._equal(obj2[k], v)) {
             return false;
           }
         }
         return true;
+      } else if ({}.toString.call(obj1) === '[object Array]' && {}.toString.call(obj2) === '[object Array]') {
+        if (obj1.length !== obj2.length) {
+          return false;
+        }
+        for (k = _i = 0, _len = obj1.length; _i < _len; k = ++_i) {
+          v = obj1[k];
+          if (!this._equal(v, obj2[k])) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return obj1 === obj2;
       }
-      return obj1 === obj2;
     };
 
     return Tour;

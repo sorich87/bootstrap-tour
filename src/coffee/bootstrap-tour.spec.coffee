@@ -211,6 +211,7 @@ describe 'Bootstrap Tour', ->
       backdrop: false
       backdropPadding: 0
       backdropContainer: 'body'
+      backdropElement: $('<div></div>').appendTo('body')
       redirect: true
       reflexElement: $('<div></div>').appendTo('body')
       orphan: false
@@ -426,140 +427,287 @@ describe 'Bootstrap Tour', ->
     # redirect if path doesn't match current path
     expect(
       @tour._isRedirect(
-        '', '/anotherpath', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/anotherpath',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
     # don't redirect if no path
     expect(
       @tour._isRedirect(
-        '', undefined, href: '', pathname: '/', search: '', hash: ''
+        '', undefined,
+        {
+          origin: ''
+          href: ''
+          pathname: '/'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe false
     # don't redirect if path empty
     expect(
       @tour._isRedirect(
-        '', '', href: '', pathname: '/', search: '', hash: ''
+        '', '',
+        {
+          origin: ''
+          href: ''
+          pathname: '/'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe false
     # don't redirect if path matches current path
     expect(
       @tour._isRedirect(
-        '', '/somepath', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe false
     # don't redirect if path with slash matches current path
     expect(
       @tour._isRedirect(
-        '', '/somepath/', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath/',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe false
     # don't redirect if path matches current path with slash
     expect(
       @tour._isRedirect(
-        '', '/somepath', href: '', pathname: '/somepath/', search: '', hash: ''
+        '', '/somepath',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath/'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe false
     # redirect if path with query params doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath?search=true', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath?search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
     # redirect if path with slash and query params doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath/?search=true', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath/?search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
 
     # redirect if path with more than one query param doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath?search=true&foo=bar', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
 
     # redirect if path with and query params doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath?search=true&foo=bar', href: '', pathname: '/somepath', search: '?search=true', hash: ''
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?search=true'
+          hash: ''
+        }
       )
     ).toBe true
 
     # redirect if path query params number doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath?search=true&foo=bar', href: '', pathname: '/somepath', search: '?foo=bar', hash: ''
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?foo=bar'
+          hash: ''
+        }
       )
     ).toBe true
 
     # don't redirect if path with query params matches current path
     expect(
       @tour._isRedirect(
-        '', '/somepath?search=true&foo=bar', href: '', pathname: '/somepath', search: '?foo=bar&search=true', hash: ''
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?foo=bar&search=true'
+          hash: ''
+        }
       )
     ).toBe false
 
     # don't redirect if path with query params matches current path
     expect(
       @tour._isRedirect(
-        '', '/somepath?search=true&foo=bar', href: '', pathname: '/somepath', search: '?search=true&foo=bar', hash:''
+        '', '/somepath?search=true&foo=bar'
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?search=true&foo=bar'
+          hash:''
+        }
       )
     ).toBe false
 
     # redirect if path with one hash param doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath#search=true', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath#search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
 
     # redirect if path with slash and one hash param doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath/#search=true', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath/#search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
 
     # redirect if path with more than one hash params doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath#search=true&foo=bar', href: '', pathname: '/somepath', search: '', hash: ''
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
 
     # redirect if path hash params number doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath#search=true&foo=bar', href: '', pathname: '/somepath', search: '', hash: '#search=true'
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: '#search=true'
+        }
       )
     ).toBe true
 
     # redirect if path hash params number doesn't matche current path
     expect(
       @tour._isRedirect(
-        '', '/somepath#search=true&foo=bar', href: '', pathname: '/somepath', search: '', hash: '#foo=bar'
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: '#foo=bar'
+        }
       )
     ).toBe true
 
     # don't redirect if path with hash params matches current path
     expect(
       @tour._isRedirect(
-        '', '/somepath#search=true&foo=bar', href: '', pathname: '/somepath', search: '', hash: '#foo=bar&search=true'
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: '#foo=bar&search=true'
+        }
       )
     ).toBe false
 
     # don't redirect if path with hash params matches current path
     expect(
       @tour._isRedirect(
-        '', '/somepath#search=true&foo=bar', href: '', pathname: '/somepath', search: '', hash: '#search=true&foo=bar'
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: '#search=true&foo=bar'
+        }
       )
     ).toBe false
 
     # don't redirect if current path matches path regex
     expect(
       @tour._isRedirect(
-        '', /some*/, href: '', pathname: '/somepath', search: '', hash: ''
+        '', /some.*/,
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: ''
+        }
       )
     ).toBe false
 
@@ -585,9 +733,11 @@ describe 'Bootstrap Tour', ->
       onShow: -> return deferred
     @tour.start()
     @tour.next()
-    expect(@tour._current).toBe 0 # tour shows old state until resolving of onShow promise
+    # tour shows old state until resolving of onShow promise
+    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined
     deferred.resolve()
-    expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
+    # tour shows new state after resolving onShow promise
+    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
 
   it 'should not hide popover until the onHide promise is resolved', ->
     deferred = $.Deferred()
@@ -746,30 +896,64 @@ describe 'Bootstrap Tour', ->
       )
     ).toBe false
 
-  it 'should redirect to the steps if host is different', ->
+  it 'should evaluate the host correctly', ->
     @tour = new Tour
-    current_host = document.location.host
-
-    @tour.addStep
-      element: $('<div></div>').appendTo('body')
-      path: 'test.html'
-      host: 'http://sub.exemple.com'
 
     expect(
       @tour._isRedirect(
-        @tour.getStep(0).host,
-        @tour._options.basePath + @tour.getStep(0).path,
-        href: 'http://exemple.com/test.html' , pathname: 'test.html', search: '', hash: ''
+        'http://sub.exemple.com',
+        '/test.html',
+        {
+          origin: 'http://exemple.com'
+          href: 'http://exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe true
 
     expect(
       @tour._isRedirect(
-        current_host,
-        @tour._options.basePath + @tour.getStep(0).path,
-        href: "http://#{current_host}/test.html" , pathname: 'test.html', search: '', hash: ''
+        'http://sub.exemple.com',
+        '/test.html',
+        {
+          origin: 'http://sub.exemple.com'
+          href: 'http://sub.exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
       )
     ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        /http:\/\/.*\.exemple\.com/,
+        '/test.html',
+        {
+          origin: 'http://sub.exemple.com'
+          href: 'http://sub.exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        /http:\/\/exemple\.com/,
+        '/test.html',
+        {
+          origin: 'http://sub.exemple.com'
+          href: 'http://sub.exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
 
   it 'with `onNext` option should run the callback before showing the next step', ->
     tour_test = 0
@@ -998,6 +1182,29 @@ describe 'Bootstrap Tour', ->
     @tour.end()
     expect(@tour._timer).toBe null
     expect(@tour._duration).toBe null
+
+  it 'should call window.setTimeout when delay is defined', ->
+    counter = 0
+    initialTimeout = window.setTimeout
+    window.setTimeout = (callback, duration) ->
+      counter++
+      callback()
+
+    @tour = new Tour
+      delay: {
+        show: 300
+        hide: 400
+      }
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    expect(counter).toBe 1
+    @tour.next()
+    expect(counter).toBe 3
+    @tour.end()
+    expect(counter).toBe 4
+
+    window.setTimeout = initialTimeout
 
   ### TODO: fix $.support.transition conflict between jquery and bootstrap
   it 'should not display inactive popover upon rapid navigation', ->
