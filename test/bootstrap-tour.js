@@ -490,15 +490,22 @@
 
     Tour.prototype._isRedirect = function(host, path, location) {
       var currentPath;
-      if ((host != null) && host !== '' && (({}.toString.call(host) === '[object RegExp]' && !host.test(location.origin)) || ({}.toString.call(host) === '[object String]' && this._isHostDifferent(host, location.origin)))) {
+      if ((host != null) && host !== '' && (({}.toString.call(host) === '[object RegExp]' && !host.test(location.origin)) || ({}.toString.call(host) === '[object String]' && this._isHostDifferent(host, location)))) {
         return true;
       }
       currentPath = [location.pathname, location.search, location.hash].join('');
       return (path != null) && path !== '' && (({}.toString.call(path) === '[object RegExp]' && !path.test(currentPath)) || ({}.toString.call(path) === '[object String]' && this._isPathDifferent(path, currentPath)));
     };
 
-    Tour.prototype._isHostDifferent = function(host, currentURL) {
-      return this._getProtocol(host) !== this._getProtocol(currentURL) || this._getHost(host) !== this._getHost(currentURL);
+    Tour.prototype._isHostDifferent = function(host, location) {
+      switch ({}.toString.call(host)) {
+        case '[object RegExp]':
+          return !host.test(location.origin);
+        case '[object String]':
+          return this._getProtocol(host) !== this._getProtocol(location.href) || this._getHost(host) !== this._getHost(location.href);
+        default:
+          return true;
+      }
     };
 
     Tour.prototype._isPathDifferent = function(path, currentPath) {
@@ -507,8 +514,8 @@
 
     Tour.prototype._isJustPathHashDifferent = function(host, path, location) {
       var currentPath;
-      if (host !== '') {
-        if (this._isHostDifferent(host, location.href)) {
+      if ((host != null) && host !== '') {
+        if (this._isHostDifferent(host, location)) {
           return false;
         }
       }

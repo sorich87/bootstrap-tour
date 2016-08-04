@@ -410,7 +410,7 @@
     _isRedirect: (host, path, location) ->
       return true if host? and host isnt '' and (
         (({}).toString.call(host) is '[object RegExp]' and not host.test(location.origin)) or
-        (({}).toString.call(host) is '[object String]' and @_isHostDifferent(host, location.origin))
+        (({}).toString.call(host) is '[object String]' and @_isHostDifferent(host, location))
       )
 
       currentPath = [
@@ -424,9 +424,15 @@
         (({}).toString.call(path) is '[object String]' and @_isPathDifferent(path, currentPath))
       )
 
-    _isHostDifferent: (host, currentURL) ->
-      @_getProtocol(host) isnt @_getProtocol(currentURL) or
-      @_getHost(host) isnt @_getHost(currentURL)
+    _isHostDifferent: (host, location) ->
+      switch ({}).toString.call(host)
+        when '[object RegExp]'
+          not host.test(location.origin)
+        when '[object String]'
+          @_getProtocol(host) isnt @_getProtocol(location.href) or
+          @_getHost(host) isnt @_getHost(location.href)
+        else
+          true
 
     _isPathDifferent: (path, currentPath) ->
       @_getPath(path) isnt @_getPath(currentPath) or not
@@ -434,8 +440,8 @@
       @_equal(@_getHash(path), @_getHash(currentPath))
 
     _isJustPathHashDifferent: (host, path, location) ->
-      if host isnt ''
-        return false if @_isHostDifferent(host, location.href)
+      if host? and host isnt ''
+        return false if @_isHostDifferent(host, location)
 
       currentPath = [
         location.pathname,
