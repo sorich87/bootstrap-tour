@@ -704,7 +704,7 @@
       @_hideBackground()
 
     _hideBackground: ->
-      if @backdrop
+      if @backdrop && @backdrop.remove
         @backdrop.remove()
         @backdrop.overlay = null
         @backdrop.backgroundShown = false

@@ -823,7 +823,7 @@
     };
 
     Tour.prototype._hideBackground = function() {
-      if (this.backdrop) {
+      if (this.backdrop && this.backdrop.remove) {
         this.backdrop.remove();
         this.backdrop.overlay = null;
         return this.backdrop.backgroundShown = false;
