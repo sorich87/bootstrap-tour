@@ -10,10 +10,10 @@
     Bootstrap Tour
   
 </title>
-<link href="/components/bootstrap/dist/css/bootstrap.min.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.docs.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
+<link href="/components/bootstrap/dist/css/bootstrap.min.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
 <link href="http://boostraptour.com/" rel="canonical">
 <!--[if lt IE 9]><script src="/components/html5shiv/dist/html5shiv.min.js"></script><![endif]-->
 <script>
@@ -92,30 +92,30 @@ ga('send', 'pageview');
     </div>
     <h3>Add the dependencies</h3>
     <p>If you are using Bootstrap, include <code>bootstrap-tour.min.css</code> and <code>bootstrap-tour.min.js</code>:</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
-<span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"bootstrap.min.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"bootstrap-tour.min.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
 ...
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"jquery.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"bootstrap.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"bootstrap-tour.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
     <p>Otherwise, just include <code>bootstrap-tour-standalone.min.css</code> and <code>bootstrap-tour-standalone.min.js</code>:</p>
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;bootstrap-tour-standalone.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">"bootstrap-tour-standalone.min.css"</span> <span class="na">rel=</span><span class="s">"stylesheet"</span><span class="nt">&gt;</span>
 ...
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;bootstrap-tour-standalone.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></div>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"jquery.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"bootstrap-tour-standalone.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
     <h3>Setup your tour:</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Instance the tour</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Instance the tour</span>
 <span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
-  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+  <span class="na">steps</span><span class="p">:</span> <span class="p">[</span>
   <span class="p">{</span>
-    <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
-    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-    <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
+    <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-element"</span><span class="p">,</span>
+    <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+    <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span>
   <span class="p">},</span>
   <span class="p">{</span>
-    <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
-    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-    <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
+    <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-other-element"</span><span class="p">,</span>
+    <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+    <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span>
   <span class="p">}</span>
 <span class="p">]});</span>
 
@@ -123,7 +123,7 @@ ga('send', 'pageview');
 <span class="nx">tour</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
 
 <span class="c1">// Start the tour</span>
-<span class="nx">tour</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span></code></pre></div>
+<span class="nx">tour</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span></code></pre></figure>
     <p>Do you want to do more? <a href="api">Read the full documentation.</a></p>
   </div>
 </section>
@@ -155,12 +155,12 @@ ga('send', 'pageview');
   </div>
 </section>
 
-    <script src="/components/jquery/dist/jquery.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/components/blueimp-md5/js/md5.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.docs.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+    <script src="/components/jquery/dist/jquery.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/components/blueimp-md5/js/md5.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
 <script>
 window.twttr = (function (d,s,id) {
   var t, js, fjs = d.getElementsByTagName(s)[0];

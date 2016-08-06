@@ -10,10 +10,10 @@
     API Documentation &middot; Bootstrap Tour
   
 </title>
-<link href="/components/bootstrap/dist/css/bootstrap.min.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
-<link href="/assets/vendor/pygments-manni.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
-<link href="/assets/css/bootstrap-tour.docs.css?2016-04-26T07%3A04%3A32%2B01%3A00" rel="stylesheet">
+<link href="/components/bootstrap/dist/css/bootstrap.min.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
+<link href="/assets/vendor/pygments-manni.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
+<link href="/assets/css/bootstrap-tour.docs.css?2016-08-06T07%3A17%3A00%2B01%3A00" rel="stylesheet">
 <link href="http://boostraptour.com/api/" rel="canonical">
 <!--[if lt IE 9]><script src="/components/html5shiv/dist/html5shiv.min.js"></script><![endif]-->
 <script>
@@ -65,48 +65,48 @@ ga('send', 'pageview');
       <h2>Options <small>Well, let's go deeper</small></h2>
     </div>
     <h3 id="tour-options">Global options</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
-  <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;tour&quot;</span><span class="p">,</span>
-  <span class="nx">steps</span><span class="o">:</span> <span class="p">[],</span>
-  <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
-  <span class="nx">smartPlacement</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">keyboard</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">storage</span><span class="o">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">,</span>
-  <span class="nx">debug</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">backdropContainer</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span>
-  <span class="nx">backdropPadding</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">duration</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">delay</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">basePath</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">template</span><span class="o">:</span> <span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
-<span class="s2">    &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
-<span class="s2">    &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
-<span class="s2">    &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
-<span class="s2">    &lt;div class=&#39;popover-navigation&#39;&gt;</span>
-<span class="s2">        &lt;button class=&#39;btn btn-default&#39; data-role=&#39;prev&#39;&gt;« Prev&lt;/button&gt;</span>
-<span class="s2">        &lt;span data-role=&#39;separator&#39;&gt;|&lt;/span&gt;</span>
-<span class="s2">        &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
-<span class="s2">    &lt;/div&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
-<span class="s2">  &lt;/div&gt;&quot;</span><span class="p">,</span>
-  <span class="nx">afterGetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">afterSetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">afterRemoveState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onStart</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onEnd</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onShow</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onShown</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onHide</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onHidden</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onRedirectError</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
-<span class="p">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s2">"tour"</span><span class="p">,</span>
+  <span class="na">steps</span><span class="p">:</span> <span class="p">[],</span>
+  <span class="na">container</span><span class="p">:</span> <span class="s2">"body"</span><span class="p">,</span>
+  <span class="na">smartPlacement</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">keyboard</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">storage</span><span class="p">:</span> <span class="nb">window</span><span class="p">.</span><span class="nx">localStorage</span><span class="p">,</span>
+  <span class="na">debug</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">backdrop</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">backdropContainer</span><span class="p">:</span> <span class="s1">'body'</span><span class="p">,</span>
+  <span class="na">backdropPadding</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">redirect</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">orphan</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">duration</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">delay</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">basePath</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">template</span><span class="p">:</span> <span class="s2">"&lt;div class='popover tour'&gt;
+    &lt;div class='arrow'&gt;&lt;/div&gt;
+    &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
+    &lt;div class='popover-content'&gt;&lt;/div&gt;
+    &lt;div class='popover-navigation'&gt;
+        &lt;button class='btn btn-default' data-role='prev'&gt;« Prev&lt;/button&gt;
+        &lt;span data-role='separator'&gt;|&lt;/span&gt;
+        &lt;button class='btn btn-default' data-role='next'&gt;Next »&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
+  &lt;/div&gt;"</span><span class="p">,</span>
+  <span class="na">afterGetState</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">afterSetState</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">afterRemoveState</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onStart</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onEnd</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onShow</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onShown</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onHide</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onHidden</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onNext</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onPrev</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onPause</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onResume</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">,</span> <span class="nx">duration</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onRedirectError</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">});</span></code></pre></figure>
     <table class="table  table-bordered table-striped">
       <thead>
         <tr>
@@ -261,17 +261,17 @@ ga('send', 'pageview');
           <code class="language-markup">data-role</code> attribute.
           </td>
           <td>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
-<span class="s2">  &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
-<span class="s2">  &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
-<span class="s2">  &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
-<span class="s2">  &lt;div class=&#39;popover-navigation&#39;&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;prev&#39;&gt;« Prev&lt;/button&gt;</span>
-<span class="s2">    &lt;span data-role=&#39;separator&#39;&gt;|&lt;/span&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
-<span class="s2">  &lt;/div&gt;</span>
-<span class="s2">&lt;/div&gt;&quot;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"&lt;div class='popover tour'&gt;
+  &lt;div class='arrow'&gt;&lt;/div&gt;
+  &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
+  &lt;div class='popover-content'&gt;&lt;/div&gt;
+  &lt;div class='popover-navigation'&gt;
+    &lt;button class='btn btn-default' data-role='prev'&gt;« Prev&lt;/button&gt;
+    &lt;span data-role='separator'&gt;|&lt;/span&gt;
+    &lt;button class='btn btn-default' data-role='next'&gt;Next »&lt;/button&gt;
+    &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;"</span></code></pre></figure>
           </td>
         </tr>
         <tr>
@@ -299,11 +299,11 @@ ga('send', 'pageview');
           </ul>
           <p>A simple example if to send a post request to your server each
           time there is a change:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
-  <span class="nx">afterSetState</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">$</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">&quot;/some/path&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="na">afterSetState</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/some/path"</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
   <span class="p">}</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></figure>
           </td>
           <td><code>function (key, value) { }</code></td>
         </tr>
@@ -381,35 +381,35 @@ ga('send', 'pageview');
     </table>
     <a id="step-options"></a>
     <h3>Step Options</h3>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tour</span><span class="p">.</span><span class="nx">addStep</span><span class="p">({</span>
-  <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">host</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">placement</span><span class="o">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span>
-  <span class="nx">smartPlacement</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">next</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="nx">prev</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="nx">animation</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">container</span><span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">,</span>
-  <span class="nx">backdrop</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">backdropContainer</span><span class="o">:</span> <span class="s1">&#39;body&#39;</span><span class="p">,</span>
-  <span class="nx">backdropPadding</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">redirect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-  <span class="nx">reflex</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">orphan</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-  <span class="nx">template</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-  <span class="nx">onShow</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onShown</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onHide</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onHidden</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onPrev</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onPause</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onResume</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
-  <span class="nx">onRedirectError</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
-<span class="p">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tour</span><span class="p">.</span><span class="nx">addStep</span><span class="p">({</span>
+  <span class="na">path</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">host</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">element</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">placement</span><span class="p">:</span> <span class="s2">"right"</span><span class="p">,</span>
+  <span class="na">smartPlacement</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">title</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">content</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">next</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">prev</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">animation</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">container</span><span class="p">:</span> <span class="s2">"body"</span><span class="p">,</span>
+  <span class="na">backdrop</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">backdropContainer</span><span class="p">:</span> <span class="s1">'body'</span><span class="p">,</span>
+  <span class="na">backdropPadding</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">redirect</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">reflex</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">orphan</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">template</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+  <span class="na">onShow</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onShown</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onHide</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onHidden</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onNext</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onPrev</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onPause</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onResume</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{},</span>
+  <span class="na">onRedirectError</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">tour</span><span class="p">)</span> <span class="p">{}</span>
+<span class="p">});</span></code></pre></figure>
     <table class="table  table-bordered table-striped">
       <thead>
         <tr>
@@ -430,7 +430,7 @@ ga('send', 'pageview');
       <tbody>
         <tr class="success">
           <td>host <span class="label label-success">NEW</span></td>
-          <td>String</td>
+          <td>String or RegExp</td>
           <td>Host of the page on which the step should be shown. This
             allows you to build tours for several sub-domains</td>
           <td><code>''</code></td>
@@ -583,17 +583,17 @@ ga('send', 'pageview');
           <code class="language-markup">data-role</code> attribute.
           </td>
           <td>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">&quot;&lt;div class=&#39;popover tour&#39;&gt;</span>
-<span class="s2">  &lt;div class=&#39;arrow&#39;&gt;&lt;/div&gt;</span>
-<span class="s2">  &lt;h3 class=&#39;popover-title&#39;&gt;&lt;/h3&gt;</span>
-<span class="s2">  &lt;div class=&#39;popover-content&#39;&gt;&lt;/div&gt;</span>
-<span class="s2">  &lt;div class=&#39;popover-navigation&#39;&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;prev&#39;&gt;« Prev&lt;/button&gt;</span>
-<span class="s2">    &lt;span data-role=&#39;separator&#39;&gt;|&lt;/span&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;next&#39;&gt;Next »&lt;/button&gt;</span>
-<span class="s2">    &lt;button class=&#39;btn btn-default&#39; data-role=&#39;end&#39;&gt;End tour&lt;/button&gt;</span>
-<span class="s2">  &lt;/div&gt;</span>
-<span class="s2">&lt;/div&gt;&quot;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"&lt;div class='popover tour'&gt;
+  &lt;div class='arrow'&gt;&lt;/div&gt;
+  &lt;h3 class='popover-title'&gt;&lt;/h3&gt;
+  &lt;div class='popover-content'&gt;&lt;/div&gt;
+  &lt;div class='popover-navigation'&gt;
+    &lt;button class='btn btn-default' data-role='prev'&gt;« Prev&lt;/button&gt;
+    &lt;span data-role='separator'&gt;|&lt;/span&gt;
+    &lt;button class='btn btn-default' data-role='next'&gt;Next »&lt;/button&gt;
+    &lt;button class='btn btn-default' data-role='end'&gt;End tour&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;"</span></code></pre></figure>
           </td>
         </tr>
         <tr>
@@ -771,21 +771,21 @@ ga('send', 'pageview');
         <p>Bootstrap Tour can be used to create tours that span multiple pages. If you have URLs for each page that have
             unique paths, and the dependencies are loaded on each page, you can easily create a tour like so:
         </p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
-  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="na">steps</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
-      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span>
+      <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-element"</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+      <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
-      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
-      <span class="nx">path</span><span class="o">:</span> <span class="s2">&quot;/url/to/go/to/&quot;</span>
+      <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-other-element"</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+      <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span><span class="p">,</span>
+      <span class="na">path</span><span class="p">:</span> <span class="s2">"/url/to/go/to/"</span>
     <span class="p">}</span>
   <span class="p">]</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></figure>
 
         <p>It's that simple.</p>
 
@@ -795,24 +795,24 @@ ga('send', 'pageview');
         </p>
         <p>For example:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
-  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="na">steps</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
-      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
-      <span class="nx">redirect</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;/url/&#39;</span> <span class="o">+</span> <span class="nx">userId</span><span class="p">;</span>
+      <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-element"</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+      <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span><span class="p">,</span>
+      <span class="na">redirect</span><span class="p">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">'/url/'</span> <span class="o">+</span> <span class="nx">userId</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
-      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
-      <span class="nx">path</span><span class="o">:</span> <span class="nx">Regexp</span><span class="p">(</span><span class="s2">&quot;/\/url\/[^/]+/i&quot;</span><span class="p">)</span>
+      <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-other-element"</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+      <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span><span class="p">,</span>
+      <span class="na">path</span><span class="p">:</span> <span class="nx">Regexp</span><span class="p">(</span><span class="s2">"/\/url\/[^/]+/i"</span><span class="p">)</span>
     <span class="p">}</span>
   <span class="p">]</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></figure>
 
         <p>Finally, if you are only using GET parameters to define different pages, and wish to redirect using those
             parameters, you may run into the problem that Bootstrap Tour will consider the path of the two steps to be
@@ -824,24 +824,24 @@ ga('send', 'pageview');
             promise.</p>
         <p>For example:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
-  <span class="nx">steps</span><span class="o">:</span> <span class="p">[</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">tour</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Tour</span><span class="p">({</span>
+  <span class="na">steps</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-element&quot;</span><span class="p">,</span>
-      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
-      <span class="nx">onNext</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">&#39;/?q=foo&#39;</span><span class="p">;</span>
+      <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-element"</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+      <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span><span class="p">,</span>
+      <span class="na">onNext</span><span class="p">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="s1">'/?q=foo'</span><span class="p">;</span>
         <span class="k">return</span> <span class="p">(</span><span class="k">new</span> <span class="nx">jQuery</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">()).</span><span class="nx">promise</span><span class="p">();</span>
       <span class="p">};</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="nx">element</span><span class="o">:</span> <span class="s2">&quot;#my-other-element&quot;</span><span class="p">,</span>
-      <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Title of my step&quot;</span><span class="p">,</span>
-      <span class="nx">content</span><span class="o">:</span> <span class="s2">&quot;Content of my step&quot;</span><span class="p">,</span>
+      <span class="na">element</span><span class="p">:</span> <span class="s2">"#my-other-element"</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s2">"Title of my step"</span><span class="p">,</span>
+      <span class="na">content</span><span class="p">:</span> <span class="s2">"Content of my step"</span><span class="p">,</span>
     <span class="p">}</span>
   <span class="p">]</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></figure>
 
         <p>Doing this will prevent the next step from popping up while the redirect is being completed in the
             <code>onNext</code> function.
@@ -849,12 +849,12 @@ ga('send', 'pageview');
     </div>
 </section>
 
-    <script src="/components/jquery/dist/jquery.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/components/bootstrap/dist/js/bootstrap.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/components/blueimp-md5/js/md5.min.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/assets/vendor/jquery.smoothscroll.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
-<script src="/assets/js/bootstrap-tour.docs.js?2016-04-26T07%3A04%3A32%2B01%3A00"></script>
+    <script src="/components/jquery/dist/jquery.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/components/bootstrap/dist/js/bootstrap.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/components/blueimp-md5/js/md5.min.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/assets/vendor/jquery.smoothscroll.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
+<script src="/assets/js/bootstrap-tour.docs.js?2016-08-06T07%3A17%3A00%2B01%3A00"></script>
 <script>
 window.twttr = (function (d,s,id) {
   var t, js, fjs = d.getElementsByTagName(s)[0];
