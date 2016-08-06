@@ -75,13 +75,7 @@
       this._force = false;
       this._inited = false;
       this._current = null;
-      this.backdrop = {
-        overlay: null,
-        $element: null,
-        $background: null,
-        backgroundShown: false,
-        overlayElementShown: false
-      };
+      this.backdrops = [];
       this;
     }
 
@@ -282,7 +276,7 @@
           if (step.backdrop) {
             next_step = (iNext != null) && _this.getStep(iNext);
             if (!next_step || !next_step.backdrop || next_step.backdropElement !== step.backdropElement) {
-              _this._hideBackdrop();
+              _this._hideOverlayElement(step);
             }
           }
           if (step.onHidden != null) {
@@ -348,15 +342,12 @@
             }
             _this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
           }
-          if (step.backdrop) {
-            _this._showBackdrop(step);
-          }
           showPopoverAndOverlay = function() {
             if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
             if ((step.element != null) && step.backdrop) {
-              _this._showOverlayElement(step, true);
+              _this._showOverlayElement(step);
             }
             _this._showPopover(step, i);
             if (step.onShown != null) {
@@ -404,7 +395,7 @@
     };
 
     Tour.prototype.redraw = function() {
-      return this._showOverlayElement(this.getStep(this.getCurrentStep()).element, true);
+      return this._showOverlayElement(this.getStep(this.getCurrentStep()));
     };
 
     Tour.prototype._setState = function(key, value) {
@@ -813,65 +804,77 @@
       }
     };
 
-    Tour.prototype._showBackdrop = function(step) {
-      if (this.backdrop.backgroundShown) {
-        return;
-      }
-      this.backdrop = $('<div>', {
-        "class": 'tour-backdrop'
-      });
-      this.backdrop.backgroundShown = true;
-      return $(step.backdropContainer).append(this.backdrop);
-    };
-
-    Tour.prototype._hideBackdrop = function() {
-      this._hideOverlayElement();
-      return this._hideBackground();
-    };
-
-    Tour.prototype._hideBackground = function() {
-      if (this.backdrop && this.backdrop.remove) {
-        this.backdrop.remove();
-        this.backdrop.overlay = null;
-        return this.backdrop.backgroundShown = false;
-      }
-    };
-
-    Tour.prototype._showOverlayElement = function(step, force) {
-      var $backdropElement, $element, elementData;
-      $element = $(step.element);
-      $backdropElement = $(step.backdropElement);
-      if (!$element || $element.length === 0 || this.backdrop.overlayElementShown && !force) {
-        return;
-      }
-      if (!this.backdrop.overlayElementShown) {
-        this.backdrop.$element = $backdropElement.addClass('tour-step-backdrop');
-        this.backdrop.$background = $('<div>', {
-          "class": 'tour-step-background'
+    Tour.prototype._showBackground = function(step, data) {
+      var $backdrop, height, pos, width, _base, _i, _len, _ref, _results;
+      height = $(document).height();
+      width = $(document).width();
+      _ref = ['top', 'bottom', 'left', 'right'];
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pos = _ref[_i];
+        $backdrop = (_base = this.backdrops)[pos] != null ? _base[pos] : _base[pos] = $('<div>', {
+          "class": "tour-backdrop " + pos
         });
-        this.backdrop.$background.appendTo(step.backdropContainer);
-        this.backdrop.overlayElementShown = true;
+        $(step.backdropContainer).append($backdrop);
+        switch (pos) {
+          case 'top':
+            _results.push($backdrop.height(data.offset.top > 0 ? data.offset.top : 0).width(width).offset({
+              top: 0,
+              left: 0
+            }));
+            break;
+          case 'bottom':
+            _results.push($backdrop.offset({
+              top: data.offset.top + data.height,
+              left: 0
+            }).height(height - (data.offset.top + data.height)).width(width));
+            break;
+          case 'left':
+            _results.push($backdrop.offset({
+              top: data.offset.top,
+              left: 0
+            }).height(data.height).width(data.offset.left > 0 ? data.offset.left : 0));
+            break;
+          case 'right':
+            _results.push($backdrop.offset({
+              top: data.offset.top,
+              left: data.offset.left + data.width
+            }).height(data.height).width(width - (data.offset.left + data.width)));
+            break;
+          default:
+            _results.push(void 0);
+        }
+      }
+      return _results;
+    };
+
+    Tour.prototype._showOverlayElement = function(step) {
+      var $backdropElement, elementData;
+      $backdropElement = $(step.backdropElement);
+      if ($backdropElement.length === 0) {
+        return;
       }
       elementData = {
         width: $backdropElement.innerWidth(),
         height: $backdropElement.innerHeight(),
         offset: $backdropElement.offset()
       };
+      $backdropElement.addClass('tour-step-backdrop');
       if (step.backdropPadding) {
         elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
       }
-      return this.backdrop.$background.width(elementData.width).height(elementData.height).offset(elementData.offset);
+      return this._showBackground(step, elementData);
     };
 
-    Tour.prototype._hideOverlayElement = function() {
-      if (!this.backdrop.overlayElementShown) {
-        return;
+    Tour.prototype._hideOverlayElement = function(step) {
+      var $backdrop, pos, _ref;
+      $(step.backdropElement).removeClass('tour-step-backdrop');
+      _ref = this.backdrops;
+      for (pos in _ref) {
+        $backdrop = _ref[pos];
+        $backdrop.remove();
       }
-      this.backdrop.$element.removeClass('tour-step-backdrop');
-      this.backdrop.$background.remove();
-      this.backdrop.$element = null;
-      this.backdrop.$background = null;
-      return this.backdrop.overlayElementShown = false;
+      return this.backdrops = [];
     };
 
     Tour.prototype._applyBackdropPadding = function(padding, data) {

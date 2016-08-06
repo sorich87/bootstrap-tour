@@ -834,26 +834,30 @@ describe 'Bootstrap Tour', ->
     @tour.start()
     expect($('.tour-backdrop').length).toBe 0 # disable backdrop
     expect($('.tour-step-backdrop').length).toBe 0 # disable backdrop
-    expect($('.tour-step-background').length).toBe 0 # disable backdrop
     @tour.next()
-    expect($('.tour-backdrop').length).toBe 1 # enable backdrop
+    expect($('.tour-backdrop').length).toBe 4 # enable backdrop
     expect($('.tour-step-backdrop').length).toBe 1 # enable backdrop
-    expect($('.tour-step-background').length).toBe 1 # enable backdrop
     @tour.end()
     expect($('.tour-backdrop').length).toBe 0 # disable backdrop
     expect($('.tour-step-backdrop').length).toBe 0 # disable backdrop
-    expect($('.tour-step-background').length).toBe 0 # disable backdrop
 
   it 'step with backdrop and invalid selector should not attempt to create an overlay element', ->
     @tour = new Tour
-    @tour._showOverlayElement '#nonExistingElement'
-    expect(@tour.backdrop.overlayElementShown).toBe false
+    @tour._showOverlayElement backdropElement: '#nonExistingElement'
+    expect($('.tour-backdrop').length).toBe 0
 
   it 'should render the padding on the backdrop element', ->
     @tour = new Tour
       backdrop: true
     $firstElement = $('<div></div>', width: 10, height: 10).appendTo('body')
-    $secondElement = $('<div></div>', width: 10, height: 10).appendTo('body')
+    $secondElement = $('<div></div>').css(
+      position: 'absolute'
+      top: 100
+      left: 300
+      width: 10
+      height: 10
+    ).appendTo('body')
+
     firstPadding = 20
     secondPadding =
       top: 40
@@ -870,13 +874,46 @@ describe 'Bootstrap Tour', ->
       backdropPadding: secondPadding
       element: $secondElement
     @tour.start()
-    expect(@tour.backdrop.$background.width()).toBe $firstElement.innerWidth() + (firstPadding * 2)
-    expect(@tour.backdrop.$background.height()).toBe $firstElement.innerHeight() + (firstPadding * 2)
+    expect(@tour.backdrops.top.offset().top + @tour.backdrops.top.height())
+    .toBe 0
+
+    expect(@tour.backdrops.left.offset().top)
+    .toBe $firstElement.offset().top - firstPadding
+    expect(@tour.backdrops.left.offset().top + @tour.backdrops.left.height())
+    .toBe $firstElement.offset().top + $firstElement.height() + firstPadding
+    expect(@tour.backdrops.left.offset().left + @tour.backdrops.left.width())
+    .toBe 0
+
+    expect(@tour.backdrops.bottom.offset().top)
+    .toBe $firstElement.offset().top + $firstElement.height() + firstPadding
+
+    expect(@tour.backdrops.right.offset().top)
+    .toBe $firstElement.offset().top - firstPadding
+    expect(@tour.backdrops.right.offset().top + @tour.backdrops.right.height())
+    .toBe $firstElement.offset().top + $firstElement.height() + firstPadding
+    expect(@tour.backdrops.right.offset().left)
+    .toBe $firstElement.offset().left + $firstElement.width() + firstPadding
+
     @tour.next()
-    expect(@tour.backdrop.$background.width())
-    .toBe $secondElement.innerWidth() + secondPadding.left + secondPadding.right
-    expect(@tour.backdrop.$background.height())
-    .toBe $secondElement.innerHeight() + secondPadding.top + secondPadding.bottom
+    expect(@tour.backdrops.top.offset().top + @tour.backdrops.top.height())
+    .toBe $secondElement.offset().top - secondPadding.top
+
+    expect(@tour.backdrops.left.offset().top)
+    .toBe $secondElement.offset().top - secondPadding.top
+    expect(@tour.backdrops.left.offset().top + @tour.backdrops.left.height())
+    .toBe $secondElement.offset().top + $secondElement.height() + secondPadding.bottom
+    expect(@tour.backdrops.left.offset().left + @tour.backdrops.left.width())
+    .toBe $secondElement.offset().left - secondPadding.left
+
+    expect(@tour.backdrops.bottom.offset().top)
+    .toBe $secondElement.offset().top + $secondElement.height() + secondPadding.bottom
+
+    expect(@tour.backdrops.right.offset().top)
+    .toBe $secondElement.offset().top - secondPadding.top
+    expect(@tour.backdrops.right.offset().top + @tour.backdrops.right.height())
+    .toBe $secondElement.offset().top + $secondElement.height() + secondPadding.bottom
+    expect(@tour.backdrops.right.offset().left)
+    .toBe $secondElement.offset().left + $secondElement.width() + secondPadding.right
 
   it '`basePath` should prepend the path to the steps', ->
     @tour = new Tour
