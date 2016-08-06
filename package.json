@@ -1,7 +1,7 @@
 {
   "name": "bootstrap-tour",
   "description": "Quick and easy way to build your product tours with Bootstrap Popovers.",
-  "version": "0.10.3",
+  "version": "0.11.0",
   "keywords": [
     "tour",
     "bootstrap",
