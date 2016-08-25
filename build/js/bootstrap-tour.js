@@ -346,7 +346,7 @@
             if (_this.getCurrentStep() !== i || _this.ended()) {
               return;
             }
-            if ((step.element != null) && step.backdrop) {
+            if (step.backdrop) {
               _this._showOverlayElement(step);
             }
             _this._showPopover(step, i);
@@ -852,16 +852,24 @@
       var $backdropElement, elementData;
       $backdropElement = $(step.backdropElement);
       if ($backdropElement.length === 0) {
-        return;
-      }
-      elementData = {
-        width: $backdropElement.innerWidth(),
-        height: $backdropElement.innerHeight(),
-        offset: $backdropElement.offset()
-      };
-      $backdropElement.addClass('tour-step-backdrop');
-      if (step.backdropPadding) {
-        elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
+        elementData = {
+          width: 0,
+          height: 0,
+          offset: {
+            top: 0,
+            left: 0
+          }
+        };
+      } else {
+        elementData = {
+          width: $backdropElement.innerWidth(),
+          height: $backdropElement.innerHeight(),
+          offset: $backdropElement.offset()
+        };
+        $backdropElement.addClass('tour-step-backdrop');
+        if (step.backdropPadding) {
+          elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
+        }
       }
       return this._showBackground(step, elementData);
     };

@@ -305,7 +305,7 @@
         showPopoverAndOverlay = =>
           return if @getCurrentStep() isnt i or @ended()
 
-          @_showOverlayElement step if step.element? and step.backdrop
+          @_showOverlayElement step if step.backdrop
           @_showPopover step, i
           step.onShown @ if step.onShown?
           @_debug "Step #{@_current + 1} of #{@_options.steps.length}"
@@ -726,16 +726,21 @@
     _showOverlayElement: (step) ->
       $backdropElement = $ step.backdropElement
 
-      return if $backdropElement.length is 0
+      if $backdropElement.length is 0
+        elementData =
+          width: 0
+          height: 0
+          offset:
+            top: 0
+            left: 0
+      else
+        elementData =
+          width: $backdropElement.innerWidth()
+          height: $backdropElement.innerHeight()
+          offset: $backdropElement.offset()
 
-      elementData =
-        width: $backdropElement.innerWidth()
-        height: $backdropElement.innerHeight()
-        offset: $backdropElement.offset()
-
-      $backdropElement.addClass 'tour-step-backdrop'
-
-      elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
+        $backdropElement.addClass 'tour-step-backdrop'
+        elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
 
       @_showBackground(step, elementData)
 
