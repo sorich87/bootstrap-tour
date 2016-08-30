@@ -2,7 +2,7 @@
   if typeof define is 'function' and define.amd
     define ['jquery'], (jQuery) -> (window.Tour = factory(jQuery))
   else if typeof exports is 'object'
-    module.exports = factory(require('jQuery'))
+    module.exports = factory(require('jquery'))
   else
     window.Tour = factory(window.jQuery)
 )(window, ($) ->
