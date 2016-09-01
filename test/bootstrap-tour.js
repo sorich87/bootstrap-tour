@@ -25,7 +25,7 @@
       return window.Tour = factory(jQuery);
     });
   } else if (typeof exports === 'object') {
-    return module.exports = factory(require('jQuery'));
+    return module.exports = factory(require('jquery'));
   } else {
     return window.Tour = factory(window.jQuery);
   }
