@@ -22,6 +22,7 @@
         autoscroll: true
         keyboard: true
         storage: storage
+        storageName: 'tour'
         debug: false
         backdrop: false
         backdropContainer: 'body'
@@ -350,7 +351,7 @@
     # Set a state in storage
     _setState: (key, value) ->
       if @_options.storage
-        keyName = "#{@_options.name}_#{key}"
+        keyName = "#{@_options.storageName}_#{key}"
         try @_options.storage.setItem keyName, value
         catch e
           if e.code is DOMException.QUOTA_EXCEEDED_ERR
@@ -363,7 +364,7 @@
     # Remove the current state from the storage layer
     _removeState: (key) ->
       if @_options.storage
-        keyName = "#{@_options.name}_#{key}"
+        keyName = "#{@_options.storageName}_#{key}"
         @_options.storage.removeItem keyName
         @_options.afterRemoveState keyName
       else
@@ -372,7 +373,7 @@
     # Get the current state from the storage layer
     _getState: (key) ->
       if @_options.storage
-        keyName = "#{@_options.name}_#{key}"
+        keyName = "#{@_options.storageName}_#{key}"
         value = @_options.storage.getItem keyName
       else
         value = @_state[key] if @_state?

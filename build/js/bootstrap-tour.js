@@ -47,6 +47,7 @@
         autoscroll: true,
         keyboard: true,
         storage: storage,
+        storageName: 'tour',
         debug: false,
         backdrop: false,
         backdropContainer: 'body',
@@ -401,7 +402,7 @@
     Tour.prototype._setState = function(key, value) {
       var e, keyName;
       if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
+        keyName = "" + this._options.storageName + "_" + key;
         try {
           this._options.storage.setItem(keyName, value);
         } catch (_error) {
@@ -422,7 +423,7 @@
     Tour.prototype._removeState = function(key) {
       var keyName;
       if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
+        keyName = "" + this._options.storageName + "_" + key;
         this._options.storage.removeItem(keyName);
         return this._options.afterRemoveState(keyName);
       } else {
@@ -435,7 +436,7 @@
     Tour.prototype._getState = function(key) {
       var keyName, value;
       if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
+        keyName = "" + this._options.storageName + "_" + key;
         value = this._options.storage.getItem(keyName);
       } else {
         if (this._state != null) {
