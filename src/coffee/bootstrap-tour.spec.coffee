@@ -44,6 +44,7 @@ describe 'Bootstrap Tour', ->
 
     @tour = new Tour
       name: 'test'
+      storageName: 'test'
       storage:
         setItem: (keyName, value) ->
           aliasKeyName = keyName
