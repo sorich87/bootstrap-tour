@@ -677,7 +677,10 @@
     };
 
     Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {
-      return $tip.find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
+      // find arrow position to adjust
+      var $arrow = $tip.find('.arrow');
+      var startPos = parseFloat($arrow.css(position)) / dimension * 100 - 50;
+      return $arrow.css(position, delta ? startPos + (50 * (1 - delta / dimension)) + '%' : '');
     };
 
     Tour.prototype._scrollIntoView = function(step, callback) {
