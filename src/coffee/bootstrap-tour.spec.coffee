@@ -218,7 +218,7 @@ describe 'Bootstrap Tour', ->
       duration: false
       delay: false
       template: '<div class="popover">
-        <div class="arrow"></div>
+        <div class="arrow popover-arrow"></div>
         <h3 class="popover-title"></h3>
         <div class="popover-content"></div>
         <nav class="popover-navigation">
@@ -1061,7 +1061,7 @@ describe 'Bootstrap Tour', ->
     @tour = new Tour
       template:
         '<div class="popover tour">
-          <div class="arrow"></div>
+          <div class="arrow popover-arrow"></div>
           <h3 class="popover-title"></h3>
           <div class="popover-content"></div>
           <div class="popover-navigation">

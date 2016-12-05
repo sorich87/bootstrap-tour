@@ -32,7 +32,7 @@
         delay: false
         basePath: ''
         template: '<div class="popover" role="tooltip">
-          <div class="arrow"></div>
+          <div class="arrow popover-arrow"></div>
           <h3 class="popover-title"></h3>
           <div class="popover-content"></div>
           <div class="popover-navigation">
