@@ -12,7 +12,7 @@ describe 'Bootstrap Tour', ->
       $element = $(tour.getStep(i).element)
 
       $element
-      .popover('destroy')
+      .popover('dispose')
       .removeData('bs.popover')
       $element.remove()
 
