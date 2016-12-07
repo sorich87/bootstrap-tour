@@ -75,3 +75,4 @@ Check `gulpfile.coffee` to know more.
 
 Code licensed under the [MIT license](https://opensource.org/licenses/MIT).
 Documentation licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
+2015
