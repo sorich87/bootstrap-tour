@@ -140,11 +140,9 @@
     # Start tour from current step
     start: (force = false) ->
       @init force unless @_inited # Backward compatibility
-
-      if @_current is null
-        promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
-        @_callOnPromiseDone(promise, @showStep, 0)
-      @
+      promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
+      @_callOnPromiseDone(promise, @showStep, 0)
+      
 
     # Hide current step and show next step
     next: ->
