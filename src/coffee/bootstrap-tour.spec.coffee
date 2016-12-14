@@ -12,7 +12,7 @@ describe 'Bootstrap Tour', ->
       $element = $(tour.getStep(i).element)
 
       $element
-      .popover('destroy')
+      .popover('dispose')
       .removeData('bs.popover')
       $element.remove()
 
@@ -199,6 +199,7 @@ describe 'Bootstrap Tour', ->
       element: $('<div></div>').appendTo('body')
       id: 'step-0'
       path: 'test'
+      host: ''
       placement: 'left'
       title: 'Test'
       content: 'Just a test'
@@ -209,20 +210,23 @@ describe 'Bootstrap Tour', ->
       container: 'body'
       backdrop: false
       backdropPadding: 0
+      backdropContainer: 'body'
+      backdropElement: $('<div></div>').appendTo('body')
       redirect: true
+      reflexElement: $('<div></div>').appendTo('body')
       orphan: false
       duration: false
       delay: false
       template: '<div class="popover">
-        <div class="arrow"></div>
+        <div class="arrow popover-arrow"></div>
         <h3 class="popover-title"></h3>
         <div class="popover-content"></div>
         <nav class="popover-navigation">
           <div class="btn-group">
-            <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button>
-            <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button>
+            <button class="btn btn-sm btn-secondary" data-role="prev">&laquo; Prev</button>
+            <button class="btn btn-sm btn-secondary" data-role="next">Next &raquo;</button>
           </div>
-          <button class="btn btn-sm btn-default" data-role="end">End tour</button>
+          <button class="btn btn-sm btn-secondary" data-role="end">End tour</button>
         </nav>
       </div>'
       onShow: (tour) ->
@@ -233,6 +237,7 @@ describe 'Bootstrap Tour', ->
       onPrev: (tour) ->
       onPause: (tour) ->
       onResume: (tour) ->
+      onRedirectError: (tour) ->
     @tour.addStep(step)
     # remove properties that we don't want to check from both steps object
     expect(@tour.getStep(0)).toEqual step
@@ -394,27 +399,317 @@ describe 'Bootstrap Tour', ->
     # tour show the second step on the same element
     expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
 
-  it 'should evaluate `path correctly', ->
+  it 'should get url properties correctly', ->
+    @tour = new Tour
+
+    expect(@tour._getProtocol('http://example.com')).toBe 'http'
+    expect(@tour._getProtocol('https://example.com')).toBe 'https'
+    expect(@tour._getProtocol('www.example.com')).toBe 'http'
+    expect(@tour._getProtocol('example.com')).toBe 'http'
+
+    expect(@tour._getHost('http://example.com')).toBe 'example.com'
+    expect(@tour._getHost('www.example.com')).toBe 'www.example.com'
+    expect(@tour._getHost('example.com/path')).toBe 'example.com'
+
+    expect(@tour._getPath('/somepath?foo=bar')).toBe '/somepath'
+    expect(@tour._getPath('/somepath#foo=bar')).toBe '/somepath'
+    expect(@tour._getPath('/somepath?foo=bar#hash')).toBe '/somepath'
+
+    expect(@tour._getQuery('/somepath?one=bar')).toEqual {one: 'bar'}
+    expect(@tour._getQuery('/somepath?one=bar&two=foo')).toEqual {one: 'bar', two: 'foo'}
+
+    expect(@tour._getHash('/somepath#one=bar&two=foo')).toEqual {one: 'bar', two: 'foo'}
+    expect(@tour._getHash('/somepath#one=bar&two=foo')).toEqual {one: 'bar', two: 'foo'}
+
+  it 'should evaluate `path` correctly', ->
     @tour = new Tour
 
     # redirect if path doesn't match current path
-    expect(@tour._isRedirect('/anotherpath', '/somepath')).toBe true
+    expect(
+      @tour._isRedirect(
+        '', '/anotherpath',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
     # don't redirect if no path
-    expect(@tour._isRedirect(undefined, '/')).toBe false
+    expect(
+      @tour._isRedirect(
+        '', undefined,
+        {
+          origin: ''
+          href: ''
+          pathname: '/'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
     # don't redirect if path empty
-    expect(@tour._isRedirect('', '/')).toBe false
+    expect(
+      @tour._isRedirect(
+        '', '',
+        {
+          origin: ''
+          href: ''
+          pathname: '/'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
     # don't redirect if path matches current path
-    expect(@tour._isRedirect('/somepath', '/somepath')).toBe false
+    expect(
+      @tour._isRedirect(
+        '', '/somepath',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
     # don't redirect if path with slash matches current path
-    expect(@tour._isRedirect('/somepath/', '/somepath')).toBe false
+    expect(
+      @tour._isRedirect(
+        '', '/somepath/',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
     # don't redirect if path matches current path with slash
-    expect(@tour._isRedirect('/somepath', '/somepath/')).toBe false
+    expect(
+      @tour._isRedirect(
+        '', '/somepath',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath/'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
+    # redirect if path with query params doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath?search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+    # redirect if path with slash and query params doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath/?search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    # redirect if path with more than one query param doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    # redirect if path with and query params doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?search=true'
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    # redirect if path query params number doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?foo=bar'
+          hash: ''
+        }
+      )
+    ).toBe true
+
     # don't redirect if path with query params matches current path
-    expect(@tour._isRedirect('/somepath?search=true', '/somepath')).toBe false
-    # don't redirect if path with slash and query params matches current path
-    expect(@tour._isRedirect('/somepath/?search=true', '/somepath')).toBe false
+    expect(
+      @tour._isRedirect(
+        '', '/somepath?search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?foo=bar&search=true'
+          hash: ''
+        }
+      )
+    ).toBe false
+
+    # don't redirect if path with query params matches current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath?search=true&foo=bar'
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: '?search=true&foo=bar'
+          hash:''
+        }
+      )
+    ).toBe false
+
+    # redirect if path with one hash param doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath#search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    # redirect if path with slash and one hash param doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath/#search=true',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    # redirect if path with more than one hash params doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    # redirect if path hash params number doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: ''
+          href: ''
+          pathname: '/somepath'
+          search: ''
+          hash: '#search=true'
+        }
+      )
+    ).toBe true
+
+    # redirect if path hash params number doesn't matche current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: '#foo=bar'
+        }
+      )
+    ).toBe true
+
+    # don't redirect if path with hash params matches current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: '#foo=bar&search=true'
+        }
+      )
+    ).toBe false
+
+    # don't redirect if path with hash params matches current path
+    expect(
+      @tour._isRedirect(
+        '', '/somepath#search=true&foo=bar',
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: '#search=true&foo=bar'
+        }
+      )
+    ).toBe false
+
     # don't redirect if current path matches path regex
-    expect(@tour._isRedirect /some*/, '/somepath').toBe false
+    expect(
+      @tour._isRedirect(
+        '', /some.*/,
+        {
+          origin: '',
+          href: '',
+          pathname: '/somepath',
+          search: '',
+          hash: ''
+        }
+      )
+    ).toBe false
 
   it '`_getState` should return null after `_removeState` with null value', ->
     @tour = new Tour
@@ -438,9 +733,9 @@ describe 'Bootstrap Tour', ->
       onShow: -> return deferred
     @tour.start()
     @tour.next()
-    expect(@tour._current).toBe 0 # tour shows old state until resolving of onShow promise
+    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined
     deferred.resolve()
-    expect(@tour._current).toBe 1 # tour shows new state after resolving onShow promise
+    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
 
   it 'should not hide popover until the onHide promise is resolved', ->
     deferred = $.Deferred()
@@ -478,6 +773,37 @@ describe 'Bootstrap Tour', ->
     @tour.next()
     expect($element.hasClass('tour-step-element-reflex')).toBe false
 
+  it 'should add `tour-step-element-reflex` class to reflexElement if reflex is defined', ->
+    @tour = new Tour
+    $element = $('<div></div>').appendTo('body')
+    $definedElement = $('<div id="ref"></div>').appendTo('body')
+    @tour.addStep
+      element: $element
+      reflex: true
+      reflexElement: '#ref'
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    expect($element.hasClass('tour-step-element-reflex')).toBe false
+    expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
+    @tour.start()
+    expect($element.hasClass('tour-step-element-reflex')).toBe false
+    expect($definedElement.hasClass('tour-step-element-reflex')).toBe true
+    @tour.next()
+    expect($element.hasClass('tour-step-element-reflex')).toBe false
+    expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
+
+  it 'should add `tour-{tourName}-reflex` class to the step popover if reflex is active', ->
+    @tour = new Tour
+    $element = $('<div></div>').appendTo('body')
+    @tour.addStep
+      element: $element
+      reflex: true
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe false
+    @tour.start()
+    expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe true
+    @tour.next()
+    expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe false
+
   it '`showStep` redirects to the anchor when the path is an anchor', ->
     @tour = new Tour
     @tour.addStep
@@ -485,6 +811,16 @@ describe 'Bootstrap Tour', ->
       path: '#mytest'
     @tour.showStep(0)
     expect(document.location.hash).toBe '#mytest' # Tour step has moved to the anchor
+    document.location.hash = ''
+
+  it '`showStep` show the step when the path is an anchor', ->
+    current_path = location.pathname
+    @tour = new Tour
+    @tour.addStep
+      element: $('<div></div>').appendTo('body')
+      path: "#{current_path}#mytest"
+    @tour.showStep(0)
+    expect(@tour.getStep(0).element.data('bs.popover').tip().filter(':visible').length).toBe 1 # tour shows correct step
     document.location.hash = ''
 
   it '`backdrop` parameter should show backdrop with step', ->
@@ -498,26 +834,30 @@ describe 'Bootstrap Tour', ->
     @tour.start()
     expect($('.tour-backdrop').length).toBe 0 # disable backdrop
     expect($('.tour-step-backdrop').length).toBe 0 # disable backdrop
-    expect($('.tour-step-background').length).toBe 0 # disable backdrop
     @tour.next()
-    expect($('.tour-backdrop').length).toBe 1 # enable backdrop
+    expect($('.tour-backdrop').length).toBe 4 # enable backdrop
     expect($('.tour-step-backdrop').length).toBe 1 # enable backdrop
-    expect($('.tour-step-background').length).toBe 1 # enable backdrop
     @tour.end()
     expect($('.tour-backdrop').length).toBe 0 # disable backdrop
     expect($('.tour-step-backdrop').length).toBe 0 # disable backdrop
-    expect($('.tour-step-background').length).toBe 0 # disable backdrop
 
   it 'step with backdrop and invalid selector should not attempt to create an overlay element', ->
     @tour = new Tour
-    @tour._showOverlayElement '#nonExistingElement'
-    expect(@tour.backdrop.overlayElementShown).toBe false
+    @tour._showOverlayElement backdropElement: '#nonExistingElement'
+    expect($('.tour-backdrop').length).toBe 0
 
   it 'should render the padding on the backdrop element', ->
     @tour = new Tour
       backdrop: true
     $firstElement = $('<div></div>', width: 10, height: 10).appendTo('body')
-    $secondElement = $('<div></div>', width: 10, height: 10).appendTo('body')
+    $secondElement = $('<div></div>').css(
+      position: 'absolute'
+      top: 100
+      left: 300
+      width: 10
+      height: 10
+    ).appendTo('body')
+
     firstPadding = 20
     secondPadding =
       top: 40
@@ -534,13 +874,46 @@ describe 'Bootstrap Tour', ->
       backdropPadding: secondPadding
       element: $secondElement
     @tour.start()
-    expect(@tour.backdrop.$background.width()).toBe $firstElement.innerWidth() + (firstPadding * 2)
-    expect(@tour.backdrop.$background.height()).toBe $firstElement.innerHeight() + (firstPadding * 2)
+    expect(@tour.backdrops.top.offset().top + @tour.backdrops.top.height())
+    .toBe 0
+
+    expect(@tour.backdrops.left.offset().top)
+    .toBe $firstElement.offset().top - firstPadding
+    expect(@tour.backdrops.left.offset().top + @tour.backdrops.left.height())
+    .toBe $firstElement.offset().top + $firstElement.height() + firstPadding
+    expect(@tour.backdrops.left.offset().left + @tour.backdrops.left.width())
+    .toBe 0
+
+    expect(@tour.backdrops.bottom.offset().top)
+    .toBe $firstElement.offset().top + $firstElement.height() + firstPadding
+
+    expect(@tour.backdrops.right.offset().top)
+    .toBe $firstElement.offset().top - firstPadding
+    expect(@tour.backdrops.right.offset().top + @tour.backdrops.right.height())
+    .toBe $firstElement.offset().top + $firstElement.height() + firstPadding
+    expect(@tour.backdrops.right.offset().left)
+    .toBe $firstElement.offset().left + $firstElement.width() + firstPadding
+
     @tour.next()
-    expect(@tour.backdrop.$background.width())
-    .toBe $secondElement.innerWidth() + secondPadding.left + secondPadding.right
-    expect(@tour.backdrop.$background.height())
-    .toBe $secondElement.innerHeight() + secondPadding.top + secondPadding.bottom
+    expect(@tour.backdrops.top.offset().top + @tour.backdrops.top.height())
+    .toBe $secondElement.offset().top - secondPadding.top
+
+    expect(@tour.backdrops.left.offset().top)
+    .toBe $secondElement.offset().top - secondPadding.top
+    expect(@tour.backdrops.left.offset().top + @tour.backdrops.left.height())
+    .toBe $secondElement.offset().top + $secondElement.height() + secondPadding.bottom
+    expect(@tour.backdrops.left.offset().left + @tour.backdrops.left.width())
+    .toBe $secondElement.offset().left - secondPadding.left
+
+    expect(@tour.backdrops.bottom.offset().top)
+    .toBe $secondElement.offset().top + $secondElement.height() + secondPadding.bottom
+
+    expect(@tour.backdrops.right.offset().top)
+    .toBe $secondElement.offset().top - secondPadding.top
+    expect(@tour.backdrops.right.offset().top + @tour.backdrops.right.height())
+    .toBe $secondElement.offset().top + $secondElement.height() + secondPadding.bottom
+    expect(@tour.backdrops.right.offset().left)
+    .toBe $secondElement.offset().left + $secondElement.width() + secondPadding.right
 
   it '`basePath` should prepend the path to the steps', ->
     @tour = new Tour
@@ -550,7 +923,72 @@ describe 'Bootstrap Tour', ->
       path: 'test.html'
 
     # Tour adds basePath to step path
-    expect(@tour._isRedirect(@tour._options.basePath + @tour.getStep(0).path, 'test/test.html')).toBe false
+    expect(
+      @tour._isRedirect(
+        @tour.getStep(0).host,
+        @tour._options.basePath + @tour.getStep(0).path,
+        href: '', pathname: 'test/test.html', search: '', hash: ''
+      )
+    ).toBe false
+
+  it 'should evaluate the host correctly', ->
+    @tour = new Tour
+
+    expect(
+      @tour._isRedirect(
+        'http://sub.exemple.com',
+        '/test.html',
+        {
+          origin: 'http://exemple.com'
+          href: 'http://exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
+
+    expect(
+      @tour._isRedirect(
+        'http://sub.exemple.com',
+        '/test.html',
+        {
+          origin: 'http://sub.exemple.com'
+          href: 'http://sub.exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        /http:\/\/.*\.exemple\.com/,
+        '/test.html',
+        {
+          origin: 'http://sub.exemple.com'
+          href: 'http://sub.exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe false
+
+    expect(
+      @tour._isRedirect(
+        /http:\/\/exemple\.com/,
+        '/test.html',
+        {
+          origin: 'http://sub.exemple.com'
+          href: 'http://sub.exemple.com/test.html'
+          pathname: '/test.html'
+          search: ''
+          hash: ''
+        }
+      )
+    ).toBe true
 
   it 'with `onNext` option should run the callback before showing the next step', ->
     tour_test = 0
@@ -607,11 +1045,23 @@ describe 'Bootstrap Tour', ->
     @tour.prev()
     expect(tour_test).toBe 2 # tour runs onPrev when prev step is called
 
+  it 'with `onRedirectError` option should run the callback when redirection failed', ->
+    tour_test = 0
+    @tour = new Tour
+    @tour.addStep
+      element: $('<div></div>').appendTo('body')
+      path: '/path'
+      onRedirectError: -> tour_test = 2
+
+    @tour._setState 'redirect_to', 0 # tour has previously redirected to step '0'
+    @tour.start()
+    expect(tour_test).toBe 2 # tour runs onRedirectError when redirection failed
+
   it 'should render custom navigation template', ->
     @tour = new Tour
       template:
         '<div class="popover tour">
-          <div class="arrow"></div>
+          <div class="arrow popover-arrow"></div>
           <h3 class="popover-title"></h3>
           <div class="popover-content"></div>
           <div class="popover-navigation">
@@ -686,6 +1136,32 @@ describe 'Bootstrap Tour', ->
     expect($('.popover').hasClass('orphan')).toBe true
     $('.popover').remove()
 
+  it 'should use orphan template to show orphan steps', ->
+    @tour = new Tour
+    step = orphan: '<div class="popover orphan-custom-template"></div>'
+    @tour.addStep step
+    template = @tour._template(step, 0)
+
+    expect($(template).hasClass('orphan-custom-template')).toBe true
+
+  it 'should not use orphan template to show steps', ->
+    @tour = new Tour
+    step =
+      orphan: '<div class="popover orphan-custom-template"></div>'
+      element: $('<div></div>').appendTo('body')
+    @tour.addStep step
+    template = @tour._template(step, 0)
+
+    expect($(template).hasClass('orphan-custom-template')).toBe false
+
+  it 'should execute orphan template if it is a function', ->
+    @tour = new Tour
+    step = orphan: -> '<div class="popover orphan-custom-template"></div>'
+    @tour.addStep step
+    template = @tour._template(step, 0)
+
+    expect($(template).hasClass('orphan-custom-template')).toBe true
+
   it 'handles quota_exceeded exceptions', ->
     @tour = new Tour
     @tour.addStep(element: $('<div></div>').appendTo('body'))
@@ -741,6 +1217,29 @@ describe 'Bootstrap Tour', ->
     @tour.end()
     expect(@tour._timer).toBe null
     expect(@tour._duration).toBe null
+
+  it 'should call window.setTimeout when delay is defined', ->
+    counter = 0
+    initialTimeout = window.setTimeout
+    window.setTimeout = (callback, duration) ->
+      counter++
+      callback()
+
+    @tour = new Tour
+      delay: {
+        show: 300
+        hide: 400
+      }
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    expect(counter).toBe 1
+    @tour.next()
+    expect(counter).toBe 3
+    @tour.end()
+    expect(counter).toBe 4
+
+    window.setTimeout = initialTimeout
 
   ### TODO: fix $.support.transition conflict between jquery and bootstrap
   it 'should not display inactive popover upon rapid navigation', ->

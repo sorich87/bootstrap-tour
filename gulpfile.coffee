@@ -21,14 +21,14 @@ banner = '''
    * <%= pkg.name %> - v<%= pkg.version %>
    * <%= pkg.homepage %>
    * ========================================================================
-   * Copyright 2012-2013 <%= pkg.author.name %>
+   * Copyright 2012-2015 <%= pkg.author.name %>
    *
    * ========================================================================
-   * Licensed under the Apache License, Version 2.0 (the "License");
+   * Licensed under the MIT License (the "License");
    * you may not use this file except in compliance with the License.
    * You may obtain a copy of the License at
    *
-   *     http://www.apache.org/licenses/LICENSE-2.0
+   *     https://opensource.org/licenses/MIT
    *
    * Unless required by applicable law or agreed to in writing, software
    * distributed under the License is distributed on an "AS IS" BASIS,
@@ -64,6 +64,7 @@ gulp.task 'coffee-standalone', ->
   streamqueue objectMode: true,
     gulp
     .src [
+      "./bower_components/bootstrap/js/transition.js"
       "./bower_components/bootstrap/js/tooltip.js"
       "./bower_components/bootstrap/js/popover.js"
     ]
@@ -131,7 +132,7 @@ gulp.task 'test-go', ['test-coffee'], (done) ->
 
 # docs
 gulp.task 'docs-build', ['coffee', 'less'], (done) ->
-  spawn 'jekyll', ['build']
+  spawn `(process.platform === 'win32' ? 'jekyll.bat' : 'jekyll')`, ['build']
     .on 'close', done
 
 gulp.task 'docs-copy', ['docs-build'], ->
@@ -201,7 +202,7 @@ gulp.task 'watch', ['connect'], ->
 gulp.task 'bump', ['test'], ->
   bumpType = $.util.env.type || 'patch'
 
-  return gulp.src(['./bower.json', './package.json', './smart.json'])
+  return gulp.src(['./package.json', './smart.json'])
     .pipe $.bump(type: bumpType)
     .pipe gulp.dest('./')
 

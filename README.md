@@ -16,7 +16,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 
 Feel free to contribute with pull requests, bug reports or enhancement suggestions.
 
-We use [Gulp](http://gulpjs.com/) and [Jasmine](http://pivotal.github.io/jasmine/). Both make your life easier ;)
+We use [Gulp](http://gulpjs.com/) and [Jasmine](http://jasmine.github.io/). Both make your life easier ;)
 
 ### Develop
 
@@ -73,5 +73,5 @@ Check `gulpfile.coffee` to know more.
 
 ## License
 
-Code licensed under the [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0).
+Code licensed under the [MIT license](https://opensource.org/licenses/MIT).
 Documentation licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
