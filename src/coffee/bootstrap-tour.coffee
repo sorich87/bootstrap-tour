@@ -231,7 +231,6 @@
         $element = $ step.element
         $element = $('body') unless $element.data('bs.popover') or $element.data('popover')
         $element
-          .popover('dispose')
           .popover('destroy')
           .removeClass("tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element")
           .removeData('bs.popover')
