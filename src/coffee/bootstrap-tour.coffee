@@ -37,14 +37,14 @@
           <div class="popover-content"></div>
           <div class="popover-navigation">
             <div class="btn-group">
-              <button class="btn btn-sm btn-secondary" data-role="prev">&laquo; Prev</button>
-              <button class="btn btn-sm btn-secondary" data-role="next">Next &raquo;</button>
-              <button class="btn btn-sm btn-secondary"
+              <button class="btn btn-sm btn-default btn-secondary" data-role="prev">&laquo; Prev</button>
+              <button class="btn btn-sm btn-default btn-secondary" data-role="next">Next &raquo;</button>
+              <button class="btn btn-sm btn-default btn-secondary"
                       data-role="pause-resume"
                       data-pause-text="Pause"
                       data-resume-text="Resume">Pause</button>
             </div>
-            <button class="btn btn-sm btn-secondary" data-role="end">End tour</button>
+            <button class="btn btn-sm btn-default btn-secondary" data-role="end">End tour</button>
           </div>
         </div>'
         afterSetState: (key, value) ->
@@ -232,6 +232,7 @@
         $element = $('body') unless $element.data('bs.popover') or $element.data('popover')
         $element
           .popover('dispose')
+          .popover('destroy')
           .removeClass("tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element")
           .removeData('bs.popover')
           .focus()
