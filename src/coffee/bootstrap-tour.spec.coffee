@@ -346,14 +346,19 @@ describe 'Bootstrap Tour', ->
     @tour.showStep(0)
     expect($('.popover').length).toBe 1
 
-  it '`getStep` should add disabled classes to the first and last popover buttons', ->
+  it '`getStep` should add disabled class to the first popover button', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
     @tour.addStep(element: $('<div></div>').appendTo('body'))
     @tour.showStep(0)
     expect($('.popover [data-role="prev"]').hasClass('disabled')).toBe true
+
+  it '`getStep` should replace next button by close on last step', ->
+    @tour = new Tour
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: $('<div></div>').appendTo('body'))
     @tour.showStep(1)
-    expect($('.popover [data-role="next"]').hasClass('disabled')).toBe true
+    expect($('.popover [data-role="next"]').size()).toBe 0
+    expect($('.popover [data-role="end"]').size()).toBe 1
 
   it '`setCurrentStep` should set the current step', ->
     @tour = new Tour
