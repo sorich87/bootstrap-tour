@@ -1283,7 +1283,7 @@
     };
 
     Tour.prototype._template = function(step, i) {
-      var $navigation, $next, $prev, $resume, $template, template;
+      var $end, $navigation, $next, $prev, $resume, $template, template;
       template = step.template;
       if (this._isOrphan(step) && {}.toString.call(step.orphan) !== '[object Boolean]') {
         template = step.orphan;
@@ -1292,6 +1292,7 @@
       $navigation = $template.find('.popover-navigation');
       $prev = $navigation.find('[data-role="prev"]');
       $next = $navigation.find('[data-role="next"]');
+      $end = $navigation.find('[data-role="end"]');
       $resume = $navigation.find('[data-role="pause-resume"]');
       if (this._isOrphan(step)) {
         $template.addClass('orphan');
@@ -1304,7 +1305,8 @@
         $prev.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
       }
       if (step.next < 0) {
-        $next.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
+        $next.attr('data-role', 'end').html('Close &times;');
+        $end.remove();
       }
       if (!step.duration) {
         $resume.remove();

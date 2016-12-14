@@ -540,6 +540,7 @@
       $navigation = $template.find '.popover-navigation'
       $prev = $navigation.find '[data-role="prev"]'
       $next = $navigation.find '[data-role="next"]'
+      $end = $navigation.find '[data-role="end"]'
       $resume = $navigation.find '[data-role="pause-resume"]'
 
       $template.addClass 'orphan' if @_isOrphan step
@@ -552,9 +553,9 @@
           .prop('tabindex', -1)
 
       if step.next < 0
-        $next.addClass('disabled')
-          .prop('disabled', true)
-          .prop('tabindex', -1)
+        $next.attr('data-role','end')
+          .html('Close &times;')
+        $end.remove()
 
       $resume.remove() unless step.duration
       $template.clone().wrap('<div>').parent().html()
