@@ -880,7 +880,9 @@
       _ref = this.backdrops;
       for (pos in _ref) {
         $backdrop = _ref[pos];
-        $backdrop.remove();
+        if ($backdrop && $backdrop.remove !== void 0) {
+          $backdrop.remove();
+        }
       }
       return this.backdrops = [];
     };

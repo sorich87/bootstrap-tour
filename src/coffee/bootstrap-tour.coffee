@@ -1,3 +1,10 @@
+# @Author: azizmashour
+# @Date:   2017-06-15T11:59:09+01:00
+# @Last modified by:   azizmashour
+# @Last modified time: 2017-06-15T14:42:09+01:00
+
+
+
 ((window, factory) ->
   if typeof define is 'function' and define.amd
     define ['jquery'], (jQuery) -> (window.Tour = factory(jQuery))
@@ -748,7 +755,7 @@
       $(step.backdropElement).removeClass 'tour-step-backdrop'
 
       for pos, $backdrop of @backdrops
-        $backdrop.remove()
+        $backdrop.remove() if $backdrop and $backdrop.remove isnt undefined
 
       @backdrops = []
 
