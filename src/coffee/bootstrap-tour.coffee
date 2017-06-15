@@ -1,7 +1,7 @@
 # @Author: azizmashour
 # @Date:   2017-06-15T11:59:09+01:00
 # @Last modified by:   azizmashour
-# @Last modified time: 2017-06-15T12:09:23+01:00
+# @Last modified time: 2017-06-15T13:55:06+01:00
 
 
 
@@ -757,7 +757,7 @@
       for pos, $backdrop of @backdrops
         console.log 'CHAPERONE DEBUG'
         console.log '$backdrop ', $backdrop
-        $backdrop.remove() if $backdrop and $backdrop.remove() isnt undefined
+        $backdrop.remove() if $backdrop and $backdrop.remove isnt undefined
 
       @backdrops = []
 

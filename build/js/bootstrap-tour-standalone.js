@@ -1572,7 +1572,7 @@
         $backdrop = _ref[pos];
         console.log('CHAPERONE DEBUG');
         console.log('$backdrop ', $backdrop);
-        if ($backdrop && $backdrop.remove() !== void 0) {
+        if ($backdrop && $backdrop.remove !== void 0) {
           $backdrop.remove();
         }
       }
