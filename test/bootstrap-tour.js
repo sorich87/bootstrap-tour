@@ -880,7 +880,11 @@
       _ref = this.backdrops;
       for (pos in _ref) {
         $backdrop = _ref[pos];
-        $backdrop.remove();
+        console.log('CHAPERONE DEBUG');
+        console.log('$backdrop ', $backdrop);
+        if ($backdrop && $backdrop.remove() !== void 0) {
+          $backdrop.remove();
+        }
       }
       return this.backdrops = [];
     };
