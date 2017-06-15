@@ -1,9 +1,7 @@
 {
   "name": "bootstrap-tour",
   "main": [
-    "./build/js/bootstrap-tour.js",
     "./build/js/bootstrap-tour-standalone.js",
-    "./build/css/bootstrap-tour.css",
     "./build/css/bootstrap-tour-standalone.css"
   ],
   "dependencies": {
