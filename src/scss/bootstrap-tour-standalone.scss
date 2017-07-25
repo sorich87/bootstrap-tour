@@ -1,0 +1,17 @@
+/*!
+ * Bootstrap v3.1.0 (http://getbootstrap.com)
+ * Copyright 2011-2014 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+// Core variables and mixins
+// $bootstrap-path: "../../bower_components/bootstrap/scss";
+
+@import "../../bower_components/bootstrap/scss/variables.scss";
+@import "../../bower_components/bootstrap/scss/mixins.scss";
+@import "../../bower_components/bootstrap/scss/buttons.scss";
+@import "../../bower_components/bootstrap/scss/button-groups.scss";
+@import "../../bower_components/bootstrap/scss/popovers.scss";
+@import "../../bower_components/bootstrap/scss/component-animations.scss";
+@import "../../bower_components/bootstrap/scss/transitions.scss";
+@import "bootstrap-tour.scss";

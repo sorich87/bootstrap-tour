@@ -1,10 +1,3 @@
-# @Author: azizmashour
-# @Date:   2017-06-15T11:59:09+01:00
-# @Last modified by:   azizmashour
-# @Last modified time: 2017-06-15T13:55:06+01:00
-
-
-
 ((window, factory) ->
   if typeof define is 'function' and define.amd
     define ['jquery'], (jQuery) -> (window.Tour = factory(jQuery))
@@ -44,14 +37,14 @@
           <div class="popover-content"></div>
           <div class="popover-navigation">
             <div class="btn-group">
-              <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button>
-              <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button>
-              <button class="btn btn-sm btn-default"
+              <button class="btn btn-sm btn-secondary" data-role="prev">&laquo; Prev</button>
+              <button class="btn btn-sm btn-secondary" data-role="next">Next &raquo;</button>
+              <button class="btn btn-sm btn-secondary"
                       data-role="pause-resume"
                       data-pause-text="Pause"
                       data-resume-text="Resume">Pause</button>
             </div>
-            <button class="btn btn-sm btn-default" data-role="end">End tour</button>
+            <button class="btn btn-sm btn-secondary" data-role="end">End tour</button>
           </div>
         </div>'
         afterSetState: (key, value) ->
@@ -238,7 +231,8 @@
         $element = $ step.element
         $element = $('body') unless $element.data('bs.popover') or $element.data('popover')
         $element
-          .popover('destroy')
+          .popover('dispose')
+          # .popover('destroy') //Old logic
           .removeClass("tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element")
           .removeData('bs.popover')
           .focus()
@@ -529,12 +523,16 @@
       .popover 'show'
 
       # Tip adjustment
-      $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
-      $tip.attr 'id', step.id
+      # $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
+      # $tipElmt = $element.data('bs.popover').getTipElement()
+      # $tipPop = $element.data('[data-toggle=popover]').getTipElement()
+      # $tip = if $element.data 'bs.popover' then $tipElmt else $tipPop
+      $tip = $element.data('bs.popover').getTipElement()
+      $($tip).attr 'id', step.id
 
-      @_focus $tip, $element, step.next < 0
-      @_reposition $tip, step
-      @_center $tip if isOrphan
+      @_focus $($tip), $element, step.next < 0
+      @_reposition $($tip), step
+      @_center $($tip) if isOrphan
 
     # Get popover template
     _template: (step, i) ->
@@ -571,43 +569,43 @@
 
     _focus: ($tip, $element, end) ->
       role = if end then 'end' else 'next'
-      $next = $tip.find("[data-role='#{role}']")
+      $next = $($tip).find("[data-role='#{role}']")
 
       $element.on 'shown.bs.popover', -> $next.focus()
 
     # Prevent popover from crossing over the edge of the window
     _reposition: ($tip, step) ->
-      offsetWidth = $tip[0].offsetWidth
-      offsetHeight = $tip[0].offsetHeight
+      offsetWidth = $($tip)[0].offsetWidth
+      offsetHeight = $($tip)[0].offsetHeight
 
-      tipOffset = $tip.offset()
+      tipOffset = $($tip).offset()
       originalLeft = tipOffset.left
       originalTop = tipOffset.top
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight()
+      offsetBottom = $(document).outerHeight() - tipOffset.top - $($tip).outerHeight()
       tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
-      offsetRight = $('html').outerWidth() - tipOffset.left - $tip.outerWidth()
+      offsetRight = $('html').outerWidth() - tipOffset.left - $($tip).outerWidth()
       tipOffset.left = tipOffset.left + offsetRight if offsetRight < 0
 
       tipOffset.top = 0 if tipOffset.top < 0
       tipOffset.left = 0 if tipOffset.left < 0
 
-      $tip.offset(tipOffset)
+      $($tip).offset(tipOffset)
 
       # Reposition the arrow
       if step.placement is 'bottom' or step.placement is 'top'
         if originalLeft isnt tipOffset.left
-          @_replaceArrow $tip, (tipOffset.left - originalLeft) * 2, offsetWidth, 'left'
+          @_replaceArrow $($tip), (tipOffset.left - originalLeft) * 2, offsetWidth, 'left'
       else
         if originalTop isnt tipOffset.top
-          @_replaceArrow $tip, (tipOffset.top - originalTop) * 2, offsetHeight, 'top'
+          @_replaceArrow $($tip), (tipOffset.top - originalTop) * 2, offsetHeight, 'top'
 
     # Center popover in the page
     _center: ($tip) ->
-      $tip.css('top', $(window).outerHeight() / 2 - $tip.outerHeight() / 2)
+      $($tip).css('top', $(window).outerHeight() / 2 - $($tip).outerHeight() / 2)
 
     # Copy pasted from bootstrap-tooltip.js with some alterations
     _replaceArrow: ($tip, delta, dimension, position)->
-      $tip.find('.arrow').css position, if delta then 50 * (1 - delta / dimension) + '%' else ''
+      $($tip).find('.arrow').css position, if delta then 50 * (1 - delta / dimension) + '%' else ''
 
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (step, callback) ->
@@ -755,8 +753,6 @@
       $(step.backdropElement).removeClass 'tour-step-backdrop'
 
       for pos, $backdrop of @backdrops
-        console.log 'CHAPERONE DEBUG'
-        console.log '$backdrop ', $backdrop
         $backdrop.remove() if $backdrop and $backdrop.remove isnt undefined
 
       @backdrops = []
