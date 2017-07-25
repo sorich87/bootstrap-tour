@@ -86,10 +86,10 @@ gulp.task 'coffee-standalone', ->
   .pipe gulp.dest "#{paths.dist}/js"
 
 # less
-gulp.task 'less', ->
+gulp.task 'scss', ->
   gulp
   .src [
-    "#{paths.src}/less/#{name}.less"
+    "#{paths.src}/scss/#{name}.scss"
   ]
   .pipe $.changed "#{paths.dist}/css"
   .pipe $.less()
@@ -102,9 +102,9 @@ gulp.task 'less', ->
   .pipe $.rename suffix: '.min'
   .pipe gulp.dest "#{paths.dist}/css"
 
-gulp.task 'less-standalone', ->
+gulp.task 'scss-standalone', ->
   gulp
-  .src "#{paths.src}/less/#{name}-standalone.less"
+  .src "#{paths.src}/scss/#{name}-standalone.scss"
   .pipe $.changed "#{paths.dist}/css"
   .pipe $.less()
     .on 'error', $.util.log
@@ -131,7 +131,7 @@ gulp.task 'test-go', ['test-coffee'], (done) ->
   karma.start extend(karmaConfig, singleRun: true), done
 
 # docs
-gulp.task 'docs-build', ['coffee', 'less'], (done) ->
+gulp.task 'docs-build', ['coffee', 'scss'], (done) ->
   spawn `(process.platform === 'win32' ? 'jekyll.bat' : 'jekyll')`, ['build']
     .on 'close', done
 
@@ -182,8 +182,8 @@ gulp.task 'open', ['connect'], ->
 
 gulp.task 'watch', ['connect'], ->
   gulp.watch "#{paths.src}/coffee/#{name}.coffee", ['coffee', 'coffee-standalone']
-  gulp.watch "#{paths.src}/less/#{name}.less", ["less", "less-standalone"]
-  gulp.watch "#{paths.src}/less/#{name}-standalone.less", ['less-standalone']
+  gulp.watch "#{paths.src}/scss/#{name}.scss", ["scss", "scss-standalone"]
+  gulp.watch "#{paths.src}/scss/#{name}-standalone.scss", ['scss-standalone']
   gulp.watch "#{paths.src}/coffee/#{name}.spec.coffee", ['test']
   gulp.watch [
     "#{paths.src}/coffee/#{name}.docs.coffee"
@@ -209,7 +209,7 @@ gulp.task 'bump', ['test'], ->
 # tasks
 gulp.task 'clean', ['clean-dist', 'clean-test', 'clean-docs']
 gulp.task 'server', ['connect', 'open', 'watch']
-gulp.task 'dist', ['coffee', 'coffee-standalone', 'less', 'less-standalone']
+gulp.task 'dist', ['coffee', 'coffee-standalone', 'scss', 'scss-standalone']
 gulp.task 'test', ['coffee', 'test-coffee', 'test-go']
-gulp.task 'docs', ['coffee', 'less', 'docs-build', 'docs-copy', 'docs-coffee']
+gulp.task 'docs', ['coffee', 'scss', 'docs-build', 'docs-copy', 'docs-coffee']
 gulp.task 'default', ['dist', 'docs', 'server']

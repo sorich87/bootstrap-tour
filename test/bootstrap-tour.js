@@ -56,7 +56,7 @@
         duration: false,
         delay: false,
         basePath: '',
-        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
+        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-secondary" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-secondary" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-secondary" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-secondary" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
         afterGetState: function(key, value) {},
         afterRemoveState: function(key) {},
@@ -269,7 +269,7 @@
           if (!($element.data('bs.popover') || $element.data('popover'))) {
             $element = $('body');
           }
-          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover').focus();
+          $element.popover('dispose').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover').focus();
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -583,12 +583,12 @@
         template: step.template,
         selector: step.element
       }).popover('show');
-      $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
-      $tip.attr('id', step.id);
-      this._focus($tip, $element, step.next < 0);
-      this._reposition($tip, step);
+      $tip = $element.data('bs.popover').getTipElement();
+      $($tip).attr('id', step.id);
+      this._focus($($tip), $element, step.next < 0);
+      this._reposition($($tip), step);
       if (isOrphan) {
-        return this._center($tip);
+        return this._center($($tip));
       }
     };
 
@@ -633,7 +633,7 @@
     Tour.prototype._focus = function($tip, $element, end) {
       var $next, role;
       role = end ? 'end' : 'next';
-      $next = $tip.find("[data-role='" + role + "']");
+      $next = $($tip).find("[data-role='" + role + "']");
       return $element.on('shown.bs.popover', function() {
         return $next.focus();
       });
@@ -641,16 +641,16 @@
 
     Tour.prototype._reposition = function($tip, step) {
       var offsetBottom, offsetHeight, offsetRight, offsetWidth, originalLeft, originalTop, tipOffset;
-      offsetWidth = $tip[0].offsetWidth;
-      offsetHeight = $tip[0].offsetHeight;
-      tipOffset = $tip.offset();
+      offsetWidth = $($tip)[0].offsetWidth;
+      offsetHeight = $($tip)[0].offsetHeight;
+      tipOffset = $($tip).offset();
       originalLeft = tipOffset.left;
       originalTop = tipOffset.top;
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight();
+      offsetBottom = $(document).outerHeight() - tipOffset.top - $($tip).outerHeight();
       if (offsetBottom < 0) {
         tipOffset.top = tipOffset.top + offsetBottom;
       }
-      offsetRight = $('html').outerWidth() - tipOffset.left - $tip.outerWidth();
+      offsetRight = $('html').outerWidth() - tipOffset.left - $($tip).outerWidth();
       if (offsetRight < 0) {
         tipOffset.left = tipOffset.left + offsetRight;
       }
@@ -660,24 +660,24 @@
       if (tipOffset.left < 0) {
         tipOffset.left = 0;
       }
-      $tip.offset(tipOffset);
+      $($tip).offset(tipOffset);
       if (step.placement === 'bottom' || step.placement === 'top') {
         if (originalLeft !== tipOffset.left) {
-          return this._replaceArrow($tip, (tipOffset.left - originalLeft) * 2, offsetWidth, 'left');
+          return this._replaceArrow($($tip), (tipOffset.left - originalLeft) * 2, offsetWidth, 'left');
         }
       } else {
         if (originalTop !== tipOffset.top) {
-          return this._replaceArrow($tip, (tipOffset.top - originalTop) * 2, offsetHeight, 'top');
+          return this._replaceArrow($($tip), (tipOffset.top - originalTop) * 2, offsetHeight, 'top');
         }
       }
     };
 
     Tour.prototype._center = function($tip) {
-      return $tip.css('top', $(window).outerHeight() / 2 - $tip.outerHeight() / 2);
+      return $($tip).css('top', $(window).outerHeight() / 2 - $($tip).outerHeight() / 2);
     };
 
     Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {
-      return $tip.find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
+      return $($tip).find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
     };
 
     Tour.prototype._scrollIntoView = function(step, callback) {
@@ -880,8 +880,6 @@
       _ref = this.backdrops;
       for (pos in _ref) {
         $backdrop = _ref[pos];
-        console.log('CHAPERONE DEBUG');
-        console.log('$backdrop ', $backdrop);
         if ($backdrop && $backdrop.remove !== void 0) {
           $backdrop.remove();
         }
