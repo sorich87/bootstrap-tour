@@ -15,14 +15,17 @@ var tour = new Tour({
   name: "tour",
   steps: [],
   container: "body",
+  smartPlacement: true,
   keyboard: true,
   storage: window.localStorage,
   debug: false,
   backdrop: false,
+  backdropContainer: 'body',
   backdropPadding: 0,
   redirect: true,
   orphan: false,
   duration: false,
+  delay: false,
   basePath: "",
   template: "<div class='popover tour'>
     <div class='arrow'></div>
@@ -34,7 +37,6 @@ var tour = new Tour({
         <button class='btn btn-default' data-role='next'>Next »</button>
     </div>
     <button class='btn btn-default' data-role='end'>End tour</button>
-    </nav>
   </div>",
   afterGetState: function (key, value) {},
   afterSetState: function (key, value) {},
@@ -42,13 +44,14 @@ var tour = new Tour({
   onStart: function (tour) {},
   onEnd: function (tour) {},
   onShow: function (tour) {},
-  onShown: function (tour) {}
+  onShown: function (tour) {},
   onHide: function (tour) {},
   onHidden: function (tour) {},
   onNext: function (tour) {},
   onPrev: function (tour) {},
   onPause: function (tour, duration) {},
-  onResume: function (tour, duration) {}
+  onResume: function (tour, duration) {},
+  onRedirectError: function (tour) {}
 });
 {% endhighlight %}
     <table class="table  table-bordered table-striped">
@@ -85,6 +88,12 @@ var tour = new Tour({
           </em>
           </td>
           <td><code>'body'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement, every time.<br></td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>autoscroll</td>
@@ -126,8 +135,14 @@ var tour = new Tour({
           <td><code>false</code></td>
         </tr>
         <tr class="success">
+          <td>backdropContainer <span class="label label-success">NEW</span></td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the backdrop should be shown.</td>
+          <td><code>'body'</code></td>
+        </tr>
+        <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
-          <td>Boolean|Object</td>
+          <td>Number|Object</td>
           <td>Add padding to the backdrop element that highlights the step element.<br>
           It can be a number or a object containing optional <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> numbers.</td>
           <td><code>0</code></td>
@@ -142,7 +157,7 @@ var tour = new Tour({
         </tr>
         <tr>
           <td>orphan</td>
-          <td>Boolean</td>
+          <td>Boolean|String|function</td>
           <td>Allow to show the step regardless whether its element is not set, is
           not present in the page or is hidden. The step is fixed
           positioned in the middle of the page.</td>
@@ -150,11 +165,23 @@ var tour = new Tour({
         </tr>
         <tr id="duration" class="success">
           <td>duration <span class="label label-success">NEW</span></td>
-          <td>Boolean|String</td>
+          <td>Boolean|Number</td>
           <td>Set a expiration time for the steps. When the current step expires,
           the next step is automatically shown. See it as a sort of guided, automatized tour
           functionality. The value is specified in milliseconds</td>
           <td><code>false</code></td>
+        </tr>
+        <tr id="delay" class="success">
+          <td>delay <span class="label label-success">NEW</span></td>
+          <td>Boolean|Number</td>
+          <td>Specifies a delay for the showing and hiding the tour steps.
+          It can be:
+          <ul>
+            <li>a falsy - there is no delay</li>
+            <li>a number - used as a delay for both showing and hiding. In milliseconds</li>
+            <li>a object containing optional <code>show</code> and <code>hide</code> numbers - defines the delays for showing and hiding respectively</li>
+          </ul>
+          <td><code>0</code></td>
         </tr>
         <tr>
           <td>basePath</td>
@@ -293,6 +320,14 @@ var tour = new Tour({
           remaining duration.</td>
           <td><code>function (tour, duration) { }</code></td>
         </tr>
+        </tr>
+        <tr class="success">
+          <td>onRedirectError <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when there is a redirection error. This
+            happens when bootstrap tour cannot redirect to the path of the step</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
       </tbody>
     </table>
     <a id="step-options"></a>
@@ -300,8 +335,10 @@ var tour = new Tour({
 {% highlight javascript %}
 tour.addStep({
   path: "",
+  host: "",
   element: "",
   placement: "right",
+  smartPlacement: true,
   title: "",
   content: "",
   next: 0,
@@ -309,6 +346,7 @@ tour.addStep({
   animation: true,
   container: "body",
   backdrop: false,
+  backdropContainer: 'body',
   backdropPadding: false,
   redirect: true,
   reflex: false,
@@ -321,7 +359,8 @@ tour.addStep({
   onNext: function (tour) {},
   onPrev: function (tour) {},
   onPause: function (tour) {},
-  onResume: function (tour) {}
+  onResume: function (tour) {},
+  onRedirectError: function (tour) {}
 });
 {% endhighlight %}
     <table class="table  table-bordered table-striped">
@@ -341,6 +380,14 @@ tour.addStep({
           allows you to build tours that span several pages!</td>
           <td><code>''</code></td>
         </tr>
+      <tbody>
+        <tr class="success">
+          <td>host <span class="label label-success">NEW</span></td>
+          <td>String or RegExp</td>
+          <td>Host of the page on which the step should be shown. This
+            allows you to build tours for several sub-domains</td>
+          <td><code>''</code></td>
+        </tr>
         <tr>
           <td>element</td>
           <td>String (jQuery selector)</td>
@@ -355,9 +402,19 @@ tour.addStep({
           <code>'top'</code>,
           <code>'bottom'</code>,
           <code>'left'</code>,
-          <code>'right'</code>.
+          <code>'right'</code>,
+          <code>'auto'</code>.
+          When "auto" is specified, it will dynamically reorient the popover.
+          For example, if placement is "auto left", the popover will display to
+          the left when possible, otherwise it will display right.
           </td>
           <td><code>'right'</code></td>
+        </tr>
+        <tr>
+          <td>smartPlacement</td>
+          <td>Boolean</td>
+          <td>It dynamically reorients the popover by default by specifying auto for the placement.</td>
+          <td><code>true</code></td>
         </tr>
         <tr>
           <td>title</td>
@@ -417,6 +474,12 @@ tour.addStep({
           <td><code>false</code></td>
         </tr>
         <tr class="success">
+          <td>backdropContainer <span class="label label-success">NEW</span></td>
+          <td>String (jQuery selector)</td>
+          <td>HTML element on which the backdrop should be shown.</td>
+          <td><code>'body'</code></td>
+        </tr>
+        <tr class="success">
           <td>backdropPadding <span class="label label-success">NEW</span></td>
           <td>Boolean|Object</td>
           <td>Add padding to the backdrop element that highlights the step element.<br>
@@ -441,10 +504,12 @@ tour.addStep({
         </tr>
         <tr>
           <td>orphan</td>
-          <td>Boolean</td>
+          <td>Boolean|String|Function</td>
           <td>Allow to show the step regardless whether its element is not set, is
           not present in the page or is hidden. The step is fixed
-          positioned in the middle of the page.</td>
+          positioned in the middle of the page.<br>
+          You can use a string or function that returns a string of the HTML template for
+          the orphan popovers</td>
           <td><code>false</code></td>
         </tr>
         <tr class="success">
@@ -544,6 +609,14 @@ tour.addStep({
           <code>onResume</code> option</td>
           <td><code>function (tour, duration) { }</code></td>
         </tr>
+        <tr class="success">
+          <td>onRedirectError <span class="label label-success">NEW</span></td>
+          <td>Function</td>
+          <td>Function to execute when there is a redirection error. This
+            happens when bootstrap tour cannot redirect to the path of the step. It overrides the global
+            <code>onRedirectError</code> option</td>
+          <td><code>function (tour) { }</code></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -633,6 +706,11 @@ tour.addStep({
           <td>Override the current step. Pass <code>i</code>
           as the index of the step in the tour (0-based).</td>
         </tr>
+        <tr>
+          <td>redraw()</td>
+          <td>Triggers a redraw on the overlay element.  Useful for
+          Dynamically sized tour targets.</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -646,7 +724,7 @@ tour.addStep({
             </h2>
         </div>
         <p>Bootstrap Tour can be used to create tours that span multiple pages. If you have URLs for each page that have
-            unique paths, you can easily create a tour like so:
+            unique paths, and the dependencies are loaded on each page, you can easily create a tour like so:
         </p>
 {% highlight javascript %}
 var tour = new Tour({
@@ -689,7 +767,7 @@ var tour = new Tour({
       element: "#my-other-element",
       title: "Title of my step",
       content: "Content of my step",
-      path: Regexp("/\/url\/[^/]+/i")
+      path: RegExp("\/url\/[^/]+", "i")
     }
   ]
 });
