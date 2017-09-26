@@ -709,6 +709,8 @@
 
 }(jQuery);
 
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
 (function(window, factory) {
   if (typeof define === 'function' && define.amd) {
     return define(['jquery'], function(jQuery) {
@@ -724,6 +726,7 @@
   document = window.document;
   Tour = (function() {
     function Tour(options) {
+      this._showPopoverAndOverlay = __bind(this._showPopoverAndOverlay, this);
       var storage;
       try {
         storage = window.localStorage;
@@ -834,6 +837,11 @@
           return _this.showStep(_this._current);
         };
       })(this));
+      this._onScroll((function(_this) {
+        return function() {
+          return _this._showPopoverAndOverlay(_this._current);
+        };
+      })(this));
       if (this._current !== null) {
         this.showStep(this._current);
       }
@@ -881,6 +889,7 @@
           $(document).off("click.tour-" + _this._options.name);
           $(document).off("keyup.tour-" + _this._options.name);
           $(window).off("resize.tour-" + _this._options.name);
+          $(window).off("scroll.tour-" + _this._options.name);
           _this._setState('end', 'yes');
           _this._inited = false;
           _this._force = false;
@@ -959,7 +968,7 @@
           if (!($element.data('bs.popover') || $element.data('popover'))) {
             $element = $('body');
           }
-          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover').focus();
+          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover');
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -1019,7 +1028,6 @@
       }
       showStepHelper = (function(_this) {
         return function(e) {
-          var showPopoverAndOverlay;
           if (_this._isOrphan(step)) {
             if (step.orphan === false) {
               _this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
@@ -1032,23 +1040,10 @@
             }
             _this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
           }
-          showPopoverAndOverlay = function() {
-            if (_this.getCurrentStep() !== i || _this.ended()) {
-              return;
-            }
-            if (step.backdrop) {
-              _this._showOverlayElement(step);
-            }
-            _this._showPopover(step, i);
-            if (step.onShown != null) {
-              step.onShown(_this);
-            }
-            return _this._debug("Step " + (_this._current + 1) + " of " + _this._options.steps.length);
-          };
           if (step.autoscroll) {
-            _this._scrollIntoView(step, showPopoverAndOverlay);
+            _this._scrollIntoView(i);
           } else {
-            showPopoverAndOverlay();
+            _this._showPopoverAndOverlay(i);
           }
           if (step.duration) {
             return _this.resume();
@@ -1235,6 +1230,22 @@
       return this._current < this._options.steps.length - 1;
     };
 
+    Tour.prototype._showPopoverAndOverlay = function(i) {
+      var step;
+      if (this.getCurrentStep() !== i || this.ended()) {
+        return;
+      }
+      step = this.getStep(i);
+      if (step.backdrop) {
+        this._showOverlayElement(step);
+      }
+      this._showPopover(step, i);
+      if (step.onShown != null) {
+        step.onShown(this);
+      }
+      return this._debug("Step " + (this._current + 1) + " of " + this._options.steps.length);
+    };
+
     Tour.prototype._showPopover = function(step, i) {
       var $element, $tip, isOrphan, options, shouldAddSmart;
       $(".tour-" + this._options.name).remove();
@@ -1275,10 +1286,9 @@
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
-      if ($element.css('position' === 'fixed')) {
+      if ($element.css('position') === 'fixed') {
         $tip.css('position', 'fixed');
       }
-      this._focus($tip, $element, step.next < 0);
       this._reposition($tip, step);
       if (isOrphan) {
         return this._center($tip);
@@ -1323,15 +1333,6 @@
       }
     };
 
-    Tour.prototype._focus = function($tip, $element, end) {
-      var $next, role;
-      role = end ? 'end' : 'next';
-      $next = $tip.find("[data-role='" + role + "']");
-      return $element.on('shown.bs.popover', function() {
-        return $next.focus();
-      });
-    };
-
     Tour.prototype._reposition = function($tip, step) {
       var offsetBottom, offsetHeight, offsetRight, offsetWidth, originalLeft, originalTop, tipOffset;
       offsetWidth = $tip[0].offsetWidth;
@@ -1373,11 +1374,12 @@
       return $tip.find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
     };
 
-    Tour.prototype._scrollIntoView = function(step, callback) {
-      var $element, $window, counter, height, offsetTop, scrollTop, windowHeight;
+    Tour.prototype._scrollIntoView = function(i) {
+      var $element, $window, counter, height, offsetTop, scrollTop, step, windowHeight;
+      step = this.getStep(i);
       $element = $(step.element);
       if (!$element.length) {
-        return callback();
+        return this._showPopoverAndOverlay(i);
       }
       $window = $(window);
       offsetTop = $element.offset().top;
@@ -1402,7 +1404,7 @@
       }, (function(_this) {
         return function() {
           if (++counter === 2) {
-            callback();
+            _this._showPopoverAndOverlay(i);
             return _this._debug("Scroll into view.\nAnimation end element offset: " + ($element.offset().top) + ".\nWindow height: " + ($window.height()) + ".");
           }
         };
@@ -1411,6 +1413,13 @@
 
     Tour.prototype._onResize = function(callback, timeout) {
       return $(window).on("resize.tour-" + this._options.name, function() {
+        clearTimeout(timeout);
+        return timeout = setTimeout(callback, 100);
+      });
+    };
+
+    Tour.prototype._onScroll = function(callback, timeout) {
+      return $(window).on("scroll.tour-" + this._options.name, function() {
         clearTimeout(timeout);
         return timeout = setTimeout(callback, 100);
       });

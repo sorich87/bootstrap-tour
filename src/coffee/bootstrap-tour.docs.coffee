@@ -8,7 +8,7 @@ $ ->
     debug: true
     steps: [
       path: "/"
-      element: "#demo"
+      element: "#navbar"
       placement: "bottom"
       title: "Welcome to Bootstrap Tour!"
       content: """
@@ -54,7 +54,7 @@ $ ->
       title: "A new shiny Backdrop option"
       content: """
       If you need to highlight the current step's element, activate the backdrop and you won't lose
-      the focus anymore!
+      focus anymore!
       """
       backdrop: true
       backdropPadding: 5
