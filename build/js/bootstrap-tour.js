@@ -585,6 +585,9 @@
       }).popover('show');
       $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
       $tip.attr('id', step.id);
+      if ($element.css('position' === 'fixed')) {
+        $tip.css('position', 'fixed');
+      }
       this._focus($tip, $element, step.next < 0);
       this._reposition($tip, step);
       if (isOrphan) {

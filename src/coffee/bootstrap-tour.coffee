@@ -524,6 +524,7 @@
       # Tip adjustment
       $tip = if $element.data 'bs.popover' then $element.data('bs.popover').tip() else $element.data('popover').tip()
       $tip.attr 'id', step.id
+      $tip.css 'position', 'fixed' if $element.css 'position' is 'fixed'
 
       @_focus $tip, $element, step.next < 0
       @_reposition $tip, step
