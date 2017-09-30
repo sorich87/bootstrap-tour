@@ -3,8 +3,7 @@ $ = require('gulp-load-plugins') lazy: false
 extend = require('util')._extend
 streamqueue = require 'streamqueue'
 spawn = require('child_process').spawn
-karma = require('karma').server
-karmaConfig = require './karma.json'
+KarmaServer = require('karma').Server
 pkg = require './package.json'
 name = pkg.name
 
@@ -128,7 +127,7 @@ gulp.task 'test-coffee', ['coffee'], ->
   .pipe gulp.dest paths.test
 
 gulp.task 'test-go', ['test-coffee'], (done) ->
-  karma.start extend(karmaConfig, singleRun: true), done
+  new KarmaServer({ configFile: __dirname + '/karma.conf.js', singleRun: true}, done).start()
 
 # docs
 gulp.task 'docs-build', ['coffee', 'less'], (done) ->
@@ -178,7 +177,7 @@ gulp.task 'connect', ['docs'], ->
 gulp.task 'open', ['connect'], ->
   gulp
   .src "#{paths.docs}/index.html"
-  .pipe $.open '', url: "http://#{server.host}:#{server.port}"
+  .pipe $.open uri: "http://#{server.host}:#{server.port}"
 
 gulp.task 'watch', ['connect'], ->
   gulp.watch "#{paths.src}/coffee/#{name}.coffee", ['coffee', 'coffee-standalone']

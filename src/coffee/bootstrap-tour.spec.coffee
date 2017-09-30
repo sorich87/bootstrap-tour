@@ -1165,7 +1165,7 @@ describe 'Bootstrap Tour', ->
   it 'handles quota_exceeded exceptions', ->
     @tour = new Tour
     @tour.addStep(element: $('<div></div>').appendTo('body'))
-    spyOn(@tour._options.storage, 'setItem').andCallFake ->
+    spyOn(@tour._options.storage, 'setItem').and.callFake ->
       throw new Error 'QUOTA_EXCEEDED_ERR', 'QUOTA_EXCEEDED_ERR: DOM Exception 22'
     spyOn(@tour, '_setState')
     @tour._setState('test', '1')
@@ -1233,11 +1233,11 @@ describe 'Bootstrap Tour', ->
     @tour.addStep(element: $('<div></div>').appendTo('body'))
     @tour.addStep(element: $('<div></div>').appendTo('body'))
     @tour.start()
-    expect(counter).toBe 1
+    expect(counter).toBe 2
     @tour.next()
-    expect(counter).toBe 3
-    @tour.end()
     expect(counter).toBe 4
+    @tour.end()
+    expect(counter).toBe 5
 
     window.setTimeout = initialTimeout
 

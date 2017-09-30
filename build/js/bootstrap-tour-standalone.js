@@ -709,7 +709,7 @@
 
 }(jQuery);
 
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 (function(window, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -726,11 +726,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
   document = window.document;
   Tour = (function() {
     function Tour(options) {
-      this._showPopoverAndOverlay = __bind(this._showPopoverAndOverlay, this);
+      this._showPopoverAndOverlay = bind(this._showPopoverAndOverlay, this);
       var storage;
       try {
         storage = window.localStorage;
-      } catch (_error) {
+      } catch (error) {
         storage = false;
       }
       this._options = $.extend({
@@ -773,9 +773,9 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     }
 
     Tour.prototype.addSteps = function(steps) {
-      var step, _i, _len;
-      for (_i = 0, _len = steps.length; _i < _len; _i++) {
-        step = steps[_i];
+      var j, len, step;
+      for (j = 0, len = steps.length; j < len; j++) {
+        step = steps[j];
         this.addStep(step);
       }
       return this;
@@ -970,7 +970,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
           }
           $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover');
           if (step.reflex) {
-            $(step.reflexElement).removeClass('tour-step-element-reflex').off("" + (_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
+            $(step.reflexElement).removeClass('tour-step-element-reflex').off((_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
           if (step.backdrop) {
             next_step = (iNext != null) && _this.getStep(iNext);
@@ -1086,11 +1086,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     Tour.prototype._setState = function(key, value) {
       var e, keyName;
       if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
+        keyName = this._options.name + "_" + key;
         try {
           this._options.storage.setItem(keyName, value);
-        } catch (_error) {
-          e = _error;
+        } catch (error) {
+          e = error;
           if (e.code === DOMException.QUOTA_EXCEEDED_ERR) {
             this._debug('LocalStorage quota exceeded. State storage failed.');
           }
@@ -1107,7 +1107,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     Tour.prototype._removeState = function(key) {
       var keyName;
       if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
+        keyName = this._options.name + "_" + key;
         this._options.storage.removeItem(keyName);
         return this._options.afterRemoveState(keyName);
       } else {
@@ -1120,7 +1120,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     Tour.prototype._getState = function(key) {
       var keyName, value;
       if (this._options.storage) {
-        keyName = "" + this._options.name + "_" + key;
+        keyName = this._options.name + "_" + key;
         value = this._options.storage.getItem(keyName);
       } else {
         if (this._state != null) {
@@ -1262,7 +1262,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         $.extend(options, step.options);
       }
       if (step.reflex && !isOrphan) {
-        $(step.reflexElement).addClass('tour-step-element-reflex').off("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on("" + (this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
+        $(step.reflexElement).addClass('tour-step-element-reflex').off((this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on((this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function(_this) {
           return function() {
             if (_this._isLast()) {
               return _this.next();
@@ -1507,47 +1507,47 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     Tour.prototype._showBackground = function(step, data) {
-      var $backdrop, height, pos, width, _base, _i, _len, _ref, _results;
+      var $backdrop, base, height, j, len, pos, ref, results, width;
       height = $(document).height();
       width = $(document).width();
-      _ref = ['top', 'bottom', 'left', 'right'];
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        pos = _ref[_i];
-        $backdrop = (_base = this.backdrops)[pos] != null ? _base[pos] : _base[pos] = $('<div>', {
+      ref = ['top', 'bottom', 'left', 'right'];
+      results = [];
+      for (j = 0, len = ref.length; j < len; j++) {
+        pos = ref[j];
+        $backdrop = (base = this.backdrops)[pos] != null ? base[pos] : base[pos] = $('<div>', {
           "class": "tour-backdrop " + pos
         });
         $(step.backdropContainer).append($backdrop);
         switch (pos) {
           case 'top':
-            _results.push($backdrop.height(data.offset.top > 0 ? data.offset.top : 0).width(width).offset({
+            results.push($backdrop.height(data.offset.top > 0 ? data.offset.top : 0).width(width).offset({
               top: 0,
               left: 0
             }));
             break;
           case 'bottom':
-            _results.push($backdrop.offset({
+            results.push($backdrop.offset({
               top: data.offset.top + data.height,
               left: 0
             }).height(height - (data.offset.top + data.height)).width(width));
             break;
           case 'left':
-            _results.push($backdrop.offset({
+            results.push($backdrop.offset({
               top: data.offset.top,
               left: 0
             }).height(data.height).width(data.offset.left > 0 ? data.offset.left : 0));
             break;
           case 'right':
-            _results.push($backdrop.offset({
+            results.push($backdrop.offset({
               top: data.offset.top,
               left: data.offset.left + data.width
             }).height(data.height).width(width - (data.offset.left + data.width)));
             break;
           default:
-            _results.push(void 0);
+            results.push(void 0);
         }
       }
-      return _results;
+      return results;
     };
 
     Tour.prototype._showOverlayElement = function(step) {
@@ -1577,11 +1577,11 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     Tour.prototype._hideOverlayElement = function(step) {
-      var $backdrop, pos, _ref;
+      var $backdrop, pos, ref;
       $(step.backdropElement).removeClass('tour-step-backdrop');
-      _ref = this.backdrops;
-      for (pos in _ref) {
-        $backdrop = _ref[pos];
+      ref = this.backdrops;
+      for (pos in ref) {
+        $backdrop = ref[pos];
         if ($backdrop && $backdrop.remove !== void 0) {
           $backdrop.remove();
         }
@@ -1650,15 +1650,15 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     Tour.prototype._getParams = function(path, start) {
-      var param, params, paramsObject, _i, _len;
+      var j, len, param, params, paramsObject;
       params = path.split(start);
       if (params.length === 1) {
         return {};
       }
       params = params[1].split('&');
       paramsObject = {};
-      for (_i = 0, _len = params.length; _i < _len; _i++) {
-        param = params[_i];
+      for (j = 0, len = params.length; j < len; j++) {
+        param = params[j];
         param = param.split('=');
         paramsObject[param[0]] = param[1] || '';
       }
@@ -1666,7 +1666,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
     };
 
     Tour.prototype._equal = function(obj1, obj2) {
-      var k, obj1Keys, obj2Keys, v, _i, _len;
+      var j, k, len, obj1Keys, obj2Keys, v;
       if ({}.toString.call(obj1) === '[object Object]' && {}.toString.call(obj2) === '[object Object]') {
         obj1Keys = Object.keys(obj1);
         obj2Keys = Object.keys(obj2);
@@ -1684,7 +1684,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
         if (obj1.length !== obj2.length) {
           return false;
         }
-        for (k = _i = 0, _len = obj1.length; _i < _len; k = ++_i) {
+        for (k = j = 0, len = obj1.length; j < len; k = ++j) {
           v = obj1[k];
           if (!this._equal(v, obj2[k])) {
             return false;
