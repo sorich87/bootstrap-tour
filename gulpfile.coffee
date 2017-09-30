@@ -201,7 +201,7 @@ gulp.task 'watch', ['connect'], ->
 gulp.task 'bump', ['test'], ->
   bumpType = $.util.env.type || 'patch'
 
-  return gulp.src(['./package.json', './smart.json'])
+  gulp.src(['./package.json', './smart.json'])
     .pipe $.bump(type: bumpType)
     .pipe gulp.dest('./')
 
