@@ -25,31 +25,28 @@ Compiled sources are then automatically put under `./build/`, `./test/` and `./d
 
 #### Requirements
 
-To begin, you need a few standard dependencies installed. These commands will install ruby, gem, node, npm, and grunt's command line runner:
+To begin, you need a few standard dependencies installed. These commands will install ruby, gem, node, yarn, and gulp's command line runner:
 
-##### Linux
+##### Debian/Ubuntu Linux
 
 ```bash
-$ sudo apt-get install ruby
-$ sudo apt-get install ruby-dev
-$ sudo apt-get install npm
-$ sudo apt-get install nodejs-legacy
+$ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+$ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+$ sudo apt-get update && sudo apt-get install ruby-full yarn
 ```
 
 ##### Mac OS X
 
 ```bash
-ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
-\curl -L https://get.rvm.io | bash
-rvm install ruby-2.1.1
-brew install node
+$ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+$ brew install ruby yarn
 ```
 
 ##### Development requirements
 
 ```bash
-$ npm install -g gulp
-$ npm install
+$ yarn global add gulp-cli
+$ yarn
 $ gem install jekyll
 ```
 
