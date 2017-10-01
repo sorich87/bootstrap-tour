@@ -2,7 +2,7 @@
  * bootstrap-tour - v0.12.0
  * http://bootstraptour.com
  * ========================================================================
- * Copyright 2012-2015 Ulrich Sossou
+ * Copyright 2012-2017 Ulrich Sossou
  *
  * ========================================================================
  * Licensed under the MIT License (the "License");
@@ -59,7 +59,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
         duration: false,
         delay: false,
         basePath: '',
-        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
+        template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-header"></h3> <div class="popover-body"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-secondary" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-secondary" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-secondary" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-secondary" data-role="end">End tour</button> </div> </div>',
         afterSetState: function(key, value) {},
         afterGetState: function(key, value) {},
         afterRemoveState: function(key) {},
@@ -275,10 +275,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
         return function(e) {
           var $element, next_step;
           $element = $(step.element);
-          if (!($element.data('bs.popover') || $element.data('popover'))) {
+          if (!$element.data('bs.popover')) {
             $element = $('body');
           }
-          $element.popover('destroy').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover');
+          $element.popover('dispose').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover');
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off((_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
           }
@@ -594,7 +594,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
         template: step.template,
         selector: step.element
       }).popover('show');
-      $tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
+      $tip = $($element.data('bs.popover').getTipElement());
       $tip.attr('id', step.id);
       if ($element.css('position') === 'fixed') {
         $tip.css('position', 'fixed');

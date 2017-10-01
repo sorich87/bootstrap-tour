@@ -2,9 +2,8 @@ module.exports = function(config) {
   config.set({
     browsers: ['ChromeHeadless', 'Firefox'],
     files: [
-      'bower_components/jquery/dist/jquery.js',
-      'bower_components/bootstrap/dist/js/bootstrap.js',
-      'test/bootstrap-tour.js',
+      'node_modules/jquery/dist/jquery.js',
+      'test/bootstrap-tour-standalone.js',
       'test/bootstrap-tour.spec.js'
     ],
     frameworks: ['jasmine']

@@ -29,7 +29,7 @@ $ ->
       content: "Yeah! Free as in beer... or speech. Use and abuse, but don't forget to contribute!"
     ,
       path: "/api"
-      element: "#options"
+      element: "#options .page-header"
       placement: "top"
       title: "Flexibilty and expressiveness"
       content: """
@@ -85,8 +85,6 @@ $ ->
     return if $(this).hasClass "disabled"
     tour.restart()
     $(".alert").alert "close"
-
-  $("html").smoothScroll()
 
   $(".gravatar").each ->
     $this = $(@)
