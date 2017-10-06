@@ -4084,10 +4084,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       if ($element.css('position') === 'fixed') {
         $tip.css('position', 'fixed');
       }
-      this._reposition($tip, step);
-      if (isOrphan) {
-        return this._center($tip);
-      }
+      return this._reposition($tip, step);
     };
 
     Tour.prototype._template = function(step, i) {
@@ -4159,10 +4156,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           return this._replaceArrow($tip, (tipOffset.top - originalTop) * 2, offsetHeight, 'top');
         }
       }
-    };
-
-    Tour.prototype._center = function($tip) {
-      return $tip.css('top', $(window).outerHeight() / 2 - $tip.outerHeight() / 2);
     };
 
     Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {

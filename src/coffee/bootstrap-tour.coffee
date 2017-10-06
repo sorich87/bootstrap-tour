@@ -530,7 +530,6 @@
       $tip.css 'position', 'fixed' if $element.css('position') is 'fixed'
 
       @_reposition($tip, step)
-      @_center($tip) if isOrphan
 
     # Get popover template
     _template: (step, i) ->
@@ -590,10 +589,6 @@
       else
         if originalTop isnt tipOffset.top
           @_replaceArrow $tip, (tipOffset.top - originalTop) * 2, offsetHeight, 'top'
-
-    # Center popover in the page
-    _center: ($tip) ->
-      $tip.css('top', $(window).outerHeight() / 2 - $tip.outerHeight() / 2)
 
     # Copy pasted from bootstrap-tooltip.js with some alterations
     _replaceArrow: ($tip, delta, dimension, position)->
