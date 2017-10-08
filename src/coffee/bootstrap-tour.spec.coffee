@@ -88,47 +88,51 @@ describe 'Bootstrap Tour', ->
 
   it '`addStep` should add a step', ->
     @tour = new Tour
-    step = element: $('<div></div>').appendTo('body')
+    step = element: '#element-1'
     @tour.addStep(step)
     expect(@tour._options.steps).toEqual [step]
 
   it '`addSteps` should add multiple step', ->
     @tour = new Tour
-    firstStep = element: $('<div></div>').appendTo('body')
-    secondStep = element: $('<div></div>').appendTo('body')
+    firstStep = element: '#element-1'
+    secondStep = element: '#element-2'
     @tour.addSteps([firstStep, secondStep])
     expect(@tour._options.steps).toEqual [firstStep, secondStep]
 
   it 'step should have an id', ->
     @tour = new Tour
-    $element = $('<div></div>').appendTo('body')
-    @tour.addStep({element: $element})
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep({element: '#element-1'})
     @tour.start()
-    expect($element.data('bs.popover').tip().attr('id')).toBe 'step-0' # tour runs onStart when the first step shown
+    expect($($element1.data('bs.popover').getTipElement()).attr('id')).toBe 'step-0' # tour runs onStart when the first step shown
 
   it 'with `onStart` option should run the callback before showing the first step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
       onStart: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.start()
     expect(tour_test).toBe 2 # tour runs onStart when the first step shown
 
   it 'with `onEnd` option should run the callback after hiding the last step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
       onEnd: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.start()
     @tour.end()
     expect(tour_test).toBe 2 # tour runs onEnd when the last step hidden
 
   it 'with `onShow` option should run the callback before showing the step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
       onShow: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     expect(tour_test).toBe 2 # tour runs onShow when first step shown
     @tour.next()
@@ -136,20 +140,24 @@ describe 'Bootstrap Tour', ->
 
   it 'with `onShown` option should run the callback after showing the step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
       onShown: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     expect(tour_test).toBe 2 # tour runs onShown after first step shown
 
 
   it 'with `onHide` option should run the callback before hiding the step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
       onHide: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     expect(tour_test).toBe 2 # tour runs onHide when first step hidden
@@ -158,10 +166,12 @@ describe 'Bootstrap Tour', ->
 
   it 'with onHidden option should run the callback after hiding the step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
       onHidden: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     expect(tour_test).toBe 2 # tour runs onHidden after first step hidden
@@ -171,9 +181,11 @@ describe 'Bootstrap Tour', ->
   it '`addStep` with onShow option should run the callback before showing the step', ->
     tour_test = 0
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-2'
       onShow: -> tour_test = 2
     @tour.start()
     expect(tour_test).toBe 0 # tour does not run onShow when step not shown
@@ -183,9 +195,11 @@ describe 'Bootstrap Tour', ->
   it '`addStep` with onHide option should run the callback before hiding the step', ->
     tour_test = 0
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-2'
       onHide: -> tour_test = 2
     @tour.start()
     @tour.next()
@@ -195,8 +209,9 @@ describe 'Bootstrap Tour', ->
 
   it '`getStep` should get a step', ->
     @tour = new Tour
+    $('<div id="element-1"></div>').appendTo('body')
     step =
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       id: 'step-0'
       path: 'test'
       host: ''
@@ -219,8 +234,8 @@ describe 'Bootstrap Tour', ->
       delay: false
       template: '<div class="popover">
         <div class="arrow"></div>
-        <h3 class="popover-title"></h3>
-        <div class="popover-content"></div>
+        <h3 class="popover-header"></h3>
+        <div class="popover-body"></div>
         <nav class="popover-navigation">
           <div class="btn-group">
             <button class="btn btn-sm btn-secondary" data-role="prev">&laquo; Prev</button>
@@ -244,20 +259,23 @@ describe 'Bootstrap Tour', ->
 
   it '`start` should start a tour', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.start()
     expect($('.popover').length).toBe 1
 
   it '`init` should continue a tour', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour._setState('current_step', 0)
     @tour.init()
     expect($('.popover').length).toBe 1
 
   it '`init` should not continue a tour that ended', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour._setState('current_step', 0)
     @tour._setState('end', 'yes')
     @tour.init()
@@ -265,48 +283,56 @@ describe 'Bootstrap Tour', ->
 
   it '`init`(true) should force continuing a tour that ended', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour._setState('current_step', 0)
     @tour._setState('end', 'yes')
     @tour.init(true)
     expect($('.popover').length).toBe 1 # previously ended tour starts again if forced to
 
   it '`next` should hide current step and show next step', ->
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
+    $element2 = $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
-    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined() # tour hides current step
-    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1 # tour shows next step
+    expect($element1.data('bs.popover')).toBeUndefined() # tour hides current step
+    expect($($element2.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1 # tour shows next step
 
   it '`end` should hide current step and set end state', ->
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.start()
     @tour.end()
-    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined() # tour hides current step
+    expect($element1.data('bs.popover')).toBeUndefined() # tour hides current step
     expect(@tour._getState('end')).toBe 'yes'
 
   it '`ended` should return true if tour ended and false if not', ->
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.start()
     expect(@tour.ended()).toBe false
     @tour.end()
     expect(@tour.ended()).toBe true
 
   it '`ended` should always return false if tour started by force', ->
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.end()
     @tour.start(true)
     expect(@tour.ended()).toBe false
 
   it '`restart` should clear all states and start tour', ->
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     @tour.end()
@@ -316,40 +342,48 @@ describe 'Bootstrap Tour', ->
     expect($('.popover').length).toBe 1 # tour starts
 
   it '`hideStep` should hide a step', ->
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.start()
     @tour.hideStep(0)
-    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined()
+    expect($element1.data('bs.popover')).toBeUndefined()
 
   it '`showStep` should set a step and show it', ->
+    $('<div id="element-1"></div>').appendTo('body')
+    $element2 = $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.showStep(1)
     expect(@tour._current).toBe 1
     expect($('.popover').length).toBe 1 # tour shows one step
-    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1 # tour shows correct step
+    expect($($element2.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1 # tour shows correct step
 
   it '`showStep` should not show anything when the step does not exist', ->
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.showStep(2)
     expect($('.popover').length).toBe 0
 
   it '`showStep` should execute template if it is a function', ->
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       template: -> '<div class="popover"></div>'
     @tour.showStep(0)
     expect($('.popover').length).toBe 1
 
   it '`getStep` should add disabled classes to the first and last popover buttons', ->
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.showStep(0)
     expect($('.popover [data-role="prev"]').hasClass('disabled')).toBe true
     @tour.showStep(1)
@@ -365,39 +399,47 @@ describe 'Bootstrap Tour', ->
 
   it '`goTo` should show the specified step', ->
     @tour = new Tour
-    @tour.addStep({element: $('<div></div>').appendTo('body')})
-    @tour.addStep({element: $('<div></div>').appendTo('body')})
+    $('<div id="element-1"></div>').appendTo('body')
+    $element2 = $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.goTo(1)
-    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
+    expect($($element2.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1
 
   it '`next` should show the next step', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $element2 = $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
-    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
+    expect($($element2.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1
 
   it '`prev` should show the previous step', ->
     @tour = new Tour
-    @tour.addStep({element: $('<div></div>').appendTo('body')})
-    @tour.addStep({element: $('<div></div>').appendTo('body')})
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.goTo(1)
     @tour.prev()
-    expect(@tour.getStep(0).element.data('bs.popover').tip().filter(':visible').length).toBe 1
+    expect($($element1.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1
 
   it '`showStep` should show multiple step on the same element', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
+    $element2 = $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
 
     # tour show the first step
-    expect(@tour.getStep(0).element.data('bs.popover').tip().filter(':visible').length).toBe 1
+    expect($($element1.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1
     @tour.next()
 
     # tour show the second step on the same element
-    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
+    expect($($element2.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1
 
   it 'should get url properties correctly', ->
     @tour = new Tour
@@ -727,23 +769,27 @@ describe 'Bootstrap Tour', ->
   it 'should not move to the next state until the onShow promise is resolved', ->
     @tour = new Tour
     deferred = $.Deferred()
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
+    $element2 = $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-2'
       onShow: -> return deferred
     @tour.start()
     @tour.next()
-    expect(@tour.getStep(0).element.data('bs.popover')).toBeUndefined
+    expect($element1.data('bs.popover')).toBeUndefined
     deferred.resolve()
-    expect(@tour.getStep(1).element.data('bs.popover').tip().filter(':visible').length).toBe 1
+    expect($($element2.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1
 
   it 'should not hide popover until the onHide promise is resolved', ->
     deferred = $.Deferred()
     @tour = new Tour
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       onHide: -> return deferred
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     expect(@tour._current).toBe 0 # tour shows old state until resolving of onHide promise
@@ -754,7 +800,8 @@ describe 'Bootstrap Tour', ->
     deferred = $.Deferred()
     @tour = new Tour
       onStart: -> deferred
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.start()
     expect($('.popover').length).toBe 0
     deferred.resolve()
@@ -762,11 +809,11 @@ describe 'Bootstrap Tour', ->
 
   it 'should add `tour-step-element-reflex` class to the step element if reflex is active', ->
     @tour = new Tour
-    $element = $('<div></div>').appendTo('body')
+    $element = $('<div id="element-1"></div>').appendTo('body')
     @tour.addStep
-      element: $element
+      element: '#element-1'
       reflex: true
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-2')
     expect($element.hasClass('tour-step-element-reflex')).toBe false
     @tour.start()
     expect($element.hasClass('tour-step-element-reflex')).toBe true
@@ -775,13 +822,14 @@ describe 'Bootstrap Tour', ->
 
   it 'should add `tour-step-element-reflex` class to reflexElement if reflex is defined', ->
     @tour = new Tour
-    $element = $('<div></div>').appendTo('body')
+    $element = $('<div id="element-1"></div>').appendTo('body')
     $definedElement = $('<div id="ref"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour.addStep
-      element: $element
+      element: '#element-1'
       reflex: true
       reflexElement: '#ref'
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-2')
     expect($element.hasClass('tour-step-element-reflex')).toBe false
     expect($definedElement.hasClass('tour-step-element-reflex')).toBe false
     @tour.start()
@@ -793,11 +841,11 @@ describe 'Bootstrap Tour', ->
 
   it 'should add `tour-{tourName}-reflex` class to the step popover if reflex is active', ->
     @tour = new Tour
-    $element = $('<div></div>').appendTo('body')
+    $element = $('<div id="element-1"></div>').appendTo('body')
     @tour.addStep
-      element: $element
+      element: '#element-1'
       reflex: true
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-2')
     expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe false
     @tour.start()
     expect($('.popover').hasClass("tour-#{@tour._options.name}-reflex")).toBe true
@@ -806,8 +854,9 @@ describe 'Bootstrap Tour', ->
 
   it '`showStep` redirects to the anchor when the path is an anchor', ->
     @tour = new Tour
+    $('<div id="element-1"></div>').appendTo('body')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       path: '#mytest'
     @tour.showStep(0)
     expect(document.location.hash).toBe '#mytest' # Tour step has moved to the anchor
@@ -816,20 +865,23 @@ describe 'Bootstrap Tour', ->
   it '`showStep` show the step when the path is an anchor', ->
     current_path = location.pathname
     @tour = new Tour
+    $element1 = $('<div id="element-1"></div>').appendTo('body')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       path: "#{current_path}#mytest"
     @tour.showStep(0)
-    expect(@tour.getStep(0).element.data('bs.popover').tip().filter(':visible').length).toBe 1 # tour shows correct step
+    expect($($element1.data('bs.popover').getTipElement()).filter(':visible').length).toBe 1 # tour shows correct step
     document.location.hash = ''
 
   it '`backdrop` parameter should show backdrop with step', ->
     @tour = new Tour
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       backdrop: false
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-2'
       backdrop: true
     @tour.start()
     expect($('.tour-backdrop').length).toBe 0 # disable backdrop
@@ -849,8 +901,8 @@ describe 'Bootstrap Tour', ->
   it 'should render the padding on the backdrop element', ->
     @tour = new Tour
       backdrop: true
-    $firstElement = $('<div></div>', width: 10, height: 10).appendTo('body')
-    $secondElement = $('<div></div>').css(
+    $firstElement = $('<div id="element-1"></div>', width: 10, height: 10).appendTo('body')
+    $secondElement = $('<div id="element-2"></div>').css(
       position: 'absolute'
       top: 100
       left: 300
@@ -868,11 +920,11 @@ describe 'Bootstrap Tour', ->
     @tour.addStep
       backdrop: true
       backdropPadding: firstPadding
-      element: $firstElement
+      element: '#element-1'
     @tour.addStep
       backdrop: true
       backdropPadding: secondPadding
-      element: $secondElement
+      element: '#element-2'
     @tour.start()
     expect(@tour.backdrops.top.offset().top + @tour.backdrops.top.height())
     .toBe 0
@@ -918,8 +970,9 @@ describe 'Bootstrap Tour', ->
   it '`basePath` should prepend the path to the steps', ->
     @tour = new Tour
       basePath: 'test/'
+    $('<div id="element-1"></div>').appendTo('body')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       path: 'test.html'
 
     # Tour adds basePath to step path
@@ -994,8 +1047,10 @@ describe 'Bootstrap Tour', ->
     tour_test = 0
     @tour = new Tour
       onNext: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     expect(tour_test).toBe 2
@@ -1003,19 +1058,22 @@ describe 'Bootstrap Tour', ->
   it '`showStep` should not show step if tour ended', ->
     @tour = new Tour
       onNext: (t) -> t.end()
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     expect($('.popover').length).toBe 0
 
   it '`addStep` with onNext option should run the callback before showing the next step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       onNext: -> tour_test = 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-2')
     @tour.start()
     expect(tour_test).toBe 0 # tour does not run onNext when next step is not called
     @tour.next()
@@ -1025,8 +1083,10 @@ describe 'Bootstrap Tour', ->
     tour_test = 0
     @tour = new Tour
       onPrev: -> tour_test += 2
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     @tour.next()
     @tour.prev()
@@ -1034,10 +1094,12 @@ describe 'Bootstrap Tour', ->
 
   it '`addStep` with `onPrev` option should run the callback before showing the prev step', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-1')
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-2'
       onPrev: -> tour_test = 2
     @tour.start()
     expect(tour_test).toBe 0 # tour does not run onPrev when prev step is not called
@@ -1047,9 +1109,10 @@ describe 'Bootstrap Tour', ->
 
   it 'with `onRedirectError` option should run the callback when redirection failed', ->
     tour_test = 0
+    $('<div id="element-1"></div>').appendTo('body')
     @tour = new Tour
     @tour.addStep
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
       path: '/path'
       onRedirectError: -> tour_test = 2
 
@@ -1062,17 +1125,21 @@ describe 'Bootstrap Tour', ->
       template:
         '<div class="popover tour">
           <div class="arrow"></div>
-          <h3 class="popover-title"></h3>
-          <div class="popover-content"></div>
+          <h3 class="popover-header"></h3>
+          <div class="popover-body"></div>
           <div class="popover-navigation">
             <a data-role="prev"></a>
             <a data-role="next"></a>
             <a data-role="end"></a>
           </div>
         </div>'
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.start()
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    $('<div id="element-3"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
+    @tour.addStep(element: '#element-3')
     @tour.start()
     @tour.next()
     expect($('.popover .popover-navigation a').length).toBe 3
@@ -1080,17 +1147,18 @@ describe 'Bootstrap Tour', ->
   it 'should have `data-role` attribute for navigation template', ->
     @tour = new Tour
     template = $(@tour._options.template)
-    expect(template.find('*[data-role=next]').size()).toBe 1
-    expect(template.find('*[data-role=prev]').size()).toBe 1
-    expect(template.find('*[data-role=end]').size()).toBe 1
+    expect(template.find('*[data-role=next]').length).toBe 1
+    expect(template.find('*[data-role=prev]').length).toBe 1
+    expect(template.find('*[data-role=end]').length).toBe 1
 
   it 'should unbind click events when hiding step (in reflex mode)', ->
-    $element = $('<div></div>').appendTo('body')
+    $element = $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
     @tour = new Tour
     @tour.addStep
-      element: $element
+      element: '#element-1'
       reflex: true
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    @tour.addStep(element: '#element-2')
 
     expect($._data($element[0], 'events')).not.toBeDefined()
     @tour.start()
@@ -1106,15 +1174,16 @@ describe 'Bootstrap Tour', ->
 
   it 'should add `tour-{tourName}` and `tour-{tourName}-{stepId}` classses to the popover', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.showStep(0)
     expect($('.popover').hasClass("tour-#{@tour._options.name}")).toBe true
     expect($('.popover').hasClass("tour-#{@tour._options.name}-0")).toBe true
 
   it 'should add `tour-{tourName}-element` and `tour-{tourName}-{stepId}-element` classses to the popover element', ->
     @tour = new Tour
-    $element = $ '<div></div>'
-    @tour.addStep element: $element.appendTo 'body'
+    $element = $('<div id="element-1"></div>').appendTo 'body'
+    @tour.addStep(element: '#element-1')
     @tour.showStep 0
     expect($element.hasClass "tour-#{@tour._options.name}-element").toBe true
     expect($element.hasClass "tour-#{@tour._options.name}-0-element").toBe true
@@ -1146,9 +1215,10 @@ describe 'Bootstrap Tour', ->
 
   it 'should not use orphan template to show steps', ->
     @tour = new Tour
+    $('<div id="element-1"></div>').appendTo('body')
     step =
       orphan: '<div class="popover orphan-custom-template"></div>'
-      element: $('<div></div>').appendTo('body')
+      element: '#element-1'
     @tour.addStep step
     template = @tour._template(step, 0)
 
@@ -1164,7 +1234,8 @@ describe 'Bootstrap Tour', ->
 
   it 'handles quota_exceeded exceptions', ->
     @tour = new Tour
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     spyOn(@tour._options.storage, 'setItem').and.callFake ->
       throw new Error 'QUOTA_EXCEEDED_ERR', 'QUOTA_EXCEEDED_ERR: DOM Exception 22'
     spyOn(@tour, '_setState')
@@ -1183,7 +1254,8 @@ describe 'Bootstrap Tour', ->
   it 'should start the timer', ->
     @tour = new Tour
       duration: 5000
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.start()
     expect(@tour._timer).toBeDefined()
     expect(@tour._duration).toBeDefined()
@@ -1192,7 +1264,8 @@ describe 'Bootstrap Tour', ->
   it 'should pause the timer on pause', ->
     @tour = new Tour
       duration: 5000
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.start()
     window.setTimeout( =>
       @tour.pause()
@@ -1203,7 +1276,8 @@ describe 'Bootstrap Tour', ->
   it 'should stop the timer on hideStep', ->
     @tour = new Tour
       duration: 5000
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.start()
     @tour.hideStep(0)
     expect(@tour._timer).toBe null
@@ -1212,7 +1286,8 @@ describe 'Bootstrap Tour', ->
   it 'should stop the timer on end', ->
     @tour = new Tour
       duration: 5000
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
     @tour.start()
     @tour.end()
     expect(@tour._timer).toBe null
@@ -1230,8 +1305,10 @@ describe 'Bootstrap Tour', ->
         show: 300
         hide: 400
       }
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
-    @tour.addStep(element: $('<div></div>').appendTo('body'))
+    $('<div id="element-1"></div>').appendTo('body')
+    $('<div id="element-2"></div>').appendTo('body')
+    @tour.addStep(element: '#element-1')
+    @tour.addStep(element: '#element-2')
     @tour.start()
     expect(counter).toBe 2
     @tour.next()
