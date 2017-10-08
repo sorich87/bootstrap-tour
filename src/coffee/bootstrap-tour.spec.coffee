@@ -104,7 +104,7 @@ describe 'Bootstrap Tour', ->
     $element1 = $('<div id="element-1"></div>').appendTo('body')
     @tour.addStep({element: '#element-1'})
     @tour.start()
-    expect($($element1.data('bs.popover').getTipElement()).attr('id')).toBe 'step-0' # tour runs onStart when the first step shown
+    expect($($element1.data('bs.popover').getTipElement()).attr('id')).toBe 'step-0'
 
   it 'with `onStart` option should run the callback before showing the first step', ->
     tour_test = 0
