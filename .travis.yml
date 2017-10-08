@@ -11,3 +11,4 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 before_script:
   - "yarn global add gulp-cli"
+  - "yarn rebuild node-sass"
