@@ -128,10 +128,6 @@
       @_initMouseNavigation()
       @_initKeyboardNavigation()
 
-      # Reshow popover on window resize using debounced resize
-      @_onResize => @showStep @_current
-      @_onScroll => @_showPopoverAndOverlay(@_current)
-
       # Continue a tour that had started on a previous page load
       @showStep @_current unless @_current is null
 
@@ -166,8 +162,6 @@
       endHelper = (e) =>
         $(document).off "click.tour-#{@_options.name}"
         $(document).off "keyup.tour-#{@_options.name}"
-        $(window).off "resize.tour-#{@_options.name}"
-        $(window).off "scroll.tour-#{@_options.name}"
         @_setState('end', 'yes')
         @_inited = false
         @_force = false
@@ -527,9 +521,6 @@
       # Tip adjustment
       $tip = $($element.data('bs.popover').getTipElement())
       $tip.attr 'id', step.id
-      $tip.css 'position', 'fixed' if $element.css('position') is 'fixed'
-
-      @_reposition($tip, step)
 
     # Get popover template
     _template: (step, i) ->
@@ -564,36 +555,6 @@
     _reflexEvent: (reflex) ->
       if ({}).toString.call(reflex) is '[object Boolean]' then 'click' else reflex
 
-    # Prevent popover from crossing over the edge of the window
-    _reposition: ($tip, step) ->
-      offsetWidth = $tip[0].offsetWidth
-      offsetHeight = $tip[0].offsetHeight
-
-      tipOffset = $tip.offset()
-      originalLeft = tipOffset.left
-      originalTop = tipOffset.top
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight()
-      tipOffset.top = tipOffset.top + offsetBottom if offsetBottom < 0
-      offsetRight = $('html').outerWidth() - tipOffset.left - $tip.outerWidth()
-      tipOffset.left = tipOffset.left + offsetRight if offsetRight < 0
-
-      tipOffset.top = 0 if tipOffset.top < 0
-      tipOffset.left = 0 if tipOffset.left < 0
-
-      $tip.offset(tipOffset)
-
-      # Reposition the arrow
-      if step.placement is 'bottom' or step.placement is 'top'
-        if originalLeft isnt tipOffset.left
-          @_replaceArrow $tip, (tipOffset.left - originalLeft) * 2, offsetWidth, 'left'
-      else
-        if originalTop isnt tipOffset.top
-          @_replaceArrow $tip, (tipOffset.top - originalTop) * 2, offsetHeight, 'top'
-
-    # Copy pasted from bootstrap-tooltip.js with some alterations
-    _replaceArrow: ($tip, delta, dimension, position)->
-      $tip.find('.arrow').css position, if delta then 50 * (1 - delta / dimension) + '%' else ''
-
     # Scroll to the popup if it is not in the viewport
     _scrollIntoView: (i) ->
       step = @getStep i
@@ -624,18 +585,6 @@
             @_debug """Scroll into view.
             Animation end element offset: #{$element.offset().top}.
             Window height: #{$window.height()}."""
-
-    # Debounced window resize
-    _onResize: (callback, timeout) ->
-      $(window).on "resize.tour-#{@_options.name}", ->
-        clearTimeout(timeout)
-        timeout = setTimeout(callback, 100)
-
-    # Debounced window scroll
-    _onScroll: (callback, timeout) ->
-      $(window).on "scroll.tour-#{@_options.name}", ->
-        clearTimeout(timeout)
-        timeout = setTimeout(callback, 100)
 
     # Event bindings for mouse navigation
     _initMouseNavigation: ->

@@ -3627,16 +3627,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       this.setCurrentStep();
       this._initMouseNavigation();
       this._initKeyboardNavigation();
-      this._onResize((function(_this) {
-        return function() {
-          return _this.showStep(_this._current);
-        };
-      })(this));
-      this._onScroll((function(_this) {
-        return function() {
-          return _this._showPopoverAndOverlay(_this._current);
-        };
-      })(this));
       if (this._current !== null) {
         this.showStep(this._current);
       }
@@ -3683,8 +3673,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
         return function(e) {
           $(document).off("click.tour-" + _this._options.name);
           $(document).off("keyup.tour-" + _this._options.name);
-          $(window).off("resize.tour-" + _this._options.name);
-          $(window).off("scroll.tour-" + _this._options.name);
           _this._setState('end', 'yes');
           _this._inited = false;
           _this._force = false;
@@ -4080,11 +4068,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
         selector: step.element
       }).popover('show');
       $tip = $($element.data('bs.popover').getTipElement());
-      $tip.attr('id', step.id);
-      if ($element.css('position') === 'fixed') {
-        $tip.css('position', 'fixed');
-      }
-      return this._reposition($tip, step);
+      return $tip.attr('id', step.id);
     };
 
     Tour.prototype._template = function(step, i) {
@@ -4125,43 +4109,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
       }
     };
 
-    Tour.prototype._reposition = function($tip, step) {
-      var offsetBottom, offsetHeight, offsetRight, offsetWidth, originalLeft, originalTop, tipOffset;
-      offsetWidth = $tip[0].offsetWidth;
-      offsetHeight = $tip[0].offsetHeight;
-      tipOffset = $tip.offset();
-      originalLeft = tipOffset.left;
-      originalTop = tipOffset.top;
-      offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight();
-      if (offsetBottom < 0) {
-        tipOffset.top = tipOffset.top + offsetBottom;
-      }
-      offsetRight = $('html').outerWidth() - tipOffset.left - $tip.outerWidth();
-      if (offsetRight < 0) {
-        tipOffset.left = tipOffset.left + offsetRight;
-      }
-      if (tipOffset.top < 0) {
-        tipOffset.top = 0;
-      }
-      if (tipOffset.left < 0) {
-        tipOffset.left = 0;
-      }
-      $tip.offset(tipOffset);
-      if (step.placement === 'bottom' || step.placement === 'top') {
-        if (originalLeft !== tipOffset.left) {
-          return this._replaceArrow($tip, (tipOffset.left - originalLeft) * 2, offsetWidth, 'left');
-        }
-      } else {
-        if (originalTop !== tipOffset.top) {
-          return this._replaceArrow($tip, (tipOffset.top - originalTop) * 2, offsetHeight, 'top');
-        }
-      }
-    };
-
-    Tour.prototype._replaceArrow = function($tip, delta, dimension, position) {
-      return $tip.find('.arrow').css(position, delta ? 50 * (1 - delta / dimension) + '%' : '');
-    };
-
     Tour.prototype._scrollIntoView = function(i) {
       var $element, $window, counter, height, offsetTop, scrollTop, step, windowHeight;
       step = this.getStep(i);
@@ -4197,20 +4144,6 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           }
         };
       })(this));
-    };
-
-    Tour.prototype._onResize = function(callback, timeout) {
-      return $(window).on("resize.tour-" + this._options.name, function() {
-        clearTimeout(timeout);
-        return timeout = setTimeout(callback, 100);
-      });
-    };
-
-    Tour.prototype._onScroll = function(callback, timeout) {
-      return $(window).on("scroll.tour-" + this._options.name, function() {
-        clearTimeout(timeout);
-        return timeout = setTimeout(callback, 100);
-      });
     };
 
     Tour.prototype._initMouseNavigation = function() {
