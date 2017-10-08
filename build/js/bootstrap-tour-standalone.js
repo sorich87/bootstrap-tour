@@ -4030,7 +4030,7 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options, shouldAddSmart;
+      var $element, $tip, isOrphan, options;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
@@ -4055,9 +4055,8 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           };
         })(this));
       }
-      shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
       $element.popover({
-        placement: shouldAddSmart ? "auto " + step.placement : step.placement,
+        placement: step.placement,
         trigger: 'manual',
         title: step.title,
         content: step.content,
