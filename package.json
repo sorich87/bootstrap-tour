@@ -67,6 +67,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-firefox-launcher": "^1.0.1",
     "karma-jasmine": "~1.1.0",
+    "node-sass": "^4.5.3",
     "phantomjs": "^2.1.7",
     "streamqueue": "1.1.1"
   },
