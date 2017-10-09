@@ -50,7 +50,7 @@ $ yarn
 $ gem install jekyll
 ```
 
-For Mac OS X Mavericks (10.9) users: You will need to [jump through all these hoops](http://dean.io/setting-up-a-ruby-on-rails-development-environment-on-mavericks/) before you can install Jekyll.
+For Mac OS X Mavericks (10.9) users: You will need to [jump through all these hoops](https://deanpcmad.com/2013/setting-up-a-ruby-on-rails-development-environment-on-mavericks/) before you can install Jekyll.
 
 #### Gulp usage
 
