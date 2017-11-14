@@ -683,7 +683,7 @@
       @_showBackground(step, elementData)
 
     _hideOverlayElement: (step) ->
-      $(step.backdropElement).removeClass 'tour-step-backdrop'
+      $('.tour-step-backdrop').removeClass 'tour-step-backdrop'
 
       for pos, $backdrop of @backdrops
         $backdrop.remove() if $backdrop and $backdrop.remove isnt undefined
