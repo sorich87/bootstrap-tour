@@ -677,6 +677,7 @@
           height: $backdropElement.innerHeight()
           offset: $backdropElement.offset()
 
+        $('.tour-step-backdrop').not($backdropElement).removeClass('tour-step-backdrop')
         $backdropElement.addClass 'tour-step-backdrop'
         elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
 
