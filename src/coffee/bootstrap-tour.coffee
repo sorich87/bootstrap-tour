@@ -502,13 +502,16 @@
           if @_isLast() then @next() else @end()
 
       if isOrphan
+        console.log 'Bootstrap-Tour+++, this step is orphan then appen new template'
         orphanTemplate = '<div class="popover tour-orphan orphan" role="tooltip">
         This guide cannot continue. Please contact the website owner<div class="popover-body">
         <div class="popover-navigation">
           <div class="btn-group">
             <button class="btn btn-sm btn-secondary" data-role="end">End tour</button>
         </div></div></div>'
+        console.log 'Bootstrap-Tour+++, orphanTemplate ', orphanTemplate
         $element = $(orphanTemplate)
+        console.log 'Bootstrap-Tour+++, $element ', $element
         $element.appendTo('body')
       else
         $element
