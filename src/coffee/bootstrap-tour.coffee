@@ -226,6 +226,9 @@
       hideStepHelper = (e) =>
         $element = $ step.element
         $element = $('body') unless $element.data('bs.popover')
+        if @_isOrphan step
+          $element = $('body')
+          $element.find('.tour-orphan').remove()
         $element
           .popover('dispose')
           .removeClass("tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element")
@@ -487,10 +490,6 @@
 
       step.template = @_template step, i
 
-      if isOrphan
-        step.element = 'body'
-        step.placement = 'top'
-
       $element = $ step.element
       $element.addClass "tour-#{@_options.name}-element tour-#{@_options.name}-#{i}-element"
 
@@ -502,23 +501,33 @@
         .on "#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}", =>
           if @_isLast() then @next() else @end()
 
-      $element
-      .popover(
-        placement: step.placement
-        trigger: 'manual'
-        title: step.title
-        content: step.content
-        html: true
-        animation: step.animation
-        container: step.container
-        template: step.template
-        selector: step.element
-      )
-      .popover 'show'
+      if isOrphan
+        orphanTemplate = '<div class="popover tour-orphan orphan" role="tooltip">
+        This guide cannot continue. Please contact the website owner<div class="popover-body">
+        <div class="popover-navigation">
+          <div class="btn-group">
+            <button class="btn btn-sm btn-secondary" data-role="end">End tour</button>
+        </div></div></div>'
+        $element = $(orphanTemplate)
+        $element.appendTo('body')
+      else
+        $element
+        .popover(
+          placement: step.placement
+          trigger: 'manual'
+          title: step.title
+          content: step.content
+          html: true
+          animation: step.animation
+          container: step.container
+          template: step.template
+          selector: step.element
+        )
+        .popover 'show'
 
-      # Tip adjustment
-      $tip = $($element.data('bs.popover').getTipElement())
-      $tip.attr 'id', step.id
+        # Tip adjustment
+        $tip = $($element.data('bs.popover').getTipElement())
+        $tip.attr 'id', step.id
 
     # Get popover template
     _template: (step, i) ->
@@ -604,6 +613,9 @@
         e.preventDefault()
         @prev() if @_current > 0
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='end']", (e) =>
+        e.preventDefault()
+        @end()
+      .on 'click', ".popover.tour-orphan *[data-role='end']", (e) =>
         e.preventDefault()
         @end()
       .on "click.tour-#{@_options.name}", ".popover.tour-#{@_options.name} *[data-role='pause-resume']", (e) ->
