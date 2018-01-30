@@ -481,6 +481,7 @@
 
     # Show step popover
     _showPopover: (step, i) ->
+      console.log '_showPopover ', step
       # Remove previously existing tour popovers. This prevents displaying of
       # multiple inactive popovers when user navigates the tour too quickly.
       $(".tour-#{@_options.name}").remove()
@@ -495,6 +496,7 @@
 
       $.extend options, step.options if step.options
       if step.reflex and not isOrphan
+        console.log 'Bootstrp-tour not orphan step'
         $ step.reflexElement
         .addClass('tour-step-element-reflex')
         .off("#{@_reflexEvent(step.reflex)}.tour-#{@_options.name}")
@@ -545,7 +547,6 @@
       $next = $navigation.find '[data-role="next"]'
       $resume = $navigation.find '[data-role="pause-resume"]'
 
-      $template.addClass 'orphan' if @_isOrphan step
       $template.addClass "tour-#{@_options.name} tour-#{@_options.name}-#{i}"
       $template.addClass "tour-#{@_options.name}-reflex" if step.reflex
 
