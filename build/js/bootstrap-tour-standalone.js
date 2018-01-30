@@ -3751,6 +3751,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           if (!$element.data('bs.popover')) {
             $element = $('body');
           }
+          if (_this._isOrphan(step)) {
+            $element = $('body');
+            $element.find('.tour-orphan').remove();
+          }
           $element.popover('dispose').removeClass("tour-" + _this._options.name + "-element tour-" + _this._options.name + "-" + i + "-element").removeData('bs.popover');
           if (step.reflex) {
             $(step.reflexElement).removeClass('tour-step-element-reflex').off((_this._reflexEvent(step.reflex)) + ".tour-" + _this._options.name);
@@ -4030,15 +4034,11 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
     };
 
     Tour.prototype._showPopover = function(step, i) {
-      var $element, $tip, isOrphan, options;
+      var $element, $tip, isOrphan, options, orphanTemplate;
       $(".tour-" + this._options.name).remove();
       options = $.extend({}, this._options);
       isOrphan = this._isOrphan(step);
       step.template = this._template(step, i);
-      if (isOrphan) {
-        step.element = 'body';
-        step.placement = 'top';
-      }
       $element = $(step.element);
       $element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
       if (step.options) {
@@ -4055,19 +4055,25 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           };
         })(this));
       }
-      $element.popover({
-        placement: step.placement,
-        trigger: 'manual',
-        title: step.title,
-        content: step.content,
-        html: true,
-        animation: step.animation,
-        container: step.container,
-        template: step.template,
-        selector: step.element
-      }).popover('show');
-      $tip = $($element.data('bs.popover').getTipElement());
-      return $tip.attr('id', step.id);
+      if (isOrphan) {
+        orphanTemplate = '<div class="popover tour-orphan orphan" role="tooltip"> This guide cannot continue. Please contact the website owner<div class="popover-body"> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-secondary" data-role="end">End tour</button> </div></div></div>';
+        $element = $(orphanTemplate);
+        return $element.appendTo('body');
+      } else {
+        $element.popover({
+          placement: step.placement,
+          trigger: 'manual',
+          title: step.title,
+          content: step.content,
+          html: true,
+          animation: step.animation,
+          container: step.container,
+          template: step.template,
+          selector: step.element
+        }).popover('show');
+        $tip = $($element.data('bs.popover').getTipElement());
+        return $tip.attr('id', step.id);
+      }
     };
 
     Tour.prototype._template = function(step, i) {
@@ -4161,6 +4167,11 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
           }
         };
       })(this)).on("click.tour-" + this._options.name, ".popover.tour-" + this._options.name + " *[data-role='end']", (function(_this) {
+        return function(e) {
+          e.preventDefault();
+          return _this.end();
+        };
+      })(this)).on('click', ".popover.tour-orphan *[data-role='end']", (function(_this) {
         return function(e) {
           e.preventDefault();
           return _this.end();
