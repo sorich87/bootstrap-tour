@@ -565,7 +565,7 @@
       windowHeight = $window.height()
       scrollTop = 0
 
-      switch step.placement
+      switch step.placement.replace('auto','').trim()
         when 'top'
           scrollTop = Math.max(0, offsetTop - (windowHeight / 2))
         when 'left', 'right'
