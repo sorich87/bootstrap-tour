@@ -3,6 +3,7 @@
 [![Dependency Status](http://img.shields.io/david/sorich87/bootstrap-tour.svg?style=flat)](https://david-dm.org/sorich87/bootstrap-tour)
 [![devDependency Status](http://img.shields.io/david/dev/sorich87/bootstrap-tour/dev-status.svg?style=flat)](https://david-dm.org/sorich87/bootstrap-tour#info=devDependencies)
 [![NPM Version](http://img.shields.io/npm/v/bootstrap-tour.svg?style=flat)](https://www.npmjs.org/)
+[![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
 
 Quick and easy way to build your product tours with Bootstrap Popovers.
 
