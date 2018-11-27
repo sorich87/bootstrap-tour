@@ -107,6 +107,10 @@ var bind = function (fn, me) {
 
 		Tour.prototype.getStep = function (i) {
 			if (this._options.steps[i] != null) {
+				
+				if(typeof(this._options.steps[i].element) == "function")
+					this._options.steps[i].element = this._options.steps[i].element();
+				
 				return $.extend({
 					id: "step-" + i,
 					path: '',
