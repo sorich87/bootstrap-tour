@@ -67,6 +67,10 @@ var bind = function (fn, me) {
 					delay: false,
 					basePath: '',
 					template: '<div class="popover" role="tooltip"> <div class="arrow"></div> <h3 class="popover-title"></h3> <div class="popover-content"></div> <div class="popover-navigation"> <div class="btn-group"> <button class="btn btn-sm btn-default" data-role="prev">&laquo; Prev</button> <button class="btn btn-sm btn-default" data-role="next">Next &raquo;</button> <button class="btn btn-sm btn-default" data-role="pause-resume" data-pause-text="Pause" data-resume-text="Resume">Pause</button> </div> <button class="btn btn-sm btn-default" data-role="end">End tour</button> </div> </div>',
+					showProgressBar: true,
+					showProgressText: true,
+					getProgressBarHTML: null,//function(percent) {},
+					getProgressTextHTML: null,//function(stepNumber, percent, stepCount) {},
 					afterSetState: function (key, value) {},
 					afterGetState: function (key, value) {},
 					afterRemoveState: function (key) {},
@@ -80,7 +84,8 @@ var bind = function (fn, me) {
 					onPrev: function (tour) {},
 					onPause: function (tour, duration) {},
 					onResume: function (tour, duration) {},
-					onRedirectError: function (tour) {}
+					onRedirectError: function (tour) {},
+					onElementUnavailable: function (tour, stepNumber) {}
 				}, options);
 			this._force = false;
 			this._inited = false;
@@ -104,6 +109,10 @@ var bind = function (fn, me) {
 			this._options.steps.push(step);
 			return this;
 		};
+		
+		Tour.prototype.getStepCount = function() {
+			return this._options.steps.length;
+		}
 
 		Tour.prototype.getStep = function (i) {
 			if (this._options.steps[i] != null) {
@@ -133,6 +142,10 @@ var bind = function (fn, me) {
 					duration: this._options.duration,
 					delay: this._options.delay,
 					template: this._options.template,
+					showProgressBar: this._options.showProgressBar,
+					showProgressText: this._options.showProgressText,
+					getProgressBarHTML: this._options.getProgressBarHTML,
+					getProgressTextHTML: this._options.getProgressTextHTML,
 					onShow: this._options.onShow,
 					onShown: this._options.onShown,
 					onHide: this._options.onHide,
@@ -141,7 +154,8 @@ var bind = function (fn, me) {
 					onPrev: this._options.onPrev,
 					onPause: this._options.onPause,
 					onResume: this._options.onResume,
-					onRedirectError: this._options.onRedirectError
+					onRedirectError: this._options.onRedirectError,
+					onElementUnavailable: this._options.onElementUnavailable
 				}, this._options.steps[i]);
 			}
 		};
@@ -165,10 +179,13 @@ var bind = function (fn, me) {
 						return _this._showPopoverAndOverlay(_this._current);
 					};
 				})(this));
-			if (this._current !== null) {
+/*
+			// Removed - .init is an unnecessary call, .start force calls .init if tour is not initialized. This code creates conflict
+			// where page has hidden elements, page is reloaded, tour is then forced to start on step N when hidden element is not shown yet
+  			if (this._current !== null) {
 				this.showStep(this._current);
 			}
-			this._inited = true;
+ */			this._inited = true;
 			return this;
 		};
 
@@ -180,10 +197,13 @@ var bind = function (fn, me) {
 			if (!this._inited) {
 				this.init(force);
 			}
-			if (this._current === null) {
+
+			// removed if condition - tour should always start when .start is called. Original flow prevented tour from start if _current step index was set (tour already started)
+			//if (this._current === null) {
 				promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
 				this._callOnPromiseDone(promise, this.showStep, 0);
-			}
+			// }
+
 			return this;
 		};
 
@@ -364,8 +384,15 @@ var bind = function (fn, me) {
 			showStepHelper = (function (_this) {
 				return function (e) {
 					if (_this._isOrphan(step)) {
-						if (step.orphan === false) {
+						if (step.orphan === false)
+						{
 							_this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
+							
+							if(typeof(step.onElementUnavailable) == "function")
+							{
+								step.onElementUnavailable(_this, _this._current + 1);	
+							}
+							
 							if (skipToPrevious) {
 								_this._showPrevStep();
 							} else {
@@ -621,7 +648,7 @@ var bind = function (fn, me) {
 			if (step.onShown != null) {
 				step.onShown(this);
 			}
-			return this._debug("Step " + (this._current + 1) + " of " + this._options.steps.length);
+			return this;
 		};
 
 		Tour.prototype._showPopover = function (step, i) {
@@ -629,54 +656,105 @@ var bind = function (fn, me) {
 			$tip,
 			isOrphan,
 			options,
-			shouldAddSmart;
-			$(".tour-" + this._options.name).remove();
-			options = $.extend({}, this._options);
-			isOrphan = this._isOrphan(step);
-			step.template = this._template(step, i);
-			if (isOrphan) {
-				step.element = 'body';
-				step.placement = 'top';
-			}
-			$element = $(step.element);
-			$element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
-			if (step.options) {
-				$.extend(options, step.options);
-			}
-			if (step.reflex && !isOrphan) {
-				$(step.reflexElement).addClass('tour-step-element-reflex').off((this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on((this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function (_this) {
-						return function () {
-							if (_this._isLast()) {
-								return _this.next();
-							} else {
-								return _this.end();
-							}
-						};
-					})(this));
-			}
-
-			shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
+			shouldAddSmart,
+			title,
+			content, 
+			percentProgress;
 			
-			$element.popover({
-				placement: shouldAddSmart ? "auto " + step.placement : step.placement,
-				trigger: 'manual',
-				title: step.title,
-				content: step.content,
-				html: true,
-				animation: step.animation,
-				container: step.container,
-				template: step.template,
-				selector: step.element
-			}).popover('show');
-						
-			$tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
-			$tip.attr('id', step.id);
-			if ($element.css('position') === 'fixed') {
-				$tip.css('position', 'fixed');
+			if($(document).find(".popover.tour-" + this._options.name + ".tour-" + this._options.name + "-" + i).length == 0)
+			{
+				$(".tour-" + this._options.name).remove();
+				options = $.extend({}, this._options);
+				isOrphan = this._isOrphan(step);
+				step.template = this._template(step, i);
+				if (isOrphan) {
+					step.element = 'body';
+					step.placement = 'top';
+				}
+				$element = $(step.element);
+				$element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
+				if (step.options) {
+					$.extend(options, step.options);
+				}
+				if (step.reflex && !isOrphan) {
+					$(step.reflexElement).addClass('tour-step-element-reflex').off((this._reflexEvent(step.reflex)) + ".tour-" + this._options.name).on((this._reflexEvent(step.reflex)) + ".tour-" + this._options.name, (function (_this) {
+							return function () {
+								if (_this._isLast()) {
+									return _this.next();
+								} else {
+									return _this.end();
+								}
+							};
+						})(this));
+				}
+
+				shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
+				
+				title = step.title;
+				content = step.content;
+				percentProgress = parseInt(((i + 1) / this.getStepCount()) * 100);
+				
+				if(step.showProgressBar)
+				{
+					if(typeof(step.getProgressBarHTML) == "function")
+					{
+						content = step.getProgressBarHTML(percentProgress) + content;
+					}
+					else
+					{
+						content = '<div class="progress"><div class="progress-bar progress-bar-striped" role="progressbar" style="width: ' + percentProgress + '%;"></div></div>' + content;	
+					}
+				}
+				
+				if(step.showProgressText)
+				{
+					if(typeof(step.getProgressTextHTML) == "function")
+					{
+						title += step.getProgressTextHTML(i, percentProgress, this.getStepCount());
+					}
+					else
+					{
+						title += '<span class="pull-right">' + (i + 1) + '/' + this.getStepCount() + '</span>';
+					}
+				}
+				
+				$element.popover({
+					placement: shouldAddSmart ? "auto " + step.placement : step.placement,
+					trigger: 'manual',
+					title: title,
+					content: content,
+					html: true,
+					animation: step.animation,
+					container: step.container,
+					template: step.template,
+					selector: step.element
+				}).popover('show');
+							
+				$tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
+				$tip.attr('id', step.id);
+				if ($element.css('position') === 'fixed') {
+					$tip.css('position', 'fixed');
+				}
+				
+				this._debug("Step " + (this._current + 1) + " of " + this._options.steps.length);
 			}
-			this._reposition($tip, step);
+			else
+			{
+				if (this._isOrphan(step)) {
+					step.element = 'body';
+					step.placement = 'top';
+				}
+
+				$element = $(step.element);
+				$tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
+			}
+			
 			if (isOrphan) {
 				return this._center($tip);
+			}
+			else
+			{
+				return this._reposition($tip, step);
 			}
 		};
 
@@ -738,13 +816,16 @@ var bind = function (fn, me) {
 			tipOffset;
 			offsetWidth = $tip[0].offsetWidth;
 			offsetHeight = $tip[0].offsetHeight;
+			
 			tipOffset = $tip.offset();
 			originalLeft = tipOffset.left;
 			originalTop = tipOffset.top;
-			offsetBottom = $(document).outerHeight() - tipOffset.top - $tip.outerHeight();
+			
+			offsetBottom = $(document).height() - tipOffset.top - $tip.outerHeight();
 			if (offsetBottom < 0) {
 				tipOffset.top = tipOffset.top + offsetBottom;
 			}
+						
 			offsetRight = $('html').outerWidth() - tipOffset.left - $tip.outerWidth();
 			if (offsetRight < 0) {
 				tipOffset.left = tipOffset.left + offsetRight;
@@ -755,7 +836,9 @@ var bind = function (fn, me) {
 			if (tipOffset.left < 0) {
 				tipOffset.left = 0;
 			}
+			
 			$tip.offset(tipOffset);
+			
 			if (step.placement === 'bottom' || step.placement === 'top') {
 				if (originalLeft !== tipOffset.left) {
 					return this._replaceArrow($tip, (tipOffset.left - originalLeft) * 2, offsetWidth, 'left');
