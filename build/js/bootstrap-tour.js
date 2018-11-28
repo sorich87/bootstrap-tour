@@ -201,7 +201,7 @@ var bind = function (fn, me) {
 			// removed if condition - tour should always start when .start is called. Original flow prevented tour from start if _current step index was set (tour already started)
 			//if (this._current === null) {
 				promise = this._makePromise(this._options.onStart != null ? this._options.onStart(this) : void 0);
-				this._callOnPromiseDone(promise, this.showStep, 0);
+				this._callOnPromiseDone(promise, this.showStep, this._current);
 			// }
 
 			return this;
