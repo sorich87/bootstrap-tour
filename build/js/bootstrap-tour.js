@@ -112,7 +112,7 @@ var bind = function (fn, me) {
 		
 		Tour.prototype.getStepCount = function() {
 			return this._options.steps.length;
-		}
+		};
 
 		Tour.prototype.getStep = function (i) {
 			if (this._options.steps[i] != null) {
@@ -437,7 +437,7 @@ var bind = function (fn, me) {
 				this._setState('current_step', value);
 			} else {
 				this._current = this._getState('current_step');
-				this._current = this._current === null ? null : parseInt(this._current, 10);
+				this._current = this._current === null ? 0 : parseInt(this._current, 10);
 			}
 			return this;
 		};
