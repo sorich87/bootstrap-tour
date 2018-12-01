@@ -607,7 +607,7 @@ var bind = function (fn, me) {
 			var promise;
 			promise = this.hideStep(this._current, this._current);
 			return this._callOnPromiseDone(promise, this.showStep, this._current);
-		}
+		};
 
 		Tour.prototype.hideStep = function (i, iNext) {
 			var hideDelay,
