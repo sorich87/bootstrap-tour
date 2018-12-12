@@ -18,10 +18,20 @@
  * limitations under the License.
  * ========================================================================
  *
- * Updated for CS by FFS 2018 - v0.5
- * Features added:
- *
+ * Updated for CS by FFS 2018 - v0.6
+ * 
+ * Changes from 0.5:
+ *	- Added "unfix" for bootstrap selectpicker to revert zindex after step that includes this plugin
+ *  - Fixed issue with Bootstrap dialogs. Handling of dialogs is now robust
+ *  - Fixed issue with BootstrapDialog plugin: https://nakupanda.github.io/bootstrap3-dialog/ . See notes below for help.
+ *  - Improved the background overlay and scroll handling, unnecessary work removed
+
  
+ ---------
+
+
+ This fork and code adds following features to Bootstrap Tour
+
  1. onNext/onPrevious - prevent auto-move to next step, allow .goTo
  2. *** Do not call Tour.init *** - fixed tours with hidden elements on page reload
  3. Dynamically determine step element by function
@@ -31,7 +41,7 @@
  7. Magic progress bar and progress text, plus options to customize per step
  8. Prevent user interaction with element using preventInteraction
  9. Wait for arbitrary DOM element to be visible before showing tour step/crapping out due to missing element, using delayOnElement
- 10. Handle bootstrap modal dialogs better - autodetect modals or children of modals, and call onModalHidden when user dismisses modal without following tour steps
+ 10. Handle bootstrap modal dialogs better - autodetect modals or children of modals, and call onModalHidden to handle when user dismisses modal without following tour steps
  11. Automagically fixes drawing issues with Bootstrap Selectpicker (https://github.com/snapappointments/bootstrap-select/)
  
  --------------
@@ -314,6 +324,44 @@
 												},
 							});			
 
+
+	
+	10b. Handle Dialogs and BootstrapDialog plugin better https://nakupanda.github.io/bootstrap3-dialog/
+			Plugin makes creating dialogs very easy, but it does some extra stuff to the dialogs and dynamically creates/destroys them. This
+			causes issues with plugins that want to include a modal dialog in the steps using this plugin.
+			
+			To use Tour to highlight an element in a dialog, just use the element ID as you would for any normal step. The dialog will be automatically
+			detected and handled.
+			
+			To use Tour to highlight an entire dialog, set the step element to the dialog div. Tour will automatically realize this is a dialog, and
+			shift the element to use the modal-content div inside the dialog. This makes life friendly, because you can do this:
+
+			<div class="modal" id="myModal" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+					...blah...
+					</div>
+				</div>
+			</div>
+
+			Then use element: myModal in the Tour.
+
+
+			FOR BOOTSTRAPDIALOG PLUGIN: this plugin creates random UUIDs for the dialog DOM ID. You need to fix the ID to something you know. Do this:
+
+				dlg = new BootstrapDialog.confirm({
+													....all the options...
+												});
+
+				// BootstrapDialog gives a random GUID ID for dialog. Give it a proper one
+				$objModal = dlg.getModal();
+				$objModal.attr("id", "myModal");
+				dlg.setId("myModal");
+
+			
+			Now you can use element: myModal in the tour, even when the dialog is created by BootstrapDialog plugin.
+
+
 ----------------
 	11.	Fix conflict with Bootstrap Selectpicker: https://github.com/snapappointments/bootstrap-select/
 		Selectpicker draws a custom select. Tour now automagically finds and adjusts the selectpicker dropdown so that it appears correctly within the tour
@@ -414,7 +462,7 @@ var bind = function (fn, me) {
 		Tour.prototype.getStepCount = function() {
 			return this._options.steps.length;
 		};
-
+		
 		Tour.prototype.getStep = function (i) {
 			if (this._options.steps[i] != null) {
 				
@@ -423,45 +471,71 @@ var bind = function (fn, me) {
 					this._options.steps[i].element = this._options.steps[i].element();
 				}
 				
-				return $.extend({
-					id: "step-" + i,
-					path: '',
-					host: '',
-					placement: 'right',
-					title: '',
-					content: '<p></p>',
-					next: i === this._options.steps.length - 1 ? -1 : i + 1,
-					prev: i - 1,
-					animation: true,
-					container: this._options.container,
-					autoscroll: this._options.autoscroll,
-					backdrop: this._options.backdrop,
-					backdropContainer: this._options.backdropContainer,
-					backdropPadding: this._options.backdropPadding,
-					redirect: this._options.redirect,
-					reflexElement: this._options.steps[i].element,
-					preventInteraction: false,
-					backdropElement: this._options.steps[i].element,
-					orphan: this._options.orphan,
-					duration: this._options.duration,
-					delay: this._options.delay,
-					template: this._options.template,
-					showProgressBar: this._options.showProgressBar,
-					showProgressText: this._options.showProgressText,
-					getProgressBarHTML: this._options.getProgressBarHTML,
-					getProgressTextHTML: this._options.getProgressTextHTML,
-					onShow: this._options.onShow,
-					onShown: this._options.onShown,
-					onHide: this._options.onHide,
-					onHidden: this._options.onHidden,
-					onNext: this._options.onNext,
-					onPrev: this._options.onPrev,
-					onPause: this._options.onPause,
-					onResume: this._options.onResume,
-					onRedirectError: this._options.onRedirectError,
-					onElementUnavailable: this._options.onElementUnavailable,
-					onModalHidden: this._options.onModalHidden
-				}, this._options.steps[i]);
+				this._options.steps[i] =  $.extend(true,
+								{
+									id: "step-" + i,
+									path: '',
+									host: '',
+									placement: 'right',
+									title: '',
+									content: '<p></p>',
+									next: i === this._options.steps.length - 1 ? -1 : i + 1,
+									prev: i - 1,
+									animation: true,
+									container: this._options.container,
+									autoscroll: this._options.autoscroll,
+									backdrop: this._options.backdrop,
+									backdropContainer: this._options.backdropContainer,
+									backdropPadding: this._options.backdropPadding,
+									redirect: this._options.redirect,
+									reflexElement: this._options.steps[i].element,
+									preventInteraction: false,
+									orphan: this._options.orphan,
+									duration: this._options.duration,
+									delay: this._options.delay,
+									template: this._options.template,
+									showProgressBar: this._options.showProgressBar,
+									showProgressText: this._options.showProgressText,
+									getProgressBarHTML: this._options.getProgressBarHTML,
+									getProgressTextHTML: this._options.getProgressTextHTML,
+									onShow: this._options.onShow,
+									onShown: this._options.onShown,
+									onHide: this._options.onHide,
+									onHidden: this._options.onHidden,
+									onNext: this._options.onNext,
+									onPrev: this._options.onPrev,
+									onPause: this._options.onPause,
+									onResume: this._options.onResume,
+									onRedirectError: this._options.onRedirectError,
+									onElementUnavailable: this._options.onElementUnavailable,
+									onModalHidden: this._options.onModalHidden,
+									internalFlags:	{
+														elementModal: null,					// will store the jq modal object for a step
+														elementModalOriginal: null,			// will store the original step.element string in steps that use a modal
+														elementBootstrapSelectpicker: null	// will store jq bootstrap select picker object
+													}
+								},
+								this._options.steps[i]
+								);
+						
+				return this._options.steps[i];
+			}
+		};
+		
+		// step flags are used to remember specific internal step data across a tour
+		Tour.prototype._setStepFlag = function(stepNumber, flagName, value)
+		{
+			if(this._options.steps[stepNumber] != null)
+			{
+				this._options.steps[stepNumber].internalFlags[flagName] = value;
+			}
+		};
+
+		Tour.prototype._getStepFlag = function(stepNumber, flagName)
+		{
+			if(this._options.steps[stepNumber] != null)
+			{
+				return this._options.steps[stepNumber].internalFlags[flagName];
 			}
 		};
 
@@ -526,6 +600,7 @@ var bind = function (fn, me) {
 
 		Tour.prototype.goTo = function (i) {
 			var promise;
+			this._debug("goTo step " + i);
 			promise = this.hideStep(this._current, i);
 			return this._callOnPromiseDone(promise, this.showStep, i);
 		};
@@ -602,6 +677,7 @@ var bind = function (fn, me) {
 			}
 		};
 		
+		// fully closes and reopens the current step, triggering all callbacks etc
 		Tour.prototype.reshowCurrentStep = function()
 		{
 			var promise;
@@ -609,6 +685,7 @@ var bind = function (fn, me) {
 			return this._callOnPromiseDone(promise, this.showStep, this._current);
 		};
 
+		// hides current step before moving to new step
 		Tour.prototype.hideStep = function (i, iNext) {
 			var hideDelay,
 			hideStepHelper,
@@ -643,9 +720,21 @@ var bind = function (fn, me) {
 					if (step.backdrop)
 					{
 						next_step = (iNext != null) && _this.getStep(iNext);
-						if (!next_step || !next_step.backdrop || next_step.backdropElement !== step.backdropElement) {
+						// simplified & removed need for backdrop element, which was a dupe of step.element
+						if (!next_step || !next_step.backdrop)
+						{
 							_this._hideOverlayElement(step);
 						}
+					}
+					
+					_this._unfixBootstrapSelectPickerZindex(step);
+					
+					// If this step was pointed at a modal, revert changes to the step.element. See the notes in showStep for explanation
+					var tmpModalOriginalElement = _this._getStepFlag(_this.getCurrentStepIndex(), "elementModalOriginal");
+					if(tmpModalOriginalElement != null)
+					{
+						_this._setStepFlag(_this.getCurrentStepIndex(), "elementModalOriginal", null);
+						step.element = tmpModalOriginalElement;
 					}
 					
 					if (step.onHidden != null)
@@ -670,13 +759,17 @@ var bind = function (fn, me) {
 			return promise;
 		};
 
+		// loads all required step info and prepares to show
 		Tour.prototype.showStep = function (i) {
 			var path,
 			promise,
 			showDelay,
 			showStepHelper,
 			skipToPrevious,
-			step;
+			step,
+			$element;
+	
+	
 			if (this.ended()) {
 				this._debug('Tour ended, showStep prevented.');
 				return this;
@@ -709,32 +802,129 @@ var bind = function (fn, me) {
 					return;
 				}
 			}
+
+			// will be set to element <div class="modal"> if modal in use
+			$modalObject = null;
+
+			// is element a modal?
+			if(step.orphan === false && ($(step.element).hasClass("modal") || $(step.element).data('bs.modal')))
+			{
+				// element is exactly the modal div
+				$modalObject = $(step.element);
+				
+				// This is a hack solution. Original Tour uses step.element in multiple places and converts to jquery object as needed. This func uses $element,
+				// but multiple other funcs simply use $(step.element) instead - keeping the original string element id in the step data and using jquery as needed.
+				// This creates problems with dialogs, especially BootStrap Dialog plugin - in code terms, the dialog is everything from <div class="modal-dialog">,
+				// but the actual visible positioned part of the dialog is <div class="modal-dialog"><div class="modal-content">. The tour must attach the popover to
+				// modal-content div, NOT the modal-dialog div. But most coders + dialog plugins put the id on the modal-dialog div. 
+				// So for display, we must adjust the step element to point at modal-content under the modal-dialog div. However if we change the step.element
+				// permanently to the modal-content (by changing tour._options.steps), this won't work if the step is reshown (plugin destroys modal, meaning
+				// the element jq object is no longer valid) and could potentially screw up other
+				// parts of a tour that have dialogs. So instead we record the original element used for this step that involves modals, change the step.element
+				// to the modal-content div, then set it back when the step is hidden again.
+				//
+				// This is ONLY done because it's too difficult to unpick all the original tour code that uses step.element directly.
+				this._setStepFlag(this.getCurrentStepIndex(), "elementModalOriginal", step.element);
+
+				// fix the tour element, the actual visible offset comes from modal > modal-dialog > modal-content and step.element is used to calc this offset & size
+				step.element = $(step.element).find(".modal-content:first");
+			}
+
+			$element = $(step.element);
 			
+			// is element inside a modal?
+			if($modalObject === null && $element.parents(".modal:first").length)
+			{
+				// find the parent modal div
+				$modalObject = $element.parents(".modal:first");
+			}
+
+			if($modalObject && $modalObject.length > 0)
+			{
+				this._debug("Modal identified, onModalHidden callback available");
+				
+				// store the modal element for other calls
+				this._setStepFlag(i, "elementModal", $modalObject)
+
+				// modal in use, add callback
+				var funcModalHelper = 	function(_this, $_modalObject)
+										{
+											return function ()
+											{
+												_this._debug("Modal close triggered");
+
+												if(typeof(step.onModalHidden) == "function")
+												{
+													// if step onModalHidden returns false, do nothing. returns int, move to the step specified.
+													// Otherwise continue regular next/end functionality
+													var rslt; 
+
+													rslt = step.onModalHidden(_this, i);
+
+													if(rslt === false)
+													{
+														_this._debug("onModalHidden returned exactly false, tour step unchanged");
+														return;
+													}
+
+													if(Number.isInteger(rslt))
+													{
+														_this._debug("onModalHidden returned int, tour moving to step " + rslt + 1);
+
+														$_modalObject.off("hidden.bs.modal", funcModalHelper);
+														return _this.goTo(rslt);
+													}
+													
+													_this._debug("onModalHidden did not return false or int, continuing tour");
+												}
+
+												$_modalObject.off("hidden.bs.modal", funcModalHelper);
+
+												if (_this._isLast())
+												{
+													return _this.next();
+												}
+												else
+												{
+													return _this.end();
+												}
+											};
+										}(this, $modalObject);
+
+				$modalObject.off("hidden.bs.modal", funcModalHelper).on("hidden.bs.modal", funcModalHelper);		
+			}			
 			
 			showStepHelper = (function (_this) {
 				return function (e) {
 					if (_this._isOrphan(step)) {
 						if (step.orphan === false)
 						{
-							_this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element does not exist or is hidden.");
+							_this._debug("Skip the orphan step " + (_this._current + 1) + ".\nOrphan option is false and the element " + step.element + " does not exist or is hidden.");
 							
 							if(typeof(step.onElementUnavailable) == "function")
 							{
-								step.onElementUnavailable(_this, _this._current + 1);	
+								_this._debug("Calling onElementUnavailable callback");
+								step.onElementUnavailable(_this, _this._current + 1);
 							}
 							
 							if (skipToPrevious) {
-								_this._showPrevStep();
+								_this._showPrevStep(true);
 							} else {
-								_this._showNextStep();
+								_this._showNextStep(true);
 							}
 							return;
 						}
 						_this._debug("Show the orphan step " + (_this._current + 1) + ". Orphans option is true.");
 					}
-					if (step.autoscroll) {
+					
+					console.log(step);
+					
+					if (step.autoscroll)
+					{
 						_this._scrollIntoView(i);
-					} else {
+					}
+					else
+					{
 						_this._showPopoverAndOverlay(i);
 					}
 					
@@ -790,6 +980,7 @@ var bind = function (fn, me) {
 					if(delayMax < 250)
 						delayMax = 251;
 					
+					// Set timer to kill the setInterval call after max delay time expires
 					window.setTimeout(	function ()
 										{ 
 											if(delayFunc)
@@ -812,7 +1003,7 @@ var bind = function (fn, me) {
 			return promise;
 		};
 
-		Tour.prototype.getCurrentStep = function () {
+		Tour.prototype.getCurrentStepIndex = function () {
 			return this._current;
 		};
 
@@ -827,9 +1018,6 @@ var bind = function (fn, me) {
 			return this;
 		};
 
-		Tour.prototype.redraw = function () {
-			return this._showOverlayElement(this.getStep(this.getCurrentStep()));
-		};
 
 		Tour.prototype._setState = function (key, value) {
 			var e,
@@ -884,21 +1072,23 @@ var bind = function (fn, me) {
 			return value;
 		};
 
-		Tour.prototype._showNextStep = function () {
+		Tour.prototype._showNextStep = function (skipOrphan = false) {
 			var promise,
 			showNextStepHelper,
 			step;
-			step = this.getStep(this._current);
 			
 			showNextStepHelper = (function (_this) {
 				return function (e) {
-					return _this.showStep(step.next);
+					return _this.showStep(_this._current + 1);
 				};
 			})(this);
 			
 			promise = void 0;
 
-			if (step.onNext != null)
+			step = this.getStep(this._current);
+			
+			// only call the onNext handler if this is a click and NOT an orphan skip due to missing element
+			if (skipOrphan === false &&  step.onNext != null)
 			{
 				rslt = step.onNext(this);
 				
@@ -913,11 +1103,11 @@ var bind = function (fn, me) {
 			return this._callOnPromiseDone(promise, showNextStepHelper);
 		};
 
-		Tour.prototype._showPrevStep = function () {
+		Tour.prototype._showPrevStep = function (skipOrphan = false) {
 			var promise,
 			showPrevStepHelper,
 			step;
-			step = this.getStep(this._current);			
+
 			showPrevStepHelper = (function (_this) {
 				return function (e) {
 					return _this.showStep(step.prev);
@@ -925,8 +1115,10 @@ var bind = function (fn, me) {
 			})(this);
 			
 			promise = void 0;
+			step = this.getStep(this._current);			
 
-			if (step.onPrev != null)
+			// only call the onPrev handler if this is a click and NOT an orphan skip due to missing element
+			if (skipOrphan === false && step.onPrev != null)
 			{
 				rslt = step.onPrev(this);
 				
@@ -943,7 +1135,7 @@ var bind = function (fn, me) {
 
 		Tour.prototype._debug = function (text) {
 			if (this._options.debug) {
-				return window.console.log("Bootstrap Tour '" + this._options.name + "' | " + text);
+				return window.console.log("[ Bootstrap Tour: '" + this._options.name + "' ] " + text);
 			}
 		};
 
@@ -1020,18 +1212,27 @@ var bind = function (fn, me) {
 			return this._current < this._options.steps.length - 1;
 		};
 
+		// wraps the calls to show the tour step in a popover and the background overlay.
+		// Note this is ALSO called by scroll event handler. Individual funcs called will determine whether redraws etc are required.
 		Tour.prototype._showPopoverAndOverlay = function (i) {
 			var step;
-			if (this.getCurrentStep() !== i || this.ended()) {
+			
+			if (this.getCurrentStepIndex() !== i || this.ended()) {
 				return;
 			}
 			step = this.getStep(i);
-			if (step.backdrop) {
+			if (step.backdrop)
+			{
 				this._showOverlayElement(step);
 			}
-			this._showPopover(step, i);
 			
 			this._fixBootstrapSelectPickerZindex(step);
+			
+			// Ensure this is called last, to allow preceeding calls to check whether current step popover is already visible.
+			// This is required because this func is called by scroll event. showPopover creates the actual popover with
+			// current step index as a class. Therefore all preceeding funcs can check if they are being called because of a
+			// scroll event (popover class using current step index exists), or because of a step change (class doesn't exist).
+			this._showPopover(step, i);
 			
 			if (step.onShown != null) {
 				step.onShown(this);
@@ -1039,6 +1240,7 @@ var bind = function (fn, me) {
 			return this;
 		};
 
+		// handles view of popover
 		Tour.prototype._showPopover = function (step, i) {
 			var $element,
 			$tip,
@@ -1049,13 +1251,18 @@ var bind = function (fn, me) {
 			content, 
 			percentProgress,
 			modalObject;
+
+			isOrphan = this._isOrphan(step);
 			
-			// is this step already visible?
-			if($(document).find(".popover.tour-" + this._options.name + ".tour-" + this._options.name + "-" + i).length == 0)
+			// is this step already visible? _showPopover is called by _showPopoverAndOverlay, which is called by window scroll event. This
+			// check prevents the continual flickering of the current tour step - original approach reloaded the popover every scroll event.
+			// Why is this check here and not in _showPopoverAndOverlay? This allows us to selectively redraw elements on scroll.
+			if($(document).find(".popover.tour-" + this._options.name + ".tour-" + this._options.name + "-" + this.getCurrentStepIndex()).length == 0)
 			{
+				// Step not visible, draw first time
+				
 				$(".tour-" + this._options.name).remove();
 				options = $.extend({}, this._options);
-				isOrphan = this._isOrphan(step);
 				step.template = this._template(step, i);
 				
 				if (isOrphan)
@@ -1065,21 +1272,6 @@ var bind = function (fn, me) {
 				}
 				
 				$element = $(step.element);
-
-				$modalObject = null;
-				
-				// is element a modal?
-				if(!isOrphan && ($element.hasClass("modal") || $element.data('bs.modal')))
-				{
-					$modalObject = $element;
-					
-					// fix the element, the actual visible offset comes from modal > modal-dialog > modal-content and $element is used to calc this offset & size
-					$element = $(step.element).find(".modal-content");
-				}		
-				else
-				{
-					$element = $(step.element);
-				}
 				
 				$element.addClass("tour-" + this._options.name + "-element tour-" + this._options.name + "-" + i + "-element");
 				if (step.options) {
@@ -1097,62 +1289,7 @@ var bind = function (fn, me) {
 							};
 						})(this));
 				}
-
 				
-				// is element inside a modal?
-				if($element.parents().hasClass("modal:first").length)
-				{
-					$modalObject = $element.parents().hasClass("modal:first");
-				}
-				
-				var funcModalHelper = 	function(_this, $_modalObject)
-										{
-											return function ()
-											{
-												_this._debug("Modal close triggered");
-												
-												if(typeof(step.onModalHidden) == "function")
-												{
-													// if step onModalHidden returns false, do nothing. int, move to the step specified. Otherwise continue regular next/end functionality
-													var rslt; 
-													
-													rslt = step.onModalHidden(_this, i);
-													
-													if(rslt === false)
-													{
-														_this._debug("onModalHidden returned exactly false, tour step unchanged");
-														return;
-													}
-													
-													if(Number.isInteger(rslt))
-													{
-														_this._debug("onModalHidden returned int, tour moving to step " + rslt + 1);
-														
-														$_modalObject.off("hidden.bs.modal", funcModalHelper);
-														return _this.goTo(rslt);
-													}
-												}
-												
-												$_modalObject.off("hidden.bs.modal", funcModalHelper);
-
-												if (_this._isLast())
-												{
-													return _this.next();
-												}
-												else
-												{
-													return _this.end();
-												}
-											};
-										}(this, $modalObject);
-				
-				if($modalObject)
-				{
-					$modalObject.off("hidden.bs.modal", funcModalHelper).on("hidden.bs.modal", funcModalHelper);		
-				}
-				
-				
-
 				shouldAddSmart = step.smartPlacement === true && step.placement.search(/auto/i) === -1;
 				
 				title = step.title;
@@ -1201,27 +1338,33 @@ var bind = function (fn, me) {
 					$tip.css('position', 'fixed');
 				}
 				
+				if (isOrphan)
+				{
+					this._center($tip);
+				}
+				else
+				{
+					this._reposition($tip, step);
+				}				
+				
 				this._debug("Step " + (this._current + 1) + " of " + this._options.steps.length);
 			}
 			else
 			{
-				if (this._isOrphan(step))
+				// Step is already visible, something has requested a redraw. Uncomment code to force redraw on scroll etc
+				//$element = $(step.element);
+				//$tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
+				
+				if (isOrphan)
 				{
-					step.element = 'body';
-					step.placement = 'top';
+					// unnecessary re-call, when tour step is set up centered it's fixed to the middle. 
+					//this._center($tip);
 				}
-
-				$element = $(step.element);
-				$tip = $element.data('bs.popover') ? $element.data('bs.popover').tip() : $element.data('popover').tip();
-			}
-			
-			if (isOrphan)
-			{
-				return this._center($tip);
-			}
-			else
-			{
-				return this._reposition($tip, step);
+				else
+				{
+					// Add some code to shift the popover wherever is required
+					//this._reposition($tip, step);
+				}
 			}
 		};
 
@@ -1255,7 +1398,7 @@ var bind = function (fn, me) {
 			if (step.next < 0) {
 				$next.addClass('disabled').prop('disabled', true).prop('tabindex', -1);
 			}
-			if (step.reflexOnly && step.reflex) {
+			if (step.reflexOnly) {
 				$next.hide();
 			}
 			if (!step.duration) {
@@ -1317,7 +1460,8 @@ var bind = function (fn, me) {
 			}
 		};
 
-		Tour.prototype._center = function ($tip) {
+		Tour.prototype._center = function ($tip)
+		{
 			return $tip.css('top', $(window).outerHeight() / 2 - $tip.outerHeight() / 2);
 		};
 
@@ -1472,7 +1616,15 @@ var bind = function (fn, me) {
 		// Bootstrap Select custom draws the drop down, force the Z index between Tour overlay and popoper
  		Tour.prototype._fixBootstrapSelectPickerZindex = function(step)
 		{
-			if(!this._isOrphan(step))
+			// is the current step already visible?
+			if($(document).find(".popover.tour-" + this._options.name + ".tour-" + this._options.name + "-" + this.getCurrentStepIndex()).length != 0)
+			{
+				// don't waste time redoing the fix
+				return;
+			}
+			
+			var $selectpicker;
+			if(step.orphan == false)
 			{
 				// is this element or child of this element a selectpicker
 				if($(step.element)[0].tagName.toLowerCase() == "select")
@@ -1487,11 +1639,28 @@ var bind = function (fn, me) {
 				// is this selectpicker a bootstrap-select: https://github.com/snapappointments/bootstrap-select/ 
 				if($selectpicker.parent().hasClass("bootstrap-select"))
 				{
+					this._debug("Fixing Bootstrap SelectPicker");
 					// set zindex to open dropdown over background element
 					$selectpicker.parent().css("z-index", "1101");
+					
+					// store the element for other calls. Mainly for when step is hidden, selectpicker must be unfixed / z index reverted to avoid visual issues.
+					// storing element means we don't need to find it again later
+					this._setStepFlag(this.getCurrentStepIndex(), "elementBootstrapSelectpicker", $selectpicker);
 				}
 			}			
-		}		
+		}
+		
+		// Revert the Z index between Tour overlay and popoper
+ 		Tour.prototype._unfixBootstrapSelectPickerZindex = function(step)
+		{
+			var $selectpicker = this._getStepFlag(this.getCurrentStepIndex(), "elementBootstrapSelectpicker");
+			if($selectpicker)
+			{
+				this._debug("Unfixing Bootstrap SelectPicker");
+				// set zindex to open dropdown over background element
+				$selectpicker.parent().css("z-index", "auto");
+			}			
+		}
 
 		
 		Tour.prototype._showBackground = function (step, data) {
@@ -1551,10 +1720,23 @@ var bind = function (fn, me) {
 		};
 
 		Tour.prototype._showOverlayElement = function (step) {
-			var $backdropElement,
-			elementData;
+			var elementData,
+				isRedraw;
 			
-			if(step.preventInteraction)
+			// check if the popover for the current step already exists (is this a redraw)
+			if($(document).find(".popover.tour-" + this._options.name + ".tour-" + this._options.name + "-" + this.getCurrentStepIndex()).length == 0)
+			{
+				isRedraw = false;
+			}
+			else
+			{
+				// Yes. Likely this is because of a window scroll event
+				isRedraw = true;
+				
+				return;
+			}
+			
+			if(step.preventInteraction && !isRedraw)
 			{
 				$(step.backdropContainer).append("<div class='tour-prevent' id='tourPrevent'></div>");
 				$("#tourPrevent").width($(step.element).outerWidth());
@@ -1562,8 +1744,7 @@ var bind = function (fn, me) {
 				$("#tourPrevent").offset($(step.element).offset());
 			}
 			
-			$backdropElement = $(step.backdropElement);
-			if ($backdropElement.length === 0)
+			if ($(step.element).length === 0)
 			{
 				elementData = {
 					width: 0,
@@ -1576,18 +1757,19 @@ var bind = function (fn, me) {
 			}
 			else
 			{
-				elementData = {
-					width: $backdropElement.innerWidth(),
-					height: $backdropElement.innerHeight(),
-					offset: $backdropElement.offset()
-				};
-				$backdropElement.addClass('tour-step-backdrop');
-				if (step.backdropPadding) {
+				elementData =	{
+									width: $(step.element).innerWidth(),
+									height: $(step.element).innerHeight(),
+									offset: $(step.element).offset()
+								};
+								
+				if (step.backdropPadding)
+				{
 					elementData = this._applyBackdropPadding(step.backdropPadding, elementData);
 				}
 			}
 			
-			return this._showBackground(step, elementData);
+			this._showBackground(step, elementData);
 		};
 
 		Tour.prototype._hideOverlayElement = function (step) {
@@ -1597,9 +1779,10 @@ var bind = function (fn, me) {
 			
 			// remove any previous interaction overlay
 			if($("#tourPrevent").length)
+			{
 				$("#tourPrevent").remove();
+			}
 
-			$(step.backdropElement).removeClass('tour-step-backdrop');
 			ref = this.backdrops;
 			for (pos in ref) {
 				$backdrop = ref[pos];
