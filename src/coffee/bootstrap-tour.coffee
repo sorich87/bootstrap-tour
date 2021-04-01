@@ -137,11 +137,9 @@
     # Start tour from current step
     start: (force = false) ->
       @init force unless @_inited # Backward compatibility
-
-      if @_current is null
-        promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
-        @_callOnPromiseDone(promise, @showStep, 0)
-      @
+      promise = @_makePromise(@_options.onStart(@) if @_options.onStart?)
+      @_callOnPromiseDone(promise, @showStep, 0)
+      
 
     # Hide current step and show next step
     next: ->
@@ -519,6 +517,7 @@
       # Tip adjustment
       $tip = $($element.data('bs.popover').getTipElement())
       $tip.attr 'id', step.id
+      $element.attr 'aria-describedby', step.id
 
     # Get popover template
     _template: (step, i) ->
