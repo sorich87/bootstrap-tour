@@ -683,7 +683,11 @@
           width: $backdropElement.innerWidth()
           height: $backdropElement.innerHeight()
           offset: $backdropElement.offset()
-
+        #If element is in a distinct iframe, calculate offset based on viewport selector
+        if $backdropElement[0].ownerDocument != window.document && @_options.viewport
+          $offsetContainer = $(@_options.viewport.selector).offset()
+          elementData.offset.top+=$offsetContainer.top
+          elementData.offset.top+=$offsetContainer.left
         $backdropElement.addClass 'tour-step-backdrop'
         elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
 
