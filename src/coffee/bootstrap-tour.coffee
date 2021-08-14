@@ -509,6 +509,7 @@
         title: step.title
         content: step.content
         html: true
+        sanitize: false
         animation: step.animation
         container: step.container
         template: step.template
