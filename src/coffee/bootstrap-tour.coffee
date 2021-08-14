@@ -238,7 +238,7 @@
 
         if step.backdrop
           next_step = iNext? and @getStep iNext
-          if !next_step or !next_step.backdrop or next_step.backdropElement != step.backdropElement
+          if !next_step or !next_step.backdrop
             @_hideOverlayElement(step)
 
         step.onHidden(@) if step.onHidden?
@@ -642,6 +642,7 @@
     _showBackground: (step, data) ->
       height = $(document).height()
       width = $(document).width()
+      duration = 'fast'
       for pos in ['top', 'bottom', 'left', 'right']
         $backdrop = @backdrops[pos] ?= $('<div>', class: "tour-backdrop #{pos}")
         $(step.backdropContainer).append($backdrop)
@@ -649,25 +650,17 @@
         switch pos
           when 'top'
             $backdrop
-            .height(if data.offset.top > 0 then data.offset.top else 0)
-            .width(width)
-            .offset(top: 0, left: 0)
+            .animate({top: 0, left: 0, height: Math.max(0, data.offset.top), width: width }, duration)
           when 'bottom'
             $backdrop
-            .offset(top: data.offset.top + data.height, left: 0)
-            .height(height - (data.offset.top + data.height))
-            .width(width)
+            .animate({top: data.offset.top + data.height, left: 0, height: height - (data.offset.top + data.height), width: width }, duration)
           when 'left'
             $backdrop
-            .offset(top: data.offset.top, left: 0)
-            .height(data.height)
-            .width(if data.offset.left > 0 then data.offset.left else 0)
+            .animate({top: data.offset.top, left: 0, height: data.height, width: Math.max(0, data.offset.left) }, duration)
           when 'right'
             $backdrop
-            .offset(top: data.offset.top, left: data.offset.left + data.width)
-            .height(data.height)
-            .width(width - (data.offset.left + data.width))
-
+            .animate({top: data.offset.top, left: data.offset.left + data.width, height: data.height, width: width - (data.offset.left + data.width) }, duration)
+            
     _showOverlayElement: (step) ->
       $backdropElement = $ step.backdropElement
 
@@ -684,13 +677,14 @@
           height: $backdropElement.innerHeight()
           offset: $backdropElement.offset()
 
+        $('.tour-step-backdrop').not($backdropElement).removeClass('tour-step-backdrop')
         $backdropElement.addClass 'tour-step-backdrop'
         elementData = @_applyBackdropPadding step.backdropPadding, elementData if step.backdropPadding
 
       @_showBackground(step, elementData)
 
     _hideOverlayElement: (step) ->
-      $(step.backdropElement).removeClass 'tour-step-backdrop'
+      $('.tour-step-backdrop').removeClass 'tour-step-backdrop'
 
       for pos, $backdrop of @backdrops
         $backdrop.remove() if $backdrop and $backdrop.remove isnt undefined
